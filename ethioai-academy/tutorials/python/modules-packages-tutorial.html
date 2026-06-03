@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to organize Python code using modules and packages. Master importing, creating reusable code, and structuring projects like a pro.">
+    <title>Importing, Creating Modules & Packages - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Modules and Packages</h1>
+            <p class="page-subtitle">Organize and reuse code with Python's module system</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Imagine you're writing a Python program that's getting bigger every day. Your single <code>main.py</code> file now has 500 lines of code—functions for data processing, calculations, file handling, and user interface logic all jumbled together. Finding anything takes forever, and debugging is a nightmare.</p>
+        
+        <p>This is where <strong>modules</strong> and <strong>packages</strong> save the day. They let you split your code into organized, reusable pieces—just like organizing a messy desk into labeled drawers. Instead of one massive file, you can have specialized files working together beautifully.</p>
+
+        <h2>What Are Modules and Packages?</h2>
+        
+        <h3>What is a Module?</h3>
+        <p>A <strong>module</strong> is simply a Python file (with a <code>.py</code> extension) that contains code you can reuse. Think of it as a toolbox—you write useful functions once in a module, then import and use them anywhere.</p>
+
+        <p><strong>Example:</strong> If you create a file called <code>math_helpers.py</code> with some calculation functions, that file is a module. You can then import it into other Python files.</p>
+
+        <h3>What is a Package?</h3>
+        <p>A <strong>package</strong> is a folder that contains multiple modules. It's like a filing cabinet that organizes related modules together. In modern Python (3.3+), any folder with Python files can be a package, though you might see an <code>__init__.py</code> file in older projects (it was required before but is now optional).</p>
+
+        <p><strong>Example:</strong> A folder called <code>data_tools/</code> containing modules like <code>reader.py</code>, <code>cleaner.py</code>, and <code>analyzer.py</code> is a package.</p>
+
+        <h3>How Does It Work?</h3>
+        <p>When you use <code>import</code>, Python looks for the module in several places:</p>
+        <ol>
+            <li>The current directory (where your script is running)</li>
+            <li>Directories listed in the <code>PYTHONPATH</code> environment variable</li>
+            <li>Standard library directories (where built-in modules live)</li>
+        </ol>
+
+        <p><strong>Key Difference:</strong> Unlike copying and pasting code, importing creates a reference to the original module. Changes to the module affect all programs that import it—making maintenance much easier.</p>
+
+        <h2>The Perfect Analogy</h2>
+        <p><strong>Think of your codebase as a library:</strong></p>
+        <ul>
+            <li><strong>Modules</strong> are individual books—each contains specific knowledge (functions, classes) on one topic</li>
+            <li><strong>Packages</strong> are bookshelves or sections—they group related books together (e.g., "Mathematics" section contains algebra books, geometry books, etc.)</li>
+            <li><strong>Importing</strong> is like checking out a book—you bring the knowledge into your current project without rewriting it</li>
+        </ul>
+
+        <p>Just as you wouldn't rewrite an entire encyclopedia by hand every time you need information, you shouldn't copy code—you import it!</p>
+
+        <h2>Visualizing Project Structure</h2>
+        <p>Here's what a well-organized Python project looks like:</p>
+
+        <div class="folder-structure">
+project/<br>
+├── main.py<br>
+├── math_utils.py<br>
+├── config.py<br>
+└── tools/<br>
+    ├── __init__.py (optional)<br>
+    ├── text_utils.py<br>
+    └── data_utils.py
+        </div>
+
+        <p><strong>How it flows:</strong></p>
+        <ul>
+            <li><code>main.py</code> → imports from <code>math_utils.py</code> and <code>tools/</code> package</li>
+            <li><code>math_utils.py</code> → contains calculation functions</li>
+            <li><code>tools/</code> → package containing specialized utilities</li>
+            <li><code>text_utils.py</code> → string manipulation functions</li>
+            <li><code>data_utils.py</code> → data processing functions</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Tip:</strong> The <code>__init__.py</code> file can be empty, but it's useful for package initialization code or controlling what gets imported with <code>from package import *</code></p>
+        </div>
+
+        <h2>Code Examples: From Basic to Advanced</h2>
+
+        <h3>Example 1: Creating and Using a Simple Module</h3>
+        <p>Let's create a module for math operations.</p>
+
+        <p><strong>Step 1:</strong> Create <code>math_utils.py</code></p>
+        <pre><code class="language-python"># math_utils.py
+def add(a, b):
+    """Add two numbers together."""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a."""
+    return a - b
+
+def mean(numbers):
+    """Calculate the average of a list of numbers."""
+    return sum(numbers) / len(numbers)</code></pre>
+
+        <p><strong>Step 2:</strong> Create <code>app.py</code> and import the module</p>
+        <pre><code class="language-python"># app.py
+import math_utils
+
+# Use functions from the module
+result1 = math_utils.add(10, 5)
+print(f"10 + 5 = {result1}")  # Output: 10 + 5 = 15
+
+result2 = math_utils.subtract(10, 5)
+print(f"10 - 5 = {result2}")  # Output: 10 - 5 = 5
+
+grades = [85, 90, 78, 92, 88]
+average = math_utils.mean(grades)
+print(f"Average grade: {average}")  # Output: Average grade: 86.6</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Why this works:</strong> Python finds <code>math_utils.py</code> in the same directory as <code>app.py</code> and loads all its functions.</p>
+        </div>
+
+        <h3>Example 2: Using Import Aliases</h3>
+        <p>Long module names can be tedious to type. Use aliases for convenience:</p>
+
+        <pre><code class="language-python"># app.py with alias
+import math_utils as mu  # Shorter alias
+
+print(mu.add(20, 15))        # Output: 35
+print(mu.mean([1, 2, 3, 4])) # Output: 2.5</code></pre>
+
+        <h3>Example 3: Importing Specific Functions</h3>
+        <p>If you only need certain functions, import them directly:</p>
+
+        <pre><code class="language-python"># app.py - selective import
+from math_utils import add, mean
+
+# Now use functions directly without module prefix
+print(add(7, 3))           # Output: 10
+print(mean([10, 20, 30]))  # Output: 20.0
+
+# Note: subtract() is NOT available because we didn't import it
+# print(subtract(10, 5))   # ❌ This would cause an error</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Common Pitfall:</strong> Using <code>from module import *</code> imports everything, which can cause naming conflicts. Avoid it except for very specific cases.</p>
+        </div>
+
+        <h3>Example 4: Creating and Using a Package</h3>
+        <p>Let's build a package with multiple modules.</p>
+
+        <p><strong>Project structure:</strong></p>
+        <div class="folder-structure">
+my_app/<br>
+├── main.py<br>
+└── tools/<br>
+    ├── __init__.py<br>
+    ├── text_utils.py<br>
+    └── math_utils.py
+        </div>
+
+        <p><strong>tools/text_utils.py</strong></p>
+        <pre><code class="language-python"># tools/text_utils.py
+def slugify(text):
+    """Convert text to URL-friendly slug."""
+    # Remove special characters and replace spaces with hyphens
+    return text.lower().replace(" ", "-").replace("'", "")
+
+def count_words(text):
+    """Count words in a string."""
+    return len(text.split())</code></pre>
+
+        <p><strong>tools/math_utils.py</strong></p>
+        <pre><code class="language-python"># tools/math_utils.py
+def square(n):
+    """Return the square of a number."""
+    return n * n
+
+def is_even(n):
+    """Check if a number is even."""
+    return n % 2 == 0</code></pre>
+
+        <p><strong>main.py</strong></p>
+        <pre><code class="language-python"># main.py
+from tools import text_utils, math_utils
+
+# Use text utilities
+title = "Python Programming Guide"
+slug = text_utils.slugify(title)
+print(f"Slug: {slug}")  # Output: Slug: python-programming-guide
+
+word_count = text_utils.count_words(title)
+print(f"Word count: {word_count}")  # Output: Word count: 3
+
+# Use math utilities
+print(f"5 squared: {math_utils.square(5)}")      # Output: 5 squared: 25
+print(f"Is 8 even? {math_utils.is_even(8)}")     # Output: Is 8 even? True</code></pre>
+
+        <h3>Example 5: Direct Function Import from Package</h3>
+        <pre><code class="language-python"># Alternative import style
+from tools.text_utils import slugify
+from tools.math_utils import square, is_even
+
+# Use functions directly
+print(slugify("Hello World"))  # Output: hello-world
+print(square(4))               # Output: 16
+print(is_even(7))              # Output: False</code></pre>
+
+        <h2>Hands-On Exercise: Build Your Own Package</h2>
+        <p>Let's create a practical package step-by-step. You'll build a <code>text_tools</code> package with useful string utilities.</p>
+
+        <h3>Step 1: Setup Your Project Structure</h3>
+        <p>Create the following folder and files:</p>
+
+        <div class="folder-structure">
+text_project/<br>
+├── app.py<br>
+└── text_tools/<br>
+    ├── __init__.py (create an empty file)<br>
+    └── formatters.py
+        </div>
+
+        <p><strong>How to create this:</strong></p>
+        <ol>
+            <li>Create a folder called <code>text_project</code></li>
+            <li>Inside it, create a folder called <code>text_tools</code></li>
+            <li>Create an empty file <code>text_tools/__init__.py</code></li>
+            <li>Create <code>text_tools/formatters.py</code> (we'll add code next)</li>
+            <li>Create <code>app.py</code> in the root <code>text_project</code> folder</li>
+        </ol>
+
+        <h3>Step 2: Write the Module Code</h3>
+        <p>Open <code>text_tools/formatters.py</code> and add these functions:</p>
+
+        <pre><code class="language-python"># text_tools/formatters.py
+
+def title_case(text):
+    """Convert text to Title Case."""
+    return text.title()
+
+def reverse_words(text):
+    """Reverse the order of words in a sentence."""
+    words = text.split()
+    return " ".join(reversed(words))
+
+def remove_vowels(text):
+    """Remove all vowels from text."""
+    vowels = "aeiouAEIOU"
+    return "".join(char for char in text if char not in vowels)</code></pre>
+
+        <h3>Step 3: Import and Use Your Package</h3>
+        <p>Now open <code>app.py</code> and add this code:</p>
+
+        <pre><code class="language-python"># app.py
+from text_tools.formatters import title_case, reverse_words, remove_vowels
+
+# Test the functions
+sentence = "python is awesome"
+
+print("Original:", sentence)
+print("Title case:", title_case(sentence))
+print("Reversed:", reverse_words(sentence))
+print("No vowels:", remove_vowels(sentence))
+
+# Expected output:
+# Original: python is awesome
+# Title case: Python Is Awesome
+# Reversed: awesome is python
+# No vowels: pythn s wsm</code></pre>
+
+        <h3>Step 4: Run Your Program</h3>
+        <p>Open your terminal, navigate to the <code>text_project</code> folder, and run:</p>
+        <pre><code class="language-bash">python app.py</code></pre>
+
+        <h3>Step 5: Verify It Works</h3>
+        <p>You should see output like this:</p>
+        <pre><code>Original: python is awesome
+Title case: Python Is Awesome
+Reversed: awesome is python
+No vowels: pythn s wsm</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Success Indicator:</strong> If you see the output above, congratulations! You've successfully created and used a custom Python package.</p>
+        </div>
+
+        <h3>Troubleshooting Tips</h3>
+        <ul>
+            <li><strong>Error: "No module named 'text_tools'"</strong> → Make sure you're running <code>python app.py</code> from the <code>text_project</code> folder, not from inside <code>text_tools/</code></li>
+            <li><strong>Error: "cannot import name 'title_case'"</strong> → Check that <code>formatters.py</code> is saved and the function names are spelled correctly</li>
+            <li><strong>Nothing happens:</strong> → Make sure you saved all files and that <code>__init__.py</code> exists (even if empty) in the <code>text_tools</code> folder</li>
+        </ul>
+
+        <h2>Common Mistakes and How to Avoid Them</h2>
+
+        <h3>1. Wrong Import Path / Directory Issues</h3>
+        <p><strong>Problem:</strong> Python can't find your module even though the file exists.</p>
+        <pre><code class="language-python"># ❌ Wrong - trying to import from wrong location
+import ../other_folder/utils  # Syntax error!</code></pre>
+
+        <p><strong>Why it happens:</strong> Python looks for modules relative to where you run the script, not where the file is saved.</p>
+
+        <p><strong>Solution:</strong> Always run your script from the project root folder.</p>
+        <pre><code class="language-bash"># ✅ Correct
+cd my_project      # Go to project root first
+python app.py      # Then run your script</code></pre>
+
+        <p><strong>Prevention tip:</strong> Organize your project so all imports work from a single root directory.</p>
+
+        <h3>2. Naming Conflicts with Standard Library</h3>
+        <p><strong>Problem:</strong> Your module name shadows a built-in Python module.</p>
+        <pre><code class="language-python"># ❌ Bad - file named random.py
+# This breaks Python's built-in random module!
+import random  # Python imports YOUR file instead of the standard library</code></pre>
+
+        <p><strong>Why it happens:</strong> Python checks the current directory first, so your <code>random.py</code> takes priority over the built-in module.</p>
+
+        <p><strong>Solution:</strong> Never name your files after standard library modules.</p>
+        <pre><code class="language-python"># ✅ Good naming
+my_random_utils.py
+game_random.py
+custom_random.py</code></pre>
+
+        <p><strong>Prevention tip:</strong> Before creating a module, check if the name exists: <code>import modulename</code> in Python console. If it works, choose a different name.</p>
+
+        <h3>3. Forgetting the <code>.py</code> Extension Issue</h3>
+        <p><strong>Problem:</strong> Including <code>.py</code> in import statements.</p>
+        <pre><code class="language-python"># ❌ Wrong
+import math_utils.py  # SyntaxError!
+
+# ✅ Correct
+import math_utils</code></pre>
+
+        <p><strong>Why it happens:</strong> Python expects module names, not filenames.</p>
+
+        <h3>4. Circular Imports</h3>
+        <p><strong>Problem:</strong> Two modules import each other, creating an infinite loop.</p>
+        <pre><code class="language-python"># module_a.py
+from module_b import function_b  # ❌ Imports module_b
+
+# module_b.py
+from module_a import function_a  # ❌ Imports module_a - CIRCULAR!</code></pre>
+
+        <p><strong>Solution:</strong> Restructure your code to avoid circular dependencies. Move shared code to a third module.</p>
+        <pre><code class="language-python"># shared.py
+def shared_function():
+    pass
+
+# module_a.py
+from shared import shared_function
+
+# module_b.py
+from shared import shared_function</code></pre>
+
+        <h3>5. Modifying Modules Not Reflected</h3>
+        <p><strong>Problem:</strong> Changes to a module don't appear when you run the script again.</p>
+
+        <p><strong>Why it happens:</strong> In interactive Python sessions (like Jupyter), modules are cached. Restarting the kernel fixes this.</p>
+
+        <p><strong>Solution:</strong> Use <code>importlib.reload()</code> for interactive development.</p>
+        <pre><code class="language-python">import importlib
+import my_module
+
+# Make changes to my_module.py, then reload
+importlib.reload(my_module)</code></pre>
+
+        <h3>6. Relative Import Confusion</h3>
+        <p><strong>Problem:</strong> Using relative imports (<code>from . import module</code>) in the wrong context.</p>
+
+        <p><strong>Solution:</strong> Relative imports only work inside packages. For simple scripts, use absolute imports.</p>
+
+        <h2>Mini-Project: Build a Modular Task Manager</h2>
+        <p>Let's build a command-line task manager split into organized modules.</p>
+
+        <h3>Project Goal</h3>
+        <p>Create a simple task manager that can add, view, and save tasks to a file—all using a clean modular structure.</p>
+
+        <h3>Requirements</h3>
+        <ul>
+            <li>Separate file I/O operations into one module</li>
+            <li>Task logic (add, display) in another module</li>
+            <li>Main program to tie everything together</li>
+            <li>Save tasks to a text file persistently</li>
+        </ul>
+
+        <h3>Project Structure</h3>
+        <div class="folder-structure">
+task_manager/<br>
+├── main.py<br>
+├── modules/<br>
+    ├── __init__.py<br>
+    ├── file_handler.py<br>
+    └── task_manager.py<br>
+└── tasks.txt (created automatically)
+        </div>
+
+        <h3>Implementation Guide</h3>
+
+        <h4>Step 1: Create <code>modules/file_handler.py</code></h4>
+        <pre><code class="language-python"># modules/file_handler.py
+def save_tasks(tasks, filename="tasks.txt"):
+    """Save tasks to a file."""
+    with open(filename, "w") as file:
+        for task in tasks:
+            file.write(task + "\n")
+    print(f"✅ Saved {len(tasks)} tasks to {filename}")
+
+def load_tasks(filename="tasks.txt"):
+    """Load tasks from a file."""
+    try:
+        with open(filename, "r") as file:
+            tasks = [line.strip() for line in file if line.strip()]
+        print(f"✅ Loaded {len(tasks)} tasks from {filename}")
+        return tasks
+    except FileNotFoundError:
+        print(f"ℹ️  No saved tasks found. Starting fresh.")
+        return []</code></pre>
+
+        <h4>Step 2: Create <code>modules/task_manager.py</code></h4>
+        <pre><code class="language-python"># modules/task_manager.py
+def add_task(tasks, task):
+    """Add a new task to the list."""
+    tasks.append(task)
+    print(f"✅ Added: '{task}'")
+
+def display_tasks(tasks):
+    """Display all tasks."""
+    if not tasks:
+        print("📭 No tasks yet. Add one to get started!")
+        return
+    
+    print("\n📝 Your Tasks:")
+    print("-" * 40)
+    for i, task in enumerate(tasks, 1):
+        print(f"{i}. {task}")
+    print("-" * 40)</code></pre>
+
+        <h4>Step 3: Create <code>main.py</code></h4>
+        <pre><code class="language-python"># main.py
+from modules import file_handler, task_manager
+
+def main():
+    """Main program loop."""
+    print("🎯 Task Manager")
+    print("=" * 40)
+    
+    # Load existing tasks
+    tasks = file_handler.load_tasks()
+    
+    while True:
+        print("\nOptions:")
+        print("1. Add task")
+        print("2. View tasks")
+        print("3. Save & Exit")
+        
+        choice = input("\nChoose (1-3): ").strip()
+        
+        if choice == "1":
+            task = input("Enter task: ").strip()
+            if task:
+                task_manager.add_task(tasks, task)
+            else:
+                print("❌ Task cannot be empty!")
+        
+        elif choice == "2":
+            task_manager.display_tasks(tasks)
+        
+        elif choice == "3":
+            file_handler.save_tasks(tasks)
+            print("👋 Goodbye!")
+            break
+        
+        else:
+            print("❌ Invalid choice. Try again.")
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+        <h4>Step 4: Run Your Task Manager</h4>
+        <pre><code class="language-bash">cd task_manager
+python main.py</code></pre>
+
+        <h3>Expected Output</h3>
+        <pre><code>🎯 Task Manager
+========================================
+ℹ️  No saved tasks found. Starting fresh.
+
+Options:
+1. Add task
+2. View tasks
+3. Save & Exit
+
+Choose (1-3): 1
+Enter task: Learn Python modules
+✅ Added: 'Learn Python modules'
+
+Options:
+1. Add task
+2. View tasks
+3. Save & Exit
+
+Choose (1-3): 2
+
+📝 Your Tasks:
+----------------------------------------
+1. Learn Python modules
+----------------------------------------
+
+Options:
+1. Add task
+2. View tasks
+3. Save & Exit
+
+Choose (1-3): 3
+✅ Saved 1 tasks to tasks.txt
+👋 Goodbye!</code></pre>
+
+        <h3>Bonus Challenges</h3>
+        <ol>
+            <li><strong>Add task deletion:</strong> Create a function to remove tasks by number</li>
+            <li><strong>Priority levels:</strong> Add "urgent" or "normal" tags to tasks</li>
+            <li><strong>Search feature:</strong> Find tasks by keyword</li>
+        </ol>
+
+        <div class="info-box">
+            <p>💡 <strong>What You Just Did:</strong> You created a real-world application using modular design—file operations are isolated, task logic is separate, and the main program coordinates everything. This is how professional developers structure projects!</p>
+        </div>
+
+        <h2>Summary</h2>
+        
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li><strong>Modules</strong> are reusable <code>.py</code> files containing functions, classes, or variables</li>
+            <li><strong>Packages</strong> are folders that organize related modules together</li>
+            <li>Use <code>import module</code> or <code>from module import function</code> to access code from other files</li>
+            <li>Proper file structure makes large projects manageable and maintainable</li>
+            <li>Always run scripts from the project root to avoid import errors</li>
+            <li>Avoid naming conflicts with Python's standard library</li>
+        </ul>
+
+        <h3>What Makes Modules & Packages Special</h3>
+        <ul>
+            <li><strong>Code Reusability:</strong> Write once, use everywhere—no more copy-pasting the same functions</li>
+            <li><strong>Organization:</strong> Keep related code together and separate concerns cleanly</li>
+            <li><strong>Maintainability:</strong> Fix a bug in one place, and it's fixed everywhere that imports it</li>
+            <li><strong>Collaboration:</strong> Team members can work on different modules without conflicts</li>
+            <li><strong>Scalability:</strong> Your project can grow from 10 lines to 10,000 lines without becoming unmanageable</li>
+        </ul>
+
+        <h3>Your Next Steps</h3>
+        <p>Here's your action plan to master modules and packages:</p>
+        <ul>
+            <li>✅ Create a <code>utils.py</code> module with 3-5 helper functions you use often</li>
+            <li>✅ Refactor an existing script—split it into at least 2 modules</li>
+            <li>✅ Build the mini-project task manager from scratch</li>
+            <li>✅ Explore Python's standard library modules (<code>datetime</code>, <code>json</code>, <code>os</code>)</li>
+            <li>✅ Create a package with at least 3 related modules</li>
+        </ul>
+
+        <div class="info-box">
+            <p>🚀 <strong>You're Ready for the Next Level!</strong> Modules and packages are the foundation of professional Python development. Every major project—from Django to TensorFlow—uses this exact organizational structure. You're now thinking like a real developer!</p>
+        </div>
+
+        <p><strong>Remember:</strong> Good code isn't just about what it does—it's about how it's organized. Modules and packages are your tools for building maintainable, scalable Python applications. Start small, stay organized, and watch your coding superpowers grow! 💪</p>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Modules & Packages</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What is a Python module?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">A folder containing multiple Python files</div>
+                    <div class="quiz-option" data-correct="true">A single .py file that contains reusable code</div>
+                    <div class="quiz-option" data-correct="false">A built-in Python function</div>
+                    <div class="quiz-option" data-correct="false">A type of Python variable</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Which import statement is correct?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">import math_utils.py</div>
+                    <div class="quiz-option" data-correct="true">import math_utils</div>
+                    <div class="quiz-option" data-correct="false">import "math_utils"</div>
+                    <div class="quiz-option" data-correct="false">import math_utils.python</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What's the main purpose of organizing code into modules and packages?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">To make programs run faster</div>
+                    <div class="quiz-option" data-correct="false">To reduce file size</div>
+                    <div class="quiz-option" data-correct="true">To improve code organization and reusability</div>
+                    <div class="quiz-option" data-correct="false">To make Python code look more complex</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. If you name your file "random.py", what problem might occur?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Python will refuse to run it</div>
+                    <div class="quiz-option" data-correct="true">It will shadow Python's built-in random module</div>
+                    <div class="quiz-option" data-correct="false">It will automatically delete itself</div>
+                    <div class="quiz-option" data-correct="false">Nothing, it's a perfectly fine name</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">5. What does "from math_utils import add, subtract" do?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Imports the entire math_utils module</div>
+                    <div class="quiz-option" data-correct="true">Imports only the add and subtract functions</div>
+                    <div class="quiz-option" data-correct="false">Creates new functions called add and subtract</div>
+                    <div class="quiz-option" data-correct="false">Deletes all other functions from math_utils</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="python_functions_tutorial.html" class="btn btn-secondary">← Previous: Functions</a>
+                <a href="string-methods-tutorial.html" class="btn btn-primary">Next: String Methods →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

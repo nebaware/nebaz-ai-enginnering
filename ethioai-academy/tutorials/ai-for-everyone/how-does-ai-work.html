@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how AI systems work through pattern recognition and data learning. Understand the inner logic without technical jargon through real-world examples.">
+    <title>Tutorial 2: How Does AI Work? - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .learning-process {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .process-step {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .process-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 2</span>
+            </div>
+            <h1>Tutorial 2: How Does AI Work?</h1>
+            <p class="tutorial-intro">Understand the inner logic of AI systems — how they learn from data and make predictions</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>Imagine teaching a child to recognize dogs. You don't hand them a rulebook saying "four legs + fur + tail = dog." Instead, you show them hundreds of photos: big dogs, small dogs, cartoon dogs, even plush toys. After enough examples, something magical happens — the child stops memorizing and starts <em>recognizing</em>.</p>
+                
+                <p>That's AI in a nutshell: <strong>learning from examples to spot patterns</strong>. No programmer sits down and writes "if tail wags, then happy dog." The machine figures it out by observing thousands of cases.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 Key Insight:</strong> AI doesn't follow instructions — it discovers patterns from data, then uses those patterns to make predictions about new, unseen information.</p>
+                </div>
+                
+                <p style="margin-top: 2rem; padding: 1.25rem; background: #f8fafc; border-radius: 8px; border-left: 3px solid #078930;">
+                    <strong>In this module,</strong> you'll use tools like <strong>ChatGPT</strong> and <strong>Teachable Machine</strong> to see AI learning in action—experiencing firsthand how machines recognize patterns and make predictions.
+                </p>
+            </section>
+
+            <!-- What AI Actually Does -->
+            <section class="content-section">
+                <h2>🧠 What AI Actually Does</h2>
+                
+                <p>At its core, AI works by:</p>
+                <ol>
+                    <li><strong>Processing data</strong> — analyzing examples (images, text, numbers)</li>
+                    <li><strong>Finding patterns</strong> — detecting relationships and rules automatically</li>
+                    <li><strong>Making predictions</strong> — applying learned patterns to new situations</li>
+                    <li><strong>Improving over time</strong> — adjusting based on feedback</li>
+                </ol>
+                
+                <div class="learning-process">
+                    <div class="process-step">
+                        <div class="process-number">1</div>
+                        <h3>Data Input</h3>
+                        <p>Feed examples into the system</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="process-number">2</div>
+                        <h3>Pattern Detection</h3>
+                        <p>Algorithm finds relationships</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="process-number">3</div>
+                        <h3>Prediction</h3>
+                        <p>Apply patterns to new data</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="process-number">4</div>
+                        <h3>Feedback Loop</h3>
+                        <p>Improve from mistakes</p>
+                    </div>
+                </div>
+                
+                <p>Unlike traditional software that follows pre-written rules, AI <strong>creates its own rules</strong> by observing data. It's less "programming" and more "teaching through examples."</p>
+            </section>
+
+            <!-- The Chef Analogy -->
+            <section class="content-section">
+                <h2>👨‍🍳 The Chef Learning Analogy</h2>
+                
+                <p>Think of AI as <strong>a chef learning a recipe</strong> — not by reading instructions, but by tasting hundreds of dishes:</p>
+                
+                <ul>
+                    <li>After 10 pasta dishes, the chef notices: "Ah, salt makes it pop!"</li>
+                    <li>After 50 dishes: "More garlic = bolder flavor"</li>
+                    <li>After 200 dishes: "This combination of herbs creates magic"</li>
+                </ul>
+                
+                <p>The chef never saw a recipe book. They learned by <em>pattern recognition</em> across hundreds of samples. That's exactly how AI models learn — by "tasting" data until patterns emerge.</p>
+                
+                <div class="success-box">
+                    <p><strong>✨ The Breakthrough:</strong> The chef can now create NEW dishes they've never tasted before, using principles learned from experience. That's prediction — applying learned patterns to novel situations.</p>
+                </div>
+            </section>
+
+            <!-- Real-World Example: Spam Filter -->
+            <section class="content-section">
+                <h2>📧 Real-World Example: Your Spam Filter</h2>
+                
+                <p>Your email spam filter is a perfect AI example. Here's what it does <em>NOT</em> do:</p>
+                
+                <div class="warning-box">
+                    <p><strong>❌ Common Misconception:</strong> The spam filter doesn't have a list of "bad words" programmed in. It's not searching for "FREE MONEY" or "Click Here" like old-school filters did.</p>
+                </div>
+                
+                <p>Instead, here's what actually happens:</p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Training Phase</th>
+                            <th>What the AI Learns</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fed millions of spam emails</td>
+                            <td>Strange sender domains, urgent language, suspicious links</td>
+                        </tr>
+                        <tr>
+                            <td>Fed millions of safe emails</td>
+                            <td>Normal conversation patterns, known contacts, typical subjects</td>
+                        </tr>
+                        <tr>
+                            <td>Compares patterns</td>
+                            <td>"Emails with X, Y, Z characteristics = 94% chance of spam"</td>
+                        </tr>
+                        <tr>
+                            <td>Makes predictions</td>
+                            <td>New email arrives → AI calculates spam probability</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p>The genius? The spam filter never "knows" what spam <em>is</em> — it just recognizes patterns statistically associated with junk mail. When scammers change tactics, the filter learns new patterns.</p>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Train Your Own AI</h2>
+                
+                <p>Let's make this concrete. You're going to train an AI to recognize emotions in text — without writing a single line of code.</p>
+                
+                <div class="success-box">
+                    <p><strong>🎓 Goal:</strong> Teach an AI to distinguish between positive and negative sentences using Google's Teachable Machine.</p>
+                </div>
+                
+                <h3>Step-by-Step Instructions:</h3>
+                
+                <ol>
+                    <li><strong>Go to:</strong> <a href="https://teachablemachine.withgoogle.com/" target="_blank">teachablemachine.withgoogle.com</a></li>
+                    <li><strong>Choose:</strong> "Text Project"</li>
+                    <li><strong>Create two classes:</strong>
+                        <ul>
+                            <li>Class 1: "Positive"</li>
+                            <li>Class 2: "Negative"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Feed 10 examples each:</strong>
+                        <ul>
+                            <li>Positive: "I love this!", "Amazing experience!", "Best day ever!"</li>
+                            <li>Negative: "This is terrible", "I'm so disappointed", "Worst purchase"</li>
+                        </ul>
+                    </li>
+                    <li><strong>Click "Train Model"</strong> (watch it learn patterns)</li>
+                    <li><strong>Test it:</strong> Type "This made me smile" — does it guess correctly?</li>
+                </ol>
+                
+                <div class="info-box">
+                    <p><strong>💡 What Just Happened?</strong> You didn't program rules. You provided examples. The AI found patterns like "love," "amazing," "terrible" correlating with sentiment. That's machine learning.</p>
+                </div>
+                
+                <h3>Extra Challenge:</h3>
+                <p>Try confusing the AI with sarcasm: "Oh great, another Monday." Does it understand context? (Spoiler: probably not — that's a current limitation!)</p>
+            </section>
+
+            <!-- Common Mistakes -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistakes About AI Learning</h2>
+                
+                <div class="warning-box">
+                    <h3>Mistake #1: "More Data = Smarter AI"</h3>
+                    <p><strong>Reality:</strong> Quality beats quantity. 100 well-labeled examples outperform 10,000 messy, inconsistent ones. Bad data teaches bad patterns.</p>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>Mistake #2: "AI Understands Meaning"</h3>
+                    <p><strong>Reality:</strong> AI doesn't "understand" anything. It recognizes statistical patterns. Your spam filter doesn't know what "money" means — it just sees that word appears in 73% of spam emails.</p>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>Mistake #3: "Untested Models Are Ready"</h3>
+                    <p><strong>Reality:</strong> Without feedback and testing, AI stays naive. That's why your Netflix recommendations improve over time — it's learning from your viewing behavior.</p>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Movie Sentiment Predictor</h2>
+                
+                <p>Let's apply what you've learned in a practical project you can do right now:</p>
+                
+                <div class="success-box">
+                    <h3>🎬 Build a Movie Review Classifier</h3>
+                    
+                    <p><strong>Tools needed:</strong> Google Sheets + ChatGPT (or Gemini)</p>
+                    
+                    <p><strong>Instructions:</strong></p>
+                    <ol>
+                        <li>Create a spreadsheet with 2 columns:
+                            <ul>
+                                <li>Column A: Movie Review (text)</li>
+                                <li>Column B: Sentiment (Good/Bad)</li>
+                            </ul>
+                        </li>
+                        <li>Add 20 reviews (10 positive, 10 negative)</li>
+                        <li>Ask ChatGPT: "Based on these reviews, predict sentiment for: [new review]"</li>
+                        <li>Compare AI predictions to your own judgments</li>
+                        <li>Track accuracy: how many did it get right?</li>
+                    </ol>
+                </div>
+                
+                <p><strong>What you'll discover:</strong> The AI identifies patterns you might not consciously notice — like "but" often signals a negative turn, or "exceeded expectations" indicates satisfaction.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 Reflection Questions:</strong> What patterns did the AI catch that you missed? Where did it fail? (Hint: sarcasm, cultural references, and subtle context often trip up AI.)</p>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: The AI Learning Process</h2>
+                
+                <p>Let's recap what we've learned about how AI works:</p>
+                
+                <ul>
+                    <li>✅ <strong>AI learns from examples</strong>, not explicit programming</li>
+                    <li>✅ <strong>Pattern recognition</strong> is the core mechanism</li>
+                    <li>✅ <strong>Quality data</strong> matters more than quantity</li>
+                    <li>✅ <strong>Feedback loops</strong> help AI improve over time</li>
+                    <li>✅ <strong>AI doesn't understand</strong> — it detects statistical correlations</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> AI is organized guesswork, refined through feedback. It's not magic — it's math detecting patterns in data, then using those patterns to predict outcomes.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: How does AI learn to recognize spam emails?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Programmers write rules for "bad words"</div>
+                            <div class="quiz-option" data-value="b">It analyzes millions of examples to find patterns</div>
+                            <div class="quiz-option" data-value="c">It reads and understands the meaning of emails</div>
+                            <div class="quiz-option" data-value="d">It randomly guesses based on sender names</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: In the chef analogy, what does "tasting dishes" represent?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Reading recipe books</div>
+                            <div class="quiz-option" data-value="b">Following cooking instructions</div>
+                            <div class="quiz-option" data-value="c">Processing data to learn patterns</div>
+                            <div class="quiz-option" data-value="d">Memorizing specific meals</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What matters MORE than having lots of data?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Quality and consistency of data</div>
+                            <div class="quiz-option" data-value="b">Speed of processing</div>
+                            <div class="quiz-option" data-value="c">Having the newest computer</div>
+                            <div class="quiz-option" data-value="d">Using complex algorithms</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: Does AI truly "understand" the content it processes?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Yes, it comprehends meaning like humans</div>
+                            <div class="quiz-option" data-value="b">No, it only recognizes statistical patterns</div>
+                            <div class="quiz-option" data-value="c">Only advanced AI can understand</div>
+                            <div class="quiz-option" data-value="d">It understands but can't explain</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What is the feedback loop in AI learning?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Humans telling the AI what to think</div>
+                            <div class="quiz-option" data-value="b">The AI asking questions to users</div>
+                            <div class="quiz-option" data-value="c">AI improving predictions based on results</div>
+                            <div class="quiz-option" data-value="d">Programmers manually fixing errors</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Types of AI</h2>
+                
+                <p>Now that you understand <em>how</em> AI learns from data, let's explore the different <em>types</em> of AI that exist — from narrow specialists to hypothetical general intelligence.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Module 3:</strong> We'll discover why your phone can tell jokes but doesn't understand humor, and what separates Narrow AI from the dream of General AI.</p>
+                </div>
+            </section>
+
+            <!-- Continue Learning Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Navigation Section -->
+            <section class="content-section">
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="understanding-intelligence-v2.json" class="prev">← Module 1: Understanding Intelligence</a>
+                    <a href="types-of-ai.html" class="next">Module 3: Types of AI →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

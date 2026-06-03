@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Self-Attention Mechanism - Deep dive into how transformers compute attention. Learn Q, K, V matrices and scaled dot-product attention.">
+    <meta name="keywords" content="self-attention, query key value, dot-product attention, attention scores, attention weights">
+    <title>Self-Attention Mechanism | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Self-Attention Mechanism</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Self-Attention Mechanism</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 3</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟡 Intermediate</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Master the mathematical foundations of attention - the core mechanism powering all modern AI
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>From Concept to Mathematics</h2>
+                <p>
+                    You understand attention conceptually: "for each position, decide which other positions are important." Now let's dive deep into the mathematics, implementation details, and intuition behind how this mechanism actually works in production transformers.
+                </p>
+                <div class="info-box">
+                    <strong>Goal:</strong> Take token embeddings and transform them using attention so each token becomes "aware" of relevant context. By the end, you'll understand every matrix multiplication and design choice.
+                </div>
+
+                <h3>The Self-Attention Journey</h3>
+                <p>
+                    Self-attention transforms a sequence of tokens from independent embeddings to context-aware representations in 6 steps:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <h4 style="margin-top: 0; color: #065f46;">The 6-Step Process</h4>
+                    <ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46;">
+                        <li><strong>Project to Q, K, V:</strong> Transform input embeddings into three different representations</li>
+                        <li><strong>Compute Scores:</strong> Calculate similarity between all query-key pairs (QK^T)</li>
+                        <li><strong>Scale:</strong> Divide by √d_k to prevent gradient vanishing</li>
+                        <li><strong>Mask (optional):</strong> Block attention to certain positions (e.g., future tokens)</li>
+                        <li><strong>Softmax:</strong> Convert scores to probability distribution (attention weights)</li>
+                        <li><strong>Apply to Values:</strong> Use weights to aggregate value vectors</li>
+                    </ol>
+                    <p style="margin-top: 1rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px; font-size: 0.9rem;">
+                        <strong>🎯 Key Insight:</strong> Each step has a specific purpose. Understanding why each exists is crucial for debugging and optimizing transformer models.
+                    </p>
+                </div>
+
+                <h3>Visual Overview: Information Flow</h3>
+                <pre><code class="language-text">INPUT: Token Embeddings (seq_len × d_model)
+    "The cat sat on mat"
+    ↓
+┌───────────────────────────────────────┐
+│ Step 1: Linear Projections           │
+│ Q = X @ W_Q  (what I'm looking for)  │
+│ K = X @ W_K  (what I contain)        │
+│ V = X @ W_V  (my information)        │
+└───────────────────────────────────────┘
+    ↓
+┌───────────────────────────────────────┐
+│ Step 2: Compute Similarity Matrix     │
+│ Scores = Q @ K^T                      │
+│ Result: (seq_len × seq_len)          │
+│                                       │
+│       The  cat  sat  on  mat          │
+│ The  [0.8  0.2  0.1  0.1  0.1]       │
+│ cat  [0.3  0.9  0.4  0.1  0.2]       │
+│ sat  [0.2  0.5  0.8  0.3  0.4]       │
+│ ...                                   │
+└───────────────────────────────────────┘
+    ↓
+┌───────────────────────────────────────┐
+│ Step 3: Scale by √d_k                 │
+│ Scores = Scores / √64                 │
+│ (prevents softmax saturation)         │
+└───────────────────────────────────────┘
+    ↓
+┌───────────────────────────────────────┐
+│ Step 4: Softmax → Probabilities       │
+│ Weights = softmax(Scores)             │
+│ Each row sums to 1.0                  │
+└───────────────────────────────────────┘
+    ↓
+┌───────────────────────────────────────┐
+│ Step 5: Apply to Values               │
+│ Output = Weights @ V                  │
+│ Weighted combination of all tokens    │
+└───────────────────────────────────────┘
+    ↓
+OUTPUT: Context-Aware Representations
+    Each token now "knows" about others!</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>The Three Projections: Q, K, V - The Foundation</h2>
+                <p>
+                    Self-attention starts by creating three different "views" of the input. This might seem redundant (why not just use X?), but each projection serves a distinct purpose.
+                </p>
+
+                <h3>Why Three Separate Projections?</h3>
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #f59e0b;">
+                    <p><strong>💡 Intuition: The Restaurant Analogy</strong></p>
+                    <p style="margin-top: 0.5rem;">Imagine you're at a restaurant:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li><strong>Query (Q):</strong> Your food preferences - "I want spicy vegetarian food"</li>
+                        <li><strong>Key (K):</strong> Menu item descriptions - "Spicy Thai Curry (vegetarian, hot)"</li>
+                        <li><strong>Value (V):</strong> The actual dishes - the food itself</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #92400e;">
+                        You compare your <strong>query</strong> against menu <strong>keys</strong> to decide which items match your preferences. Then you get the actual <strong>values</strong> (food) corresponding to your selections. You don't eat the menu description - you eat the actual dish!
+                    </p>
+                </div>
+
+                <h3>Mathematical Formulation</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Input: embeddings of all tokens
+# Shape: [batch_size, seq_len, d_model]
+# Example: [2, 4, 512] (2 sequences, 4 tokens, 512D embeddings)
+X = torch.randn(2, 4, 512)
+
+print(f"Input shape: {X.shape}")
+print(f"Each token is represented as a {X.shape[-1]}-dimensional vector")
+
+# Learned linear transformations (Weight matrices)
+# These are learned during training via backpropagation
+d_model = 512
+d_k = 64  # Typical: d_model / num_heads
+d_v = 64
+
+W_Q = nn.Linear(d_model, d_k, bias=False)  # Query projection
+W_K = nn.Linear(d_model, d_k, bias=False)  # Key projection  
+W_V = nn.Linear(d_model, d_v, bias=False)  # Value projection
+
+# Project input to Q, K, V
+Q = W_Q(X)  # [2, 4, 64] - Queries (what each token is looking for)
+K = W_K(X)  # [2, 4, 64] - Keys (what each token represents)
+V = W_V(X)  # [2, 4, 64] - Values (information each token carries)
+
+print(f"\nQuery shape:  {Q.shape}")  # [2, 4, 64]
+print(f"Key shape:    {K.shape}")    # [2, 4, 64]
+print(f"Value shape:  {V.shape}")    # [2, 4, 64]
+
+# Key observation: All three have same dimensions
+# This allows Q @ K^T to produce a square matrix</code></pre>
+
+                <h3>Detailed Breakdown: What Are We Computing?</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔍 Query Matrix (Q)</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Dimensions:</strong> (batch, seq_len, d_k)</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Purpose:</strong> Represents "what am I looking for?"</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">
+                            For each token, Q encodes what information that token needs from other tokens. Think of it as a search query.
+                        </p>
+                        <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>Example: Token "she"
+Q_she = W_Q @ embedding_she
+      ≈ "Looking for: [female
+           referent, subject,
+           recent mention]"</code></pre>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔑 Key Matrix (K)</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Dimensions:</strong> (batch, seq_len, d_k)</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Purpose:</strong> Represents "what do I contain?"</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">
+                            For each token, K encodes what information that token offers. These are matched against queries.
+                        </p>
+                        <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>Example: Token "Alice"
+K_Alice = W_K @ embedding_Alice
+        ≈ "I contain: [female,
+             proper noun, agent,
+             human]"</code></pre>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">💎 Value Matrix (V)</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Dimensions:</strong> (batch, seq_len, d_v)</p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Purpose:</strong> Actual information to combine</p>
+                        <p style="font-size: 0.85rem; color: #92400e;">
+                            V contains the actual semantic content that will be mixed together based on attention weights.
+                        </p>
+                        <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>Example: Token "Alice"
+V_Alice = W_V @ embedding_Alice
+        ≈ [rich semantic
+           representation of
+           "Alice" concept]</code></pre>
+                    </div>
+                </div>
+
+                <h3>Why Learned Projections vs. Using X Directly?</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Option 1: No Projections (Bad ❌)</strong></p>
+                    <pre><code class="language-python">Q = K = V = X  # Just use input directly
+
+Problem:
+- No flexibility
+- Can't learn what to look for vs what to offer
+- One representation must serve three purposes
+- Severely limits model expressiveness</code></pre>
+
+                    <p style="margin-top: 1rem;"><strong>Option 2: Learned Projections (Good ✅)</strong></p>
+                    <pre><code class="language-python">Q = W_Q @ X  # Learn what to search for
+K = W_K @ X  # Learn what to advertise
+V = W_V @ X  # Learn what to share
+
+Benefits:
+- W_Q, W_K, W_V learned via backpropagation
+- Model discovers optimal queries and keys
+- Flexibility to represent different aspects
+- Dramatically improves model capacity</code></pre>
+                </div>
+
+                <h3>Concrete Example: Processing "The cat sat"</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Simplified example with small dimensions
+d_model = 8  # Tiny for illustration
+d_k = 4
+
+# Simulate token embeddings (normally from embedding layer)
+tokens = ["The", "cat", "sat"]
+X = torch.tensor([
+    [0.1, 0.2, -0.1, 0.3, 0.4, -0.2, 0.1, 0.0],  # "The"
+    [0.3, -0.1, 0.5, 0.2, 0.1, 0.4, -0.3, 0.2],  # "cat"
+    [-0.2, 0.4, 0.1, -0.3, 0.5, 0.1, 0.2, -0.1]   # "sat"
+]).unsqueeze(0)  # Add batch dimension: [1, 3, 8]
+
+print("Input embeddings (X):")
+print(X)
+print(f"Shape: {X.shape}\n")
+
+# Create learned projections
+W_Q = nn.Linear(d_model, d_k, bias=False)
+W_K = nn.Linear(d_model, d_k, bias=False)
+W_V = nn.Linear(d_model, d_k, bias=False)
+
+# Project
+Q = W_Q(X)  # [1, 3, 4]
+K = W_K(X)  # [1, 3, 4]
+V = W_V(X)  # [1, 3, 4]
+
+print("Queries (Q):")
+for i, token in enumerate(tokens):
+    print(f"{token}: {Q[0, i, :]}")
+
+print("\nKeys (K):")
+for i, token in enumerate(tokens):
+    print(f"{token}: {K[0, i, :]}")
+
+print("\nValues (V):")
+for i, token in enumerate(tokens):
+    print(f"{token}: {V[0, i, :]}")
+
+# Observation: Q, K, V are all different!
+# Model learned to transform input into three specialized representations</code></pre>
+
+                <h3>What Do Q, K, V Represent?</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <strong>Query (Q)</strong>
+                        <p>"What information am I looking for?"</p>
+                        <p style="font-size: 0.85rem; color: #666;">Represents the information needs of each position</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>Key (K)</strong>
+                        <p>"What information do I contain?"</p>
+                        <p style="font-size: 0.85rem; color: #666;">Represents what each token offers</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>Value (V)</strong>
+                        <p>"Here's my information"</p>
+                        <p style="font-size: 0.85rem; color: #666;">Actual information to combine</p>
+                    </div>
+                </div>
+
+                <p>
+                    <strong>Analogy:</strong> Imagine a library search.
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Query:</strong> "I'm looking for books about machine learning"</li>
+                    <li><strong>Keys:</strong> Each book's tags/keywords</li>
+                    <li><strong>Values:</strong> The actual content of books</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>Computing Attention Scores - The Similarity Matrix</h2>
+                <p>
+                    Step 1: Compute how much each query "matches" with each key using the dot product. This creates an attention score matrix showing which tokens should attend to which.
+                </p>
+
+                <h3>The Core Computation: Q @ K^T</h3>
+                <pre><code class="language-python"># Similarity between all queries and keys
+scores = Q @ K.transpose(-2, -1)
+# Q: [2, 4, 64]
+# K^T: [2, 64, 4]
+# Result: [2, 4, 4]
+
+# Each [4, 4] matrix: similarity between each pair of tokens
+# scores[0, 1, 2] = similarity between token 1's query and token 2's key
+print(f"Attention scores shape: {scores.shape}")
+
+# Visualize what we just computed:
+# For batch 0, token 1, show scores to all tokens
+print(f"Token 1 attention scores: {scores[0, 1, :]}")</code></pre>
+
+                <h3>Why Dot Product Measures Similarity</h3>
+                <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #8b5cf6;">
+                    <p><strong>Mathematical Intuition:</strong></p>
+                    <p>The dot product between two vectors measures both their alignment AND magnitude:</p>
+                    <pre><code class="language-python"># Example: Simple 2D dot products
+query = torch.tensor([1.0, 0.0])  # Looking for "dimension 1"
+key_1 = torch.tensor([1.0, 0.0])   # Contains "dimension 1" ✓
+key_2 = torch.tensor([0.0, 1.0])   # Contains "dimension 2" ✗
+
+dot_1 = (query * key_1).sum()  # = 1.0*1.0 + 0.0*0.0 = 1.0 (high score)
+dot_2 = (query * key_2).sum()  # = 1.0*0.0 + 0.0*1.0 = 0.0 (low score)
+
+# Query matches key_1 perfectly, doesn't match key_2 at all!</code></pre>
+                    
+                    <p style="margin-top: 1rem;"><strong>Geometric Interpretation:</strong></p>
+                    <pre><code class="language-text">Dot product = ||a|| × ||b|| × cos(θ)
+
+Where θ is angle between vectors:
+- θ = 0°   → cos(θ) = 1   → Maximum similarity
+- θ = 90°  → cos(θ) = 0   → No similarity
+- θ = 180° → cos(θ) = -1  → Opposite</code></pre>
+                </div>
+
+                <h3>Real Example: "The cat sat on the mat"</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Simulate processing a real sentence
+tokens = ["The", "cat", "sat", "on", "the", "mat"]
+seq_len = 6
+d_model = 512
+d_k = 64
+
+# Simulate embeddings (normally from embedding layer)
+X = torch.randn(1, seq_len, d_model)
+
+# Create projection layers
+W_Q = nn.Linear(d_model, d_k, bias=False)
+W_K = nn.Linear(d_model, d_k, bias=False)
+
+# Project to Q and K
+Q = W_Q(X)  # [1, 6, 64]
+K = W_K(X)  # [1, 6, 64]
+
+# Compute attention scores
+scores = Q @ K.transpose(-2, -1)  # [1, 6, 6]
+
+print("Attention Score Matrix (before softmax):")
+print("Rows = from token, Columns = to token\n")
+print("        ", " ".join(f"{t:>6s}" for t in tokens))
+for i, from_token in enumerate(tokens):
+    row = scores[0, i, :]
+    print(f"{from_token:>6s}:", " ".join(f"{s.item():>6.2f}" for s in row))
+
+# Interesting observations:
+# - Diagonal values (self-attention) are often high
+# - "cat" might have high score with "sat" (subject-verb)
+# - "on" might attend strongly to "mat" (preposition-object)</code></pre>
+
+                <h3>Understanding Score Magnitudes</h3>
+                <div style="background: #fff3cd; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ffc107;">
+                    <p><strong>⚠️ Problem: Scores can get very large!</strong></p>
+                    <pre><code class="language-python"># When d_k = 64, scores can range from -20 to +20
+# When d_k = 512, scores can range from -100 to +100!
+
+# Why? Dot product sums d_k terms:
+# score = q[0]*k[0] + q[1]*k[1] + ... + q[d_k-1]*k[d_k-1]
+#       = sum of d_k products
+
+# With random initialization (values ~[-1, 1]):
+# Expected value of score ≈ 0
+# Standard deviation ≈ sqrt(d_k)
+
+# For d_k=64: std ≈ 8
+# For d_k=512: std ≈ 22.6
+
+# This causes problems in the next step (softmax)!</code></pre>
+                    <p style="margin-top: 1rem; color: #856404;">
+                        <strong>Solution preview:</strong> We'll scale by 1/√d_k in the next section to keep scores in a reasonable range.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>The Scaling Factor</h2>
+                <p>
+                    There's a crucial detail: we scale the scores by 1/√d_k. Why?
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <p><strong>Problem:</strong> As d_k grows, dot products get larger. Large scores push softmax into flat regions where gradients vanish.</p>
+                    <p style="margin-top: 1rem; color: #92400e; font-family: monospace;">
+                        d_k=64: dot product typically ~40-100 (will softmax correctly)<br>
+                        d_k=768: dot product typically ~300-500 (softmax nearly all-or-nothing)
+                    </p>
+                </div>
+
+                <pre><code class="language-python">
+# Scale scores
+d_k = 64
+scores = Q @ K.transpose(-2, -1)  # [2, 4, 4]
+scores = scores / (d_k ** 0.5)     # Divide by √64 = 8
+
+# This keeps scores in reasonable range:
+# Instead of [0, 500], we get roughly [-7, 7]
+# Softmax works best in this range
+</code></pre>
+
+                <p>
+                    Without scaling, training becomes unstable. With it, the model learns smoothly.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Computing Attention Weights with Softmax</h2>
+                <p>
+                    Step 2: Convert scores to probabilities (weights) using softmax:
+                </p>
+
+                <pre><code class="language-python">
+import torch.nn.functional as F
+
+# Softmax converts scores to probability distribution
+attention_weights = F.softmax(scores, dim=-1)
+# [2, 4, 4]
+
+# Each row sums to 1.0
+# Example row (attending to 4 tokens):
+# attention_weights[0, 0, :] = [0.1, 0.7, 0.15, 0.05]
+#                               ↑    ↑    ↑     ↑
+#                            token0 token1 token2 token3
+#                          "Pay 10% attention to token 0"
+#                          "Pay 70% attention to token 1"
+#                          "Pay 15% attention to token 2"
+#                          "Pay 5% attention to token 3"
+</code></pre>
+
+                <p>
+                    This is beautiful: the model learns which tokens are relevant for each position!
+                </p>
+
+                <div class="success-box">
+                    <strong>Interpretation:</strong> attention_weights[i, j, k] tells us: "For position i, how much attention should position j pay to position k?"
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Applying Attention to Values</h2>
+                <p>
+                    Step 3: Use attention weights to combine the values:
+                </p>
+
+                <pre><code class="language-python">
+# Apply attention weights to values
+output = attention_weights @ V
+# [2, 4, 4] @ [2, 4, 64] = [2, 4, 64]
+
+# This is a weighted sum!
+# output[0, 0, :] = 0.1*V[0,0,:] + 0.7*V[0,1,:] + 0.15*V[0,2,:] + 0.05*V[0,3,:]
+#                 = "70% token 1 + 10% token 0 + 15% token 2 + 5% token 3"
+
+# Each token's output is now a context-aware combination of all inputs!
+</code></pre>
+
+                <p>
+                    Compare before and after:
+                </p>
+
+                <pre><code class="language-text">Before attention:
+Token 1 embedding: [0.2, -0.5, 0.8, ...]  ← Just token 1's info
+
+After attention:
+Token 1 output: [0.15, -0.3, 0.6, ...]    ← Blended with neighbors
+                ↑ Now includes context!
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Putting It All Together</h2>
+                <p>
+                    Here's the complete self-attention formula and implementation:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <pre><code style="color: #065f46;">Attention(Q, K, V) = softmax(QK^T / √d_k) V</code></pre>
+                </div>
+
+                <pre><code class="language-python">
+import torch
+import torch.nn.functional as F
+
+class SelfAttention(torch.nn.Module):
+    def __init__(self, d_model, d_k, d_v):
+        super().__init__()
+        self.W_Q = torch.nn.Linear(d_model, d_k)
+        self.W_K = torch.nn.Linear(d_model, d_k)
+        self.W_V = torch.nn.Linear(d_model, d_v)
+        self.d_k = d_k
+    
+    def forward(self, X):
+        """
+        X: token embeddings [batch_size, seq_len, d_model]
+        """
+        # Project to Q, K, V
+        Q = self.W_Q(X)  # [batch, seq_len, d_k]
+        K = self.W_K(X)  # [batch, seq_len, d_k]
+        V = self.W_V(X)  # [batch, seq_len, d_v]
+        
+        # Compute attention scores
+        scores = torch.matmul(Q, K.transpose(-2, -1))  # [batch, seq_len, seq_len]
+        scores = scores / (self.d_k ** 0.5)  # Scale
+        
+        # Softmax to get attention weights
+        attention_weights = F.softmax(scores, dim=-1)  # [batch, seq_len, seq_len]
+        
+        # Apply to values
+        output = torch.matmul(attention_weights, V)  # [batch, seq_len, d_v]
+        
+        return output, attention_weights
+
+# Usage
+d_model = 512
+d_k = d_v = 64
+attention = SelfAttention(d_model, d_k, d_v)
+
+X = torch.randn(2, 4, 512)  # 2 sequences, 4 tokens, 512D
+output, weights = attention(X)
+
+print(output.shape)      # [2, 4, 64]
+print(weights.shape)     # [2, 4, 4]
+print(weights.sum(dim=-1))  # All rows sum to ~1.0
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>What Is the Model Learning?</h2>
+                <p>
+                    The weight matrices (W_Q, W_K, W_V) are learned during training. The model learns:
+                </p>
+
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>W_Q:</strong> How to project tokens to "what I'm looking for"</li>
+                    <li><strong>W_K:</strong> How to project tokens to "what I contain" (comparable to queries)</li>
+                    <li><strong>W_V:</strong> How to project tokens to "information to share"</li>
+                </ul>
+
+                <p>
+                    Different layers and attention heads learn different patterns. Some might learn:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <strong>Syntactic Attention</strong>
+                        <p>Focus on grammatical dependencies (subject-verb, modifiers)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>Semantic Attention</strong>
+                        <p>Focus on conceptual relationships (co-reference, meaning)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>Position Attention</strong>
+                        <p>Focus on nearby tokens (local context)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>Long-Range Attention</strong>
+                        <p>Focus on distant relevant tokens</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Visualizing Attention Patterns</h2>
+                <p>
+                    One of the most powerful aspects of self-attention is that we can visualize what the model is "paying attention to". Let's build visualization tools:
+                </p>
+
+                <h3>Heatmap Visualization</h3>
+                <pre><code class="language-python">import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+def visualize_attention(attention_weights, tokens, layer_name="Self-Attention"):
+    """
+    Visualize attention weights as a heatmap.
+    
+    Args:
+        attention_weights: [seq_len, seq_len] tensor
+        tokens: list of token strings
+        layer_name: name for plot title
+    """
+    # Convert to numpy
+    attn = attention_weights.detach().cpu().numpy()
+    
+    # Create heatmap
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.heatmap(attn, 
+                annot=True,  # Show values
+                fmt='.2f',   # 2 decimal places
+                cmap='YlOrRd',  # Color scheme
+                xticklabels=tokens,
+                yticklabels=tokens,
+                cbar_kws={'label': 'Attention Weight'},
+                ax=ax)
+    
+    ax.set_xlabel('Key (attending to)', fontsize=12)
+    ax.set_ylabel('Query (attending from)', fontsize=12)
+    ax.set_title(f'{layer_name}: Attention Weights', fontsize=14)
+    plt.tight_layout()
+    plt.show()
+
+# Example usage
+tokens = ["The", "cat", "sat", "on", "the", "mat"]
+seq_len = len(tokens)
+
+# Create sample attention weights (normally from model)
+# Here we'll create plausible patterns
+attn_weights = torch.tensor([
+    [0.40, 0.15, 0.10, 0.10, 0.15, 0.10],  # "The" → attends to itself, "cat"
+    [0.10, 0.50, 0.25, 0.05, 0.05, 0.05],  # "cat" → itself, "sat"
+    [0.08, 0.35, 0.40, 0.12, 0.03, 0.02],  # "sat" → "cat" (subject), itself
+    [0.05, 0.05, 0.10, 0.35, 0.15, 0.30],  # "on" → itself, "mat"
+    [0.40, 0.08, 0.07, 0.10, 0.25, 0.10],  # "the" → first "The", itself
+    [0.05, 0.10, 0.05, 0.25, 0.15, 0.40],  # "mat" → "on", itself
+])
+
+visualize_attention(attn_weights, tokens)</code></pre>
+
+                <h3>What Do Different Attention Patterns Mean?</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">🎯 Diagonal Pattern</h4>
+                        <pre style="font-size: 0.75rem;"><code>[0.9, 0.05, 0.05]
+[0.05, 0.9, 0.05]
+[0.05, 0.05, 0.9]</code></pre>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                            <strong>Meaning:</strong> Strong self-attention. Each token primarily attends to itself.
+                        </p>
+                        <p style="font-size: 0.85rem; color: #065f46;">
+                            <strong>Common in:</strong> Early layers, positional encoding layers, residual paths
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">📊 Uniform Pattern</h4>
+                        <pre style="font-size: 0.75rem;"><code>[0.33, 0.33, 0.33]
+[0.33, 0.33, 0.33]
+[0.33, 0.33, 0.33]</code></pre>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                            <strong>Meaning:</strong> Equal attention to all tokens. No specific focus.
+                        </p>
+                        <p style="font-size: 0.85rem; color: #065f46;">
+                            <strong>Common in:</strong> Untrained models, layers that aggregate global context
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">🔍 Focused Pattern</h4>
+                        <pre style="font-size: 0.75rem;"><code>[0.05, 0.90, 0.05]
+[0.10, 0.10, 0.80]
+[0.85, 0.10, 0.05]</code></pre>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                            <strong>Meaning:</strong> Sharp attention to specific tokens.
+                        </p>
+                        <p style="font-size: 0.85rem; color: #92400e;">
+                            <strong>Common in:</strong> Deep layers, syntactic dependencies (verb→subject), coreference resolution
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">📍 Local Pattern</h4>
+                        <pre style="font-size: 0.75rem;"><code>[0.7, 0.2, 0.1, 0.0]
+[0.2, 0.5, 0.2, 0.1]
+[0.1, 0.2, 0.5, 0.2]
+[0.0, 0.1, 0.2, 0.7]</code></pre>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">
+                            <strong>Meaning:</strong> Attention to nearby tokens (band-diagonal).
+                        </p>
+                        <p style="font-size: 0.85rem; color: #5b21b6;">
+                            <strong>Common in:</strong> Character-level models, capturing local context, some efficient transformer variants
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Real Example: Analyzing BERT's Attention</h3>
+                <pre><code class="language-python">from transformers import BertTokenizer, BertModel
+import torch
+
+# Load pre-trained BERT
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased', output_attentions=True)
+model.eval()
+
+# Tokenize sentence
+text = "The cat sat on the mat"
+inputs = tokenizer(text, return_tensors='pt')
+tokens = tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])
+
+print(f"Tokens: {tokens}")
+
+# Get attention weights
+with torch.no_grad():
+    outputs = model(**inputs)
+    attentions = outputs.attentions  # Tuple of 12 layers
+    
+# Each attention is [batch, num_heads, seq_len, seq_len]
+# Let's examine layer 6, head 3
+layer = 6
+head = 3
+attn = attentions[layer][0, head, :, :].cpu().numpy()
+
+print(f"\nLayer {layer}, Head {head} Attention Pattern:")
+print(f"Shape: {attn.shape}")
+
+# Find strongest attention connections
+for i, from_token in enumerate(tokens):
+    # Get top 3 attended tokens for this position
+    top_indices = attn[i].argsort()[-3:][::-1]
+    top_weights = attn[i][top_indices]
+    
+    print(f"\n{from_token} attends to:")
+    for idx, weight in zip(top_indices, top_weights):
+        print(f"  {tokens[idx]}: {weight:.3f}")
+
+# Visualize specific head
+visualize_attention(torch.tensor(attn), tokens, f"BERT Layer {layer} Head {head}")</code></pre>
+
+                <h3>Common Attention Patterns in Trained Models</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Research Finding: Attention heads specialize!</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+                        <li><strong>Positional Heads:</strong> Attend to specific relative positions (±1, ±2 tokens)</li>
+                        <li><strong>Syntactic Heads:</strong> Capture grammatical relationships (subject-verb, determiner-noun)</li>
+                        <li><strong>Semantic Heads:</strong> Link semantically related words (synonyms, coreferences)</li>
+                        <li><strong>Rare Word Heads:</strong> Attend strongly to unique/important tokens</li>
+                        <li><strong>Delimiter Heads:</strong> Focus on punctuation and sentence boundaries</li>
+                        <li><strong>Broadcast Heads:</strong> Uniform attention - aggregate global context</li>
+                    </ul>
+                    <p style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 6px; font-size: 0.9rem;">
+                        <strong>📚 Reference:</strong> "Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned" (Michel et al., 2019)
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Causal Attention (For Generation)</h2>
+                <p>
+                    When generating text, we can't look at future tokens. Causal attention (also called masked attention) prevents the model from "cheating" by seeing tokens that haven't been generated yet.
+                </p>
+
+                <h3>The Autoregressive Constraint</h3>
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <p><strong>⚠️ Problem with bidirectional attention during generation:</strong></p>
+                    <pre><code class="language-text">Generating: "The cat sat ___"
+
+If we allow full bidirectional attention:
+- Position 3 could attend to position 4 (future!)
+- Model would learn to just copy the answer
+- No actual language modeling
+
+Solution: Mask future positions!</code></pre>
+                </div>
+
+                <h3>Implementing Causal Masking</h3>
+                <pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+# Create causal mask (upper triangular matrix)
+seq_len = 5
+mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
+
+print("Causal Mask (True = masked/forbidden):")
+print(mask)
+# Output:
+# [[False,  True,  True,  True,  True],
+#  [False, False,  True,  True,  True],
+#  [False, False, False,  True,  True],
+#  [False, False, False, False,  True],
+#  [False, False, False, False, False]]
+
+# Visualize what each token can attend to
+tokens = ["The", "cat", "sat", "on", "mat"]
+print("\nAttention Constraints:")
+for i in range(seq_len):
+    allowed = [tokens[j] for j in range(seq_len) if not mask[i, j]]
+    print(f"{tokens[i]:>4s} can attend to: {', '.join(allowed)}")
+
+# Output:
+# The can attend to: The
+# cat can attend to: The, cat
+# sat can attend to: The, cat, sat
+#  on can attend to: The, cat, sat, on
+# mat can attend to: The, cat, sat, on, mat</code></pre>
+
+                <h3>Applying the Mask During Attention Computation</h3>
+                <pre><code class="language-python">def causal_attention(Q, K, V, mask=None):
+    """
+    Compute causal self-attention with optional masking.
+    
+    Args:
+        Q, K, V: [batch, seq_len, d_k] tensors
+        mask: [seq_len, seq_len] boolean tensor (True = mask)
+    """
+    d_k = Q.size(-1)
+    
+    # Compute scores
+    scores = Q @ K.transpose(-2, -1) / (d_k ** 0.5)
+    # Shape: [batch, seq_len, seq_len]
+    
+    if mask is not None:
+        # Set masked positions to -inf BEFORE softmax
+        # This makes softmax output 0 for those positions
+        scores = scores.masked_fill(mask.unsqueeze(0), float('-inf'))
+    
+    # Softmax converts -inf to 0.0
+    attention_weights = F.softmax(scores, dim=-1)
+    
+    # Apply to values
+    output = attention_weights @ V
+    
+    return output, attention_weights
+
+# Example usage
+batch_size = 2
+seq_len = 4
+d_k = 64
+
+Q = torch.randn(batch_size, seq_len, d_k)
+K = torch.randn(batch_size, seq_len, d_k)
+V = torch.randn(batch_size, seq_len, d_k)
+
+# Create causal mask
+causal_mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
+
+# Compute with mask
+output, attn = causal_attention(Q, K, V, mask=causal_mask)
+
+print("Attention weights shape:", attn.shape)
+print("\nAttention weights (batch 0):")
+print(attn[0])
+
+# Verify: each row should only have non-zero values up to its position
+print("\nVerification - Position 0 (can only see position 0):")
+print(attn[0, 0, :])  # Should be [1.0, 0.0, 0.0, 0.0]
+
+print("\nPosition 2 (can see positions 0, 1, 2):")
+print(attn[0, 2, :])  # Should be [~0.33, ~0.33, ~0.33, 0.0]</code></pre>
+
+                <h3>Why -inf for Masking?</h3>
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p><strong>Mathematical Reasoning:</strong></p>
+                    <pre><code class="language-python"># Softmax formula: softmax(x_i) = exp(x_i) / Σ exp(x_j)
+
+# If we set x_i = -inf:
+# exp(-inf) = 0
+# So the softmax output for that position = 0 / (sum) = 0
+
+# This is exactly what we want: zero attention weight!</code></pre>
+                    
+                    <p style="margin-top: 1rem;"><strong>Alternative (Wrong ❌):</strong></p>
+                    <pre><code class="language-python"># Bad: Set masked positions to 0 AFTER softmax
+attention_weights = F.softmax(scores, dim=-1)
+attention_weights = attention_weights.masked_fill(mask, 0.0)
+
+# Problem: Rows no longer sum to 1.0!
+# This breaks the probability distribution property</code></pre>
+                </div>
+
+                <h3>Causal vs. Bidirectional Attention Comparison</h3>
+                <pre><code class="language-python">import matplotlib.pyplot as plt
+
+def compare_attention_types():
+    """Visualize difference between causal and bidirectional attention."""
+    seq_len = 6
+    tokens = ["The", "cat", "sat", "on", "the", "mat"]
+    
+    # Create sample scores
+    scores = torch.randn(1, seq_len, seq_len) * 2
+    
+    # Bidirectional (no mask)
+    attn_bi = F.softmax(scores / 8, dim=-1)[0]
+    
+    # Causal (with mask)
+    mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
+    scores_masked = scores.clone()
+    scores_masked = scores_masked.masked_fill(mask.unsqueeze(0), float('-inf'))
+    attn_causal = F.softmax(scores_masked / 8, dim=-1)[0]
+    
+    # Plot side by side
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    
+    # Bidirectional
+    sns.heatmap(attn_bi.numpy(), annot=True, fmt='.2f', cmap='YlOrRd',
+                xticklabels=tokens, yticklabels=tokens, ax=ax1)
+    ax1.set_title('Bidirectional Attention\n(BERT-style)', fontsize=14)
+    ax1.set_xlabel('Attending to')
+    ax1.set_ylabel('Attending from')
+    
+    # Causal
+    sns.heatmap(attn_causal.numpy(), annot=True, fmt='.2f', cmap='YlOrRd',
+                xticklabels=tokens, yticklabels=tokens, ax=ax2)
+    ax2.set_title('Causal Attention\n(GPT-style)', fontsize=14)
+    ax2.set_xlabel('Attending to')
+    ax2.set_ylabel('Attending from')
+    
+    plt.tight_layout()
+    plt.show()
+
+compare_attention_types()</code></pre>
+
+                <p style="margin-top: 1.5rem;">
+                    <strong>Key Insight:</strong> Causal attention is essential for autoregressive language models (GPT, LLaMA), while bidirectional attention is used in encoder models (BERT, RoBERTa) where we have the full context available.
+                </p>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <strong>Model Architecture Decision:</strong>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li><strong>Encoder (BERT):</strong> Bidirectional attention - see full context</li>
+                        <li><strong>Decoder (GPT):</strong> Causal attention - only see past context</li>
+                        <li><strong>Encoder-Decoder (T5):</strong> Both - bidirectional in encoder, causal in decoder</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Computational Complexity</h2>
+                <p>
+                    Understanding the cost:
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;">
+                    <p><strong>Time Complexity:</strong> O(n² × d)</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #666; font-size: 0.9rem;">
+                        <li>n = sequence length</li>
+                        <li>n²: All pairs of tokens</li>
+                        <li>d: Dimension of embeddings</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Space Complexity:</strong> O(n²)</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #666; font-size: 0.9rem;">
+                        <li>Must store attention weights for all pairs</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem; color: #065f46;"><strong>But:</strong> Both are highly parallelizable on GPUs (matrix operations)</p>
+                </div>
+
+                <p>
+                    This is why transformers need powerful hardware but scale with data/parameters efficiently.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Q, K, V Projections:</strong> Linear transformations creating different views of input</li>
+                        <li><strong>Dot-Product Similarity:</strong> Q@K^T measures alignment between queries and keys</li>
+                        <li><strong>Scaling Factor:</strong> √d_k prevents exploding scores and softmax issues</li>
+                        <li><strong>Softmax Weights:</strong> Convert scores to probability distribution</li>
+                        <li><strong>Value Combination:</strong> Weighted sum using learned attention weights</li>
+                        <li><strong>Learned Patterns:</strong> Model learns what to attend to through training</li>
+                        <li><strong>Causal Masking:</strong> Prevents looking at future tokens in generation</li>
+                        <li><strong>Computational Cost:</strong> O(n²) but highly parallelizable</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What are the three components of self-attention?</strong></p>
+                    <div class="quiz-option" data-value="a">Input, Output, Hidden</div>
+                    <div class="quiz-option" data-value="b">Encoder, Decoder, Attention</div>
+                    <div class="quiz-option" data-value="c">Query, Key, Value</div>
+                    <div class="quiz-option" data-value="d">Token, Position, Embedding</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: How are attention scores computed?</strong></p>
+                    <div class="quiz-option" data-value="a">By averaging all vectors</div>
+                    <div class="quiz-option" data-value="b">By taking the dot product of Query and Key, then applying softmax</div>
+                    <div class="quiz-option" data-value="c">By multiplying all inputs</div>
+                    <div class="quiz-option" data-value="d">By random selection</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Why do we apply softmax to attention scores?</strong></p>
+                    <div class="quiz-option" data-value="a">To make computations faster</div>
+                    <div class="quiz-option" data-value="b">To reduce memory usage</div>
+                    <div class="quiz-option" data-value="c">To increase model size</div>
+                    <div class="quiz-option" data-value="d">To normalize scores into a probability distribution</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What does scaled dot-product attention divide by?</strong></p>
+                    <div class="quiz-option" data-value="a">The square root of the key dimension</div>
+                    <div class="quiz-option" data-value="b">The number of tokens</div>
+                    <div class="quiz-option" data-value="c">The batch size</div>
+                    <div class="quiz-option" data-value="d">The sequence length</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is the output of the attention mechanism?</strong></p>
+                    <div class="quiz-option" data-value="a">Only the attention scores</div>
+                    <div class="quiz-option" data-value="b">The original input unchanged</div>
+                    <div class="quiz-option" data-value="c">A weighted sum of Value vectors based on attention scores</div>
+                    <div class="quiz-option" data-value="d">The Key vectors</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="attention-is-all-you-need.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Attention Is All You Need</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="multi-head-attention-and-positional-encoding.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Multi-Head Attention</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

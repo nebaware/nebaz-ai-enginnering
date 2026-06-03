@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certificate - Nebaz AI Academy</title>
+    <meta name="description" content="Verify the authenticity of Nebaz AI Academy course completion certificates.">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/nebaz-theme.css">
+    <link rel="stylesheet" href="certificate.css">
+    
+    <!-- Prism.js for syntax highlighting (if needed) -->
+    <link href="../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .verify-container {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .verify-header {
+            margin-bottom: 40px;
+        }
+        
+        .verify-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .verify-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Certificate Card */
+        .certificate-card {
+            background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%);
+            border: 2px solid #078930;
+            border-radius: 16px;
+            padding: 48px 32px;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .certificate-card::before {
+            content: '🎓';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 200px;
+            opacity: 0.05;
+        }
+        
+        .certificate-badge {
+            display: inline-block;
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .certificate-verified {
+            color: #10b981;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .certificate-verified::before {
+            content: '✓';
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            line-height: 32px;
+            font-size: 20px;
+        }
+        
+        .certificate-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 24px 0 16px;
+        }
+        
+        .certificate-course {
+            font-size: 1.3rem;
+            color: #078930;
+            margin-bottom: 24px;
+        }
+        
+        .certificate-details {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 2px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .certificate-detail {
+            text-align: center;
+        }
+        
+        .certificate-detail-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .certificate-detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        /* Loading State */
+        .loading-state {
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.1);
+            border-top-color: #078930;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+        
+        /* Error State */
+        .error-card {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            border: 2px solid #ef4444;
+            border-radius: 16px;
+            padding: 48px 32px;
+            text-align: center;
+        }
+        
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 16px;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+        
+        .verify-link {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .verify-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Dark Mode */
+        [data-theme="dark"] .certificate-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #078930;
+        }
+        
+        [data-theme="dark"] .certificate-name,
+        [data-theme="dark"] .certificate-detail-value {
+            color: #f1f5f9;
+        }
+        
+        [data-theme="dark"] .error-card {
+            background: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+            border-color: #ef4444;
+        }
+        
+        [data-theme="dark"] .error-title {
+            color: #fca5a5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .verify-container { margin-top: 60px; }
+            .verify-header h1 { font-size: 2rem; }
+            .certificate-card { padding: 32px 20px; }
+            .certificate-name { font-size: 1.5rem; }
+            .certificate-course { font-size: 1.1rem; }
+            .certificate-details { flex-direction: column; gap: 24px; }
+        }
+
+        /* ── Print / PDF Certificate Layout ─────────────────────────── */
+        @media print {
+            body * { visibility: hidden; }
+            #print-certificate, #print-certificate * { visibility: visible; }
+            #print-certificate {
+                position: fixed;
+                inset: 0;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                background: #fff;
+            }
+            .print-cert-inner {
+                width: 900px;
+                max-width: 100%;
+                border: 6px double #078930;
+                border-radius: 16px;
+                padding: 60px 70px;
+                text-align: center;
+                font-family: Georgia, serif;
+                page-break-inside: avoid;
+            }
+            .print-cert-logo  { font-size: 2rem; color: #078930; margin-bottom: 6px; }
+            .print-cert-issuer { font-size: 1rem; color: #64748b; margin-bottom: 36px; letter-spacing: .15em; text-transform: uppercase; }
+            .print-cert-title  { font-size: 2.6rem; color: #1e293b; margin-bottom: 8px; }
+            .print-cert-sub    { font-size: 1rem; color: #64748b; margin-bottom: 40px; }
+            .print-cert-name   { font-size: 2.4rem; color: #078930; border-bottom: 2px solid #078930; display: inline-block; padding-bottom: 6px; margin-bottom: 28px; }
+            .print-cert-course { font-size: 1.35rem; color: #1e293b; margin-bottom: 40px; }
+            .print-cert-meta   { display: flex; justify-content: space-around; margin-top: 48px; font-size: 0.88rem; color: #64748b; }
+            .print-cert-seal   { font-size: 4rem; margin-bottom: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-brand">
+                <span class="brand-icon">🤖</span>
+                <span class="brand-text">Nebaz AI Academy</span>
+            </a>
+            
+            <button class="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="nav-menu">
+                <a href="../index.html" class="nav-link">🏠 Home</a>
+                <a href="../courses/python.html" class="nav-link">🐍 Python</a>
+                <a href="../courses/machine-learning.html" class="nav-link">🤖 ML</a>
+                <a href="../courses/ai-for-everyone.html" class="nav-link">🎓 AI for Everyone</a>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="verify-container">
+            <div class="verify-header">
+                <h1>Certificate Verification</h1>
+                <p>Verify the authenticity of Nebaz AI Academy course completion certificates</p>
+            </div>
+            
+            <!-- Loading State (shown initially) -->
+            <div id="loading-state" class="loading-state">
+                <div class="loading-spinner"></div>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Verifying certificate...</p>
+            </div>
+            
+            <!-- Certificate Card (shown when verified) -->
+            <div id="certificate-card" class="certificate-card" style="display: none;">
+                <div class="certificate-badge">🎓</div>
+                <div class="certificate-verified">Certificate Verified</div>
+                <p style="color: #64748b; margin-bottom: 24px;">
+                    This certificate has been verified as authentic and is officially recognized by Nebaz AI Academy.
+                </p>
+                
+                <div class="certificate-name" id="cert-name">John Doe</div>
+                <div class="certificate-course" id="cert-course">Python Fundamentals</div>
+                
+                <div class="certificate-details">
+                    <div class="certificate-detail">
+                        <div class="certificate-detail-label">Certificate ID</div>
+                        <div class="certificate-detail-value" id="cert-id">ABC12345</div>
+                    </div>
+                    <div class="certificate-detail">
+                        <div class="certificate-detail-label">Issued Date</div>
+                        <div class="certificate-detail-value" id="cert-date">January 1, 2024</div>
+                    </div>
+                    <div class="certificate-detail">
+                        <div class="certificate-detail-label">Status</div>
+                        <div class="certificate-detail-value" style="color: #10b981;">Active</div>
+                    </div>
+                </div>
+                
+                <!-- Download / Print Button -->
+                <div style="margin-top: 32px;">
+                    <button id="download-btn" onclick="printCertificate()" class="verify-link" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border:none; cursor:pointer; display: inline-flex; align-items: center; gap: 8px;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download Certificate PDF
+                    </button>
+                </div>
+
+                <!-- Hidden Print Template -->
+                <div id="print-certificate" style="display:none;">
+                    <div class="print-cert-inner">
+                        <div class="print-cert-seal">🎓</div>
+                        <div class="print-cert-logo">Nebaz AI Academy</div>
+                        <div class="print-cert-issuer">Ethiopia's Premier AI Engineering Platform</div>
+                        <div class="print-cert-title">Certificate of Completion</div>
+                        <div class="print-cert-sub">This is to certify that</div>
+                        <div class="print-cert-name" id="print-name">Student Name</div>
+                        <div class="print-cert-course">has successfully completed the course:<br><strong id="print-course">Course Name</strong></div>
+                        <div class="print-cert-meta">
+                            <div><div style="font-weight:600;color:#1e293b;">Certificate ID</div><div id="print-id">NEBAZAI-XXXX</div></div>
+                            <div><div style="font-weight:600;color:#1e293b;">Date Issued</div><div id="print-date">2026</div></div>
+                            <div><div style="font-weight:600;color:#1e293b;">Issued By</div><div>Nebaz AI Academy</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Error Card (shown when not found) -->
+            <div id="error-card" class="error-card" style="display: none;">
+                <div class="error-icon">❌</div>
+                <div class="error-title">Certificate Not Found</div>
+                <div class="error-message" id="error-message">
+                    The certificate ID you provided could not be verified. Please check the ID and try again.
+                </div>
+                <a href="../index.html" class="verify-link">Return to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🤖 Nebaz AI Academy</h3>
+                <p>Master AI, Python, and Machine Learning with hands-on tutorials.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../courses/python.html">Python</a></li>
+                    <li><a href="../courses/machine-learning.html">Machine Learning</a></li>
+                    <li><a href="../courses/ai-for-everyone.html">AI for Everyone</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="verify.html">Verify Certificate</a></li>
+                    <li><a href="../index.html#features">Features</a></li>
+                    <li><a href="../index.html#courses">Courses</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Nebaz AI Academy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="certificate.js"></script>
+    
+    <script>
+        // ── Populate certificate card from a data object ────────────────────
+        function populateCertCard(data) {
+            const certificateCard = document.getElementById('certificate-card');
+            const loadingState   = document.getElementById('loading-state');
+            const errorCard      = document.getElementById('error-card');
+            loadingState.style.display = 'none';
+            certificateCard.style.display = 'block';
+
+            const name   = data.name   || 'Student';
+            const course = data.course || 'AI Course';
+            const certId = data.cert_id || data.id || '—';
+            const date   = new Date(data.date || data.timestamp || Date.now()).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+            document.getElementById('cert-name').textContent   = name;
+            document.getElementById('cert-course').textContent = course;
+            document.getElementById('cert-id').textContent     = certId;
+            document.getElementById('cert-date').textContent   = date;
+
+            // Populate print template
+            document.getElementById('print-name').textContent   = name;
+            document.getElementById('print-course').textContent = course;
+            document.getElementById('print-id').textContent     = certId;
+            document.getElementById('print-date').textContent   = date;
+        }
+
+        // ── Print / PDF ─────────────────────────────────────────────────────
+        function printCertificate() {
+            document.getElementById('print-certificate').style.display = 'flex';
+            window.print();
+            setTimeout(() => {
+                document.getElementById('print-certificate').style.display = 'none';
+            }, 500);
+        }
+
+        // ── Verify on page load ──────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async function () {
+            const urlParams    = new URLSearchParams(window.location.search);
+            const certId       = (urlParams.get('id') || '').toUpperCase();
+            const loadingState = document.getElementById('loading-state');
+            const errorCard    = document.getElementById('error-card');
+
+            if (!certId) {
+                loadingState.style.display = 'none';
+                errorCard.style.display = 'block';
+                document.getElementById('error-message').textContent = 'No certificate ID provided in the URL.';
+                return;
+            }
+
+            // 1️⃣ Check localStorage first (works offline / file://)
+            if (window.NebazCert) {
+                const localData = window.NebazCert.getLocalCert(certId);
+                if (localData) {
+                    populateCertCard({ ...localData, cert_id: certId });
+                    return;
+                }
+            }
+
+            // 2️⃣ Skip network when running from file://
+            if (window.location.protocol === 'file:') {
+                loadingState.style.display = 'none';
+                errorCard.style.display = 'block';
+                document.getElementById('error-message').textContent =
+                    `Certificate "${certId}" not found locally. Generate the certificate first from its course page.`;
+                return;
+            }
+
+            // 3️⃣ Try server API
+            try {
+                const response = await fetch(`${window.location.origin}/api/verify-certificate/${certId}`);
+                const data = await response.json();
+                if (response.ok && data.verified) {
+                    // Cache locally for next time
+                    if (window.NebazCert) window.NebazCert.saveLocalCert({ ...data, cert_id: certId });
+                    populateCertCard({ ...data, cert_id: certId });
+                } else {
+                    loadingState.style.display = 'none';
+                    errorCard.style.display = 'block';
+                    document.getElementById('error-message').textContent =
+                        `Certificate ID "${certId}" could not be verified. Please check the ID and try again.`;
+                }
+            } catch (err) {
+                console.error('Verification error:', err);
+                loadingState.style.display = 'none';
+                errorCard.style.display = 'block';
+                document.getElementById('error-message').textContent =
+                    'Network error. If you generated offline, re-open the course page and regenerate your certificate.';
+            }
+        });
+    </script>
+</body>
+
+</html>

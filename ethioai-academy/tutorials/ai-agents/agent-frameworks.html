@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agent Frameworks - Master LangChain agents, AutoGPT architecture, and other frameworks for building autonomous systems.">
+    <meta name="keywords" content="LangChain agents, AutoGPT, agent frameworks, agent orchestration, agent architecture">
+    <title>Agent Frameworks | AI Agents Course | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar"></nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../../courses/ai-agents.html">AI Agents</a>
+                <span class="separator">/</span>
+                <span class="current">Agent Frameworks</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Certificate Banner -->
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the AI Agents course.
+    </section>
+
+    <!-- Tutorial Header -->
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Agent Frameworks</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>LangGraph</li><li>CrewAI overview</li></ul>
+  
+</div>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 4</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟡 Intermediate</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Master the frameworks and libraries that power autonomous agents
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free AI Agents Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <!-- Introduction Section -->
+            <section class="content-section">
+                <h2>Why Use Agent Frameworks?</h2>
+                <p>
+                    Building agents from scratch is complex. You need to handle:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Prompt engineering for agent reasoning</li>
+                    <li>Tool registration and calling</li>
+                    <li>Memory management and context</li>
+                    <li>Error handling and recovery</li>
+                    <li>Orchestration of agent loops</li>
+                    <li>Integration with different LLM providers</li>
+                </ul>
+                <p>
+                    Agent frameworks handle this complexity for you. They provide battle-tested patterns, abstractions, and utilities. This module covers the major frameworks.
+                </p>
+                <div class="info-box">
+                    <strong>Key Insight:</strong> Choose a framework that matches your needs. LangChain is most flexible, while specialized frameworks like CrewAI focus on multi-agent systems.
+                </div>
+            </section>
+
+            <!-- LangChain Section -->
+            <section class="content-section">
+                <h2>LangChain: The Flexible Framework</h2>
+                <p>
+                    LangChain is the most popular agent framework. It provides:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Agent orchestration (AgentExecutor)</li>
+                    <li>Pre-built agent types (ReAct, RetrievalQA, etc.)</li>
+                    <li>Tool integration system</li>
+                    <li>Memory management (conversation history, working memory)</li>
+                    <li>Integration with 100+ LLM providers</li>
+                    <li>Built-in reasoning patterns and tools</li>
+                </ul>
+
+                <h3>Basic LangChain Agent</h3>
+                <pre><code class="language-python">from langchain.agents import initialize_agent, Tool, AgentType
+from langchain.llms import OpenAI
+from langchain.tools import tool
+
+@tool
+def calculator(expression: str) -> str:
+    """Useful for math questions"""
+    return str(eval(expression))
+
+@tool
+def web_search(query: str) -> str:
+    """Search the web"""
+    # Implementation
+    return "Search results..."
+
+tools = [calculator, web_search]
+llm = OpenAI(temperature=0)
+
+# Create the agent
+agent = initialize_agent(
+    tools,
+    llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    verbose=True
+)
+
+# Run the agent
+result = agent.run("What is 15% of 200? Also search for AI news.")
+</code></pre>
+
+                <h3>Agent with Memory</h3>
+                <pre><code class="language-python">from langchain.memory import ConversationBufferMemory
+from langchain.agents import initialize_agent, AgentType
+
+memory = ConversationBufferMemory(
+    memory_key="chat_history",
+    return_messages=True
+)
+
+agent = initialize_agent(
+    tools,
+    llm,
+    agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
+    memory=memory,
+    verbose=True
+)
+
+# Agent remembers context across interactions
+agent.run("Remember that I work at Google")
+agent.run("What company do I work at?")  # Agent recalls: Google
+</code></pre>
+
+                <div class="success-box">
+                    <strong>When to use LangChain:</strong> Flexible single-agent systems, rapid prototyping, multi-step workflows, any application needing tool use
+                </div>
+            </section>
+
+            <!-- AutoGPT Section -->
+            <section class="content-section">
+                <h2>AutoGPT: The Autonomous Approach</h2>
+                <p>
+                    AutoGPT is an open-source project that demonstrates autonomous agents at scale. It emphasizes:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Task decomposition (breaking goals into subgoals)</li>
+                    <li>Long-term memory with vector databases</li>
+                    <li>Dynamic tool discovery</li>
+                    <li>Iterative refinement</li>
+                </ul>
+
+                <h3>AutoGPT Architecture</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>1. Goal Decomposition:</strong> Break user goal into subgoals</p>
+                    <p><strong>2. Plan Generation:</strong> Create plan for subgoals</p>
+                    <p><strong>3. Tool Use:</strong> Execute plan using available tools</p>
+                    <p><strong>4. Observation:</strong> Evaluate results</p>
+                    <p><strong>5. Refinement:</strong> Update plan based on results</p>
+                    <p><strong>6. Memory:</strong> Store findings for future reference</p>
+                </div>
+
+                <h3>Using AutoGPT Principles</h3>
+                <pre><code class="language-python">from autogpt import Agent, Task
+
+# Define your goal
+goal = "Write a comprehensive blog post about AI agents"
+
+# Create agent
+agent = Agent(
+    goal=goal,
+    model="gpt-4",
+    memory_type="vector",  # Use vector DB for long-term memory
+    max_iterations=10
+)
+
+# Define tools
+agent.add_tool("web_search")
+agent.add_tool("read_url")
+agent.add_tool("write_file")
+agent.add_tool("summarize")
+
+# Run agent autonomously
+agent.execute()
+</code></pre>
+
+                <div class="success-box">
+                    <strong>When to use AutoGPT:</strong> Autonomous goal-oriented systems, long-horizon tasks, complex task decomposition
+                </div>
+            </section>
+
+            <!-- CrewAI Section -->
+            <section class="content-section">
+                <h2>CrewAI: Multi-Agent Orchestration</h2>
+                <p>
+                    CrewAI specializes in multi-agent systems. It provides:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Agent roles and specializations</li>
+                    <li>Task delegation between agents</li>
+                    <li>Collaboration patterns</li>
+                    <li>Built-in communication</li>
+                    <li>Easy team composition</li>
+                </ul>
+
+                <h3>CrewAI Multi-Agent Team</h3>
+                <pre><code class="language-python">from crewai import Agent, Task, Crew
+
+# Define specialized agents
+researcher = Agent(
+    role="Research Analyst",
+    goal="Find and analyze relevant information",
+    tools=[web_search_tool, read_url_tool]
+)
+
+writer = Agent(
+    role="Content Writer",
+    goal="Write clear, engaging content",
+    tools=[write_file_tool]
+)
+
+editor = Agent(
+    role="Editor",
+    goal="Review and refine content",
+    tools=[file_read_tool]
+)
+
+# Define tasks
+research_task = Task(
+    description="Research AI agents thoroughly",
+    agent=researcher,
+    expected_output="Comprehensive research notes"
+)
+
+write_task = Task(
+    description="Write blog post based on research",
+    agent=writer,
+    expected_output="First draft"
+)
+
+edit_task = Task(
+    description="Edit and polish the post",
+    agent=editor,
+    expected_output="Final polished post"
+)
+
+# Create and run crew
+crew = Crew(
+    agents=[researcher, writer, editor],
+    tasks=[research_task, write_task, edit_task],
+    verbose=True
+)
+
+result = crew.kickoff()
+</code></pre>
+
+                <div class="success-box">
+                    <strong>When to use CrewAI:</strong> Multi-agent systems, team-based workflows, applications needing agent specialization
+                </div>
+            </section>
+
+            <!-- Advanced LangChain Patterns -->
+            <section class="content-section">
+                <h2>Advanced LangChain Patterns</h2>
+                <p>
+                    LangChain offers sophisticated patterns for production agents:
+                </p>
+
+                <h3>Structured Output Agent</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent with Pydantic Validation</span>
+                    </div>
+                    <pre><code class="language-python">from langchain.agents import create_structured_chat_agent
+from langchain.tools import Tool
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+from typing import List
+
+class CustomerInfo(BaseModel):
+    """Structured customer information"""
+    name: str = Field(description="Customer full name")
+    email: str = Field(description="Customer email address")
+    issue_category: str = Field(description="Issue category: billing, technical, or account")
+    priority: str = Field(description="Priority: low, medium, high")
+    summary: str = Field(description="Brief issue summary")
+
+class StructuredAgent:
+    """Agent that returns structured output"""
+    
+    def __init__(self):
+        self.llm = ChatOpenAI(temperature=0)
+        self.tools = self._setup_tools()
+    
+    def _setup_tools(self) -> List[Tool]:
+        @tool
+        def lookup_customer(email: str) -> str:
+            """Look up customer by email"""
+            return f"Customer found: {email}"
+        
+        return [lookup_customer]
+    
+    def process_inquiry(self, inquiry: str) -> CustomerInfo:
+        """Process inquiry and return structured data"""
+        
+        prompt = f"""
+Extract structured information from this customer inquiry:
+{inquiry}
+
+Return:
+- name: Full customer name
+- email: Email address
+- issue_category: billing, technical, or account
+- priority: low, medium, or high
+- summary: Brief description
+"""
+        # Use structured output parser
+        from langchain.output_parsers import PydanticOutputParser
+        parser = PydanticOutputParser(pydantic_object=CustomerInfo)
+        
+        prompt_with_format = prompt + "\n\n" + parser.get_format_instructions()
+        
+        response = self.llm.predict(prompt_with_format)
+        return parser.parse(response)
+
+# Usage
+agent = StructuredAgent()
+result = agent.process_inquiry(
+    "Hi, I'm Sarah Chen (sarah@example.com). My credit card was charged twice for order #123. This is urgent!"
+)
+print(f"Name: {result.name}")
+print(f"Category: {result.issue_category}")
+print(f"Priority: {result.priority}")</code></pre>
+                </div>
+
+                <h3>LangChain with Custom Agent Loop</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Custom Agent Execution Loop</span>
+                    </div>
+                    <pre><code class="language-python">from langchain.agents import AgentExecutor, create_react_agent
+from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+from typing import Dict, Any, List
+import logging
+
+class CustomAgentExecutor:
+    """Custom agent with enhanced control"""
+    
+    def __init__(self, tools: List[Tool], max_iterations: int = 10):
+        self.llm = ChatOpenAI(temperature=0, model="gpt-4")
+        self.tools = tools
+        self.max_iterations = max_iterations
+        self.logger = logging.getLogger("CustomAgent")
+        
+        # Custom prompt template
+        self.prompt = PromptTemplate.from_template("""
+You are a helpful assistant with access to tools.
+
+Available tools:
+{tool_descriptions}
+
+Use this format:
+Thought: Think about what to do
+Action: tool_name
+Action Input: input for the tool
+Observation: result from the tool
+
+Repeat until you can provide a Final Answer.
+
+Question: {input}
+
+{agent_scratchpad}
+""")
+        
+        # Create agent
+        self.agent = create_react_agent(self.llm, tools, self.prompt)
+        self.executor = AgentExecutor(
+            agent=self.agent,
+            tools=tools,
+            max_iterations=max_iterations,
+            verbose=True,
+            handle_parsing_errors=True,
+            return_intermediate_steps=True
+        )
+    
+    def run(self, query: str) -> Dict[str, Any]:
+        """Run agent with enhanced logging and error handling"""
+        self.logger.info(f"Starting query: {query}")
+        
+        try:
+            result = self.executor.invoke({"input": query})
+            
+            # Extract structured results
+            return {
+                "success": True,
+                "output": result["output"],
+                "steps": len(result.get("intermediate_steps", [])),
+                "intermediate_steps": result.get("intermediate_steps", []),
+                "error": None
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Agent failed: {str(e)}")
+            return {
+                "success": False,
+                "output": None,
+                "steps": 0,
+                "intermediate_steps": [],
+                "error": str(e)
+            }
+    
+    def get_tool_usage_stats(self, result: Dict[str, Any]) -> Dict[str, int]:
+        """Analyze tool usage from agent run"""
+        tool_counts = {}
+        
+        for step in result.get("intermediate_steps", []):
+            action = step[0]
+            tool_name = action.tool
+            tool_counts[tool_name] = tool_counts.get(tool_name, 0) + 1
+        
+        return tool_counts
+
+# Usage
+tools = [search_tool, calculator_tool, database_tool]
+executor = CustomAgentExecutor(tools, max_iterations=15)
+
+result = executor.run("What is the weather in Boston and calculate 15% tip on $45.50?")
+
+if result["success"]:
+    print(f"Answer: {result['output']}")
+    print(f"Steps: {result['steps']}")
+    print(f"Tool usage: {executor.get_tool_usage_stats(result)}")
+else:
+    print(f"Error: {result['error']}")</code></pre>
+                </div>
+
+                <h3>Multi-Modal LangChain Agent</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent with Image Understanding</span>
+                    </div>
+                    <pre><code class="language-python">from langchain_openai import ChatOpenAI
+from langchain.tools import Tool
+from langchain.agents import AgentExecutor, create_react_agent
+import base64
+from PIL import Image
+import io
+
+class MultiModalAgent:
+    """Agent that can process text and images"""
+    
+    def __init__(self):
+        self.llm = ChatOpenAI(model="gpt-4-vision-preview")
+        self.tools = self._setup_tools()
+    
+    def _setup_tools(self) -> List[Tool]:
+        @tool
+        def analyze_image(image_path: str) -> str:
+            """Analyze image and describe contents"""
+            with open(image_path, "rb") as f:
+                image_data = base64.b64encode(f.read()).decode()
+            
+            # Send to GPT-4 Vision
+            response = self.llm.predict(
+                f"What's in this image? Data: {image_data[:100]}..."
+            )
+            return response
+        
+        @tool
+        def extract_text_from_image(image_path: str) -> str:
+            """Extract text from image (OCR)"""
+            # Simplified - use pytesseract in production
+            return "Extracted text from image"
+        
+        @tool
+        def compare_images(image1: str, image2: str) -> str:
+            """Compare two images"""
+            return "Images are similar/different because..."
+        
+        return [analyze_image, extract_text_from_image, compare_images]
+    
+    def process(self, text_query: str, image_paths: List[str] = None) -> str:
+        """Process text query with optional images"""
+        
+        # If images provided, add to context
+        context = text_query
+        if image_paths:
+            context += f"\n\nImages provided: {', '.join(image_paths)}"
+        
+        agent = AgentExecutor.from_agent_and_tools(
+            agent=create_react_agent(self.llm, self.tools, prompt),
+            tools=self.tools,
+            verbose=True
+        )
+        
+        return agent.run(context)
+
+# Usage
+agent = MultiModalAgent()
+result = agent.process(
+    "What's in these product images? Are they similar?",
+    image_paths=["product1.jpg", "product2.jpg"]
+)
+print(result)</code></pre>
+                </div>
+            </section>
+
+            <!-- Building Custom Framework -->
+            <section class="content-section">
+                <h2>Building Your Own Lightweight Framework</h2>
+                <p>
+                    Sometimes you need a custom solution. Here's how to build a minimal agent framework:
+                </p>
+
+                <h3>Core Framework Components</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>minimal_agent_framework.py</span>
+                    </div>
+                    <pre><code class="language-python">"""
+Minimal agent framework - ~200 lines
+"""
+from typing import List, Dict, Any, Callable, Optional
+from dataclasses import dataclass
+from enum import Enum
+import json
+import logging
+
+# ============== Core Types ==============
+
+class ActionType(Enum):
+    THOUGHT = "thought"
+    ACTION = "action"
+    OBSERVATION = "observation"
+    ANSWER = "answer"
+
+@dataclass
+class AgentStep:
+    """Single step in agent execution"""
+    type: ActionType
+    content: str
+    tool_used: Optional[str] = None
+    tool_input: Optional[Dict] = None
+    tool_output: Optional[str] = None
+
+@dataclass
+class Tool:
+    """Tool definition"""
+    name: str
+    description: str
+    func: Callable
+    parameters: Dict[str, Any]
+
+@dataclass
+class AgentResult:
+    """Final agent result"""
+    success: bool
+    answer: str
+    steps: List[AgentStep]
+    iterations: int
+    error: Optional[str] = None
+
+# ============== Agent Core ==============
+
+class MinimalAgent:
+    """Lightweight agent framework"""
+    
+    def __init__(self, llm: Callable, tools: List[Tool], max_iterations: int = 10):
+        self.llm = llm
+        self.tools = {t.name: t for t in tools}
+        self.max_iterations = max_iterations
+        self.logger = logging.getLogger("MinimalAgent")
+    
+    def run(self, query: str) -> AgentResult:
+        """Execute agent loop"""
+        steps = []
+        
+        prompt = self._build_initial_prompt(query)
+        
+        for iteration in range(self.max_iterations):
+            # Get LLM response
+            response = self.llm(prompt)
+            
+            # Parse response
+            step = self._parse_response(response)
+            steps.append(step)
+            
+            # Handle different step types
+            if step.type == ActionType.ANSWER:
+                return AgentResult(
+                    success=True,
+                    answer=step.content,
+                    steps=steps,
+                    iterations=iteration + 1
+                )
+            
+            elif step.type == ActionType.ACTION:
+                # Execute tool
+                observation = self._execute_tool(step.tool_used, step.tool_input)
+                steps.append(AgentStep(
+                    type=ActionType.OBSERVATION,
+                    content=observation,
+                    tool_used=step.tool_used
+                ))
+                
+                # Update prompt with observation
+                prompt = self._update_prompt(prompt, step, observation)
+        
+        # Max iterations reached
+        return AgentResult(
+            success=False,
+            answer="",
+            steps=steps,
+            iterations=self.max_iterations,
+            error="Max iterations reached"
+        )
+    
+    def _build_initial_prompt(self, query: str) -> str:
+        """Build initial prompt with tool descriptions"""
+        tool_descriptions = "\n".join([
+            f"- {name}: {tool.description}"
+            for name, tool in self.tools.items()
+        ])
+        
+        return f"""
+You are a helpful assistant with access to tools.
+
+Available tools:
+{tool_descriptions}
+
+Use this format:
+Thought: [your reasoning]
+Action: [tool name]
+Action Input: [tool input as JSON]
+Observation: [tool result will be provided]
+
+When you have enough information:
+Answer: [final answer]
+
+Question: {query}
+"""
+    
+    def _parse_response(self, response: str) -> AgentStep:
+        """Parse LLM response into AgentStep"""
+        lines = response.strip().split("\n")
+        
+        for line in lines:
+            if line.startswith("Thought:"):
+                return AgentStep(
+                    type=ActionType.THOUGHT,
+                    content=line.replace("Thought:", "").strip()
+                )
+            elif line.startswith("Action:"):
+                tool_name = line.replace("Action:", "").strip()
+                # Look for Action Input on next lines
+                tool_input = {}
+                for next_line in lines[lines.index(line)+1:]:
+                    if next_line.startswith("Action Input:"):
+                        input_str = next_line.replace("Action Input:", "").strip()
+                        try:
+                            tool_input = json.loads(input_str)
+                        except:
+                            tool_input = {"input": input_str}
+                        break
+                
+                return AgentStep(
+                    type=ActionType.ACTION,
+                    content=f"Using {tool_name}",
+                    tool_used=tool_name,
+                    tool_input=tool_input
+                )
+            elif line.startswith("Answer:"):
+                return AgentStep(
+                    type=ActionType.ANSWER,
+                    content=line.replace("Answer:", "").strip()
+                )
+        
+        # Default thought
+        return AgentStep(type=ActionType.THOUGHT, content=response)
+    
+    def _execute_tool(self, tool_name: str, tool_input: Dict[str, Any]) -> str:
+        """Execute tool and return observation"""
+        if tool_name not in self.tools:
+            return f"Error: Tool '{tool_name}' not found"
+        
+        tool = self.tools[tool_name]
+        
+        try:
+            result = tool.func(**tool_input)
+            return str(result)
+        except Exception as e:
+            return f"Error executing {tool_name}: {str(e)}"
+    
+    def _update_prompt(self, prompt: str, action: AgentStep, observation: str) -> str:
+        """Add observation to prompt"""
+        return prompt + f"\nAction: {action.tool_used}\nAction Input: {json.dumps(action.tool_input)}\nObservation: {observation}\n"
+
+# ============== Example Usage ==============
+
+def mock_llm(prompt: str) -> str:
+    """Mock LLM for testing"""
+    return "Thought: I should search\nAction: search\nAction Input: {\"query\": \"test\"}"
+
+# Define tools
+search_tool = Tool(
+    name="search",
+    description="Search the web",
+    func=lambda query: f"Results for: {query}",
+    parameters={"query": {"type": "string"}}
+)
+
+calculator_tool = Tool(
+    name="calculator",
+    description="Do math",
+    func=lambda expression: str(eval(expression)),
+    parameters={"expression": {"type": "string"}}
+)
+
+# Create and run agent
+agent = MinimalAgent(
+    llm=mock_llm,
+    tools=[search_tool, calculator_tool],
+    max_iterations=10
+)
+
+result = agent.run("What is 2+2?")
+print(f"Success: {result.success}")
+print(f"Answer: {result.answer}")
+print(f"Steps: {result.iterations}")</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <strong>When to build custom:</strong> You need full control, minimal dependencies, specific optimizations, or to learn agent internals deeply.
+                </div>
+            </section>
+
+            <!-- Specialized Frameworks Section -->
+            <section class="content-section">
+                <h2>Specialized Frameworks</h2>
+
+                <h3>🤖 Semantic Kernel (Microsoft)</h3>
+                <p>
+                    Integrates agents with .NET and enterprise systems. Good for:
+                </p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Enterprise environments using .NET/C#</li>
+                    <li>Integration with Microsoft services</li>
+                    <li>Skill composition and plugin architecture</li>
+                </ul>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Semantic Kernel Example (C#)</span>
+                    </div>
+                    <pre><code class="language-csharp">using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+
+// Create kernel
+var builder = Kernel.CreateBuilder();
+builder.AddOpenAIChatCompletion("gpt-4", "your-api-key");
+var kernel = builder.Build();
+
+// Add plugins (skills)
+kernel.ImportPluginFromType<MathPlugin>();
+kernel.ImportPluginFromType<SearchPlugin>();
+
+// Run agent
+var result = await kernel.InvokePromptAsync(
+    "What is 15% of 200? Also search for AI news.",
+    new OpenAIPromptExecutionSettings { ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions }
+);
+
+Console.WriteLine(result);</code></pre>
+                </div>
+
+                <h3>🧠 Guidance (Microsoft)</h3>
+                <p>
+                    Structured prompting for more predictable agent behavior. Good for:
+                </p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Guaranteed output formats</li>
+                    <li>Multi-step structured reasoning</li>
+                    <li>Reliable production systems</li>
+                </ul>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Guidance Example</span>
+                    </div>
+                    <pre><code class="language-python">from guidance import models, gen, select
+
+# Load model
+gpt = models.OpenAI("gpt-4")
+
+# Structured prompt with guaranteed format
+with system():
+    lm = gpt + "You are a helpful assistant."
+
+with user():
+    lm += "Extract customer info from: 'Hi I'm John (john@test.com)'"
+
+with assistant():
+    lm += f"""
+Name: {gen('name', stop=',')}
+Email: {gen('email', regex=r'[a-z0-9@\\.]+')}
+Priority: {select(['low', 'medium', 'high'], name='priority')}
+"""
+
+print(lm['name'], lm['email'], lm['priority'])</code></pre>
+                </div>
+
+                <h3>🔗 MetaGPT</h3>
+                <p>
+                    Multi-agent framework inspired by software development. Good for:
+                </p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Software engineering tasks</li>
+                    <li>Complex workflows with documentation</li>
+                    <li>Knowledge management in agent teams</li>
+                </ul>
+
+                <h3>🎯 DSPy</h3>
+                <p>
+                    Framework for optimizing agent prompts and reasoning. Good for:
+                </p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Optimizing prompt performance</li>
+                    <li>Systematic prompt engineering</li>
+                    <li>Agent bootstrapping</li>
+                </ul>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>DSPy Example</span>
+                    </div>
+                    <pre><code class="language-python">import dspy
+
+# Configure LM
+lm = dspy.OpenAI(model='gpt-4')
+dspy.settings.configure(lm=lm)
+
+# Define agent module
+class ReasoningAgent(dspy.Module):
+    def __init__(self):
+        self.cot = dspy.ChainOfThought("question -> answer")
+    
+    def forward(self, question):
+        return self.cot(question=question)
+
+# Optimize with examples
+agent = ReasoningAgent()
+
+# Use teleprompter to optimize
+from dspy.teleprompt import BootstrapFewShot
+
+teleprompter = BootstrapFewShot()
+optimized_agent = teleprompter.compile(
+    agent,
+    trainset=training_examples
+)
+
+# Optimized agent now has better prompts
+result = optimized_agent(question="What is the capital of France?")
+print(result.answer)</code></pre>
+                </div>
+            </section>
+
+            <!-- Comparison Section -->
+            <section class="content-section">
+                <h2>Framework Comparison</h2>
+                
+                <table class="comparison-table" style="width: 100%; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Framework</th>
+                            <th style="padding: 1rem; text-align: left;">Strengths</th>
+                            <th style="padding: 1rem; text-align: left;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">LangChain</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Flexible, well-documented, large community</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Single agents, tool integration, rapid dev</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">AutoGPT</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Autonomous, long-term memory, decomposition</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Autonomous goal-oriented systems</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">CrewAI</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Multi-agent, team collaboration, simple API</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Multi-agent systems, team workflows</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Semantic Kernel</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Enterprise, .NET integration, plugins</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Enterprise .NET applications</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">DSPy</td>
+                            <td style="padding: 1rem;">Prompt optimization, systematic tuning</td>
+                            <td style="padding: 1rem;">Optimizing agent performance</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Choosing a Framework Section -->
+            <section class="content-section">
+                <h2>How to Choose a Framework</h2>
+                
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <div class="card-header">🎯 <strong>Single Agent?</strong></div>
+                        <p>→ Use LangChain</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">👥 <strong>Multi-Agent?</strong></div>
+                        <p>→ Use CrewAI</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🎪 <strong>Autonomous?</strong></div>
+                        <p>→ Use AutoGPT</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">💼 <strong>Enterprise?</strong></div>
+                        <p>→ Use Semantic Kernel</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🔧 <strong>Optimize?</strong></div>
+                        <p>→ Use DSPy</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">📐 <strong>Structured?</strong></div>
+                        <p>→ Use Guidance</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Framework Integration Patterns -->
+            <section class="content-section">
+                <h2>Framework Integration and Migration</h2>
+                <p>
+                    Often you need to combine frameworks or migrate between them:
+                </p>
+
+                <h3>Combining LangChain + CrewAI</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Hybrid Framework Approach</span>
+                    </div>
+                    <pre><code class="language-python">from langchain.tools import Tool
+from langchain.agents import initialize_agent
+from crewai import Agent, Task, Crew
+
+# Use LangChain for individual agents' tools
+lang chain_tools = [search_tool, calculator_tool, db_tool]
+
+# Create CrewAI agents with LangChain tools
+researcher = Agent(
+    role="Researcher",
+    goal="Gather comprehensive information",
+    tools=langchain_tools,  # LangChain tools work in CrewAI
+    llm=ChatOpenAI(model="gpt-4")
+)
+
+analyst = Agent(
+    role="Analyst",
+    goal="Analyze gathered data",
+    tools=[analysis_tool],
+    llm=ChatOpenAI(model="gpt-4")
+)
+
+# Orchestrate with CrewAI
+crew = Crew(
+    agents=[researcher, analyst],
+    tasks=[research_task, analysis_task]
+)
+
+result = crew.kickoff()
+print(result)</code></pre>
+                </div>
+
+                <h3>Migration Guide: Basic to LangChain</h3>
+                <table class="comparison-table" style="width: 100%; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Basic Implementation</th>
+                            <th style="padding: 1rem; text-align: left;">LangChain Equivalent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>llm(prompt)</code></td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>ChatOpenAI().predict(prompt)</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>conversation_history = []</code></td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>ConversationBufferMemory()</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>def my_tool(x): ...</code></td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;"><code>@tool def my_tool(x): ...</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><code>agent_loop()</code></td>
+                            <td style="padding: 1rem;"><code>AgentExecutor(...)</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Production Framework Patterns -->
+            <section class="content-section">
+                <h2>Production Framework Patterns</h2>
+                <p>
+                    Best practices for production agent frameworks:
+                </p>
+
+                <h3>Framework Wrapper for Observability</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Observable Agent Wrapper</span>
+                    </div>
+                    <pre><code class="language-python">from typing import Any, Dict
+import time
+import logging
+from contextlib import contextmanager
+
+class ObservableAgentFramework:
+    """Wrap any framework with observability"""
+    
+    def __init__(self, agent, framework_name: str):
+        self.agent = agent
+        self.framework_name = framework_name
+        self.logger = logging.getLogger(f"Agent.{framework_name}")
+        self.metrics = {
+            "total_runs": 0,
+            "successful_runs": 0,
+            "failed_runs": 0,
+            "total_duration": 0,
+            "tool_calls": 0
+        }
+    
+    @contextmanager
+    def _track_run(self):
+        """Track agent run metrics"""
+        start = time.time()
+        self.metrics["total_runs"] += 1
+        
+        try:
+            yield
+            self.metrics["successful_runs"] += 1
+        except Exception as e:
+            self.metrics["failed_runs"] += 1
+            raise
+        finally:
+            duration = time.time() - start
+            self.metrics["total_duration"] += duration
+            self.logger.info(f"Run completed in {duration:.2f}s")
+    
+    def run(self, *args, **kwargs) -> Any:
+        """Run agent with tracking"""
+        with self._track_run():
+            self.logger.info(f"Starting {self.framework_name} agent")
+            result = self.agent.run(*args, **kwargs)
+            return result
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """Get performance metrics"""
+        avg_duration = (
+            self.metrics["total_duration"] / self.metrics["total_runs"]
+            if self.metrics["total_runs"] > 0 else 0
+        )
+        
+        success_rate = (
+            self.metrics["successful_runs"] / self.metrics["total_runs"]
+            if self.metrics["total_runs"] > 0 else 0
+        )
+        
+        return {
+            **self.metrics,
+            "avg_duration": avg_duration,
+            "success_rate": success_rate * 100
+        }
+
+# Usage with any framework
+from langchain.agents import AgentExecutor
+
+langchain_agent = AgentExecutor(...)
+wrapped_agent = ObservableAgentFramework(langchain_agent, "LangChain")
+
+result = wrapped_agent.run("Your query")
+print(wrapped_agent.get_metrics())</code></pre>
+                </div>
+
+                <h3>Framework A/B Testing</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Compare Framework Performance</span>
+                    </div>
+                    <pre><code class="language-python">import random
+from typing import List, Dict, Any
+
+class FrameworkABTest:
+    """Test multiple frameworks on same tasks"""
+    
+    def __init__(self, frameworks: Dict[str, Any]):
+        self.frameworks = frameworks  # {"name": agent}
+        self.results = {name: [] for name in frameworks}
+    
+    def run_test(self, test_queries: List[str], runs_per_query: int = 3):
+        """Run all frameworks on test queries"""
+        for query in test_queries:
+            print(f"\nTesting query: {query}")
+            
+            for name, agent in self.frameworks.items():
+                # Run multiple times for reliability
+                query_results = []
+                
+                for run in range(runs_per_query):
+                    start = time.time()
+                    try:
+                        result = agent.run(query)
+                        duration = time.time() - start
+                        query_results.append({
+                            "success": True,
+                            "duration": duration,
+                            "result": result
+                        })
+                    except Exception as e:
+                        duration = time.time() - start
+                        query_results.append({
+                            "success": False,
+                            "duration": duration,
+                            "error": str(e)
+                        })
+                
+                self.results[name].extend(query_results)
+    
+    def get_comparison(self) -> Dict[str, Any]:
+        """Compare framework performance"""
+        comparison = {}
+        
+        for name, results in self.results.items():
+            successes = [r for r in results if r["success"]]
+            success_rate = len(successes) / len(results) if results else 0
+            avg_duration = sum(r["duration"] for r in results) / len(results) if results else 0
+            
+            comparison[name] = {
+                "runs": len(results),
+                "success_rate": success_rate * 100,
+                "avg_duration": avg_duration,
+                "fastest_run": min(r["duration"] for r in results) if results else 0,
+                "slowest_run": max(r["duration"] for r in results) if results else 0
+            }
+        
+        return comparison
+    
+    def print_report(self):
+        """Print comparison report"""
+        comparison = self.get_comparison()
+        
+        print("\n" + "="*70)
+        print("FRAMEWORK COMPARISON REPORT")
+        print("="*70)
+        
+        for name, stats in comparison.items():
+            print(f"\n{name}:")
+            print(f"  Success Rate: {stats['success_rate']:.1f}%")
+            print(f"  Avg Duration: {stats['avg_duration']:.2f}s")
+            print(f"  Fastest: {stats['fastest_run']:.2f}s")
+            print(f"  Slowest: {stats['slowest_run']:.2f}s")
+
+# Usage
+test = FrameworkABTest({
+    "LangChain": langchain_agent,
+    "CrewAI": crewai_agent,
+    "Custom": custom_agent
+})
+
+test_queries = [
+    "What is the weather in Boston?",
+    "Calculate 15% of $200",
+    "Search for AI news and summarize"
+]
+
+test.run_test(test_queries, runs_per_query=5)
+test.print_report()</code></pre>
+                </div>
+            </section>
+
+            <!-- Framework Selection Decision Tree -->
+            <section class="content-section">
+                <h2>Framework Selection Decision Tree</h2>
+                <p>
+                    Use this decision tree to choose the right framework:
+                </p>
+
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <strong style="color: #10b981;">Start: Do you need agents?</strong>
+                        <div style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <span style="color: #6b7280;">└─ No → Use standard LLM APIs</span><br>
+                            <strong>└─ Yes → Continue</strong>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <strong style="color: #10b981;">How many agents?</strong>
+                        <div style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <span style="color: #078930;">└─ Single Agent</span><br>
+                            <div style="margin-left: 2rem;">
+                                <span>└─ Need production features? → <strong>LangChain</strong></span><br>
+                                <span>└─ Need full control? → <strong>Custom Framework</strong></span><br>
+                                <span>└─ Need structured output? → <strong>Guidance</strong></span>
+                            </div>
+                            <br>
+                            <span style="color: #078930;">└─ Multiple Agents</span><br>
+                            <div style="margin-left: 2rem;">
+                                <span>└─ Collaborative team? → <strong>CrewAI</strong></span><br>
+                                <span>└─ Complex orchestration? → <strong>LangGraph</strong></span><br>
+                                <span>└─ Software development? → <strong>MetaGPT</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <strong style="color: #10b981;">Platform requirements?</strong>
+                        <div style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <span>└─ .NET/C# → <strong>Semantic Kernel</strong></span><br>
+                            <span>└─ Python → <strong>LangChain</strong> or <strong>CrewAI</strong></span><br>
+                            <span>└─ TypeScript → <strong>LangChain.js</strong></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <strong style="color: #10b981;">Need optimization?</strong>
+                        <div style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <span>└─ Prompt optimization → <strong>DSPy</strong></span><br>
+                            <span>└─ Cost optimization → <strong>LiteLLM</strong> + <strong>LangChain</strong></span><br>
+                            <span>└─ Performance optimization → <strong>LangSmith</strong> for monitoring</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section">
+                <h2>Framework Best Practices</h2>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card" style="border-left: 4px solid #10b981;">
+                        <div class="card-header"><strong>1. Start Simple</strong></div>
+                        <p>Begin with LangChain's basic agents. Add complexity only when needed.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #078930;">
+                        <div class="card-header"><strong>2. Version Control</strong></div>
+                        <p>Pin framework versions. Agent behaviors can change between versions.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #f59e0b;">
+                        <div class="card-header"><strong>3. Monitor Everything</strong></div>
+                        <p>Use LangSmith, Phoenix, or custom monitoring for production agents.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="card-header"><strong>4. Test Thoroughly</strong></div>
+                        <p>Create test suites with diverse queries. Frameworks have edge cases.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #ef4444;">
+                        <div class="card-header"><strong>5. Read the Docs</strong></div>
+                        <p>Frameworks evolve quickly. Stay updated with official documentation.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #0d9488;">
+                        <div class="card-header"><strong>6. Contribute Back</strong></div>
+                        <p>Most frameworks are open-source. Report bugs, contribute fixes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practical Exercise -->
+            <section class="content-section">
+                <h2>Practical Exercise: Multi-Framework Agent</h2>
+                <p>
+                    Build an agent that can use multiple frameworks based on the task:
+                </p>
+
+                <h3>Challenge: Smart Framework Router</h3>
+                <div class="info-box">
+                    Create a system that:
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Analyzes incoming queries</li>
+                        <li>Routes to the best framework (LangChain, CrewAI, or Custom)</li>
+                        <li>Executes the query</li>
+                        <li>Learns which framework works best for which queries</li>
+                        <li>Provides performance analytics</li>
+                    </ul>
+                </div>
+
+                <h3>Starter Code</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>framework_router.py</span>
+                    </div>
+                    <pre><code class="language-python">from typing import Dict, Any, List
+from enum import Enum
+
+class FrameworkType(Enum):
+    LANGCHAIN = "langchain"
+    CREWAI = "crewai"
+    CUSTOM = "custom"
+
+class SmartFrameworkRouter:
+    """Route queries to optimal framework"""
+    
+    def __init__(self):
+        self.frameworks = self._initialize_frameworks()
+        self.routing_history = []
+    
+    def _initialize_frameworks(self) -> Dict[FrameworkType, Any]:
+        """Initialize all available frameworks"""
+        return {
+            FrameworkType.LANGCHAIN: self._create_langchain_agent(),
+            FrameworkType.CREWAI: self._create_crewai_crew(),
+            FrameworkType.CUSTOM: self._create_custom_agent()
+        }
+    
+    def route_and_execute(self, query: str) -> Dict[str, Any]:
+        """Analyze query and route to best framework"""
+        # Analyze query
+        framework = self._select_framework(query)
+        
+        # Execute
+        start = time.time()
+        try:
+            result = self.frameworks[framework].run(query)
+            duration = time.time() - start
+            success = True
+        except Exception as e:
+            result = None
+            duration = time.time() - start
+            success = False
+        
+        # Record for learning
+        self.routing_history.append({
+            "query": query,
+            "framework": framework,
+            "success": success,
+            "duration": duration
+        })
+        
+        return {
+            "result": result,
+            "framework_used": framework.value,
+            "duration": duration,
+            "success": success
+        }
+    
+    def _select_framework(self, query: str) -> FrameworkType:
+        """Select best framework for query"""
+        # Implement routing logic
+        # - Single agent task → LangChain
+        # - Multi-agent collaboration → CrewAI
+        # - Simple task → Custom
+        
+        if "team" in query.lower() or "collaborate" in query.lower():
+            return FrameworkType.CREWAI
+        elif "simple" in query.lower():
+            return FrameworkType.CUSTOM
+        else:
+            return FrameworkType.LANGCHAIN
+    
+    def learn_from_history(self):
+        """Improve routing based on past performance"""
+        # Analyze which frameworks work best for which queries
+        pass
+
+# Usage
+router = SmartFrameworkRouter()
+result = router.route_and_execute("Build a collaborative research report")
+print(f"Used: {result['framework_used']}")
+print(f"Result: {result['result']}")</code></pre>
+                </div>
+            </section>
+
+            <!-- Key Takeaways Section -->
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>LangChain:</strong> Most flexible, best for single agents and tool integration</li>
+                        <li><strong>AutoGPT:</strong> Autonomous systems with long-term memory and decomposition</li>
+                        <li><strong>CrewAI:</strong> Specialized for multi-agent teams and collaboration</li>
+                        <li><strong>Specialized frameworks:</strong> Match enterprise needs (Semantic Kernel), prompt optimization (DSPy), structured output (Guidance)</li>
+                        <li><strong>Start with LangChain:</strong> Most documented, largest community, easiest to learn</li>
+                        <li><strong>Framework choice matters:</strong> The right framework makes agent building fast and reliable</li>
+                        <li><strong>Production needs:</strong> Wrap frameworks with observability, monitoring, and error handling</li>
+                        <li><strong>Test and compare:</strong> A/B test frameworks before committing to production</li>
+                        <li><strong>Stay updated:</strong> Agent frameworks evolve rapidly - follow releases and breaking changes</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main advantage of using agent frameworks like LangChain?</strong></p>
+                    <div class="quiz-option" data-value="a">They eliminate the need for coding</div>
+                    <div class="quiz-option" data-value="b">They work without LLMs</div>
+                    <div class="quiz-option" data-value="c">They provide pre-built components and abstractions that accelerate agent development</div>
+                    <div class="quiz-option" data-value="d">They are always faster than custom implementations</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: Which framework is specifically designed for building multi-agent systems with role assignments?</strong></p>
+                    <div class="quiz-option" data-value="a">LangChain</div>
+                    <div class="quiz-option" data-value="b">CrewAI</div>
+                    <div class="quiz-option" data-value="c">Haystack</div>
+                    <div class="quiz-option" data-value="d">Hugging Face Transformers</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: What is AutoGPT known for?</strong></p>
+                    <div class="quiz-option" data-value="a">Autonomous agents that break down goals and work independently with minimal human intervention</div>
+                    <div class="quiz-option" data-value="b">Training custom GPT models</div>
+                    <div class="quiz-option" data-value="c">Image generation</div>
+                    <div class="quiz-option" data-value="d">Database management</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: When should you consider building a custom agent framework instead of using an existing one?</strong></p>
+                    <div class="quiz-option" data-value="a">Always, frameworks are unnecessary</div>
+                    <div class="quiz-option" data-value="b">Never, custom frameworks are always worse</div>
+                    <div class="quiz-option" data-value="c">Only for hobby projects</div>
+                    <div class="quiz-option" data-value="d">When you have very specific requirements, need extreme performance optimization, or want full control</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What does LangGraph add to LangChain?</strong></p>
+                    <div class="quiz-option" data-value="a">Better UI components</div>
+                    <div class="quiz-option" data-value="b">Faster LLM inference</div>
+                    <div class="quiz-option" data-value="c">Graph-based agent orchestration with explicit control flow and state management</div>
+                    <div class="quiz-option" data-value="d">Image processing capabilities</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="agent-tools-and-actions.html" style="text-decoration: none; color: #078930; font-weight: 600;"> ← Agent Tools & Actions</a>
+                <a href="../../courses/ai-agents.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="multi-agent-systems.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Multi-Agent Systems</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

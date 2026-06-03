@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover how AI is revolutionizing healthcare and scientific research. Learn about medical diagnosis, drug discovery, and life-saving AI applications.">
+    <title>Tutorial 6: AI in Healthcare & Science - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .healthcare-applications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .healthcare-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .healthcare-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .healthcare-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .impact-stat {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            padding: 2rem;
+            border-radius: 12px;
+        }
+        
+        .traditional-card {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+        }
+        
+        .ai-card {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+        }
+        
+        .comparison-card h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .case-study {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid #078930;
+        }
+        
+        .case-study-title {
+            color: #078930;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #078930;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        
+        .breakthrough-timeline {
+            position: relative;
+            padding: 2rem 0;
+            margin: 2rem 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+        
+        .timeline-year {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 6</span>
+            </div>
+            <h1>Tutorial 6: AI in Healthcare & Science</h1>
+            <p class="tutorial-intro">Understand how AI is saving lives through early diagnosis, drug discovery, and accelerated research</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>While AI makes your Netflix recommendations more accurate, <strong>it's also detecting cancer years earlier, discovering drugs 100x faster, and predicting patient deterioration before symptoms appear</strong>.</p>
+                
+                <p>Healthcare AI isn't about replacing doctors — it's about giving them <strong>superhuman pattern recognition</strong>. A radiologist can analyze 50 scans per day. An AI-assisted radiologist? 500 scans per day with higher accuracy.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Stakes Are Higher:</strong> Unlike entertainment or e-commerce AI mistakes, healthcare AI errors can cost lives. That's why medical AI must achieve 99%+ accuracy and work alongside human experts, not replace them.</p>
+                </div>
+            </section>
+
+            <!-- The Medical Detective Analogy -->
+            <section class="content-section">
+                <h2>🔍 The Medical Detective Analogy</h2>
+                
+                <p>Think of medical diagnosis like <strong>solving a complex crime</strong>:</p>
+                
+                <p><strong>Traditional Detective (Human Doctor):</strong></p>
+                <ul>
+                    <li>Interviews witnesses (patient symptoms)</li>
+                    <li>Examines evidence (test results, scans)</li>
+                    <li>Relies on experience from previous cases</li>
+                    <li>Can analyze 5,000-10,000 cases in a career</li>
+                    <li>Pattern recognition limited by memory</li>
+                </ul>
+                
+                <p><strong>AI-Assisted Detective (Doctor + AI):</strong></p>
+                <ul>
+                    <li>Same interview and evidence gathering</li>
+                    <li>AI cross-references <strong>millions</strong> of similar cases instantly</li>
+                    <li>Detects patterns invisible to human eyes (micro-changes in imaging)</li>
+                    <li>Suggests rare conditions the doctor might have missed</li>
+                    <li>Doctor makes final decision with vastly more information</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 The Partnership:</strong> AI doesn't replace the doctor — it gives them access to the collective knowledge of millions of cases analyzed in seconds. The doctor's expertise + AI's pattern recognition = optimal outcomes.</p>
+                </div>
+            </section>
+
+            <!-- Top Healthcare AI Applications -->
+            <section class="content-section">
+                <h2>🏥 Top 5 Healthcare AI Breakthroughs</h2>
+                
+                <div class="healthcare-applications">
+                    <div class="healthcare-card">
+                        <div class="healthcare-icon">🔬</div>
+                        <h3>1. Medical Imaging Diagnosis</h3>
+                        <p><strong>What it does:</strong> AI analyzes X-rays, MRIs, CT scans to detect diseases earlier and more accurately than humans alone.</p>
+                        <p><strong>Real impact:</strong> Google's AI detects breast cancer with 94.5% accuracy (vs. 88% for radiologists). Catches 5.7% more cancers.</p>
+                        <div class="impact-stat">6% more lives saved</div>
+                    </div>
+                    
+                    <div class="healthcare-card">
+                        <div class="healthcare-icon">💊</div>
+                        <h3>2. Drug Discovery</h3>
+                        <p><strong>What it does:</strong> AI simulates billions of molecular combinations to identify promising drug candidates.</p>
+                        <p><strong>Real impact:</strong> Insilico Medicine discovered a new drug in 46 days (traditional: 3-5 years). Cost: $2.6M vs. typical $2.8 billion.</p>
+                        <div class="impact-stat">100x faster, 1000x cheaper</div>
+                    </div>
+                    
+                    <div class="healthcare-card">
+                        <div class="healthcare-icon">❤️</div>
+                        <h3>3. Predictive Patient Monitoring</h3>
+                        <p><strong>What it does:</strong> AI monitors vital signs and predicts patient deterioration 6-12 hours before it happens.</p>
+                        <p><strong>Real impact:</strong> Johns Hopkins AI predicts sepsis 48 hours early with 85% accuracy, reducing mortality by 20%.</p>
+                        <div class="impact-stat">20% fewer deaths from sepsis</div>
+                    </div>
+                    
+                    <div class="healthcare-card">
+                        <div class="healthcare-icon">🧬</div>
+                        <h3>4. Genomics & Personalized Medicine</h3>
+                        <p><strong>What it does:</strong> AI analyzes genetic data to predict disease risk and recommend personalized treatments.</p>
+                        <p><strong>Real impact:</strong> Deep Genomics uses AI to identify genetic mutations causing disease, enabling targeted therapies.</p>
+                        <div class="impact-stat">Treatments tailored to DNA</div>
+                    </div>
+                    
+                    <div class="healthcare-card">
+                        <div class="healthcare-icon">🤖</div>
+                        <h3>5. Robotic Surgery Assistance</h3>
+                        <p><strong>What it does:</strong> AI guides surgical robots with superhuman precision, reducing human error.</p>
+                        <p><strong>Real impact:</strong> Da Vinci surgical system performs 1+ million procedures annually with 50% fewer complications than traditional surgery.</p>
+                        <div class="impact-stat">50% fewer complications</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Before vs After AI in Healthcare -->
+            <section class="content-section">
+                <h2>📊 Healthcare: Traditional vs AI-Assisted</h2>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card traditional-card">
+                        <h3>❌ Traditional Cancer Screening</h3>
+                        <ul>
+                            <li><strong>Accuracy:</strong> 88% (mammography)</li>
+                            <li><strong>False positives:</strong> 10-15%</li>
+                            <li><strong>Time to diagnose:</strong> 2-3 weeks</li>
+                            <li><strong>Radiologist workload:</strong> 50 scans/day</li>
+                            <li><strong>Burnout rate:</strong> 45% of radiologists</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="comparison-card ai-card">
+                        <h3>✅ AI-Assisted Cancer Screening</h3>
+                        <ul>
+                            <li><strong>Accuracy:</strong> 94.5% (AI + radiologist)</li>
+                            <li><strong>False positives:</strong> 5-7%</li>
+                            <li><strong>Time to diagnose:</strong> Same day</li>
+                            <li><strong>Radiologist workload:</strong> 500 scans/day</li>
+                            <li><strong>Burnout rate:</strong> Reduced by 30%</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number">6%</div>
+                        <div class="stat-label">More cancers detected early</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-number">10x</div>
+                        <div class="stat-label">Faster scan analysis</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-number">50%</div>
+                        <div class="stat-label">Fewer false alarms</div>
+                    </div>
+                    
+                    <div class="stat-box">
+                        <div class="stat-number">30%</div>
+                        <div class="stat-label">Reduction in radiologist burnout</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Real Case Study -->
+            <section class="content-section">
+                <h2>📋 Real Case Study: PathAI</h2>
+                
+                <div class="case-study">
+                    <div class="case-study-title">🔬 PathAI: Revolutionizing Pathology</div>
+                    
+                    <p><strong>The Problem:</strong> Pathologists examining tissue samples under microscopes make diagnosis errors 10-15% of the time due to subtle visual patterns and human fatigue. In cancer diagnosis, this translates to life-or-death consequences.</p>
+                    
+                    <p><strong>The AI Solution:</strong> PathAI trained deep learning models on millions of digitized tissue samples to detect cancerous cells with superhuman accuracy.</p>
+                    
+                    <p><strong>How It Works:</strong></p>
+                    <ol>
+                        <li>Tissue samples are digitized into high-resolution images</li>
+                        <li>AI scans every cell in the image (millions of cells per sample)</li>
+                        <li>Flags suspicious patterns invisible to human eyes</li>
+                        <li>Pathologist reviews AI suggestions and makes final diagnosis</li>
+                        <li>AI learns from pathologist's corrections, improving over time</li>
+                    </ol>
+                    
+                    <p><strong>Results:</strong></p>
+                    <ul>
+                        <li>✅ <strong>99% accuracy</strong> in detecting breast cancer (vs. 85-90% human-only)</li>
+                        <li>✅ <strong>70% faster diagnosis</strong> — AI pre-screens, pathologist focuses on complex cases</li>
+                        <li>✅ <strong>Standardized quality</strong> — AI doesn't get tired, distracted, or have "off days"</li>
+                        <li>✅ <strong>Deployed in 12 countries</strong> — analyzing 500,000+ samples annually</li>
+                    </ul>
+                    
+                    <div class="success-box">
+                        <p><strong>🎯 Key Insight:</strong> PathAI doesn't replace pathologists — it makes them 10x more productive and accurate. Pathologists now focus on truly complex cases while AI handles routine screening.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Research Breakthroughs -->
+            <section class="content-section">
+                <h2>🚀 Major AI Research Breakthroughs</h2>
+                
+                <div class="breakthrough-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">2020</div>
+                        <div class="timeline-content">
+                            <h3>AlphaFold: Protein Structure Prediction</h3>
+                            <p>DeepMind's AI solved a 50-year biology problem by predicting 3D protein structures from DNA sequences. This breakthrough accelerates drug discovery and disease research by decades.</p>
+                            <p><strong>Impact:</strong> 200 million protein structures predicted — would take human researchers centuries.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-year">2021</div>
+                        <div class="timeline-content">
+                            <h3>COVID-19 Vaccine Acceleration</h3>
+                            <p>Moderna used AI to design mRNA vaccine candidates in just 48 hours (traditional methods: 2-5 years). AI simulated immune responses, optimizing vaccine design.</p>
+                            <p><strong>Impact:</strong> Contributed to fastest vaccine development in history (10 months vs. typical 10 years).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-year">2022</div>
+                        <div class="timeline-content">
+                            <h3>Diabetic Retinopathy Detection</h3>
+                            <p>Google AI detects diabetic eye disease from retinal scans with 97% accuracy, enabling early intervention in underserved regions without specialists.</p>
+                            <p><strong>Impact:</strong> Prevents blindness in 2.6 million patients annually in India and Thailand.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-year">2023</div>
+                        <div class="timeline-content">
+                            <h3>Early Alzheimer's Prediction</h3>
+                            <p>AI models predict Alzheimer's disease 6 years before symptoms appear by analyzing brain scans and cognitive tests.</p>
+                            <p><strong>Impact:</strong> Enables early intervention when treatments are most effective.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Mistake -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistake: "AI Will Replace Doctors"</h2>
+                
+                <div class="warning-box">
+                    <h3>The Misconception</h3>
+                    <p>"AI is better at diagnosis than doctors, so soon we won't need human doctors."</p>
+                    
+                    <h3>The Reality</h3>
+                    <p>Healthcare requires far more than pattern recognition:</p>
+                    <ul>
+                        <li>🩺 <strong>Empathy & Communication:</strong> Delivering bad news, understanding patient fears</li>
+                        <li>🧠 <strong>Contextual Judgment:</strong> Weighing quality of life vs. aggressive treatment</li>
+                        <li>🤝 <strong>Trust Building:</strong> Patients need human connection, especially in crisis</li>
+                        <li>⚖️ <strong>Ethical Decisions:</strong> End-of-life care, experimental treatments</li>
+                        <li>🔄 <strong>Adaptability:</strong> Handling unexpected complications, unique cases</li>
+                    </ul>
+                    
+                    <p><strong>The Truth:</strong> AI is a diagnostic tool, like a microscope or MRI machine. It makes doctors better, not obsolete. The most effective healthcare combines <strong>AI's pattern recognition + human expertise and empathy</strong>.</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Research a Healthcare AI Startup</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Goal: Deep-Dive into One Healthcare AI Company</h3>
+                    
+                    <p><strong>Pick one company to research:</strong></p>
+                    <ul>
+                        <li><strong>PathAI</strong> — Cancer detection in tissue samples</li>
+                        <li><strong>Babylon Health</strong> — AI symptom checker and triage</li>
+                        <li><strong>Tempus</strong> — Genomics and personalized cancer treatment</li>
+                        <li><strong>Zebra Medical Vision</strong> — AI for radiology imaging</li>
+                        <li><strong>Atomwise</strong> — AI-driven drug discovery</li>
+                    </ul>
+                    
+                    <p><strong>Research questions to answer:</strong></p>
+                    <ol>
+                        <li>What specific medical problem does their AI solve?</li>
+                        <li>How does their AI work? (What data, what algorithm type?)</li>
+                        <li>What accuracy/performance metrics have they achieved?</li>
+                        <li>How many patients/healthcare providers are using it?</li>
+                        <li>What regulatory approvals have they received? (FDA, CE Mark, etc.)</li>
+                        <li>What's the business model? (Who pays — hospitals, insurers, patients?)</li>
+                    </ol>
+                </div>
+                
+                <p><strong>Sources to explore:</strong></p>
+                <ul>
+                    <li>Company website and blog</li>
+                    <li>Published research papers (Google Scholar)</li>
+                    <li>News articles (MedTech news sites)</li>
+                    <li>Clinical trial databases (ClinicalTrials.gov)</li>
+                </ul>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Design a Healthcare AI Solution</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Identify a Healthcare Problem AI Could Solve</h3>
+                    
+                    <p><strong>Your challenge:</strong> Think of a healthcare challenge you've experienced personally or observed, then design an AI solution.</p>
+                    
+                    <p><strong>Structure your proposal:</strong></p>
+                    <ol>
+                        <li><strong>Problem Statement:</strong> What healthcare challenge exists?
+                            <br><em>Example: "Hospital readmissions cost $26B/year and harm patients"</em>
+                        </li>
+                        <li><strong>Current Solution Limitations:</strong> Why isn't this solved already?
+                            <br><em>Example: "Doctors can't predict which patients will return"</em>
+                        </li>
+                        <li><strong>Proposed AI Solution:</strong> How would AI help?
+                            <br><em>Example: "AI analyzes patient history + vitals to predict readmission risk"</em>
+                        </li>
+                        <li><strong>Data Requirements:</strong> What data would you need?
+                            <br><em>Example: "Electronic health records, lab results, demographics, social factors"</em>
+                        </li>
+                        <li><strong>Expected Impact:</strong> What improvement would this achieve?
+                            <br><em>Example: "30% reduction in readmissions = 200,000 patients + $8B saved"</em>
+                        </li>
+                        <li><strong>Ethical Considerations:</strong> What risks must be addressed?
+                            <br><em>Example: "Ensure AI doesn't discriminate based on race, income, insurance type"</em>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: AI as a Medical Copilot</h2>
+                
+                <ul>
+                    <li>✅ <strong>Superhuman pattern recognition</strong> — AI analyzes millions of cases to detect diseases earlier</li>
+                    <li>✅ <strong>Drug discovery acceleration</strong> — 100x faster, 1000x cheaper than traditional methods</li>
+                    <li>✅ <strong>Predictive monitoring</strong> — AI warns of patient deterioration 6-48 hours early</li>
+                    <li>✅ <strong>Augmentation, not replacement</strong> — Best results: AI + human expertise</li>
+                    <li>✅ <strong>Life-saving impact</strong> — Already preventing deaths, blindness, and suffering globally</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> Healthcare AI isn't about replacing doctors — it's about giving them superpowers. By handling pattern recognition at superhuman scale, AI lets doctors focus on what humans do best: empathy, judgment, and complex decision-making.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: How much more accurate is Google's AI at detecting breast cancer compared to radiologists alone?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">2% more accurate</div>
+                            <div class="quiz-option" data-value="b">6% more accurate (94.5% vs 88%)</div>
+                            <div class="quiz-option" data-value="c">20% more accurate</div>
+                            <div class="quiz-option" data-value="d">The same accuracy</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: How long did Insilico Medicine take to discover a new drug using AI?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">3-5 years (traditional timeline)</div>
+                            <div class="quiz-option" data-value="b">6 months</div>
+                            <div class="quiz-option" data-value="c">46 days</div>
+                            <div class="quiz-option" data-value="d">1 week</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What's the main reason AI won't replace doctors?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Healthcare requires empathy, judgment, and ethical decisions beyond pattern recognition</div>
+                            <div class="quiz-option" data-value="b">AI is not accurate enough</div>
+                            <div class="quiz-option" data-value="c">Regulations prevent it</div>
+                            <div class="quiz-option" data-value="d">AI is too expensive</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What did DeepMind's AlphaFold AI accomplish?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Cured cancer</div>
+                            <div class="quiz-option" data-value="b">Predicted 200M protein structures, solving a 50-year biology problem</div>
+                            <div class="quiz-option" data-value="c">Replaced all lab researchers</div>
+                            <div class="quiz-option" data-value="d">Created new drugs from scratch</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: How early can AI predict Alzheimer's disease before symptoms appear?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">1 year early</div>
+                            <div class="quiz-option" data-value="b">2 years early</div>
+                            <div class="quiz-option" data-value="c">6 years early</div>
+                            <div class="quiz-option" data-value="d">It can't predict Alzheimer's</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Congratulations on Completing Week 2!</h2>
+                
+                <p>You've now explored AI across consumer products (daily life), business operations, and life-saving healthcare applications. You understand <strong>how AI is deployed in the real world</strong>.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Week 3:</strong> We'll shift from applications to fundamentals. Learn how AI actually learns from data, what "training" means, and build your first simple AI project from scratch!</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="ai-in-business.html" class="prev">← Module 5: AI in Business</a>
+                    <a href="data-in-ai.html" class="next">Next: Module 7 - The Role of Data in AI →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build multi-model serving platform with BentoML, A/B testing, model versioning, rollback, and cost tracking.">
+    <meta name="keywords" content="BentoML, multi-model serving, A/B testing, model versioning, MLOps project, canary deployment, cost tracking">
+    <title>Project: Multi-Model Serving Platform - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-multi-model-serving-platform.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { padding-left: 2rem; position: relative; margin-bottom: 0.75rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.2rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: #8b5cf6; color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Project 4: Multi-Model Serving Platform</span>
+            </div>
+            <h1>🚀 Project: Multi-Model Serving Platform</h1>
+            <p class="tutorial-intro">Build production serving platform with BentoML, A/B testing, model versioning, and cost tracking</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Project 4</span>
+                <span class="meta-item">📊 Advanced</span>
+                <span class="meta-item">⏱️ 3 hours</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Project Overview -->
+            <section class="content-section" id="overview">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Build an <strong>enterprise-grade multi-model serving platform</strong> with advanced deployment strategies:
+                </p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🍱</div>
+                        <h3>BentoML</h3>
+                        <p>Unified serving framework for multiple models</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>A/B Testing</h3>
+                        <p>Traffic splitting between model versions</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔀</div>
+                        <h3>Canary Deployment</h3>
+                        <p>Gradual rollout with automatic rollback</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📦</div>
+                        <h3>Model Registry</h3>
+                        <p>Version control with metadata tracking</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Cost Tracking</h3>
+                        <p>Per-model inference time and resource usage</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>Kubernetes</h3>
+                        <p>Orchestration with Istio traffic management</p>
+                    </div>
+                </div>
+
+                <h3>System Architecture</h3>
+                <pre><code>User Request → Istio Ingress Gateway
+                        ↓
+              Traffic Splitting (A/B)
+                        ↓
+            ┌───────────┴───────────┐
+            ↓                       ↓
+    Model A (90%)           Model B (10%)
+            ↓                       ↓
+    BentoML Runner         BentoML Runner
+            ↓                       ↓
+        Prediction             Prediction
+            ↓                       ↓
+        Log Metrics            Log Metrics
+            ↓                       ↓
+            └───────────┬───────────┘
+                        ↓
+              Prometheus Metrics
+                        ↓
+           Cost & Performance Analysis
+                        ↓
+            Winner Selection (Auto)</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Prerequisites:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Kubernetes cluster (local or cloud)</li>
+                        <li>BentoML and Istio installed</li>
+                        <li>Multiple trained model versions</li>
+                        <li>Prometheus + Grafana for monitoring</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 1: BentoML Service -->
+            <section class="content-section" id="bentoml">
+                <h2>🍱 Step 1: BentoML Multi-Model Service</h2>
+                
+                <pre><code class="language-python"># service.py
+"""
+BentoML service with multiple model versions
+"""
+import bentoml
+from bentoml.io import JSON, NumpyNdarray
+import numpy as np
+from pydantic import BaseModel
+import time
+
+class PredictionRequest(BaseModel):
+    features: list
+    model_version: str = "latest"
+
+class PredictionResponse(BaseModel):
+    prediction: float
+    model_version: str
+    inference_time_ms: float
+    model_name: str
+
+# Load multiple model versions
+model_v1 = bentoml.sklearn.get("house_price_model:v1.0.0")
+model_v2 = bentoml.sklearn.get("house_price_model:v2.0.0")
+
+# Create BentoML service
+svc = bentoml.Service("multi_model_service", runners=[
+    model_v1.to_runner(name="model_v1"),
+    model_v2.to_runner(name="model_v2")
+])
+
+@svc.api(input=JSON(pydantic_model=PredictionRequest), 
+         output=JSON(pydantic_model=PredictionResponse))
+async def predict(request: PredictionRequest) -> PredictionResponse:
+    """Multi-model prediction endpoint"""
+    
+    start_time = time.time()
+    
+    # Convert features to numpy array
+    features = np.array([request.features])
+    
+    # Route to appropriate model
+    if request.model_version == "v1.0.0":
+        runner = svc.runners.model_v1
+        model_name = "model_v1"
+    elif request.model_version == "v2.0.0" or request.model_version == "latest":
+        runner = svc.runners.model_v2
+        model_name = "model_v2"
+    else:
+        raise ValueError(f"Unknown model version: {request.model_version}")
+    
+    # Make prediction
+    prediction = await runner.predict.async_run(features)
+    
+    inference_time = (time.time() - start_time) * 1000  # ms
+    
+    # Log metrics
+    log_inference_metrics(
+        model_name=model_name,
+        inference_time=inference_time,
+        request_size=len(request.features)
+    )
+    
+    return PredictionResponse(
+        prediction=float(prediction[0]),
+        model_version=request.model_version,
+        inference_time_ms=round(inference_time, 2),
+        model_name=model_name
+    )
+
+@svc.api(input=JSON(), output=JSON())
+async def health() -> dict:
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "models": {
+            "v1.0.0": "available",
+            "v2.0.0": "available"
+        }
+    }
+
+# Prometheus metrics
+from prometheus_client import Counter, Histogram, Gauge
+
+prediction_counter = Counter(
+    'model_predictions_total',
+    'Total predictions',
+    ['model_name', 'model_version']
+)
+
+inference_time_histogram = Histogram(
+    'inference_time_seconds',
+    'Inference time',
+    ['model_name'],
+    buckets=[0.01, 0.05, 0.1, 0.5, 1.0]
+)
+
+active_models = Gauge(
+    'active_models',
+    'Number of active model versions'
+)
+
+def log_inference_metrics(model_name, inference_time, request_size):
+    """Log inference metrics to Prometheus"""
+    prediction_counter.labels(
+        model_name=model_name,
+        model_version=model_name.split('_')[-1]
+    ).inc()
+    
+    inference_time_histogram.labels(
+        model_name=model_name
+    ).observe(inference_time / 1000)  # convert to seconds</code></pre>
+
+                <h3>Build and Deploy Bento</h3>
+                <pre><code class="language-bash"># bentofile.yaml
+service: "service:svc"
+labels:
+  owner: mlops-team
+  project: multi-model-platform
+include:
+  - "service.py"
+  - "*.pkl"
+python:
+  packages:
+    - scikit-learn
+    - pandas
+    - numpy
+    - pydantic
+    - prometheus-client
+
+# Build Bento
+bentoml build
+
+# Containerize
+bentoml containerize multi_model_service:latest -t multi-model:latest
+
+# Push to registry
+docker tag multi-model:latest gcr.io/project/multi-model:latest
+docker push gcr.io/project/multi-model:latest</code></pre>
+            </section>
+
+            <!-- Step 2: A/B Testing with Istio -->
+            <section class="content-section" id="ab-testing">
+                <h2>⚖️ Step 2: A/B Testing Configuration</h2>
+                
+                <pre><code class="language-yaml"># k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: model-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: model-service
+        version: v1
+    spec:
+      containers:
+      - name: model
+        image: gcr.io/project/multi-model:v1.0.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MODEL_VERSION
+          value: "v1.0.0"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-service
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: model-service
+        version: v2
+    spec:
+      containers:
+      - name: model
+        image: gcr.io/project/multi-model:v2.0.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MODEL_VERSION
+          value: "v2.0.0"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: model-service
+spec:
+  selector:
+    app: model-service
+  ports:
+  - port: 80
+    targetPort: 3000</code></pre>
+
+                <h3>Istio Traffic Splitting</h3>
+                <pre><code class="language-yaml"># k8s/virtualservice.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: model-service
+spec:
+  hosts:
+  - model-service
+  http:
+  - match:
+    - headers:
+        x-test-group:
+          exact: "beta"
+    route:
+    - destination:
+        host: model-service
+        subset: v2
+      weight: 100
+  - route:
+    - destination:
+        host: model-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: model-service
+        subset: v2
+      weight: 10
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: model-service
+spec:
+  host: model-service
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 100
+        http2MaxRequests: 100
+        maxRequestsPerConnection: 2
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
+      minHealthPercent: 40</code></pre>
+            </section>
+
+            <!-- Step 3: Automated Winner Selection -->
+            <section class="content-section" id="winner-selection">
+                <h2>🏆 Step 3: Automated Winner Selection</h2>
+                
+                <pre><code class="language-python"># ab_test_analyzer.py
+"""
+Analyze A/B test results and select winner
+"""
+import requests
+from datetime import datetime, timedelta
+import pandas as pd
+from scipy import stats
+
+class ABTestAnalyzer:
+    def __init__(self, prometheus_url='http://localhost:9090'):
+        self.prometheus_url = prometheus_url
+        self.min_samples = 1000  # Minimum samples per variant
+        self.confidence_level = 0.95
+    
+    def fetch_metrics(self, days=7):
+        """Fetch metrics from Prometheus"""
+        
+        # Query prediction counts
+        query_counts = '''
+            sum by (model_name) (
+                increase(model_predictions_total[7d])
+            )
+        '''
+        
+        # Query inference times
+        query_latency = '''
+            histogram_quantile(0.95, 
+                sum by (model_name, le) (
+                    rate(inference_time_seconds_bucket[7d])
+                )
+            )
+        '''
+        
+        # Query error rates
+        query_errors = '''
+            sum by (model_name) (
+                rate(prediction_errors_total[7d])
+            ) / sum by (model_name) (
+                rate(model_predictions_total[7d])
+            )
+        '''
+        
+        counts = self._query_prometheus(query_counts)
+        latency = self._query_prometheus(query_latency)
+        errors = self._query_prometheus(query_errors)
+        
+        return {
+            'counts': counts,
+            'latency': latency,
+            'errors': errors
+        }
+    
+    def calculate_winner(self, metrics):
+        """Determine winning model variant"""
+        
+        results = {}
+        
+        for model in ['model_v1', 'model_v2']:
+            count = metrics['counts'].get(model, 0)
+            latency = metrics['latency'].get(model, 0)
+            error_rate = metrics['errors'].get(model, 0)
+            
+            # Calculate score (lower is better)
+            score = (
+                latency * 0.4 +           # 40% weight on latency
+                error_rate * 1000 * 0.4 + # 40% weight on errors
+                (1 / count) * 100 * 0.2   # 20% weight on traffic
+            )
+            
+            results[model] = {
+                'count': count,
+                'latency_p95': latency,
+                'error_rate': error_rate,
+                'score': score
+            }
+        
+        # Check minimum sample size
+        v1_count = results['model_v1']['count']
+        v2_count = results['model_v2']['count']
+        
+        if v1_count < self.min_samples or v2_count < self.min_samples:
+            print(f"⚠️  Insufficient samples: v1={v1_count}, v2={v2_count}")
+            return None
+        
+        # Statistical significance test
+        is_significant = self._test_significance(
+            results['model_v1'],
+            results['model_v2']
+        )
+        
+        if not is_significant:
+            print("📊 No statistically significant difference")
+            return None
+        
+        # Select winner
+        winner = min(results.items(), key=lambda x: x[1]['score'])
+        
+        print("\n🏆 A/B Test Results:")
+        print(f"  Model v1: score={results['model_v1']['score']:.2f}")
+        print(f"  Model v2: score={results['model_v2']['score']:.2f}")
+        print(f"  Winner: {winner[0]}")
+        
+        return winner[0]
+    
+    def _test_significance(self, v1_metrics, v2_metrics):
+        """Test statistical significance"""
+        
+        # Use Z-test for proportions (error rates)
+        p1 = v1_metrics['error_rate']
+        p2 = v2_metrics['error_rate']
+        n1 = v1_metrics['count']
+        n2 = v2_metrics['count']
+        
+        # Pooled proportion
+        p_pool = (p1 * n1 + p2 * n2) / (n1 + n2)
+        
+        # Standard error
+        se = np.sqrt(p_pool * (1 - p_pool) * (1/n1 + 1/n2))
+        
+        # Z-score
+        z = (p1 - p2) / se
+        
+        # P-value (two-tailed)
+        p_value = 2 * (1 - stats.norm.cdf(abs(z)))
+        
+        return p_value < (1 - self.confidence_level)
+    
+    def _query_prometheus(self, query):
+        """Query Prometheus API"""
+        
+        response = requests.get(
+            f"{self.prometheus_url}/api/v1/query",
+            params={'query': query}
+        )
+        
+        data = response.json
+        
+        return {
+            item['metric']['model_name']: float(item['value'][1])
+            for item in data
+        }
+    
+    def promote_winner(self, winner):
+        """Promote winning model to 100% traffic"""
+        
+        if winner == 'model_v2':
+            print("🚀 Promoting v2 to 100% traffic...")
+            
+            # Update Istio VirtualService
+            # kubectl apply -f k8s/virtualservice-v2-100.yaml
+            
+            print("✅ Traffic shifted to v2")
+        else:
+            print("✅ Keeping v1 at 100% traffic")
+
+# Run A/B test analysis
+if __name__ == '__main__':
+    analyzer = ABTestAnalyzer()
+    metrics = analyzer.fetch_metrics(days=7)
+    winner = analyzer.calculate_winner(metrics)
+    
+    if winner:
+        analyzer.promote_winner(winner)</code></pre>
+            </section>
+
+            <!-- Step 4: Cost Tracking -->
+            <section class="content-section" id="cost-tracking">
+                <h2>💰 Step 4: Per-Model Cost Tracking</h2>
+                
+                <pre><code class="language-python"># cost_tracker.py
+"""
+Track inference costs per model version
+"""
+import psycopg2
+from datetime import datetime, timedelta
+import pandas as pd
+
+class CostTracker:
+    def __init__(self, db_config):
+        self.conn = psycopg2.connect(**db_config)
+        self.cost_per_cpu_hour = 0.05  # $0.05 per CPU hour
+        self.cost_per_gb_hour = 0.01   # $0.01 per GB hour
+    
+    def track_inference(self, model_name, inference_time_ms, 
+                       cpu_usage, memory_mb):
+        """Track single inference cost"""
+        
+        cursor = self.conn.cursor()
+        
+        # Calculate cost
+        cpu_hours = cpu_usage * (inference_time_ms / 3600000)
+        memory_gb_hours = (memory_mb / 1024) * (inference_time_ms / 3600000)
+        
+        cost = (
+            cpu_hours * self.cost_per_cpu_hour +
+            memory_gb_hours * self.cost_per_gb_hour
+        )
+        
+        # Insert record
+        cursor.execute('''
+            INSERT INTO inference_costs 
+            (model_name, timestamp, inference_time_ms, 
+             cpu_usage, memory_mb, cost)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (
+            model_name,
+            datetime.utcnow(),
+            inference_time_ms,
+            cpu_usage,
+            memory_mb,
+            cost
+        ))
+        
+        self.conn.commit()
+        cursor.close()
+    
+    def get_model_costs(self, days=30):
+        """Get cost breakdown by model"""
+        
+        cursor = self.conn.cursor()
+        
+        cutoff = datetime.utcnow() - timedelta(days=days)
+        
+        cursor.execute('''
+            SELECT 
+                model_name,
+                COUNT(*) as total_inferences,
+                SUM(cost) as total_cost,
+                AVG(cost) as avg_cost_per_inference,
+                AVG(inference_time_ms) as avg_latency_ms,
+                SUM(cost) / COUNT(*) * 1000000 as cost_per_million
+            FROM inference_costs
+            WHERE timestamp > %s
+            GROUP BY model_name
+            ORDER BY total_cost DESC
+        ''', (cutoff,))
+        
+        results = cursor.fetchall()
+        cursor.close()
+        
+        df = pd.DataFrame(results, columns=[
+            'model_name', 'total_inferences', 'total_cost',
+            'avg_cost_per_inference', 'avg_latency_ms', 
+            'cost_per_million'
+        ])
+        
+        return df
+    
+    def generate_cost_report(self, days=30):
+        """Generate cost analysis report"""
+        
+        costs = self.get_model_costs(days=days)
+        
+        print(f"\n💰 Cost Report ({days} days)")
+        print("=" * 70)
+        
+        for _, row in costs.iterrows():
+            print(f"\n{row['model_name']}:")
+            print(f"  Total inferences: {row['total_inferences']:,.0f}")
+            print(f"  Total cost: ${row['total_cost']:.4f}")
+            print(f"  Avg cost/inference: ${row['avg_cost_per_inference']:.6f}")
+            print(f"  Cost per million: ${row['cost_per_million']:.2f}")
+            print(f"  Avg latency: {row['avg_latency_ms']:.2f}ms")
+        
+        total = costs['total_cost'].sum()
+        print(f"\n{'='*70}")
+        print(f"Total cost (all models): ${total:.2f}")
+        
+        return costs
+
+# Usage
+tracker = CostTracker(db_config={
+    'host': 'localhost',
+    'database': 'mlops',
+    'user': 'postgres',
+    'password': 'password'
+})
+
+# Generate monthly report
+report = tracker.generate_cost_report(days=30)</code></pre>
+            </section>
+
+            <!-- Step 5: Canary Deployment -->
+            <section class="content-section" id="canary">
+                <h2>🐤 Step 5: Canary Deployment with Auto-Rollback</h2>
+                
+                <pre><code class="language-python"># canary_deployer.py
+"""
+Automated canary deployment with health monitoring
+"""
+import time
+import requests
+from kubernetes import client, config
+
+class CanaryDeployer:
+    def __init__(self, k8s_namespace='default'):
+        config.load_kube_config()
+        self.apps_v1 = client.AppsV1Api()
+        self.namespace = k8s_namespace
+        self.analyzer = ABTestAnalyzer()
+    
+    def deploy_canary(self, new_version, canary_weight=10):
+        """Deploy new version with canary strategy"""
+        
+        print(f"🐤 Starting canary deployment: {new_version}")
+        
+        stages = [
+            (10, 5),   # 10% traffic for 5 minutes
+            (25, 10),  # 25% traffic for 10 minutes
+            (50, 15),  # 50% traffic for 15 minutes
+            (100, 0)   # 100% traffic (complete rollout)
+        ]
+        
+        for weight, duration_mins in stages:
+            print(f"\n📊 Stage: {weight}% traffic to {new_version}")
+            
+            # Update traffic split
+            self._update_traffic_split(new_version, weight)
+            
+            if duration_mins > 0:
+                # Monitor health
+                is_healthy = self._monitor_health(
+                    new_version,
+                    duration_minutes=duration_mins
+                )
+                
+                if not is_healthy:
+                    print("❌ Health check failed - rolling back")
+                    self._rollback(new_version)
+                    return False
+        
+        print(f"\n✅ Canary deployment complete: {new_version}")
+        return True
+    
+    def _update_traffic_split(self, new_version, weight):
+        """Update Istio traffic split"""
+        
+        # Update VirtualService
+        cmd = f'''
+        kubectl apply -f - <<EOF
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: model-service
+spec:
+  hosts:
+  - model-service
+  http:
+  - route:
+    - destination:
+        host: model-service
+        subset: current
+      weight: {100 - weight}
+    - destination:
+        host: model-service
+        subset: canary
+      weight: {weight}
+EOF
+        '''
+        
+        import subprocess
+        subprocess.run(cmd, shell=True)
+        
+        print(f"  ✓ Traffic updated: {weight}% to canary")
+        time.sleep(10)  # Allow traffic to stabilize
+    
+    def _monitor_health(self, version, duration_minutes):
+        """Monitor canary health"""
+        
+        print(f"  ⏱️  Monitoring for {duration_minutes} minutes...")
+        
+        checks_per_minute = 4
+        total_checks = duration_minutes * checks_per_minute
+        
+        for i in range(total_checks):
+            time.sleep(60 / checks_per_minute)
+            
+            # Check error rate
+            metrics = self.analyzer.fetch_metrics(days=1)
+            error_rate = metrics['errors'].get(version, 0)
+            latency = metrics['latency'].get(version, 0)
+            
+            print(f"  Check {i+1}/{total_checks}: "
+                  f"errors={error_rate:.4f}, latency={latency:.0f}ms")
+            
+            # Health thresholds
+            if error_rate > 0.05:  # 5% error rate
+                print(f"  ❌ High error rate: {error_rate:.2%}")
+                return False
+            
+            if latency > 1000:  # 1 second
+                print(f"  ❌ High latency: {latency:.0f}ms")
+                return False
+        
+        print("  ✅ Health checks passed")
+        return True
+    
+    def _rollback(self, version):
+        """Rollback to previous version"""
+        
+        print(f"\n🔄 Rolling back {version}...")
+        
+        # Shift 100% traffic to current version
+        self._update_traffic_split(version, 0)
+        
+        # Scale down canary deployment
+        self.apps_v1.patch_namespaced_deployment_scale(
+            name=f'model-{version}',
+            namespace=self.namespace,
+            body={'spec': {'replicas': 0}}
+        )
+        
+        print("✅ Rollback complete")
+
+# Deploy new version with canary
+deployer = CanaryDeployer()
+success = deployer.deploy_canary('v3.0.0', canary_weight=10)</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Project Completion Checklist</h2>
+                
+                <ul class="checklist">
+                    <li>✅ BentoML multi-model service created</li>
+                    <li>✅ Kubernetes deployments for multiple versions</li>
+                    <li>✅ Istio traffic splitting configured</li>
+                    <li>✅ A/B testing with automated winner selection</li>
+                    <li>✅ Per-model cost tracking implemented</li>
+                    <li>✅ Canary deployment with auto-rollback</li>
+                    <li>✅ Prometheus metrics collection</li>
+                    <li>✅ Statistical significance testing</li>
+                    <li>✅ Complete deployment pipeline tested</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations on Completing the MLOps Engineer Course!</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've built an enterprise-grade multi-model serving platform with advanced deployment strategies, cost optimization, and automated decision-making. You're now ready to deploy ML systems at scale!
+                    </p>
+                </div>
+
+                <h3>Key Achievements</h3>
+                <ul>
+                    <li><strong>Multi-Model Serving:</strong> BentoML platform for version management</li>
+                    <li><strong>Traffic Management:</strong> Istio-based A/B testing and canary deployments</li>
+                    <li><strong>Automated Decisions:</strong> Statistical winner selection</li>
+                    <li><strong>Cost Optimization:</strong> Per-model cost tracking and analysis</li>
+                    <li><strong>Safe Deployments:</strong> Auto-rollback on health failures</li>
+                    <li><strong>Production Ready:</strong> Complete enterprise deployment pipeline</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>🎓 Ready to Get Your Certificate?</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've completed all 17 tutorials of the MLOps Engineer course! Fill out the form below to generate your free certificate.
+                    </p>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="MLOps Engineer">
+                    <div class="form-group">
+                        <label for="cert-name-mlops">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-mlops"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-mlops">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-mlops"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="project-model-monitoring-drift-detection.html">← Previous: Project 3</a>
+                <a href="../../courses/mlops-engineer.html">Back to Course →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

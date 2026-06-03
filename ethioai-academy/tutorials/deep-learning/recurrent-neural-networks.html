@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Recurrent Neural Networks (RNNs), LSTMs, and GRUs. Learn to process sequences, time series, and text data effectively.">
+    <meta name="keywords" content="RNN tutorial, LSTM, GRU, recurrent neural networks, sequence modeling, time series">
+    <title>Recurrent Neural Networks - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="recurrent-neural-networks.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Recurrent Neural Networks</span>
+            </div>
+            <h1>Recurrent Neural Networks</h1>
+            <p class="tutorial-intro">Master RNNs, LSTMs, and GRUs for sequential data. Process time series, text, and any data with order and dependencies</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 4</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🔄 Why Recurrent Neural Networks?</h2>
+                
+                <p>
+                    Imagine trying to predict the next word in this sentence using a regular neural network. Without remembering what came before, it's impossible! The word "it" refers to something mentioned earlier. Time matters. Order matters. <strong>Context matters.</strong>
+                </p>
+
+                <p>
+                    <strong>Recurrent Neural Networks (RNNs)</strong> are designed specifically for sequential data where:
+                </p>
+                <ul>
+                    <li><strong>Order is critical:</strong> "Dog bites man" ≠ "Man bites dog"</li>
+                    <li><strong>Length varies:</strong> Sentences can be 5 words or 50 words</li>
+                    <li><strong>Context is needed:</strong> Understanding depends on what came before</li>
+                    <li><strong>Patterns repeat:</strong> Same features detected at different positions in sequence</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💡 The Key Insight:</strong> RNNs have <strong>memory</strong>. They maintain a "hidden state" that gets updated as they process each element, carrying forward information about what they've seen so far. Think of it like reading a book — you remember the plot as you read each new page.</p>
+                </div>
+
+                <h3>Sequential Data is Everywhere</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Natural Language</h3>
+                        <p><strong>Examples:</strong> Text, sentences, documents<br>
+                        <strong>Tasks:</strong> Translation, sentiment analysis, chatbots, text generation</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Time Series</h3>
+                        <p><strong>Examples:</strong> Stock prices, weather, sensor data<br>
+                        <strong>Tasks:</strong> Forecasting, anomaly detection, trend prediction</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎵</div>
+                        <h3>Audio & Speech</h3>
+                        <p><strong>Examples:</strong> Voice, music, sound waves<br>
+                        <strong>Tasks:</strong> Speech recognition, music generation, voice assistants</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎬</div>
+                        <h3>Video & Actions</h3>
+                        <p><strong>Examples:</strong> Video frames, user behavior<br>
+                        <strong>Tasks:</strong> Action recognition, video captioning, gesture recognition</p>
+                    </div>
+                </div>
+
+                <h3>Why Not Use Regular Neural Networks?</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fee2e2; padding: 1.25rem; border-radius: 8px;">
+                        <strong>❌ Feedforward Network Problems</strong><br><br>
+                        <strong>Fixed input size:</strong> Can't handle variable-length sequences<br>
+                        <strong>No memory:</strong> Each input processed independently<br>
+                        <strong>No parameter sharing:</strong> Learning "cat" at position 1 doesn't help at position 5<br>
+                        <strong>Explosion of parameters:</strong> Need weights for every position
+                    </div>
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>✅ RNN Solutions</strong><br><br>
+                        <strong>Variable length:</strong> Process sequences of any length<br>
+                        <strong>Memory:</strong> Hidden state carries context forward<br>
+                        <strong>Parameter sharing:</strong> Same weights at every time step<br>
+                        <strong>Efficient:</strong> Constant number of parameters regardless of sequence length
+                    </div>
+                </div>
+
+                <h3>Real-World Example: Sentiment Analysis</h3>
+                <div class="example-box">
+                    <strong>Task:</strong> Classify movie review as positive or negative<br><br>
+                    <strong>Review:</strong> "The movie started slow but the ending was absolutely amazing!"<br><br>
+                    <strong>Why RNN is needed:</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>"started slow"</strong> → Initially negative sentiment</li>
+                        <li><strong>"but"</strong> → Signals contradiction, need to remember previous context</li>
+                        <li><strong>"ending was absolutely amazing"</strong> → Strong positive sentiment</li>
+                        <li><strong>Final classification:</strong> Positive (overweights later information)</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">An RNN processes word-by-word, updating its understanding as it goes, ultimately concluding the review is positive despite the negative start.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🧠 Understanding Basic RNNs</h2>
+                
+                <div class="info-box">
+                    <h3>The Core Mechanism</h3>
+                    <p>
+                        An RNN processes sequences one element at a time while maintaining a <strong>hidden state</strong> that acts as memory. At each time step, it:
+                    </p>
+                    <ol style="margin-top: 0.75rem; line-height: 2;">
+                        <li>Takes current input + previous hidden state</li>
+                        <li>Computes new hidden state (updated memory)</li>
+                        <li>Produces output (if needed)</li>
+                        <li>Passes hidden state to next time step</li>
+                    </ol>
+                </div>
+
+                <h3>RNN Architecture: Unfolding Through Time</h3>
+                <p>
+                    Think of an RNN as the same neural network applied repeatedly at each time step. It's like having one worker process a queue of tasks, carrying context from task to task.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Visualization (unfolded through time):</strong><br><br>
+                    <pre style="background: white; padding: 1rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.6;">
+Time:    t=0          t=1          t=2          t=3
+Input:   x₀    →      x₁    →      x₂    →      x₃
+         ↓            ↓            ↓            ↓
+Hidden:  h₀  ─────→  h₁  ─────→  h₂  ─────→  h₃
+         ↓            ↓            ↓            ↓
+Output:  y₀           y₁           y₂           y₃
+
+Same RNN cell, different time steps!
+Hidden state h passes information forward →
+</pre>
+                </div>
+
+                <h3>The Mathematics</h3>
+                <p>At each time step t, the RNN performs these computations:</p>
+
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Hidden State Update:</strong><br>
+                    h<sub>t</sub> = tanh(W<sub>hh</sub> · h<sub>t-1</sub> + W<sub>xh</sub> · x<sub>t</sub> + b<sub>h</sub>)<br><br>
+                    
+                    <strong>Output Computation:</strong><br>
+                    y<sub>t</sub> = W<sub>hy</sub> · h<sub>t</sub> + b<sub>y</sub><br><br>
+
+                    <strong>Where:</strong><br>
+                    • h<sub>t</sub> = hidden state at time t (memory)<br>
+                    • x<sub>t</sub> = input at time t<br>
+                    • y<sub>t</sub> = output at time t<br>
+                    • W<sub>hh</sub> = hidden-to-hidden weight matrix (memory transformation)<br>
+                    • W<sub>xh</sub> = input-to-hidden weight matrix<br>
+                    • W<sub>hy</sub> = hidden-to-output weight matrix<br>
+                    • tanh = activation function (squashes to [-1, 1])
+                </div>
+
+                <h3>Step-by-Step Example: Sentiment Prediction</h3>
+                <div class="example-box">
+                    <strong>Task:</strong> Predict sentiment after each word in "I love this"<br><br>
+                    
+                    <strong>Initialization:</strong> h<sub>0</sub> = [0, 0, 0] (zero hidden state)<br><br>
+
+                    <strong>Step 1: Process "I"</strong><br>
+                    • Input: x<sub>1</sub> = [1.2, 0.3] (word embedding for "I")<br>
+                    • Compute: h<sub>1</sub> = tanh(W<sub>hh</sub> · h<sub>0</sub> + W<sub>xh</sub> · x<sub>1</sub>)<br>
+                    • Result: h<sub>1</sub> = [0.3, 0.1, 0.2] (updated memory)<br>
+                    • Output: y<sub>1</sub> = 0.45 (neutral sentiment so far)<br><br>
+
+                    <strong>Step 2: Process "love"</strong><br>
+                    • Input: x<sub>2</sub> = [0.8, 1.5] (word embedding for "love")<br>
+                    • h<sub>1</sub> from previous step remembered!<br>
+                    • Compute: h<sub>2</sub> = tanh(W<sub>hh</sub> · h<sub>1</sub> + W<sub>xh</sub> · x<sub>2</sub>)<br>
+                    • Result: h<sub>2</sub> = [0.7, 0.6, 0.8] (strong positive memory)<br>
+                    • Output: y<sub>2</sub> = 0.85 (positive sentiment)<br><br>
+
+                    <strong>Step 3: Process "this"</strong><br>
+                    • Input: x<sub>3</sub> = [0.2, 0.4]<br>
+                    • Compute: h<sub>3</sub> = tanh(W<sub>hh</sub> · h<sub>2</sub> + W<sub>xh</sub> · x<sub>3</sub>)<br>
+                    • Result: h<sub>3</sub> = [0.8, 0.7, 0.9]<br>
+                    • Output: y<sub>3</sub> = 0.92 (very positive)<br><br>
+
+                    <strong>Key observation:</strong> Each hidden state builds on the previous, accumulating context!
+                </div>
+
+                <h3>Parameter Sharing Across Time</h3>
+                <p>
+                    <strong>Crucial insight:</strong> The same weight matrices (W<sub>hh</sub>, W<sub>xh</sub>, W<sub>hy</sub>) are used at every time step! This means:
+                </p>
+                <ul>
+                    <li>✅ Fixed number of parameters regardless of sequence length</li>
+                    <li>✅ Learning at one position helps at all positions</li>
+                    <li>✅ Can process sequences of any length</li>
+                    <li>✅ Much more efficient than separate networks for each position</li>
+                </ul>
+
+                <h3>Types of RNN Architectures</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">1️⃣→1️⃣</div>
+                        <h3>One-to-One</h3>
+                        <p><strong>Pattern:</strong> Single input → Single output<br>
+                        <strong>Example:</strong> Image classification (not really an RNN use case)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">1️⃣→📚</div>
+                        <h3>One-to-Many</h3>
+                        <p><strong>Pattern:</strong> Single input → Sequence output<br>
+                        <strong>Example:</strong> Image captioning (image → sentence)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📚→1️⃣</div>
+                        <h3>Many-to-One</h3>
+                        <p><strong>Pattern:</strong> Sequence input → Single output<br>
+                        <strong>Example:</strong> Sentiment analysis (sentence → positive/negative)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📚→📚</div>
+                        <h3>Many-to-Many</h3>
+                        <p><strong>Pattern:</strong> Sequence → Sequence<br>
+                        <strong>Example:</strong> Machine translation, video captioning</p>
+                    </div>
+                </div>
+
+                <h3>The Critical Problem: Vanishing Gradients</h3>
+                <p>
+                    Basic RNNs have a fundamental limitation when learning long sequences:
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ The Vanishing Gradient Problem:</strong></p>
+                    <p style="margin-top: 0.75rem;">
+                        During backpropagation through time, gradients get multiplied repeatedly by the same weight matrix. If these values are < 1, gradients shrink exponentially (vanish). If > 1, they explode exponentially.
+                    </p>
+                </div>
+
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Mathematical reason:</strong><br>
+                    When backpropagating from time t to time t-k, the gradient contains k multiplications of W<sub>hh</sub>.<br><br>
+                    
+                    If largest eigenvalue of W<sub>hh</sub> < 1: Gradient ≈ 0 after ~10 steps (vanishes)<br>
+                    If largest eigenvalue of W<sub>hh</sub> > 1: Gradient → ∞ (explodes)<br><br>
+                    
+                    <strong>Practical impact:</strong> Basic RNNs can only learn dependencies ~5-10 steps back.
+                </div>
+
+                <h3>Example: Why Vanishing Gradients Are a Problem</h3>
+                <div class="example-box">
+                    <strong>Sentence:</strong> "The cat, which was sitting on the mat for hours, <strong>were</strong> hungry."<br><br>
+                    
+                    <strong>Problem:</strong> "were" is grammatically incorrect (should be "was"). To detect this error, the network must remember "cat" (singular) from 11 words earlier.<br><br>
+                    
+                    <strong>With vanishing gradients:</strong> By the time the network reaches "were", the gradient signal from "cat" has vanished. The network can't learn this long-range dependency!<br><br>
+                    
+                    <strong>Solution:</strong> LSTM/GRU architectures (next section) solve this.
+                </div>
+
+                <h3>Basic RNN Implementation</h3>
+                <pre><code class="language-python">import numpy as np
+
+class SimpleRNN:
+    def __init__(self, input_size, hidden_size, output_size):
+        # Initialize weights
+        self.Whh = np.random.randn(hidden_size, hidden_size) * 0.01
+        self.Wxh = np.random.randn(hidden_size, input_size) * 0.01
+        self.Why = np.random.randn(output_size, hidden_size) * 0.01
+        self.bh = np.zeros((hidden_size, 1))
+        self.by = np.zeros((output_size, 1))
+    
+    def forward(self, inputs):
+        """
+        Forward pass through time
+        inputs: list of input vectors [x1, x2, x3, ...]
+        """
+        h = np.zeros((self.Whh.shape[0], 1))  # Initial hidden state
+        self.hidden_states = []
+        outputs = []
+        
+        for x in inputs:
+            # Update hidden state
+            h = np.tanh(self.Whh @ h + self.Wxh @ x + self.bh)
+            self.hidden_states.append(h)
+            
+            # Compute output
+            y = self.Why @ h + self.by
+            outputs.append(y)
+        
+        return outputs, self.hidden_states
+
+# ============ USING TENSORFLOW/KERAS ============
+import tensorflow as tf
+
+# Simple RNN for sentiment analysis
+model = tf.keras.Sequential([
+    tf.keras.layers.SimpleRNN(64, input_shape=(None, embedding_dim)),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# Note: SimpleRNN suffers from vanishing gradients!
+# For real applications, use LSTM or GRU</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Key Takeaways:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>RNNs maintain hidden state (memory) across time steps</li>
+                        <li>Same weights shared across all time steps (parameter sharing)</li>
+                        <li>Can process variable-length sequences</li>
+                        <li>Vanishing gradients limit basic RNNs to short sequences (~10 steps)</li>
+                        <li>LSTM/GRU solve the vanishing gradient problem → next section!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 LSTM: Long Short-Term Memory Networks</h2>
+                
+                <p>
+                    <strong>Long Short-Term Memory (LSTM)</strong> networks, introduced by Hochreiter & Schmidhuber in 1997, revolutionized sequence modeling by solving the vanishing gradient problem. The key innovation: a sophisticated gating mechanism that carefully controls information flow.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 The Big Idea:</strong> Instead of letting information flow freely (and vanish), LSTMs use <strong>gates</strong> to decide: (1) what to forget, (2) what to remember, and (3) what to output. This allows gradients to flow unchanged across 100+ time steps!</p>
+                </div>
+
+                <h3>LSTM Architecture: The Cell State Highway</h3>
+                <p>
+                    An LSTM cell has two types of state:
+                </p>
+                <ul>
+                    <li><strong>Cell state (c<sub>t</sub>):</strong> Long-term memory, runs straight through with minimal modifications — the "information highway"</li>
+                    <li><strong>Hidden state (h<sub>t</sub>):</strong> Short-term memory, filtered version of cell state for immediate use</li>
+                </ul>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>LSTM vs Basic RNN:</strong><br><br>
+                    <strong>Basic RNN:</strong> h<sub>t</sub> = tanh(Wx<sub>t</sub> + Uh<sub>t-1</sub>)<br>
+                    <em>Information must flow through tanh at every step → vanishing gradients</em><br><br>
+                    
+                    <strong>LSTM:</strong> c<sub>t</sub> flows through with only minor additions/removals<br>
+                    <em>Information can flow unchanged for 100+ steps → no vanishing!</em>
+                </div>
+
+                <h3>The Four Components of LSTM</h3>
+
+                <h4>1. Forget Gate 🚪 (What to Discard)</h4>
+                <p>
+                    Decides what information to throw away from the cell state. Looks at h<sub>t-1</sub> and x<sub>t</sub>, outputs numbers between 0 (completely forget) and 1 (completely keep) for each number in cell state.
+                </p>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: monospace;">
+                    f<sub>t</sub> = σ(W<sub>f</sub> · [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>f</sub>)
+                </div>
+                <p><strong>Example:</strong> In "The cat was cute. The dog..." → Forget gate might output 0.1 for "cat" features (forget) when seeing "dog" (new subject).</p>
+
+                <h4>2. Input Gate 📝 (What New Information to Add)</h4>
+                <p>
+                    Decides what new information to store in cell state. Two parts:
+                </p>
+                <ul>
+                    <li><strong>Input gate:</strong> Which values to update</li>
+                    <li><strong>Candidate values:</strong> What new values to add</li>
+                </ul>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: monospace;">
+                    i<sub>t</sub> = σ(W<sub>i</sub> · [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>i</sub>)<br>
+                    c̃<sub>t</sub> = tanh(W<sub>c</sub> · [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>c</sub>)
+                </div>
+                <p><strong>Example:</strong> When seeing "dog", input gate might output 0.9 (strong add) for new subject features.</p>
+
+                <h4>3. Cell State Update 🔄 (Combining Old + New)</h4>
+                <p>
+                    Update cell state: (old state) × (forget gate) + (new candidates) × (input gate)
+                </p>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: monospace;">
+                    c<sub>t</sub> = f<sub>t</sub> ⊙ c<sub>t-1</sub> + i<sub>t</sub> ⊙ c̃<sub>t</sub>
+                </div>
+                <p><strong>Critical:</strong> This is addition, not multiplication through tanh! Gradients can flow back unchanged → no vanishing!</p>
+
+                <h4>4. Output Gate 📤 (What to Output)</h4>
+                <p>
+                    Decides what parts of cell state to output as hidden state. Filtered version of cell state.
+                </p>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: monospace;">
+                    o<sub>t</sub> = σ(W<sub>o</sub> · [h<sub>t-1</sub>, x<sub>t</sub>] + b<sub>o</sub>)<br>
+                    h<sub>t</sub> = o<sub>t</sub> ⊙ tanh(c<sub>t</sub>)
+                </div>
+                <p><strong>Example:</strong> Output gate might output 0.8 for subject-related features (relevant now) but 0.1 for setting-related features (stored but not immediately relevant).</p>
+
+                <h3>Intuitive Example: Reading a Story</h3>
+                <div class="example-box">
+                    <strong>Story:</strong> "Alice went to the store. She bought milk. Later, she went home."<br><br>
+                    
+                    <strong>Processing "Alice went to the store":</strong><br>
+                    • <strong>Input gate:</strong> Remember "Alice" (subject), "store" (location)<br>
+                    • <strong>Cell state:</strong> [Alice: 0.9, female: 0.9, store: 0.8, ...]<br><br>
+
+                    <strong>Processing "She bought milk":</strong><br>
+                    • <strong>Forget gate:</strong> Reduce "store" importance (0.8 → 0.3)<br>
+                    • <strong>Input gate:</strong> Add "milk" (0.9), "shopping action" (0.7)<br>
+                    • <strong>Cell state:</strong> [Alice: 0.9, female: 0.9, store: 0.3, milk: 0.9, ...]<br>
+                    • <strong>Output gate:</strong> "She" → Use "Alice" + "female" from memory (pronoun resolution!)<br><br>
+
+                    <strong>Processing "Later, she went home":</strong><br>
+                    • <strong>Forget gate:</strong> Reduce "milk" (0.9 → 0.2), "store" (0.3 → 0.1)<br>
+                    • <strong>Input gate:</strong> Add "home" (0.9), "movement" (0.6)<br>
+                    • <strong>Cell state:</strong> Still remembers Alice! (0.9 unchanged)<br>
+                    • <strong>Output gate:</strong> "she" → Still correctly refers to Alice<br><br>
+
+                    <strong>Key insight:</strong> "Alice" information flows through cell state unchanged for 15+ words, allowing correct pronoun resolution throughout!
+                </div>
+
+                <h3>Why LSTMs Beat Vanishing Gradients</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🛣️</div>
+                        <h3>Cell State Highway</h3>
+                        <p>Cell state flows with only additions/removals (element-wise operations), not repeated matrix multiplications → gradients flow unchanged</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎚️</div>
+                        <h3>Gated Control</h3>
+                        <p>Gates (sigmoid) learn when to let gradients through. Can keep gradient flow open for important information</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Constant Error Carousel</h3>
+                        <p>Cell state can maintain constant error for 100+ steps, allowing learning of very long-term dependencies</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Selective Memory</h3>
+                        <p>Learns what's important to remember vs forget. Not all information needs to persist!</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ LSTM Achievements:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>Can learn dependencies 100+ steps back (vs ~10 for basic RNN)</li>
+                        <li>State-of-the-art for sequential tasks before Transformers</li>
+                        <li>Still widely used for time series, speech, and specialized applications</li>
+                        <li>Forms the basis for many modern architectures</li>
+                    </ul>
+                </div>
+
+                <h3>GRU: Gated Recurrent Unit (Simplified LSTM)</h3>
+                <p>
+                    <strong>GRU</strong> (Cho et al., 2014) simplifies LSTM by merging cell state and hidden state, and combining forget & input gates. Often performs similarly with fewer parameters!
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px;">
+                        <strong>LSTM</strong><br><br>
+                        • Separate cell state + hidden state<br>
+                        • 3 gates (forget, input, output)<br>
+                        • More parameters<br>
+                        • Slightly better performance<br>
+                        • Best when: lots of data, complex patterns
+                    </div>
+                    <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px;">
+                        <strong>GRU</strong><br><br>
+                        • Single hidden state<br>
+                        • 2 gates (reset, update)<br>
+                        • Fewer parameters (~25% less)<br>
+                        • Trains faster<br>
+                        • Best when: limited data, need speed
+                    </div>
+                </div>
+
+                <h4>GRU Equations</h4>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-family: monospace; font-size: 0.9rem;">
+                    <strong>Update gate</strong> (how much past to keep):<br>
+                    z<sub>t</sub> = σ(W<sub>z</sub> · [h<sub>t-1</sub>, x<sub>t</sub>])<br><br>
+                    
+                    <strong>Reset gate</strong> (how much past to forget):<br>
+                    r<sub>t</sub> = σ(W<sub>r</sub> · [h<sub>t-1</sub>, x<sub>t</sub>])<br><br>
+                    
+                    <strong>Candidate</strong> (new memory content):<br>
+                    h̃<sub>t</sub> = tanh(W · [r<sub>t</sub> ⊙ h<sub>t-1</sub>, x<sub>t</sub>])<br><br>
+                    
+                    <strong>Final hidden state</strong> (blend old + new):<br>
+                    h<sub>t</sub> = (1 - z<sub>t</sub>) ⊙ h<sub>t-1</sub> + z<sub>t</sub> ⊙ h̃<sub>t</sub>
+                </div>
+
+                <h3>LSTM vs GRU vs Basic RNN Comparison</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Architecture</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Parameters</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Long-term Memory</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Training Speed</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Basic RNN</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Low</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Poor (~10 steps)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Fast</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Very short sequences only</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>GRU</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Medium</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Very Good (100+ steps)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Fast</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">General purpose, limited data</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>LSTM</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">High</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Excellent (100+ steps)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Medium</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Complex patterns, lots of data</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Implementation: LSTM and GRU</h3>
+                <pre><code class="language-python">import tensorflow as tf
+
+# ============ LSTM EXAMPLE ============
+lstm_model = tf.keras.Sequential([
+    # Embedding: convert words to dense vectors
+    tf.keras.layers.Embedding(vocab_size=10000, embedding_dim=128, input_length=100),
+    
+    # LSTM layer: 64 units
+    # return_sequences=True: output at each time step (for stacking)
+    # return_sequences=False: output only at last time step (for classification)
+    tf.keras.layers.LSTM(64, return_sequences=True),
+    
+    # Second LSTM layer
+    tf.keras.layers.LSTM(32),
+    
+    # Classification
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+lstm_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+# ============ GRU EXAMPLE ============
+gru_model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(10000, 128, input_length=100),
+    
+    # GRU: fewer parameters, often similar performance
+    tf.keras.layers.GRU(64, return_sequences=True),
+    tf.keras.layers.GRU(32),
+    
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# ============ BIDIRECTIONAL RNN ============
+# Process sequence forward AND backward (see future context too)
+bidirectional_model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(10000, 128, input_length=100),
+    
+    # Bidirectional LSTM: 128 units total (64 forward + 64 backward)
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(32)),
+    
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# ============ COMPARISON ============
+print("LSTM parameters:", lstm_model.count_params())
+print("GRU parameters:", gru_model.count_params())
+print("Bidirectional parameters:", bidirectional_model.count_params())</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ When to Use What:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li><strong>Start with GRU:</strong> Simpler, faster, good default choice</li>
+                        <li><strong>Use LSTM if:</strong> GRU underperforms + you have enough data/compute</li>
+                        <li><strong>Bidirectional:</strong> When future context matters (not for real-time prediction!)</li>
+                        <li><strong>Modern NLP:</strong> Consider Transformers instead (next tutorial)</li>
+                        <li><strong>Time series:</strong> LSTM/GRU still excellent choices</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💻 Building RNNs in Practice</h2>
+                
+                <p>
+                    Now let's build real RNN systems from scratch! We'll cover sentiment analysis, time series forecasting, and advanced techniques like bidirectional RNNs and stacking.
+                </p>
+
+                <h3>Example 1: Sentiment Analysis with IMDB Reviews</h3>
+                <p>
+                    Let's build a complete pipeline to classify movie reviews as positive or negative using LSTM.
+                </p>
+
+                <pre><code class="language-python">import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+
+# ============ 1. LOAD AND PREPARE DATA ============
+# Load IMDB dataset (top 10,000 most common words)
+vocab_size = 10000
+max_length = 200  # Truncate reviews to 200 words
+
+(X_train, y_train), (X_test, y_test) = imdb.load_data(num_words=vocab_size)
+
+print(f"Training samples: {len(X_train)}")
+print(f"Example review (encoded): {X_train[0][:10]}...")  # First 10 words
+print(f"Label: {y_train[0]}")  # 0=negative, 1=positive
+
+# Pad sequences to same length (RNNs need consistent input shape for batching)
+X_train = pad_sequences(X_train, maxlen=max_length, padding='post', truncating='post')
+X_test = pad_sequences(X_test, maxlen=max_length, padding='post', truncating='post')
+
+# ============ 2. BUILD MODEL ============
+model = tf.keras.Sequential([
+    # Embedding: convert word IDs to dense vectors
+    # Shape: (batch, max_length) -> (batch, max_length, embedding_dim)
+    tf.keras.layers.Embedding(
+        input_dim=vocab_size,      # Vocabulary size
+        output_dim=128,             # Embedding dimension
+        input_length=max_length     # Sequence length
+    ),
+    
+    # Dropout for embedding regularization
+    tf.keras.layers.Dropout(0.2),
+    
+    # LSTM layer 1: 64 units, return sequences for next LSTM
+    # Shape: (batch, max_length, 128) -> (batch, max_length, 64)
+    tf.keras.layers.LSTM(64, return_sequences=True, dropout=0.2),
+    
+    # LSTM layer 2: 32 units, return only final output
+    # Shape: (batch, max_length, 64) -> (batch, 32)
+    tf.keras.layers.LSTM(32, dropout=0.2),
+    
+    # Dense output layer
+    tf.keras.layers.Dense(1, activation='sigmoid')  # Binary classification
+])
+
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+print(model.summary())
+
+# ============ 3. TRAIN MODEL ============
+history = model.fit(
+    X_train, y_train,
+    epochs=5,
+    batch_size=64,
+    validation_split=0.2,
+    verbose=1
+)
+
+# ============ 4. EVALUATE ============
+test_loss, test_acc = model.evaluate(X_test, y_test)
+print(f"\nTest Accuracy: {test_acc:.4f}")
+
+# ============ 5. MAKE PREDICTIONS ============
+# Test on a few examples
+predictions = model.predict(X_test[:5])
+for i in range(5):
+    sentiment = "Positive" if predictions[i] > 0.5 else "Negative"
+    true_sentiment = "Positive" if y_test[i] == 1 else "Negative"
+    print(f"Review {i+1}: Predicted={sentiment} (confidence: {predictions[i][0]:.3f}), True={true_sentiment}")</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Key Parameters Explained:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li><strong>return_sequences=True:</strong> Output at each time step (for stacking LSTMs)</li>
+                        <li><strong>return_sequences=False:</strong> Output only at final time step (for classification)</li>
+                        <li><strong>dropout:</strong> Randomly drop units during training to prevent overfitting</li>
+                        <li><strong>batch_size:</strong> Process 64 reviews at once (trade-off: speed vs memory)</li>
+                        <li><strong>padding='post':</strong> Add zeros at end of short sequences</li>
+                    </ul>
+                </div>
+
+                <h3>Example 2: Time Series Forecasting with Stock Prices</h3>
+                <p>
+                    Predict next day's stock price using past 60 days of data.
+                </p>
+
+                <pre><code class="language-python">import tensorflow as tf
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+# ============ 1. PREPARE TIME SERIES DATA ============
+# Assume we have stock price data
+# dates: ['2023-01-01', '2023-01-02', ...]
+# prices: [150.23, 152.45, ...]
+
+# Normalize prices to [0, 1] range (neural nets work better with normalized data)
+scaler = MinMaxScaler(feature_range=(0, 1))
+prices_scaled = scaler.fit_transform(prices.reshape(-1, 1))
+
+# Create sequences: use past 60 days to predict next day
+def create_sequences(data, seq_length=60):
+    X, y = [], []
+    for i in range(len(data) - seq_length):
+        X.append(data[i:i+seq_length])      # Past 60 days
+        y.append(data[i+seq_length])        # Next day (target)
+    return np.array(X), np.array(y)
+
+seq_length = 60
+X, y = create_sequences(prices_scaled, seq_length)
+
+# Split: 80% train, 20% test
+split = int(0.8 * len(X))
+X_train, X_test = X[:split], X[split:]
+y_train, y_test = y[:split], y[split:]
+
+print(f"X_train shape: {X_train.shape}")  # (samples, 60, 1)
+print(f"y_train shape: {y_train.shape}")  # (samples, 1)
+
+# ============ 2. BUILD GRU MODEL ============
+# GRU often works well for time series (simpler, faster than LSTM)
+model = tf.keras.Sequential([
+    # GRU layer 1: 50 units, return sequences
+    tf.keras.layers.GRU(50, return_sequences=True, input_shape=(seq_length, 1)),
+    tf.keras.layers.Dropout(0.2),
+    
+    # GRU layer 2: 50 units
+    tf.keras.layers.GRU(50, return_sequences=False),
+    tf.keras.layers.Dropout(0.2),
+    
+    # Output layer: predict single value
+    tf.keras.layers.Dense(1)
+])
+
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+
+# ============ 3. TRAIN ============
+history = model.fit(
+    X_train, y_train,
+    epochs=50,
+    batch_size=32,
+    validation_split=0.1,
+    verbose=1
+)
+
+# ============ 4. MAKE PREDICTIONS ============
+predictions = model.predict(X_test)
+
+# Denormalize back to actual prices
+predictions = scaler.inverse_transform(predictions)
+y_test_actual = scaler.inverse_transform(y_test)
+
+# Calculate error
+mae = np.mean(np.abs(predictions - y_test_actual))
+print(f"Mean Absolute Error: ${mae:.2f}")
+
+# Plot results (requires matplotlib)
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12, 6))
+plt.plot(y_test_actual, label='Actual Price', color='blue')
+plt.plot(predictions, label='Predicted Price', color='red', alpha=0.7)
+plt.title('Stock Price Prediction')
+plt.xlabel('Days')
+plt.ylabel('Price ($)')
+plt.legend()
+plt.show()</code></pre>
+
+                <h3>Example 3: Bidirectional RNN for Text Classification</h3>
+                <p>
+                    Process sequences in both forward and backward directions. Useful when future context helps (not for real-time prediction!).
+                </p>
+
+                <pre><code class="language-python">import tensorflow as tf
+
+# Bidirectional LSTM: process sequence forward AND backward
+# "The movie was not very good" 
+# Forward: accumulates "movie was not very good"
+# Backward: sees "good" first, then "not" reverses meaning
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(10000, 128, input_length=200),
+    
+    # Bidirectional wrapper: runs LSTM forward and backward
+    # Output size: 64*2 = 128 (concatenates forward + backward)
+    tf.keras.layers.Bidirectional(
+        tf.keras.layers.LSTM(64, return_sequences=True)
+    ),
+    
+    # Another bidirectional layer
+    tf.keras.layers.Bidirectional(
+        tf.keras.layers.LSTM(32)
+    ),
+    
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+print(model.summary())
+# Notice: Bidirectional doubles the parameters!</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ When to Use Bidirectional RNNs:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li>✅ <strong>Text classification:</strong> Full sentence available before prediction</li>
+                        <li>✅ <strong>Named entity recognition:</strong> Future words provide context</li>
+                        <li>✅ <strong>Fill-in-the-blank tasks:</strong> Context from both sides</li>
+                        <li>❌ <strong>Real-time prediction:</strong> Can't see future!</li>
+                        <li>❌ <strong>Text generation:</strong> Generates word-by-word, no future context</li>
+                    </ul>
+                </div>
+
+                <h3>Example 4: Stacking RNN Layers</h3>
+                <p>
+                    Multiple RNN layers can learn hierarchical representations: lower layers capture simple patterns, higher layers capture complex patterns.
+                </p>
+
+                <pre><code class="language-python"># Deep stacked LSTM
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(10000, 128, input_length=200),
+    
+    # Layer 1: Learn low-level patterns (word combinations)
+    # MUST use return_sequences=True to feed next LSTM
+    tf.keras.layers.LSTM(128, return_sequences=True, dropout=0.2),
+    
+    # Layer 2: Learn mid-level patterns (phrase meanings)
+    tf.keras.layers.LSTM(64, return_sequences=True, dropout=0.2),
+    
+    # Layer 3: Learn high-level patterns (sentence sentiment)
+    # return_sequences=False: output only final hidden state
+    tf.keras.layers.LSTM(32, dropout=0.2),
+    
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Rule of thumb: Each layer should have fewer units (funnel architecture)</code></pre>
+
+                <h3>Best Practices for Training RNNs</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎚️</div>
+                        <h3>Hyperparameters</h3>
+                        <ul style="font-size: 0.9rem; line-height: 1.8;">
+                            <li><strong>Units:</strong> 32-256 per layer</li>
+                            <li><strong>Layers:</strong> 1-3 (more = slower)</li>
+                            <li><strong>Dropout:</strong> 0.2-0.5</li>
+                            <li><strong>Learning rate:</strong> 0.001 (Adam default)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Data Preparation</h3>
+                        <ul style="font-size: 0.9rem; line-height: 1.8;">
+                            <li>Pad sequences to same length</li>
+                            <li>Normalize/scale features</li>
+                            <li>Shuffle training data</li>
+                            <li>Use validation set</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Training Tips</h3>
+                        <ul style="font-size: 0.9rem; line-height: 1.8;">
+                            <li>Start small, then scale up</li>
+                            <li>Monitor validation loss</li>
+                            <li>Use early stopping</li>
+                            <li>Try gradient clipping (prevents exploding gradients)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🐛</div>
+                        <h3>Common Issues</h3>
+                        <ul style="font-size: 0.9rem; line-height: 1.8;">
+                            <li><strong>Slow training:</strong> Use GRU, reduce units/layers</li>
+                            <li><strong>Overfitting:</strong> Add dropout, more data</li>
+                            <li><strong>Poor performance:</strong> Try bidirectional, increase capacity</li>
+                            <li><strong>NaN loss:</strong> Reduce learning rate, clip gradients</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <p><strong>🎯 Practical RNN Checklist:</strong></p>
+                    <ol style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ Choose RNN type: GRU (default), LSTM (complex patterns), basic RNN (very short sequences)</li>
+                        <li>✅ Decide architecture: Bidirectional? Stacked layers? How many units?</li>
+                        <li>✅ Prepare sequences: Pad to same length, normalize if needed</li>
+                        <li>✅ Set return_sequences correctly: True for stacking, False for final layer</li>
+                        <li>✅ Add regularization: Dropout between layers</li>
+                        <li>✅ Monitor validation: Use early stopping to prevent overfitting</li>
+                        <li>✅ Start simple: Begin with 1 layer, add complexity if needed</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Real-World RNN Applications</h2>
+                
+                <p>
+                    RNNs power many applications you use daily! Let's explore real-world use cases with code examples.
+                </p>
+
+                <h3>1. Sentiment Analysis 💬</h3>
+                <p>
+                    Classify text as positive, negative, or neutral. Used by companies to monitor brand reputation, customer feedback, and social media.
+                </p>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎬</div>
+                        <h3>Movie Reviews</h3>
+                        <p><strong>Input:</strong> "The plot was confusing but the acting was superb!"</p>
+                        <p><strong>Output:</strong> Mixed/Positive (0.72 confidence)</p>
+                        <p><strong>Architecture:</strong> Bidirectional LSTM to see full context</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🐦</div>
+                        <h3>Social Media Monitoring</h3>
+                        <p><strong>Input:</strong> "Just tried @BrandX new product... absolutely love it! 😍"</p>
+                        <p><strong>Output:</strong> Positive (0.95 confidence)</p>
+                        <p><strong>Architecture:</strong> LSTM with emoji embeddings</p>
+                    </div>
+                </div>
+
+                <pre><code class="language-python"># Simple sentiment classifier
+def predict_sentiment(text, model, tokenizer, max_length=200):
+    # Tokenize and pad
+    sequence = tokenizer.texts_to_sequences([text])
+    padded = pad_sequences(sequence, maxlen=max_length)
+    
+    # Predict
+    prediction = model.predict(padded)[0][0]
+    
+    if prediction > 0.6:
+        return f"Positive (confidence: {prediction:.2f})"
+    elif prediction < 0.4:
+        return f"Negative (confidence: {1-prediction:.2f})"
+    else:
+        return f"Neutral (confidence: {0.5 + abs(0.5-prediction):.2f})"
+
+# Example usage
+text = "The movie started slow but ended amazingly!"
+print(predict_sentiment(text, model, tokenizer))</code></pre>
+
+                <h3>2. Machine Translation 🌐</h3>
+                <p>
+                    Translate text between languages using encoder-decoder architecture. RNNs pioneered neural machine translation before Transformers.
+                </p>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Encoder-Decoder Architecture:</strong><br><br>
+                    <strong>Encoder LSTM:</strong> "Hello, how are you?" → Context vector [0.3, 0.7, 0.1, ...]<br>
+                    ↓<br>
+                    <strong>Context Vector:</strong> Compressed representation of entire source sentence<br>
+                    ↓<br>
+                    <strong>Decoder LSTM:</strong> Context vector → "Bonjour, comment allez-vous?"
+                </div>
+
+                <pre><code class="language-python"># Simplified encoder-decoder for translation
+from tensorflow.keras.layers import Input, LSTM, Dense
+
+# ============ ENCODER ============
+encoder_inputs = Input(shape=(None, num_encoder_tokens))
+encoder_lstm = LSTM(256, return_state=True)
+encoder_outputs, state_h, state_c = encoder_lstm(encoder_inputs)
+encoder_states = [state_h, state_c]  # Final hidden state = context vector
+
+# ============ DECODER ============
+decoder_inputs = Input(shape=(None, num_decoder_tokens))
+decoder_lstm = LSTM(256, return_sequences=True, return_state=True)
+decoder_outputs, _, _ = decoder_lstm(decoder_inputs, initial_state=encoder_states)
+decoder_dense = Dense(num_decoder_tokens, activation='softmax')
+decoder_outputs = decoder_dense(decoder_outputs)
+
+# Full model
+model = tf.keras.Model([encoder_inputs, decoder_inputs], decoder_outputs)</code></pre>
+
+                <h3>3. Speech Recognition 🎤</h3>
+                <p>
+                    Convert audio waveforms to text. Used in virtual assistants (Siri, Alexa), transcription services, voice commands.
+                </p>
+                <div class="info-box">
+                    <p><strong>How it works:</strong></p>
+                    <ol style="margin-top: 0.75rem; line-height: 2;">
+                        <li>Extract audio features (spectrograms, MFCCs)</li>
+                        <li>Feed sequences of features into bidirectional LSTM</li>
+                        <li>Use CTC (Connectionist Temporal Classification) loss to align audio with text</li>
+                        <li>Output: Text transcription</li>
+                    </ol>
+                </div>
+
+                <pre><code class="language-python"># Speech recognition pipeline (simplified)
+import librosa  # Audio processing library
+
+# 1. Extract features from audio
+audio, sr = librosa.load('speech.wav', sr=16000)
+mfcc_features = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=13)
+
+# 2. Build model
+model = tf.keras.Sequential([
+    tf.keras.layers.Input(shape=(None, 13)),  # Variable length sequences
+    tf.keras.layers.Bidirectional(LSTM(128, return_sequences=True)),
+    tf.keras.layers.Bidirectional(LSTM(128, return_sequences=True)),
+    tf.keras.layers.Dense(29, activation='softmax')  # 26 letters + space + blank + apostrophe
+])
+
+# 3. Use CTC loss for alignment
+model.compile(optimizer='adam', loss=tf.keras.backend.ctc_batch_cost)</code></pre>
+
+                <h3>4. Time Series Forecasting 📈</h3>
+                <p>
+                    Predict future values based on historical patterns. Critical for business planning, energy management, financial trading.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Stock Price Prediction</h3>
+                        <p><strong>Input:</strong> Past 60 days of [open, high, low, close, volume]</p>
+                        <p><strong>Output:</strong> Next day's closing price</p>
+                        <p><strong>Architecture:</strong> Stacked GRU with dropout</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Energy Demand Forecasting</h3>
+                        <p><strong>Input:</strong> Historical consumption + weather + time features</p>
+                        <p><strong>Output:</strong> Next hour's demand</p>
+                        <p><strong>Architecture:</strong> LSTM with external features</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🌡️</div>
+                        <h3>Weather Prediction</h3>
+                        <p><strong>Input:</strong> Temperature, pressure, humidity over time</p>
+                        <p><strong>Output:</strong> Next day's weather</p>
+                        <p><strong>Architecture:</strong> Bidirectional LSTM with attention</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🛒</div>
+                        <h3>Sales Forecasting</h3>
+                        <p><strong>Input:</strong> Past sales + seasonality + promotions</p>
+                        <p><strong>Output:</strong> Next week's sales</p>
+                        <p><strong>Architecture:</strong> GRU with external regressors</p>
+                    </div>
+                </div>
+
+                <h3>5. Text Generation ✍️</h3>
+                <p>
+                    Generate new text character-by-character or word-by-word. Applications: chatbots, content creation, code completion.
+                </p>
+
+                <pre><code class="language-python"># Character-level text generation
+import tensorflow as tf
+import numpy as np
+
+# 1. Prepare data: map characters to integers
+text = "Your training text here..."
+chars = sorted(set(text))
+char_to_idx = {ch: i for i, ch in enumerate(chars)}
+idx_to_char = {i: ch for i, ch in enumerate(chars)}
+
+# Create sequences: "hell" -> "o", "ello" -> " ", etc.
+seq_length = 40
+X, y = [], []
+for i in range(len(text) - seq_length):
+    X.append([char_to_idx[ch] for ch in text[i:i+seq_length]])
+    y.append(char_to_idx[text[i+seq_length]])
+
+X = np.array(X)
+y = tf.keras.utils.to_categorical(y, num_classes=len(chars))
+
+# 2. Build model
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(len(chars), 128, input_length=seq_length),
+    tf.keras.layers.LSTM(256, return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.LSTM(256),
+    tf.keras.layers.Dense(len(chars), activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy')
+
+# 3. Generate text
+def generate_text(model, start_string, length=100, temperature=1.0):
+    input_seq = [char_to_idx[ch] for ch in start_string]
+    generated = start_string
+    
+    for _ in range(length):
+        # Predict next character
+        x = np.array([input_seq])
+        predictions = model.predict(x, verbose=0)[0]
+        
+        # Sample with temperature (higher = more random)
+        predictions = np.log(predictions) / temperature
+        exp_preds = np.exp(predictions)
+        predictions = exp_preds / np.sum(exp_preds)
+        
+        next_idx = np.random.choice(len(chars), p=predictions)
+        next_char = idx_to_char[next_idx]
+        
+        generated += next_char
+        input_seq = input_seq[1:] + [next_idx]  # Slide window
+    
+    return generated
+
+# Generate text starting with "The quick"
+print(generate_text(model, "The quick", length=200, temperature=0.8))</code></pre>
+
+                <h3>6. Named Entity Recognition (NER) 🏷️</h3>
+                <p>
+                    Identify and classify entities (people, organizations, locations) in text. Used for information extraction, question answering.
+                </p>
+                <div class="example-box">
+                    <strong>Input:</strong> "Apple Inc. CEO Tim Cook announced new products in Cupertino."<br><br>
+                    <strong>Output:</strong><br>
+                    • "Apple Inc." → ORGANIZATION<br>
+                    • "Tim Cook" → PERSON<br>
+                    • "Cupertino" → LOCATION
+                </div>
+
+                <pre><code class="language-python"># NER with bidirectional LSTM-CRF
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, 128, input_length=max_length),
+    
+    # Bidirectional: see full context (past + future)
+    tf.keras.layers.Bidirectional(LSTM(64, return_sequences=True)),
+    
+    # TimeDistributed: apply Dense to each time step
+    tf.keras.layers.TimeDistributed(
+        tf.keras.layers.Dense(num_tags, activation='softmax')
+    )
+])
+
+# Each word gets a tag: B-PER, I-PER, B-ORG, I-ORG, B-LOC, I-LOC, O</code></pre>
+
+                <h3>RNN Applications Summary</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Application</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Input</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Output</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best Architecture</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Sentiment Analysis</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Text sequence</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sentiment label</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bidirectional LSTM</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Machine Translation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Source language</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Target language</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder-Decoder LSTM</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Speech Recognition</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Audio features</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Text transcription</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bidirectional LSTM + CTC</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Time Series</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Historical values</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Future values</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Stacked GRU</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Text Generation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Seed text</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Generated text</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Stacked LSTM</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>NER</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Text sequence</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Entity tags</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bidirectional LSTM-CRF</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p><strong>💡 Modern Context:</strong></p>
+                    <p style="margin-top: 0.75rem; line-height: 1.8;">
+                        <strong>Transformers have largely replaced RNNs for NLP tasks</strong> (sentiment analysis, translation, NER) due to better parallelization and performance. However, <strong>RNNs remain excellent for:</strong>
+                    </p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li>✅ Time series forecasting (stock prices, energy demand)</li>
+                        <li>✅ Real-time streaming data (online learning)</li>
+                        <li>✅ Low-resource environments (smaller models, less memory)</li>
+                        <li>✅ Signal processing (audio, sensors)</li>
+                        <li>✅ Specialized sequential problems with clear temporal dependencies</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">
+                        <strong>Rule of thumb:</strong> Start with Transformers for NLP, RNNs for time series and streaming data.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Key Takeaways</h2>
+                
+                <p>
+                    Congratulations! You've mastered Recurrent Neural Networks, the architecture that powers sequential data processing. Let's consolidate what you've learned.
+                </p>
+
+                <h3>Core Concepts</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Basic RNN</h3>
+                        <p><strong>Mechanism:</strong> Hidden state carries information forward through time</p>
+                        <p><strong>Limitation:</strong> Vanishing gradients (~5-10 step memory)</p>
+                        <p><strong>Use case:</strong> Very short sequences only</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>LSTM</h3>
+                        <p><strong>Mechanism:</strong> Gates control information flow (forget, input, output)</p>
+                        <p><strong>Advantage:</strong> 100+ step memory via cell state highway</p>
+                        <p><strong>Use case:</strong> Complex patterns, long-term dependencies</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>GRU</h3>
+                        <p><strong>Mechanism:</strong> Simplified gates (update, reset)</p>
+                        <p><strong>Advantage:</strong> Fewer parameters, faster training</p>
+                        <p><strong>Use case:</strong> General purpose, limited data/compute</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">↔️</div>
+                        <h3>Bidirectional RNN</h3>
+                        <p><strong>Mechanism:</strong> Process sequence forward AND backward</p>
+                        <p><strong>Advantage:</strong> Full context from both directions</p>
+                        <p><strong>Use case:</strong> Text classification, NER (not real-time!)</p>
+                    </div>
+                </div>
+
+                <h3>Mental Models</h3>
+                <div style="display: grid; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 1.5rem; border-radius: 8px;">
+                        <strong>🎯 When to Use RNNs</strong><br><br>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <strong>✅ Perfect For:</strong><br>
+                                • Time series forecasting<br>
+                                • Signal processing<br>
+                                • Streaming data<br>
+                                • Low-resource environments<br>
+                                • Online learning
+                            </div>
+                            <div>
+                                <strong>⚠️ Consider Alternatives:</strong><br>
+                                • Text classification → Transformers<br>
+                                • Machine translation → Transformers<br>
+                                • Question answering → Transformers<br>
+                                • Image captioning → CNN + Transformer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Practical Decision Guide</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Question</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Answer</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Recommendation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sequence length?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">&lt; 10 steps</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Basic RNN might work</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sequence length?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">10-100 steps</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">GRU or LSTM</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sequence length?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">&gt; 100 steps</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">LSTM or Transformer</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Limited compute/data?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">GRU (fewer parameters)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Need future context?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bidirectional RNN</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Real-time prediction?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Unidirectional RNN only</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Time series problem?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">GRU/LSTM (still best choice)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">NLP task?</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Consider Transformer first</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Common Pitfalls & Solutions</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Vanishing Gradients</strong><br>
+                        <em>Model can't learn long-term dependencies</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Use LSTM or GRU instead of basic RNN<br>
+                        • Reduce sequence length<br>
+                        • Use gradient clipping
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Exploding Gradients</strong><br>
+                        <em>NaN loss, training instability</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Add gradient clipping: <code>clipnorm=1.0</code><br>
+                        • Reduce learning rate<br>
+                        • Use batch normalization
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Slow Training</strong><br>
+                        <em>Takes hours to train</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Switch LSTM → GRU (25% fewer params)<br>
+                        • Reduce hidden units/layers<br>
+                        • Use smaller batch size<br>
+                        • Truncate sequences
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Overfitting</strong><br>
+                        <em>High train accuracy, low test accuracy</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Add dropout (0.2-0.5)<br>
+                        • Use early stopping<br>
+                        • Get more training data<br>
+                        • Reduce model capacity
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Shape Errors</strong><br>
+                        <em>"Expected 3D tensor, got 2D"</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Check <code>return_sequences</code> setting<br>
+                        • Verify input shape: (batch, time, features)<br>
+                        • Pad sequences to same length
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Problem: Poor Performance</strong><br>
+                        <em>Model not learning patterns</em><br><br>
+                        <strong>✅ Solution:</strong><br>
+                        • Try bidirectional RNN<br>
+                        • Stack more layers<br>
+                        • Increase hidden units<br>
+                        • Check data preprocessing
+                    </div>
+                </div>
+
+                <h3>RNN Design Checklist</h3>
+                <div class="example-box">
+                    <strong>📝 Before Training Your RNN:</strong>
+                    <ol style="margin-top: 0.75rem; line-height: 2.2;">
+                        <li>☐ <strong>Choose architecture:</strong> GRU (default), LSTM (complex), basic RNN (very short)</li>
+                        <li>☐ <strong>Decide bidirectionality:</strong> Unidirectional (real-time) vs Bidirectional (full context)</li>
+                        <li>☐ <strong>Set hyperparameters:</strong> Units (32-256), layers (1-3), dropout (0.2-0.5)</li>
+                        <li>☐ <strong>Prepare data:</strong> Pad sequences, normalize features, split train/val/test</li>
+                        <li>☐ <strong>Configure return_sequences:</strong> True (stacking), False (final output)</li>
+                        <li>☐ <strong>Add regularization:</strong> Dropout, early stopping, gradient clipping</li>
+                        <li>☐ <strong>Monitor validation:</strong> Watch for overfitting, adjust accordingly</li>
+                        <li>☐ <strong>Start simple:</strong> 1 layer, 64 units → add complexity if needed</li>
+                    </ol>
+                </div>
+
+                <h3>Practice Projects</h3>
+                <p>Solidify your understanding with these hands-on projects:</p>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎬</div>
+                        <h3>Project 1: IMDB Sentiment</h3>
+                        <p><strong>Goal:</strong> Classify movie reviews (positive/negative)</p>
+                        <p><strong>Dataset:</strong> IMDB 50k reviews (built into Keras)</p>
+                        <p><strong>Skills:</strong> Text preprocessing, embedding, LSTM, evaluation</p>
+                        <p><strong>Bonus:</strong> Try bidirectional, compare with CNN</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Project 2: Stock Prediction</h3>
+                        <p><strong>Goal:</strong> Predict next day closing price</p>
+                        <p><strong>Dataset:</strong> Yahoo Finance (yfinance library)</p>
+                        <p><strong>Skills:</strong> Time series, normalization, GRU, evaluation metrics</p>
+                        <p><strong>Bonus:</strong> Add technical indicators as features</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✍️</div>
+                        <h3>Project 3: Text Generation</h3>
+                        <p><strong>Goal:</strong> Generate Shakespeare-like text</p>
+                        <p><strong>Dataset:</strong> Shakespeare corpus (Keras datasets)</p>
+                        <p><strong>Skills:</strong> Character-level modeling, LSTM, sampling</p>
+                        <p><strong>Bonus:</strong> Experiment with temperature parameter</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌡️</div>
+                        <h3>Project 4: Weather Forecasting</h3>
+                        <p><strong>Goal:</strong> Predict temperature 24 hours ahead</p>
+                        <p><strong>Dataset:</strong> Jena Climate dataset (TensorFlow)</p>
+                        <p><strong>Skills:</strong> Multivariate time series, GRU, evaluation</p>
+                        <p><strong>Bonus:</strong> Try different prediction horizons</p>
+                    </div>
+                </div>
+
+                <h3>What You've Mastered</h3>
+                <div class="success-box">
+                    <p><strong>✅ Congratulations! You now understand:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Sequential processing:</strong> How RNNs maintain memory across time steps</li>
+                        <li><strong>Vanishing gradients:</strong> Why basic RNNs struggle with long sequences</li>
+                        <li><strong>LSTM architecture:</strong> Gates, cell state, and how they enable 100+ step memory</li>
+                        <li><strong>GRU simplification:</strong> When simpler is better</li>
+                        <li><strong>Advanced techniques:</strong> Bidirectional, stacking, dropout</li>
+                        <li><strong>Real applications:</strong> Sentiment analysis, time series, text generation</li>
+                        <li><strong>Practical skills:</strong> Data preparation, model building, troubleshooting</li>
+                    </ul>
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    You've conquered RNNs, but the story doesn't end here! In the next tutorial, <strong>Attention & Transformers</strong>, you'll learn the revolutionary architecture that:
+                </p>
+                <ul>
+                    <li>✨ Processes sequences in parallel (not sequentially like RNNs)</li>
+                    <li>✨ Handles 1000+ token dependencies effortlessly</li>
+                    <li>✨ Powers GPT, BERT, and modern LLMs</li>
+                    <li>✨ Revolutionized NLP and beyond (vision, multimodal AI)</li>
+                </ul>
+
+                <div style="background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 2rem; border-radius: 8px; margin: 2rem 0; text-align: center;">
+                    <h3 style="margin-top: 0;">🎉 Outstanding Progress!</h3>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">
+                        You've mastered sequential modeling with RNNs. Ready to learn the architecture that changed everything?
+                    </p>
+                    <p style="margin: 0; opacity: 0.95;">
+                        <strong>Next up:</strong> Attention mechanisms and the Transformer revolution! 🚀
+                    </p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Recurrent Neural Networks!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What makes RNNs different from standard neural networks?</h4>
+                        <div class="quiz-option" data-value="A">A) They have more layers</div>
+                        <div class="quiz-option" data-value="B">B) They have loops and memory to process sequences</div>
+                        <div class="quiz-option" data-value="C">C) They are faster</div>
+                        <div class="quiz-option" data-value="D">D) They only work with images</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What is the vanishing gradient problem in RNNs?</h4>
+                        <div class="quiz-option" data-value="A">A) Gradients become too large</div>
+                        <div class="quiz-option" data-value="B">B) The model forgets everything</div>
+                        <div class="quiz-option" data-value="C">C) Gradients shrink exponentially, making it hard to learn long-term dependencies</div>
+                        <div class="quiz-option" data-value="D">D) Training becomes too fast</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What does LSTM stand for?</h4>
+                        <div class="quiz-option" data-value="A">A) Long Short-Term Memory</div>
+                        <div class="quiz-option" data-value="B">B) Linear Sequential Training Method</div>
+                        <div class="quiz-option" data-value="C">C) Large Scale Text Model</div>
+                        <div class="quiz-option" data-value="D">D) Layered System for Time Management</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What is the purpose of gates in LSTM?</h4>
+                        <div class="quiz-option" data-value="A">A) To speed up training</div>
+                        <div class="quiz-option" data-value="B">B) To reduce model size</div>
+                        <div class="quiz-option" data-value="C">C) To normalize inputs</div>
+                        <div class="quiz-option" data-value="D">D) To control what information to keep, forget, or output</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What type of data are RNNs best suited for?</h4>
+                        <div class="quiz-option" data-value="A">A) Static images only</div>
+                        <div class="quiz-option" data-value="B">B) Sequential data like text, time series, and audio</div>
+                        <div class="quiz-option" data-value="C">C) Tabular data</div>
+                        <div class="quiz-option" data-value="D">D) Unordered datasets</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="convolutional-neural-networks.html" class="btn btn-secondary">← Previous: Convolutional Neural Networks</a>
+                <a href="attention-and-transformers.html" class="btn btn-primary">Next: Attention & Transformers →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

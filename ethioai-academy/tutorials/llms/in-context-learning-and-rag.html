@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master In-Context Learning and RAG (Retrieval Augmented Generation). Build LLM systems that answer questions from documents.">
+    <meta name="keywords" content="RAG, retrieval augmented generation, in-context learning, vector search, semantic search">
+    <title>In-Context Learning & RAG - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="in-context-learning-and-rag.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>In-Context Learning & RAG</span>
+            </div>
+            <h1>In-Context Learning & RAG</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>RAGAS-style eval</li><li>Citation grounding</li></ul>
+  
+</div>
+            <p class="tutorial-intro">Learn how LLMs acquire knowledge without training. Master Retrieval Augmented Generation for knowledge-grounded answers</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 4</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free LLMs & Transformers Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 The Problem: LLM Knowledge Limitations</h2>
+                
+                <p>
+                    Imagine you've deployed a customer support chatbot using GPT-4. A customer asks: "What's your return policy for electronics purchased during Black Friday sales?" The LLM confidently generates an answer... that's completely wrong because it doesn't know your company's specific policies.
+                </p>
+
+                <p>
+                    <strong>LLMs face three fundamental knowledge limitations:</strong>
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📅</div>
+                        <h3>Knowledge Cutoff</h3>
+                        <p>GPT-4's training ended in April 2023. It has no knowledge of events, products, or information after that date. Ask about recent events? Hallucination risk.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔒</div>
+                        <h3>No Private Data</h3>
+                        <p>Can't access your company's internal documents, customer databases, proprietary research, or confidential information.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>No Real-Time Data</h3>
+                        <p>Can't check current stock prices, live sports scores, breaking news, weather updates, or any frequently changing information.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💭</div>
+                        <h3>Hallucination Risk</h3>
+                        <p>Without access to ground truth, LLMs confidently generate plausible-sounding but incorrect information.</p>
+                    </div>
+                </div>
+
+                <h3>Traditional Solutions (And Why They Don't Scale)</h3>
+
+                <div class="example-box">
+                    <strong>❌ Option 1: Fine-tuning</strong>
+                    <pre><code class="language-text">Problem: Want LLM to know 10,000 product documentation pages
+Approach: Fine-tune GPT-3.5 on all documents
+Cost: $5,000 - $20,000
+Time: 2-3 weeks training
+Maintenance: Every doc update requires retraining ($$$)
+Result: Expensive, slow, not maintainable</code></pre>
+                </div>
+
+                <div class="example-box">
+                    <strong>❌ Option 2: Dump Everything in Context</strong>
+                    <pre><code class="language-text">Problem: Answer questions about 100-page policy manual
+Approach: Copy entire manual into prompt
+Token count: ~50,000 tokens
+Cost per query: $0.50 - $2.00 (at GPT-4 rates)
+Context limit: Most models max at 8K-128K tokens
+Result: Expensive, hits limits, slow</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>✅ The Solution: In-Context Learning + RAG</strong>
+                    <p>
+                        Instead of training the model on your data or copying everything into context, <strong>retrieve only the relevant pieces</strong> and include them in the prompt. The LLM learns from this focused context to answer accurately.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Cost:</strong> ~$0.001 per query (500x cheaper than fine-tuning)<br>
+                        <strong>Speed:</strong> Instant updates (just add new documents)<br>
+                        <strong>Accuracy:</strong> Grounded in actual source documents
+                    </p>
+                </div>
+
+                <h3>The Core Insight</h3>
+
+                <p>
+                    LLMs have a remarkable emergent ability: <strong>they can learn new tasks from examples provided in the prompt</strong> without any parameter updates. This is called <strong>in-context learning (ICL)</strong>.
+                </p>
+
+                <pre><code class="language-text">Traditional ML:
+❌ Collect data → Train model → Deploy → Use
+   (weeks of training required for each task)
+
+In-Context Learning:
+✅ Show examples in prompt → Model adapts → Answer
+   (instant, no training needed)
+
+RAG (Retrieval Augmented Generation):
+✅ Find relevant docs → Add to prompt → Model answers from docs
+   (grounded, verifiable, maintainable)</code></pre>
+
+                <div class="info-box">
+                    <h3>Why This Works</h3>
+                    <p>
+                        Large models (100B+ parameters) develop the ability to recognize patterns and adapt to new tasks from just a few examples. This wasn't possible with smaller models - it's an emergent property of scale.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🧠 In-Context Learning (ICL): Learning Without Training</h2>
+                
+                <p>
+                    In-context learning is the phenomenon where LLMs adapt to new tasks by observing examples in the prompt—without any gradient updates or parameter changes. It's one of the most remarkable emergent abilities of large language models.
+                </p>
+
+                <div class="warning-box">
+                    <strong>⚠️ Mind-Blowing Fact:</strong> A 175B parameter model can learn a new task from 5 examples faster than you can finish reading this sentence. No backpropagation. No training. Just pattern recognition at massive scale.
+                </div>
+
+                <h3>How In-Context Learning Works</h3>
+
+                <p>
+                    The model observes the pattern in your examples and extrapolates to new instances:
+                </p>
+
+                <pre><code class="language-text">Prompt: "Translate English to French.
+
+English: Hello
+French: Bonjour
+
+English: Goodbye
+French: Au revoir
+
+English: Thank you
+French: Merci
+
+English: Good morning
+French: ?"
+
+Output: "Bonjour" (or "Bon matin")
+
+The model:
+1. Recognizes this is a translation task
+2. Infers the pattern from 3 examples
+3. Applies the pattern to the new input
+4. Generates the translation
+
+ALL WITHOUT TRAINING!</code></pre>
+
+                <h3>Zero-Shot vs Few-Shot vs Many-Shot</h3>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Examples</th>
+                            <th>Performance</th>
+                            <th>Use Case</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Zero-Shot</strong></td>
+                            <td>0 examples</td>
+                            <td>60-70% accuracy</td>
+                            <td>Simple, well-known tasks</td>
+                            <td>Lowest (minimal tokens)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>One-Shot</strong></td>
+                            <td>1 example</td>
+                            <td>70-80% accuracy</td>
+                            <td>Format guidance</td>
+                            <td>Very low</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Few-Shot</strong></td>
+                            <td>2-10 examples</td>
+                            <td>85-95% accuracy</td>
+                            <td>Most production use cases</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Many-Shot</strong></td>
+                            <td>50-100+ examples</td>
+                            <td>95-99% accuracy</td>
+                            <td>Complex specialized tasks</td>
+                            <td>High (many tokens)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Real Example: Sentiment Classification</h3>
+
+                <div class="example-box">
+                    <strong>Zero-Shot (No Examples)</strong>
+                    <pre><code class="language-text">Classify the sentiment of this review as positive or negative:
+"The product broke after 2 days. Waste of money."
+
+Output: "Negative"
+Accuracy: ~70% (model must guess from instructions alone)</code></pre>
+                </div>
+
+                <div class="example-box">
+                    <strong>Few-Shot (3 Examples)</strong>
+                    <pre><code class="language-python"># Few-shot prompt
+prompt = """Classify sentiment as positive or negative:
+
+Review: "Amazing quality! Best purchase ever."
+Sentiment: Positive
+
+Review: "Terrible customer service, never buying again."
+Sentiment: Negative
+
+Review: "Product works great, very happy with it."
+Sentiment: Positive
+
+Review: "The product broke after 2 days. Waste of money."
+Sentiment:"""
+
+# Output: "Negative"
+# Accuracy: ~92% (learned pattern from examples)</code></pre>
+                </div>
+
+                <h3>Why Does This Work?</h3>
+
+                <p>
+                    During pre-training on trillions of tokens, LLMs see countless examples of:
+                </p>
+
+                <ul>
+                    <li>Question → Answer patterns</li>
+                    <li>Example → Example → Example → New case patterns</li>
+                    <li>Format specifications followed by formatted outputs</li>
+                    <li>Task descriptions followed by task execution</li>
+                </ul>
+
+                <p>
+                    The model learns a <strong>meta-pattern</strong>: "When I see examples of a pattern, apply that pattern to the next input." This is learning to learn!
+                </p>
+
+                <div class="success-box">
+                    <strong>The Scaling Law of ICL:</strong>
+                    <ul>
+                        <li><strong>GPT-2 (1.5B):</strong> Minimal in-context learning, struggles with few-shot</li>
+                        <li><strong>GPT-3 (13B):</strong> Basic few-shot works for simple tasks</li>
+                        <li><strong>GPT-3 (175B):</strong> Strong few-shot across diverse tasks</li>
+                        <li><strong>GPT-4 (>1T?):</strong> Exceptional few-shot, even many-shot learning</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Key Insight:</strong> In-context learning emerges at scale. It's not explicitly trained—it just happens when models get large enough.</p>
+                </div>
+
+                <h3>In-Context Learning Best Practices</h3>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>1. Clear Examples</h3>
+                        <p>Use diverse, representative examples that cover edge cases. Quality > Quantity.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>2. Consistent Format</h3>
+                        <p>Keep input/output format identical across all examples. The model learns format as part of the pattern.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>3. Example Selection</h3>
+                        <p>Choose examples similar to your target use case. If classifying technical docs, use technical examples.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>4. Balance</h3>
+                        <p>For classification, include equal numbers of each class to avoid bias.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>5. Order Matters</h3>
+                        <p>Put most relevant examples last (recency bias). Recent examples have more influence.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧪</div>
+                        <h3>6. Test & Iterate</h3>
+                        <p>Experiment with different examples and quantities. 5-shot might work better than 10-shot for your task.</p>
+                    </div>
+                </div>
+
+                <h3>In-Context Learning Code Example</h3>
+
+                <pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI()
+
+def few_shot_classifier(text, examples, labels):
+    """
+    Perform few-shot classification using in-context learning
+    
+    Args:
+        text: Text to classify
+        examples: List of example texts
+        labels: List of corresponding labels
+    """
+    # Build few-shot prompt
+    prompt = "Classify the following texts:\n\n"
+    
+    for example, label in zip(examples, labels):
+        prompt += f"Text: {example}\nLabel: {label}\n\n"
+    
+    # Add the new text to classify
+    prompt += f"Text: {text}\nLabel:"
+    
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,  # Deterministic for classification
+        max_tokens=10
+    )
+    
+    return response.choices[0].message.content.strip()
+
+# Usage: Email spam classification
+examples = [
+    "Congratulations! You've won $1 million! Click here now!",
+    "Hi John, can we schedule a meeting for tomorrow at 2pm?",
+    "URGENT: Your account will be suspended unless you verify now!!!",
+    "Thanks for your email. I'll review the document and get back to you.",
+]
+
+labels = ["Spam", "Not Spam", "Spam", "Not Spam"]
+
+new_email = "Limited time offer! Buy now and get 90% off! Act fast!"
+
+result = few_shot_classifier(new_email, examples, labels)
+print(f"Classification: {result}")  # Output: "Spam"
+
+# The model learned the spam detection pattern from just 4 examples!</code></pre>
+
+                <div class="info-box">
+                    <strong>💡 Pro Tip:</strong> In-context learning works best for tasks where:
+                    <ul>
+                        <li>✅ Pattern is clear and consistent</li>
+                        <li>✅ You have high-quality examples</li>
+                        <li>✅ Task can be described in natural language</li>
+                        <li>❌ NOT for tasks requiring extensive domain knowledge (use RAG or fine-tuning)</li>
+                        <li>❌ NOT for tasks with huge output spaces (use fine-tuning)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔍 Retrieval Augmented Generation (RAG)</h2>
+                
+                <p>
+                    While In-Context Learning gives LLMs examples to learn from, <strong>Retrieval Augmented Generation (RAG)</strong> gives them <em>knowledge</em> to draw from. 
+                    RAG combines the power of information retrieval with LLM generation, enabling models to answer questions accurately using external, 
+                    up-to-date information without needing retraining.
+                </p>
+
+                <div class="warning-box">
+                    <p>🎯 <strong>The Core Idea:</strong> Don't try to store all knowledge <em>in</em> the model. Instead, give the model the ability to <em>look up</em> 
+                    relevant information when it needs it—just like you would use Google before answering a complex question.</p>
+                </div>
+
+                <h3>The Problem RAG Solves</h3>
+                
+                <p>Imagine you're building a customer support chatbot for an e-commerce company. The chatbot needs to answer questions like:</p>
+                
+                <ul>
+                    <li>"What's your return policy for opened electronics?"</li>
+                    <li>"Do you ship to Alaska?"</li>
+                    <li>"How do I track my order #12345?"</li>
+                </ul>
+
+                <p><strong>Problem:</strong> GPT-4 doesn't know your company's specific policies (they're not in its training data), 
+                and even if you fine-tune it, you'd need to retrain every time policies change.</p>
+
+                <p><strong>RAG Solution:</strong> Store your company policies in a searchable knowledge base. When a user asks a question:</p>
+
+                <ol>
+                    <li>Search the knowledge base for relevant documents</li>
+                    <li>Add those documents as context to the LLM prompt</li>
+                    <li>LLM generates an answer <em>grounded in those documents</em></li>
+                </ol>
+
+                <div class="success-box">
+                    <p>✅ <strong>Result:</strong> Accurate, source-cited answers that update instantly when you change your documentation. No retraining needed!</p>
+                </div>
+
+                <h3>The RAG Pipeline: How It Works</h3>
+                
+                <p>RAG has two main phases: <strong>Indexing</strong> (setup, done once) and <strong>Retrieval + Generation</strong> (happens every query).</p>
+
+                <h4>Phase 1: Indexing (One-Time Setup)</h4>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>Step 1: Load Documents</strong></p>
+                        <p>📄 Collect all your documents: PDFs, docs, webpages, databases, etc.</p>
+                        <pre><code class="language-text">Documents:
+- returns_policy.pdf
+- shipping_info.docx
+- faq_database.txt
+- product_catalog.csv</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Step 2: Chunk Documents</strong></p>
+                        <p>✂️ Split into smaller pieces (chunks) for better retrieval precision.</p>
+                        <pre><code class="language-text">Original: 10-page return policy
+Chunked:
+- Chunk 1: "Returns within 30 days..."
+- Chunk 2: "Refund processing takes..."
+- Chunk 3: "Damaged items should..."</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Step 3: Generate Embeddings</strong></p>
+                        <p>🧮 Convert each chunk into a vector (numerical representation).</p>
+                        <pre><code class="language-text">Chunk: "Returns within 30 days"
+Embedding: [0.21, -0.54, 0.12, ..., 0.08]
+           (1536 dimensions)</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Step 4: Store in Vector DB</strong></p>
+                        <p>💾 Save embeddings in a vector database for fast similarity search.</p>
+                        <pre><code class="language-text">Vector Database (Pinecone/Weaviate):
+ID: chunk_001
+Vector: [0.21, -0.54, ...]
+Text: "Returns within 30 days..."
+Metadata: {source: "returns_policy.pdf"}</code></pre>
+                    </div>
+                </div>
+
+                <h4>Phase 2: Retrieval + Generation (Every Query)</h4>
+
+                <p>When a user asks a question, the RAG system springs into action:</p>
+
+                <pre><code class="language-text">🧑 User Question: "What's the return policy for opened electronics?"
+
+Step 1: EMBED THE QUESTION
+Question embedding: [0.19, -0.51, 0.11, ..., 0.07]  (1536 dims)
+
+Step 2: SEARCH VECTOR DATABASE (Semantic Search)
+Query the vector DB to find chunks with similar embeddings:
+
+Results (sorted by similarity):
+📄 Chunk 42 (similarity: 0.94) - "Returns_Policy.pdf"
+   "Opened electronics can be returned within 14 days if in original 
+    packaging. A 15% restocking fee applies. Items must include all 
+    accessories and manuals..."
+
+📄 Chunk 107 (similarity: 0.87) - "Electronics_FAQ.pdf"
+   "For electronics returns: Unopened items qualify for full refund. 
+    Opened items may incur restocking fees. Check original packaging 
+    requirements..."
+
+📄 Chunk 23 (similarity: 0.81) - "Returns_Policy.pdf"
+   "Standard return window is 30 days. Special categories like electronics, 
+    software, and personalized items have different rules..."
+
+Step 3: ASSEMBLE PROMPT (Context + Question)
+System: You are a helpful customer support assistant. Answer based ONLY 
+        on the provided context. If you can't answer from the context, 
+        say "I don't have that information."
+
+Context:
+[Document 1 - Returns_Policy.pdf]: 
+Opened electronics can be returned within 14 days if in original packaging...
+
+[Document 2 - Electronics_FAQ.pdf]: 
+For electronics returns: Unopened items qualify for full refund...
+
+[Document 3 - Returns_Policy.pdf]:
+Standard return window is 30 days. Special categories like electronics...
+
+User Question: What's the return policy for opened electronics?
+
+Step 4: GENERATE ANSWER
+🤖 LLM (GPT-4): "For opened electronics, you can return them within 14 days 
+   if they're in the original packaging with all accessories and manuals. 
+   A 15% restocking fee will apply. This differs from our standard 30-day 
+   policy for most items."
+
+   Sources: Returns_Policy.pdf, Electronics_FAQ.pdf
+
+Step 5: RETURN TO USER
+User sees: Answer + source citations for verification!</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>Key Insight:</strong> The LLM never "memorizes" your company policies. Instead, it <em>reads them dynamically</em> for each question, 
+                    just like a human support agent would look up information in a knowledge base.</p>
+                </div>
+
+                <h3>Vector Databases: The RAG Backend</h3>
+
+                <p>Vector databases are specialized databases optimized for storing and searching high-dimensional vectors (embeddings). 
+                Here are the main options:</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #078930; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Database</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Type</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Best For</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Pros</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Pinecone</strong></td>
+                            <td style="padding: 1rem;">☁️ Cloud</td>
+                            <td style="padding: 1rem;">Production apps</td>
+                            <td style="padding: 1rem;">Fully managed, scalable, fast</td>
+                            <td style="padding: 1rem;">Paid service</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Weaviate</strong></td>
+                            <td style="padding: 1rem;">🔓 Open-source</td>
+                            <td style="padding: 1rem;">Self-hosted production</td>
+                            <td style="padding: 1rem;">GraphQL API, hybrid search</td>
+                            <td style="padding: 1rem;">Requires hosting</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>ChromaDB</strong></td>
+                            <td style="padding: 1rem;">🐍 Python-native</td>
+                            <td style="padding: 1rem;">Prototypes, local dev</td>
+                            <td style="padding: 1rem;">Easy to use, lightweight</td>
+                            <td style="padding: 1rem;">Not for large scale</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>FAISS</strong></td>
+                            <td style="padding: 1rem;">📚 Library</td>
+                            <td style="padding: 1rem;">Research, batch processing</td>
+                            <td style="padding: 1rem;">Fast, by Facebook AI</td>
+                            <td style="padding: 1rem;">No built-in server</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Qdrant</strong></td>
+                            <td style="padding: 1rem;">🔓 Open-source</td>
+                            <td style="padding: 1rem;">High-performance apps</td>
+                            <td style="padding: 1rem;">Rust-based, very fast, filtering</td>
+                            <td style="padding: 1rem;">Smaller community</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p>💡 <strong>Pro Tip:</strong> Start with <strong>ChromaDB</strong> for prototyping (it's the easiest). Move to <strong>Pinecone</strong> 
+                    for production (it's fully managed). Use <strong>Weaviate</strong> if you need self-hosting with advanced features.</p>
+                </div>
+
+                <h3>Embedding Models: Converting Text to Vectors</h3>
+
+                <p>Embeddings are the magic that makes semantic search work. Here are your options:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>🎯 OpenAI Embeddings</strong></p>
+                        <p><code>text-embedding-ada-002</code></p>
+                        <ul>
+                            <li>Dimensions: 1536</li>
+                            <li>Cost: $0.0001 per 1K tokens</li>
+                            <li>Quality: Excellent</li>
+                            <li>Use: Most RAG applications</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🔓 Sentence Transformers</strong></p>
+                        <p><code>all-MiniLM-L6-v2</code></p>
+                        <ul>
+                            <li>Dimensions: 384</li>
+                            <li>Cost: Free (run locally)</li>
+                            <li>Quality: Good</li>
+                            <li>Use: Budget/privacy-conscious</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🚀 Cohere Embeddings</strong></p>
+                        <p><code>embed-english-v3.0</code></p>
+                        <ul>
+                            <li>Dimensions: 1024</li>
+                            <li>Cost: Competitive pricing</li>
+                            <li>Quality: Excellent</li>
+                            <li>Use: Alternative to OpenAI</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🎓 Domain-Specific</strong></p>
+                        <p><code>BioBERT, SciBERT, etc.</code></p>
+                        <ul>
+                            <li>Dimensions: 768</li>
+                            <li>Cost: Free</li>
+                            <li>Quality: Best for specific domains</li>
+                            <li>Use: Medical, legal, scientific</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Chunking Strategies: Breaking Documents Smartly</h3>
+
+                <p>How you chunk documents dramatically affects RAG performance. Too small = lost context. Too large = irrelevant information.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>1. Fixed-Size Chunking</strong></p>
+                        <p>📏 Split by character/token count</p>
+                        <pre><code class="language-python">chunk_size = 500  # characters
+overlap = 50      # overlap between chunks
+
+# Simple but effective
+chunks = split_text(text, 
+                   chunk_size=500, 
+                   overlap=50)</code></pre>
+                        <p><strong>Pros:</strong> Simple, predictable<br>
+                        <strong>Cons:</strong> May split mid-sentence</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>2. Semantic Chunking</strong></p>
+                        <p>🧠 Split by meaning/topics</p>
+                        <pre><code class="language-python"># Split by paragraphs, sections
+chunks = text.split('\n\n')
+
+# Or use semantic similarity
+# to group related sentences
+chunks = semantic_split(text)</code></pre>
+                        <p><strong>Pros:</strong> Coherent chunks<br>
+                        <strong>Cons:</strong> Variable sizes</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>3. Recursive Splitting</strong></p>
+                        <p>🔄 Try different delimiters</p>
+                        <pre><code class="language-python"># LangChain's approach
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    separators=['\n\n', '\n', '. ', ' ']
+)
+chunks = splitter.split_text(text)</code></pre>
+                        <p><strong>Pros:</strong> Best of both worlds<br>
+                        <strong>Cons:</strong> More complex</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Chunk Size Guidelines:</strong> Start with 500-1000 characters (100-200 tokens) with 10-20% overlap. 
+                    Tune based on your use case: smaller chunks for precise answers, larger for more context.</p>
+                </div>
+
+                <h3>Retrieval Strategies: Beyond Basic Search</h3>
+
+                <h4>1. Semantic Search (Standard RAG)</h4>
+                <pre><code class="language-python"># Convert query to embedding
+query_embedding = embedding_model.embed("return policy")
+
+# Find similar document embeddings (cosine similarity)
+results = vector_db.search(query_embedding, top_k=5)
+
+# Returns: Top 5 most semantically similar chunks</code></pre>
+
+                <h4>2. Hybrid Search (Semantic + Keyword)</h4>
+                <pre><code class="language-python"># Combine embedding search with keyword (BM25) search
+semantic_results = vector_db.search(query_embedding, top_k=10)
+keyword_results = bm25_search(query_text, top_k=10)
+
+# Merge and rerank results using Reciprocal Rank Fusion (RRF)
+final_results = rrf_merge(semantic_results, keyword_results, top_k=5)
+
+# Best of both worlds: catches exact terms + semantic meaning</code></pre>
+
+                <h4>3. Reranking (Two-Stage Retrieval)</h4>
+                <pre><code class="language-python"># Stage 1: Fast retrieval (get 20-50 candidates)
+candidates = vector_db.search(query_embedding, top_k=20)
+
+# Stage 2: Precise reranking with cross-encoder
+reranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+scores = reranker.predict([(query, doc.text) for doc in candidates])
+
+# Get top 5 after reranking
+final_docs = sorted(zip(candidates, scores), key=lambda x: x[1], reverse=True)[:5]
+
+# Result: Much better relevance than retrieval alone!</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Production Recommendation:</strong> Use <strong>hybrid search</strong> (semantic + keyword) for most applications. 
+                    Add <strong>reranking</strong> if you need maximum accuracy and can afford the extra latency (~100-200ms).</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💻 Building RAG Systems with LangChain</h2>
+                
+                <h3>Simple RAG: End-to-End Example</h3>
+
+                <p>Let's build a complete RAG system that answers questions about your company's documentation:</p>
+
+                <pre><code class="language-python"># Install: pip install langchain openai chromadb tiktoken
+import os
+from langchain.document_loaders import DirectoryLoader, TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import RetrievalQA
+
+# Set API key
+os.environ['OPENAI_API_KEY'] = 'your-api-key-here'
+
+# Step 1: Load documents
+print("📄 Loading documents...")
+loader = DirectoryLoader('company_docs/', glob="**/*.txt", loader_cls=TextLoader)
+documents = loader.load()
+print(f"Loaded {len(documents)} documents")
+
+# Step 2: Chunk documents
+print("✂️ Chunking documents...")
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=50,
+    separators=["\n\n", "\n", ". ", " ", ""]
+)
+chunks = text_splitter.split_documents(documents)
+print(f"Created {len(chunks)} chunks")
+
+# Step 3: Create embeddings & vector store
+print("🧮 Creating embeddings...")
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
+vector_store = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    persist_directory="./chroma_db"  # Save to disk
+)
+print("✅ Vector store created!")
+
+# Step 4: Create RAG chain
+print("🔗 Setting up RAG chain...")
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",  # Pass all retrieved docs to LLM
+    retriever=vector_store.as_retriever(search_kwargs={"k": 3}),  # Top 3 docs
+    return_source_documents=True  # Include sources in response
+)
+
+# Step 5: Query the system
+print("\n💬 RAG system ready! Asking questions...\n")
+
+questions = [
+    "What's the return policy for electronics?",
+    "Do you ship internationally?",
+    "How do I contact customer support?"
+]
+
+for question in questions:
+    print(f"❓ Q: {question}")
+    result = qa_chain({"query": question})
+    print(f"🤖 A: {result['result']}")
+    print(f"📚 Sources: {[doc.metadata['source'] for doc in result['source_documents']]}")
+    print("-" * 80 + "\n")</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>Output Example:</strong></p>
+                    <pre><code class="language-text">❓ Q: What's the return policy for electronics?
+🤖 A: Electronics can be returned within 14 days if in original packaging. 
+      A 15% restocking fee applies. Items must include all accessories.
+📚 Sources: ['company_docs/returns_policy.txt', 'company_docs/electronics_faq.txt']</code></pre>
+                </div>
+
+                <h3>Production-Ready RAG with Pinecone</h3>
+
+                <p>For production apps, use a managed vector database like Pinecone:</p>
+
+                <pre><code class="language-python"># Install: pip install langchain openai pinecone-client
+import os
+import pinecone
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+
+# Initialize Pinecone
+pinecone.init(
+    api_key="your-pinecone-api-key",
+    environment="us-west1-gcp"  # Your environment
+)
+
+# Create index (one-time setup)
+index_name = "company-knowledge-base"
+if index_name not in pinecone.list_indexes():
+    pinecone.create_index(
+        name=index_name,
+        dimension=1536,  # OpenAI embedding dimension
+        metric="cosine"
+    )
+
+# Set up embeddings and vector store
+embeddings = OpenAIEmbeddings()
+vector_store = Pinecone.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    index_name=index_name
+)
+
+# Create conversational RAG (remembers chat history!)
+memory = ConversationBufferMemory(
+    memory_key="chat_history",
+    return_messages=True,
+    output_key="answer"
+)
+
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+conversational_rag = ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    retriever=vector_store.as_retriever(search_kwargs={"k": 4}),
+    memory=memory,
+    return_source_documents=True,
+    verbose=True
+)
+
+# Multi-turn conversation
+print("💬 Conversational RAG (type 'quit' to exit)\n")
+
+while True:
+    question = input("You: ")
+    if question.lower() == 'quit':
+        break
+    
+    result = conversational_rag({"question": question})
+    print(f"Bot: {result['answer']}")
+    print(f"Sources: {[doc.metadata['source'] for doc in result['source_documents']]}\n")</code></pre>
+
+                <div class="success-box">
+                    <p>🎯 <strong>Key Feature:</strong> This conversational RAG remembers your chat history, so you can ask follow-up questions like 
+                    "What about international shipping?" after asking about returns!</p>
+                </div>
+
+                <h3>Advanced RAG Techniques</h3>
+
+                <p>Take your RAG system to the next level with these advanced techniques:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>1. 🔄 Query Rewriting</strong></p>
+                        <p>LLM rewrites query for better retrieval:</p>
+                        <pre><code class="language-text">Original: "Can I return opened stuff?"
+Rewritten: "What is the return policy 
+            for opened products?"
+
+Result: Better retrieval!</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>2. 🎯 HyDE (Hypothetical Document Embeddings)</strong></p>
+                        <p>Generate hypothetical answer, embed it, search:</p>
+                        <pre><code class="language-text">Query: "Return policy?"
+HyDE: Generate fake answer
+"Returns allowed within 30 days..."
+Embed fake answer → search
+Result: Finds actual policy!</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>3. 🔀 Multi-Query Retrieval</strong></p>
+                        <p>Generate multiple query variations:</p>
+                        <pre><code class="language-text">Original: "Return policy?"
+Variations:
+- "How do I return items?"
+- "What's the refund process?"
+- "Can I get my money back?"
+Retrieve for all → merge results</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>4. 📄 Parent Document Retrieval</strong></p>
+                        <p>Retrieve small chunks, return full documents:</p>
+                        <pre><code class="language-text">Search: Small precise chunks
+Return: Full parent document
+Benefit: Precision + Context</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>5. 🎭 Self-Query Retrieval</strong></p>
+                        <p>LLM extracts filters from query:</p>
+                        <pre><code class="language-text">Query: "Electronics returns in 2023"
+LLM extracts:
+- Search: "returns"
+- Filter: category=electronics, 
+          year=2023
+Result: Filtered search!</code></pre>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>6. 🔁 Iterative Retrieval</strong></p>
+                        <p>Retrieve → Generate → Retrieve again if needed:</p>
+                        <pre><code class="language-text">1. Initial retrieval
+2. LLM identifies gaps
+3. Follow-up retrieval
+4. Final answer
+Result: More thorough answers</code></pre>
+                    </div>
+                </div>
+
+                <h3>RAG Evaluation & Optimization</h3>
+
+                <p>How do you know if your RAG system is working well? Track these metrics:</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #0d9488; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Metric</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">What It Measures</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Good Score</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">How to Improve</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Retrieval Precision</strong></td>
+                            <td style="padding: 1rem;">% of retrieved docs that are relevant</td>
+                            <td style="padding: 1rem;">&gt;80%</td>
+                            <td style="padding: 1rem;">Better chunking, hybrid search, reranking</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Retrieval Recall</strong></td>
+                            <td style="padding: 1rem;">% of relevant docs that are retrieved</td>
+                            <td style="padding: 1rem;">&gt;90%</td>
+                            <td style="padding: 1rem;">Increase k, multi-query, query rewriting</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Answer Relevance</strong></td>
+                            <td style="padding: 1rem;">Does answer address the question?</td>
+                            <td style="padding: 1rem;">&gt;85%</td>
+                            <td style="padding: 1rem;">Better prompts, retrieval quality</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Answer Groundedness</strong></td>
+                            <td style="padding: 1rem;">Is answer supported by retrieved docs?</td>
+                            <td style="padding: 1rem;">&gt;95%</td>
+                            <td style="padding: 1rem;">Stronger system prompts, citations</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Latency</strong></td>
+                            <td style="padding: 1rem;">Time from query to answer</td>
+                            <td style="padding: 1rem;">&lt;3s</td>
+                            <td style="padding: 1rem;">Caching, faster embeddings, smaller k</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Common RAG Pitfalls:</strong></p>
+                    <ul>
+                        <li><strong>Chunks too small:</strong> Missing context → vague answers</li>
+                        <li><strong>Chunks too large:</strong> Too much noise → LLM gets confused</li>
+                        <li><strong>No overlap:</strong> Information split across chunks → incomplete answers</li>
+                        <li><strong>Poor retrieval:</strong> Wrong documents → hallucinated answers</li>
+                        <li><strong>No source citations:</strong> Can't verify accuracy</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 RAG vs Fine-tuning vs In-Context Learning</h2>
+                
+                <p>When should you use each technique? Here's a comprehensive comparison:</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #078930; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Aspect</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">In-Context Learning</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">RAG</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Fine-tuning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Setup Time</strong></td>
+                            <td style="padding: 1rem;">⚡ Instant</td>
+                            <td style="padding: 1rem;">🕐 Minutes-Hours</td>
+                            <td style="padding: 1rem;">🐌 Hours-Days</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Cost (per query)</strong></td>
+                            <td style="padding: 1rem;">💰 Low-Medium</td>
+                            <td style="padding: 1rem;">💰 Low</td>
+                            <td style="padding: 1rem;">💰 Very Low (after training)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Initial Cost</strong></td>
+                            <td style="padding: 1rem;">$0</td>
+                            <td style="padding: 1rem;">$0-100 (setup)</td>
+                            <td style="padding: 1rem;">💸 $100-10K+ (training)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Knowledge Updates</strong></td>
+                            <td style="padding: 1rem;">🔄 Change examples</td>
+                            <td style="padding: 1rem;">✅ Add docs instantly</td>
+                            <td style="padding: 1rem;">❌ Requires retraining</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Context Limit</strong></td>
+                            <td style="padding: 1rem;">⚠️ Limited by prompt size</td>
+                            <td style="padding: 1rem;">✅ Unlimited documents</td>
+                            <td style="padding: 1rem;">✅ Knowledge in weights</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Transparency</strong></td>
+                            <td style="padding: 1rem;">✅ See examples</td>
+                            <td style="padding: 1rem;">✅ Cite sources</td>
+                            <td style="padding: 1rem;">❌ Black box</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Accuracy on New Info</strong></td>
+                            <td style="padding: 1rem;">⚠️ Limited</td>
+                            <td style="padding: 1rem;">✅ Excellent</td>
+                            <td style="padding: 1rem;">❌ Can't access new info</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Best For</strong></td>
+                            <td style="padding: 1rem;">Quick tasks, format learning, simple classification</td>
+                            <td style="padding: 1rem;">QA, chatbots, knowledge retrieval, documentation</td>
+                            <td style="padding: 1rem;">Style/tone, behavior, domain expertise, efficiency</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Example Use Case</strong></td>
+                            <td style="padding: 1rem;">Email sentiment classification</td>
+                            <td style="padding: 1rem;">Customer support bot</td>
+                            <td style="padding: 1rem;">Medical diagnosis assistant</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Decision Framework: Which Technique to Use?</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="success-box">
+                        <p><strong>✅ Use In-Context Learning When:</strong></p>
+                        <ul>
+                            <li>Task can be learned from 2-10 examples</li>
+                            <li>Need instant deployment (no setup)</li>
+                            <li>Task may change frequently</li>
+                            <li>Budget is limited</li>
+                            <li>Examples: Sentiment analysis, format conversion, simple classification</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <p><strong>✅ Use RAG When:</strong></p>
+                        <ul>
+                            <li>Need to access external knowledge</li>
+                            <li>Information updates frequently</li>
+                            <li>Need source citations/transparency</li>
+                            <li>Have large knowledge base (docs, databases)</li>
+                            <li>Examples: Customer support, documentation QA, research assistants</li>
+                        </ul>
+                    </div>
+
+                    <div class="success-box">
+                        <p><strong>✅ Use Fine-tuning When:</strong></p>
+                        <ul>
+                            <li>Need specific style/tone/behavior</li>
+                            <li>Have 1000+ training examples</li>
+                            <li>Latency is critical (faster inference)</li>
+                            <li>Need to compress knowledge into model</li>
+                            <li>Examples: Code generation, creative writing, specialized domains</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p>💡 <strong>Pro Tip:</strong> You can <strong>combine</strong> these techniques! For example:</p>
+                    <ul>
+                        <li><strong>RAG + ICL:</strong> Retrieve documents, then use few-shot examples to format the answer</li>
+                        <li><strong>Fine-tuning + RAG:</strong> Fine-tune for tone/style, use RAG for knowledge</li>
+                        <li><strong>All Three:</strong> Fine-tuned model + RAG + few-shot examples for maximum performance!</li>
+                    </ul>
+                </div>
+
+                <h3>Real-World Example: Customer Support Bot</h3>
+
+                <pre><code class="language-python"># Combining RAG + ICL for a customer support bot
+
+def answer_customer_question(question):
+    # 1. RAG: Retrieve relevant company policies
+    relevant_docs = vector_store.similarity_search(question, k=3)
+    
+    # 2. ICL: Few-shot examples for formatting
+    few_shot_examples = """
+    Example 1:
+    Customer: How long does shipping take?
+    Agent: Based on our shipping policy, standard shipping takes 5-7 business days. 
+           You can track your order using the tracking number sent to your email.
+    
+    Example 2:
+    Customer: Can I return worn shoes?
+    Agent: According to our returns policy, shoes must be unworn with tags attached 
+           to qualify for a return within 30 days.
+    """
+    
+    # 3. Assemble prompt with RAG context + ICL examples
+    prompt = f"""
+    You are a helpful customer support agent.
+    
+    Company Policies:
+    {relevant_docs}
+    
+    {few_shot_examples}
+    
+    Now answer this question in the same style:
+    Customer: {question}
+    Agent:
+    """
+    
+    # 4. Generate answer
+    response = llm.generate(prompt)
+    return response
+
+# Result: Accurate (RAG) + Properly formatted (ICL) answers!</code></pre>
+
+                <div class="success-box">
+                    <p>🎯 <strong>Bottom Line:</strong> For <strong>95% of applications</strong>, start with <strong>RAG</strong> or <strong>RAG + ICL</strong>. 
+                    Only consider fine-tuning when you have specific needs that RAG can't satisfy (style, behavior, efficiency).</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Key Takeaways</h2>
+                
+                <h3>🎯 What You've Mastered:</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>In-Context Learning</strong></p>
+                        <ul>
+                            <li>LLMs learn from prompt examples</li>
+                            <li>Zero/one/few/many-shot learning</li>
+                            <li>No training required</li>
+                            <li>Instant deployment</li>
+                            <li>Best for: Simple tasks, format learning</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Retrieval Augmented Generation</strong></p>
+                        <ul>
+                            <li>Retrieve → Augment → Generate</li>
+                            <li>Grounded in external knowledge</li>
+                            <li>Instant knowledge updates</li>
+                            <li>Source citations for transparency</li>
+                            <li>Best for: QA, chatbots, documentation</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Technical Skills Gained</strong></p>
+                        <ul>
+                            <li>Vector databases (Pinecone, Chroma)</li>
+                            <li>Embeddings (OpenAI, Sentence Transformers)</li>
+                            <li>Semantic search & chunking</li>
+                            <li>LangChain RAG pipelines</li>
+                            <li>Hybrid search & reranking</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📊 Quick Reference: ICL vs RAG</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #0d9488; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Use Case</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Recommended Approach</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Email sentiment classification</td>
+                            <td style="padding: 1rem;"><strong>ICL</strong> (Few-shot)</td>
+                            <td style="padding: 1rem;">Simple pattern, 5-10 examples sufficient</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Customer support chatbot</td>
+                            <td style="padding: 1rem;"><strong>RAG</strong></td>
+                            <td style="padding: 1rem;">Needs company-specific knowledge, frequent updates</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Documentation Q&A</td>
+                            <td style="padding: 1rem;"><strong>RAG</strong></td>
+                            <td style="padding: 1rem;">Large knowledge base, needs source citations</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Translation with specific format</td>
+                            <td style="padding: 1rem;"><strong>ICL</strong> (Few-shot)</td>
+                            <td style="padding: 1rem;">Format-focused, examples show structure</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Legal document analysis</td>
+                            <td style="padding: 1rem;"><strong>RAG + ICL</strong></td>
+                            <td style="padding: 1rem;">RAG for case law, ICL for analysis format</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;">Medical diagnosis assistant</td>
+                            <td style="padding: 1rem;"><strong>Fine-tuning + RAG</strong></td>
+                            <td style="padding: 1rem;">Fine-tune for medical reasoning, RAG for latest research</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🔥 Most Important Concepts</h3>
+
+                <ol>
+                    <li><strong>Emergent Ability:</strong> ICL emerges in large models (100B+ params), not explicitly trained</li>
+                    <li><strong>RAG = Retrieval + Generation:</strong> Don't memorize everything, look it up when needed</li>
+                    <li><strong>Vector Search:</strong> Semantic similarity in embedding space enables intelligent retrieval</li>
+                    <li><strong>Chunking Matters:</strong> Too small = lost context, too large = noisy retrieval</li>
+                    <li><strong>Default to RAG:</strong> For 95% of knowledge-based applications, RAG is the right choice</li>
+                </ol>
+
+                <div class="info-box">
+                    <p>💡 <strong>Practical Advice:</strong></p>
+                    <ul>
+                        <li><strong>Prototyping:</strong> Start with ChromaDB for quick local testing</li>
+                        <li><strong>Production:</strong> Move to Pinecone/Weaviate for scalability</li>
+                        <li><strong>Embeddings:</strong> OpenAI ada-002 is the safe default choice</li>
+                        <li><strong>Chunk size:</strong> 500-1000 characters with 10-20% overlap</li>
+                        <li><strong>Retrieval:</strong> Start with k=3-5, tune based on performance</li>
+                        <li><strong>Advanced:</strong> Add hybrid search and reranking for production apps</li>
+                    </ul>
+                </div>
+
+                <h3>🧪 Self-Check Quiz</h3>
+
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <p><strong>1. When should you use RAG instead of fine-tuning?</strong></p>
+                        <div class="quiz-option" data-value="a">a) When you need the model to learn a specific writing style</div>
+                        <div class="quiz-option" data-value="b">b) When you need to access frequently updated external knowledge</div>
+                        <div class="quiz-option" data-value="c">c) When you have 10,000+ training examples for a specialized task</div>
+                        <div class="quiz-option" data-value="d">d) When you want faster inference with lower latency</div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-explanation" style="display:none;">
+                            <strong>Correct!</strong> RAG is ideal when you need to access external knowledge that changes frequently. 
+                            Fine-tuning is better for learning specific styles/behaviors (a), when you have lots of training data (c), 
+                            or when you need maximum inference speed (d).
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <p><strong>2. What's the main advantage of In-Context Learning over fine-tuning?</strong></p>
+                        <div class="quiz-option" data-value="a">a) Always produces more accurate results</div>
+                        <div class="quiz-option" data-value="b">b) Uses less compute during inference</div>
+                        <div class="quiz-option" data-value="c">c) Requires no training and can be deployed instantly</div>
+                        <div class="quiz-option" data-value="d">d) Works with smaller models (< 1B parameters)</div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-explanation" style="display:none;">
+                            <strong>Correct!</strong> ICL's biggest advantage is instant deployment—no training required. Just add examples 
+                            to your prompt and you're done. However, it doesn't always produce more accurate results (a), actually uses 
+                            MORE compute due to longer prompts (b), and only works well with large models 100B+ params (d).
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <p><strong>3. In a RAG system, what is the purpose of chunking documents?</strong></p>
+                        <div class="quiz-option" data-value="a">a) To reduce storage costs in the vector database</div>
+                        <div class="quiz-option" data-value="b">b) To make documents load faster</div>
+                        <div class="quiz-option" data-value="c">c) To fit more documents in the embedding model</div>
+                        <div class="quiz-option" data-value="d">d) To enable more precise retrieval of relevant information</div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-explanation" style="display:none;">
+                            <strong>Correct!</strong> Chunking enables precise retrieval. Small chunks mean you retrieve exactly the 
+                            relevant paragraph, not the entire 50-page document. This gives the LLM focused context without noise. 
+                            The other benefits (a, b, c) are minor compared to retrieval precision.
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <p><strong>4. Which embedding model should you use for a production RAG application with standard requirements?</strong></p>
+                        <div class="quiz-option" data-value="a">a) Custom fine-tuned BERT on your domain data</div>
+                        <div class="quiz-option" data-value="b">b) OpenAI text-embedding-ada-002</div>
+                        <div class="quiz-option" data-value="c">c) Word2Vec trained on Wikipedia</div>
+                        <div class="quiz-option" data-value="d">d) Always train your own embeddings from scratch</div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-explanation" style="display:none;">
+                            <strong>Correct!</strong> OpenAI's ada-002 is the safe default for most production applications. It's 
+                            high-quality, reliable, and cost-effective ($0.0001/1K tokens). Custom models (a) are only needed for 
+                            specialized domains. Word2Vec (c) is outdated. Training from scratch (d) is rarely worth the effort.
+                        </div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <p><strong>5. What's the best approach for a customer support chatbot that needs to answer questions about company policies AND format responses professionally?</strong></p>
+                        <div class="quiz-option" data-value="a">a) RAG for policy retrieval + ICL for response formatting</div>
+                        <div class="quiz-option" data-value="b">b) ICL only with company policies as examples</div>
+                        <div class="quiz-option" data-value="c">c) Fine-tuning on customer support transcripts</div>
+                        <div class="quiz-option" data-value="d">d) RAG only without any additional techniques</div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-explanation" style="display:none;">
+                            <strong>Correct!</strong> Combining RAG + ICL is often the best solution. RAG retrieves accurate company 
+                            policies (grounded knowledge), while few-shot ICL examples teach the model to format responses professionally. 
+                            ICL alone (b) can't handle large policy documents. Fine-tuning (c) is expensive and can't update easily. 
+                            RAG alone (d) might produce accurate but poorly formatted answers.
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🚀 What's Next?</h3>
+                
+                <p>
+                    You've mastered two of the most powerful techniques for leveraging LLMs without retraining. In our next tutorial, 
+                    <strong>Fine-tuning LLMs</strong>, we'll explore when and how to actually retrain models for specialized tasks, 
+                    learning about techniques like full fine-tuning, LoRA, QLoRA, and more.
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="success-box">
+                        <p><strong>✅ You Now Know:</strong></p>
+                        <ul>
+                            <li>When to use ICL vs RAG vs fine-tuning</li>
+                            <li>How to build production RAG systems</li>
+                            <li>Vector databases and embeddings</li>
+                            <li>Advanced RAG techniques</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>📚 Up Next:</strong></p>
+                        <ul>
+                            <li>Fine-tuning techniques (full, LoRA, QLoRA)</li>
+                            <li>When fine-tuning beats RAG</li>
+                            <li>Evaluation and deployment</li>
+                            <li>Cost optimization strategies</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've learned the two most practical techniques for building LLM applications. 
+                    RAG and ICL power 90% of production LLM systems. These skills alone can help you build incredibly powerful AI applications!</p>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="prompt-engineering.html" class="btn btn-secondary">← Previous: Prompt Engineering</a>
+                <a href="fine-tuning-llms.html" class="btn btn-primary">Next: Fine-tuning LLMs →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

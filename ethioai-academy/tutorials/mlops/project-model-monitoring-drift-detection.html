@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build automated model monitoring with Evidently AI drift detection, alerting system, and Airflow-triggered retraining pipeline.">
+    <meta name="keywords" content="model monitoring, data drift, Evidently AI, automated retraining, MLOps project, drift detection, alerting">
+    <title>Project: Model Monitoring & Drift Detection - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-model-monitoring-drift-detection.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { padding-left: 2rem; position: relative; margin-bottom: 0.75rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.2rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: #8b5cf6; color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Project 3: Model Monitoring & Drift Detection</span>
+            </div>
+            <h1>🔍 Project: Model Monitoring & Drift Detection</h1>
+            <p class="tutorial-intro">Build automated monitoring with Evidently AI drift detection, alerting system, and Airflow-triggered retraining</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Project 3</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 2 hours</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Project Overview -->
+            <section class="content-section" id="overview">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Build an <strong>automated monitoring and retraining system</strong> that detects drift and maintains model quality:
+                </p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Evidently AI</h3>
+                        <p>Automated drift detection for features and predictions</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Monitoring Dashboard</h3>
+                        <p>Real-time drift reports and visualizations</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚨</div>
+                        <h3>Alerting System</h3>
+                        <p>Slack/email notifications when drift detected</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Automated Retraining</h3>
+                        <p>Airflow DAG triggered by drift alerts</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Performance Tracking</h3>
+                        <p>Monitor accuracy degradation over time</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">💾</div>
+                        <h3>Data Logging</h3>
+                        <p>Store predictions for drift analysis</p>
+                    </div>
+                </div>
+
+                <h3>System Architecture</h3>
+                <pre><code>Production API → Log Predictions to DB
+                        ↓
+            Daily Monitoring Job
+                        ↓
+              Evidently AI Analysis
+                        ↓
+              Generate Drift Report
+                        ↓
+            ┌─────────┴─────────┐
+            ↓                   ↓
+    Drift Detected?        No Drift
+            ↓                   ↓
+    Send Alert          Continue Monitoring
+            ↓
+    Trigger Airflow DAG
+            ↓
+    Automated Retraining
+            ↓
+    Deploy New Model</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Prerequisites:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Deployed model from Project 1 or 2</li>
+                        <li>PostgreSQL or SQLite for logging predictions</li>
+                        <li>Apache Airflow installed (Docker recommended)</li>
+                        <li>Slack webhook URL (optional, for alerts)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 1: Prediction Logging -->
+            <section class="content-section" id="logging">
+                <h2>💾 Step 1: Prediction Logging System</h2>
+                
+                <pre><code class="language-python"># logging_middleware.py
+"""
+Log predictions and features to database
+"""
+from datetime import datetime
+import pandas as pd
+from sqlalchemy import create_engine, Column, Integer, Float, DateTime, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+Base = declarative_base()
+
+class Prediction(Base):
+    __tablename__ = 'predictions'
+    
+    id = Column(Integer, primary_key=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    
+    # Features
+    med_inc = Column(Float)
+    house_age = Column(Float)
+    ave_rooms = Column(Float)
+    ave_bedrms = Column(Float)
+    population = Column(Float)
+    ave_occup = Column(Float)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    
+    # Prediction
+    prediction = Column(Float)
+    model_version = Column(String)
+    
+    # Ground truth (when available)
+    actual_value = Column(Float, nullable=True)
+
+# Database setup
+engine = create_engine('sqlite:///predictions.db')
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+def log_prediction(features, prediction, model_version='1.0.0'):
+    """Log prediction to database"""
+    session = Session()
+    
+    pred_record = Prediction(
+        med_inc=features['MedInc'],
+        house_age=features['HouseAge'],
+        ave_rooms=features['AveRooms'],
+        ave_bedrms=features['AveBedrms'],
+        population=features['Population'],
+        ave_occup=features['AveOccup'],
+        latitude=features['Latitude'],
+        longitude=features['Longitude'],
+        prediction=prediction,
+        model_version=model_version
+    )
+    
+    session.add(pred_record)
+    session.commit()
+    session.close()
+
+def get_recent_predictions(days=7):
+    """Retrieve recent predictions"""
+    session = Session()
+    
+    cutoff = datetime.utcnow() - timedelta(days=days)
+    predictions = session.query(Prediction).filter(
+        Prediction.timestamp > cutoff
+    ).all()
+    
+    # Convert to DataFrame
+    data = [{
+        'MedInc': p.med_inc,
+        'HouseAge': p.house_age,
+        'AveRooms': p.ave_rooms,
+        'AveBedrms': p.ave_bedrms,
+        'Population': p.population,
+        'AveOccup': p.ave_occup,
+        'Latitude': p.latitude,
+        'Longitude': p.longitude,
+        'prediction': p.prediction,
+        'timestamp': p.timestamp
+    } for p in predictions]
+    
+    session.close()
+    return pd.DataFrame(data)</code></pre>
+
+                <h3>Update API with Logging</h3>
+                <pre><code class="language-python"># Add to FastAPI app
+from logging_middleware import log_prediction
+
+@app.post("/predict")
+async def predict(features: HouseFeatures):
+    """Prediction with logging"""
+    
+    # Make prediction
+    feature_array = np.array([[/* ... */]])
+    prediction = model.predict(feature_array)[0]
+    
+    # Log to database
+    log_prediction(
+        features=features.dict(),
+        prediction=float(prediction),
+        model_version='1.0.0'
+    )
+    
+    return {"prediction": float(prediction)}</code></pre>
+            </section>
+
+            <!-- Step 2: Drift Detection -->
+            <section class="content-section" id="drift-detection">
+                <h2>🔍 Step 2: Drift Detection with Evidently AI</h2>
+                
+                <pre><code class="language-python"># drift_detector.py
+"""
+Automated drift detection with Evidently AI
+"""
+import pandas as pd
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset, DataQualityPreset
+from datetime import datetime, timedelta
+from logging_middleware import get_recent_predictions
+
+class DriftDetector:
+    def __init__(self, reference_data_path='data/reference_data.csv'):
+        self.reference_data = pd.read_csv(reference_data_path)
+        self.drift_threshold = 0.3  # 30% of features drifted
+    
+    def check_drift(self):
+        """Check for data drift"""
+        
+        # Get recent production data
+        current_data = get_recent_predictions(days=7)
+        
+        if len(current_data) < 100:
+            print("⚠️  Insufficient data for drift detection")
+            return None
+        
+        print(f"🔍 Analyzing drift on {len(current_data)} recent predictions...")
+        
+        # Create drift report
+        report = Report(metrics=[
+            DataDriftPreset(),
+            DataQualityPreset()
+        ])
+        
+        # Run analysis
+        feature_columns = [
+            'MedInc', 'HouseAge', 'AveRooms', 'AveBedrms',
+            'Population', 'AveOccup', 'Latitude', 'Longitude'
+        ]
+        
+        report.run(
+            reference_data=self.reference_data[feature_columns],
+            current_data=current_data[feature_columns]
+        )
+        
+        # Save report
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        report_path = f'reports/drift_report_{timestamp}.html'
+        report.save_html(report_path)
+        
+        # Extract results
+        results = report.as_dict()
+        drift_detected = results['metrics'][0]['result']['dataset_drift']
+        drift_share = results['metrics'][0]['result']['share_of_drifted_columns']
+        
+        # Get drifted columns
+        drifted_features = [
+            col for col, drifted in 
+            results['metrics'][0]['result']['drift_by_columns'].items()
+            if drifted
+        ]
+        
+        print(f"\n📊 Drift Analysis Results:")
+        print(f"  Drift detected: {drift_detected}")
+        print(f"  Drifted features: {drift_share:.1%}")
+        if drifted_features:
+            print(f"  Features: {', '.join(drifted_features)}")
+        print(f"  Report saved: {report_path}")
+        
+        return {
+            'drift_detected': drift_detected,
+            'drift_share': drift_share,
+            'drifted_features': drifted_features,
+            'report_path': report_path,
+            'timestamp': timestamp,
+            'samples_analyzed': len(current_data)
+        }
+    
+    def should_trigger_retraining(self, drift_results):
+        """Decide if retraining should be triggered"""
+        
+        if drift_results is None:
+            return False
+        
+        if drift_results['drift_share'] > self.drift_threshold:
+            print(f"🚨 Drift threshold exceeded: {drift_results['drift_share']:.1%} > {self.drift_threshold:.1%}")
+            return True
+        
+        return False
+
+# Run drift detection
+if __name__ == '__main__':
+    detector = DriftDetector()
+    results = detector.check_drift()
+    
+    if detector.should_trigger_retraining(results):
+        print("🔄 Triggering retraining pipeline...")
+        # Trigger Airflow DAG (next step)</code></pre>
+            </section>
+
+            <!-- Step 3: Alerting System -->
+            <section class="content-section" id="alerting">
+                <h2>🚨 Step 3: Alerting System</h2>
+                
+                <pre><code class="language-python"># alerting.py
+"""
+Alert system for drift detection
+"""
+import requests
+from email.message import EmailMessage
+import smtplib
+import json
+
+class AlertManager:
+    def __init__(self, slack_webhook=None, email_config=None):
+        self.slack_webhook = slack_webhook
+        self.email_config = email_config
+    
+    def send_drift_alert(self, drift_results):
+        """Send drift alert via Slack and email"""
+        
+        message = self._format_alert_message(drift_results)
+        
+        # Slack notification
+        if self.slack_webhook:
+            self._send_slack_alert(message, drift_results)
+        
+        # Email notification
+        if self.email_config:
+            self._send_email_alert(message, drift_results)
+    
+    def _format_alert_message(self, results):
+        """Format alert message"""
+        return f"""
+🚨 **Model Drift Alert**
+
+**Drift detected:** {results['drift_share']:.1%} of features drifted
+**Drifted features:** {', '.join(results['drifted_features'])}
+**Samples analyzed:** {results['samples_analyzed']}
+**Report:** {results['report_path']}
+
+**Action Required:**
+- Review drift report: {results['report_path']}
+- Automated retraining has been triggered
+- Monitor retraining progress in Airflow
+
+**Timestamp:** {results['timestamp']}
+        """.strip()
+    
+    def _send_slack_alert(self, message, results):
+        """Send Slack notification"""
+        
+        payload = {
+            "text": "🚨 Model Drift Alert",
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "🚨 Model Drift Alert"
+                    }
+                },
+                {
+                    "type": "section",
+                    "fields": [
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*Drift Share:*\n{results['drift_share']:.1%}"
+                        },
+                        {
+                            "type": "mrkdwn",
+                            "text": f"*Samples:*\n{results['samples_analyzed']}"
+                        }
+                    ]
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*Drifted Features:*\n{', '.join(results['drifted_features'])}"
+                    }
+                },
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*Report:* `{results['report_path']}`"
+                    }
+                }
+            ]
+        }
+        
+        try:
+            response = requests.post(
+                self.slack_webhook,
+                json=payload,
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if response.status_code == 200:
+                print("✅ Slack alert sent")
+            else:
+                print(f"❌ Slack alert failed: {response.status_code}")
+        
+        except Exception as e:
+            print(f"❌ Slack alert error: {e}")
+    
+    def _send_email_alert(self, message, results):
+        """Send email notification"""
+        
+        msg = EmailMessage()
+        msg.set_content(message)
+        msg['Subject'] = f"🚨 Model Drift Alert - {results['drift_share']:.1%} drift"
+        msg['From'] = self.email_config['from']
+        msg['To'] = self.email_config['to']
+        
+        try:
+            with smtplib.SMTP_SSL(self.email_config['smtp_server'], 465) as server:
+                server.login(self.email_config['username'], self.email_config['password'])
+                server.send_message(msg)
+            
+            print("✅ Email alert sent")
+        
+        except Exception as e:
+            print(f"❌ Email alert error: {e}")
+
+# Usage
+alert_manager = AlertManager(
+    slack_webhook='https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+)
+
+if drift_results and drift_detected:
+    alert_manager.send_drift_alert(drift_results)</code></pre>
+            </section>
+
+            <!-- Step 4: Airflow Retraining DAG -->
+            <section class="content-section" id="airflow">
+                <h2>🔄 Step 4: Automated Retraining with Airflow</h2>
+                
+                <pre><code class="language-python"># dags/drift_monitoring_dag.py
+"""
+Airflow DAG for drift monitoring and automated retraining
+"""
+from airflow import DAG
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.bash import BashOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from datetime import datetime, timedelta
+import sys
+sys.path.append('/path/to/project')
+
+from drift_detector import DriftDetector
+from alerting import AlertManager
+
+default_args = {
+    'owner': 'mlops',
+    'depends_on_past': False,
+    'email': ['team@company.com'],
+    'email_on_failure': True,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'drift_monitoring',
+    default_args=default_args,
+    description='Monitor for data drift and trigger retraining',
+    schedule_interval='0 2 * * *',  # Daily at 2 AM
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+)
+
+def run_drift_detection(**context):
+    """Run drift detection"""
+    detector = DriftDetector()
+    results = detector.check_drift()
+    
+    # Store results in XCom
+    context['task_instance'].xcom_push(key='drift_results', value=results)
+    
+    return results
+
+def check_if_drift_detected(**context):
+    """Decide whether to trigger retraining"""
+    results = context['task_instance'].xcom_pull(
+        task_ids='detect_drift',
+        key='drift_results'
+    )
+    
+    if results is None:
+        return 'skip_retraining'
+    
+    detector = DriftDetector()
+    if detector.should_trigger_retraining(results):
+        return 'send_alert'
+    else:
+        return 'skip_retraining'
+
+def send_drift_alert(**context):
+    """Send alert notification"""
+    results = context['task_instance'].xcom_pull(
+        task_ids='detect_drift',
+        key='drift_results'
+    )
+    
+    alert_manager = AlertManager(
+        slack_webhook='https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+    )
+    alert_manager.send_drift_alert(results)
+
+# Task definitions
+detect_drift = PythonOperator(
+    task_id='detect_drift',
+    python_callable=run_drift_detection,
+    dag=dag,
+)
+
+check_drift = BranchPythonOperator(
+    task_id='check_drift',
+    python_callable=check_if_drift_detected,
+    dag=dag,
+)
+
+send_alert = PythonOperator(
+    task_id='send_alert',
+    python_callable=send_drift_alert,
+    dag=dag,
+)
+
+trigger_retraining = TriggerDagRunOperator(
+    task_id='trigger_retraining',
+    trigger_dag_id='model_retraining',
+    wait_for_completion=False,
+    dag=dag,
+)
+
+skip_retraining = BashOperator(
+    task_id='skip_retraining',
+    bash_command='echo "No retraining needed"',
+    dag=dag,
+)
+
+# Task dependencies
+detect_drift >> check_drift
+check_drift >> send_alert >> trigger_retraining
+check_drift >> skip_retraining</code></pre>
+
+                <h3>Retraining DAG</h3>
+                <pre><code class="language-python"># dags/retraining_dag.py
+"""
+Automated model retraining DAG
+"""
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'mlops',
+    'email': ['team@company.com'],
+    'email_on_failure': True,
+    'email_on_success': True,
+}
+
+dag = DAG(
+    'model_retraining',
+    default_args=default_args,
+    description='Automated model retraining pipeline',
+    schedule_interval=None,  # Triggered by drift_monitoring DAG
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+)
+
+fetch_data = BashOperator(
+    task_id='fetch_training_data',
+    bash_command='cd /path/to/project && python src/data/fetch_data.py',
+    dag=dag,
+)
+
+preprocess = BashOperator(
+    task_id='preprocess_data',
+    bash_command='cd /path/to/project && python src/data/preprocess.py',
+    dag=dag,
+)
+
+train = BashOperator(
+    task_id='train_model',
+    bash_command='cd /path/to/project && python src/models/train.py',
+    dag=dag,
+)
+
+evaluate = BashOperator(
+    task_id='evaluate_model',
+    bash_command='cd /path/to/project && python src/models/evaluate.py',
+    dag=dag,
+)
+
+deploy = BashOperator(
+    task_id='deploy_model',
+    bash_command='cd /path/to/project && python src/models/deploy.py',
+    dag=dag,
+)
+
+def send_completion_alert(**context):
+    """Send retraining completion alert"""
+    from alerting import AlertManager
+    
+    alert_manager = AlertManager(
+        slack_webhook='https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+    )
+    
+    message = "✅ **Model Retraining Complete**\n\nNew model has been deployed to production."
+    # Send notification
+    print(message)
+
+notify = PythonOperator(
+    task_id='notify_completion',
+    python_callable=send_completion_alert,
+    dag=dag,
+)
+
+fetch_data >> preprocess >> train >> evaluate >> deploy >> notify</code></pre>
+            </section>
+
+            <!-- Step 5: Monitoring Dashboard -->
+            <section class="content-section" id="dashboard">
+                <h2>📈 Step 5: Monitoring Dashboard</h2>
+                
+                <pre><code class="language-python"># dashboard.py
+"""
+Streamlit dashboard for drift monitoring
+"""
+import streamlit as st
+import pandas as pd
+from drift_detector import DriftDetector
+from logging_middleware import get_recent_predictions
+import plotly.express as px
+
+st.set_page_config(page_title="ML Monitoring Dashboard", layout="wide")
+
+st.title("🔍 Model Monitoring Dashboard")
+
+# Sidebar
+st.sidebar.header("Settings")
+days = st.sidebar.slider("Days to analyze", 1, 30, 7)
+
+# Load data
+@st.cache_data
+def load_data(days):
+    return get_recent_predictions(days=days)
+
+current_data = load_data(days)
+st.sidebar.metric("Total Predictions", len(current_data))
+
+# Tabs
+tab1, tab2, tab3 = st.tabs(["📊 Drift Analysis", "📈 Trends", "⚙️ Actions"])
+
+with tab1:
+    st.header("Data Drift Analysis")
+    
+    if st.button("Run Drift Detection"):
+        with st.spinner("Analyzing drift..."):
+            detector = DriftDetector()
+            results = detector.check_drift()
+            
+            if results:
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric("Drift Detected", "Yes" if results['drift_detected'] else "No")
+                
+                with col2:
+                    st.metric("Drifted Features", f"{results['drift_share']:.1%}")
+                
+                with col3:
+                    st.metric("Samples Analyzed", results['samples_analyzed'])
+                
+                if results['drifted_features']:
+                    st.warning(f"**Drifted Features:** {', '.join(results['drifted_features'])}")
+                
+                # Display report
+                st.info(f"Full report saved: {results['report_path']}")
+
+with tab2:
+    st.header("Prediction Trends")
+    
+    # Prediction distribution over time
+    fig = px.histogram(
+        current_data,
+        x='prediction',
+        nbins=50,
+        title='Prediction Distribution'
+    )
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Predictions over time
+    daily_stats = current_data.groupby(
+        current_data['timestamp'].dt.date
+    )['prediction'].agg(['mean', 'std', 'count']).reset_index()
+    
+    fig = px.line(
+        daily_stats,
+        x='timestamp',
+        y='mean',
+        title='Average Prediction Over Time'
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+with tab3:
+    st.header("Actions")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if st.button("🔄 Trigger Retraining"):
+            st.info("Retraining job triggered via Airflow")
+            # Trigger Airflow DAG
+    
+    with col2:
+        if st.button("📧 Send Test Alert"):
+            st.info("Test alert sent to Slack/Email")
+            # Send test alert
+
+# Run dashboard:
+# streamlit run dashboard.py</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Project Completion Checklist</h2>
+                
+                <ul class="checklist">
+                    <li>✅ Prediction logging to database implemented</li>
+                    <li>✅ Evidently AI drift detection configured</li>
+                    <li>✅ Drift reports generated automatically</li>
+                    <li>✅ Alerting system (Slack/Email) setup</li>
+                    <li>✅ Airflow DAG for drift monitoring created</li>
+                    <li>✅ Automated retraining pipeline integrated</li>
+                    <li>✅ Streamlit monitoring dashboard deployed</li>
+                    <li>✅ End-to-end automation tested</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations!</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've built a production monitoring system with automated drift detection and retraining! This ensures your model stays healthy and maintains performance over time.
+                    </p>
+                </div>
+
+                <h3>Key Achievements</h3>
+                <ul>
+                    <li><strong>Automated Monitoring:</strong> Daily drift checks without manual intervention</li>
+                    <li><strong>Proactive Alerts:</strong> Team notified immediately when drift detected</li>
+                    <li><strong>Self-Healing:</strong> Automated retraining triggers on drift</li>
+                    <li><strong>Transparency:</strong> Interactive dashboard for monitoring</li>
+                    <li><strong>Complete Pipeline:</strong> Detection → Alert → Retrain → Deploy</li>
+                </ul>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="project-real-time-prediction-system.html">← Previous: Project 2</a>
+                <a href="project-multi-model-serving-platform.html">Next: Project 4 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master prompt engineering. Learn techniques to write effective prompts and get better outputs from LLMs like ChatGPT and GPT-4.">
+    <meta name="keywords" content="prompt engineering, ChatGPT, prompt techniques, few-shot learning, chain-of-thought">
+    <title>Prompt Engineering - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="prompt-engineering.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Prompt Engineering</span>
+            </div>
+            <h1>Prompt Engineering</h1>
+            <p class="tutorial-intro">Master the art of prompting. Learn techniques to get better outputs from LLMs</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free LLMs & Transformers Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 What is Prompt Engineering?</h2>
+                <p>
+                    LLMs are incredibly powerful, but they're surprisingly sensitive to how you ask questions. The same query phrased slightly differently can yield drastically different results—from brilliant insights to complete nonsense.
+                </p>
+                <p>
+                    <strong>Prompt engineering</strong> is the practice of crafting, refining, and optimizing inputs (prompts) to get better, more reliable, and more consistent outputs from large language models. It's both an art (creativity, intuition) and a science (systematic testing, measurement).
+                </p>
+
+                <div class="info-box">
+                    <h3>💡 Why Prompt Engineering Matters</h3>
+                    <p>
+                        A well-engineered prompt can deliver better results than fine-tuning a model—with zero training time, zero compute costs, and instant iteration. It's the most cost-effective way to improve LLM performance.
+                    </p>
+                </div>
+
+                <h3>The Economics of Prompting</h3>
+                <p>
+                    Consider the options for improving LLM performance:
+                </p>
+                <ul>
+                    <li><strong>Fine-tuning:</strong> $10,000-$100,000+ in compute, weeks of work, requires ML expertise</li>
+                    <li><strong>Prompt engineering:</strong> $0 in compute, hours to days of work, anyone can learn it</li>
+                </ul>
+
+                <p>
+                    For most applications, prompt engineering should be your first approach. Only fine-tune when prompting reaches its limits.
+                </p>
+
+                <h3>A Simple Example of Prompt Impact</h3>
+                <div class="example-box">
+                    <h3>Same Task, Different Prompts</h3>
+                    <pre><code class="language-text">❌ Vague Prompt:
+"Tell me about machine learning"
+
+Output: Generic 3-paragraph overview, not very useful
+
+✅ Engineered Prompt:
+"Explain machine learning to a software engineer with 5 years of experience. Focus on practical applications and compare supervised vs unsupervised learning with code examples in Python. Keep it under 300 words."
+
+Output: Targeted, technical explanation with concrete examples—exactly what's needed!</code></pre>
+                </div>
+
+                <h3>The Evolution of Prompting</h3>
+                <p>
+                    Prompt engineering has evolved rapidly:
+                </p>
+                <ul>
+                    <li><strong>2018-2019 (GPT-2):</strong> Basic prompts, mostly text completion</li>
+                    <li><strong>2020 (GPT-3):</strong> Few-shot learning discovered, prompts become powerful</li>
+                    <li><strong>2022 (ChatGPT):</strong> Instruction-following, conversational prompts</li>
+                    <li><strong>2023-Present:</strong> Advanced techniques (CoT, ReAct, Tree-of-Thought), prompt optimization frameworks</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>Key Insight:</strong> Prompt engineering is now a recognized profession. Companies hire "prompt engineers" at $200k+ salaries. It's a crucial skill for the AI era.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Core Prompt Engineering Techniques</h2>
+                
+                <h3>1. Zero-Shot Prompting</h3>
+                <p>
+                    Ask the model to perform a task without any examples. Modern large models (GPT-4, Claude, Llama 2 70B) are surprisingly capable at zero-shot tasks.
+                </p>
+
+                <div class="example-box">
+                    <h3>Zero-Shot Examples</h3>
+                    <pre><code class="language-text">Task: Sentiment Classification
+Prompt: "Classify the sentiment of this review as positive, negative, or neutral: 'This product exceeded my expectations!'"
+Output: "Positive"
+
+---
+
+Task: Translation
+Prompt: "Translate to French: 'Hello, how are you?'"
+Output: "Bonjour, comment allez-vous?"
+
+---
+
+Task: Code Generation
+Prompt: "Write a Python function to calculate factorial recursively"
+Output: [complete working code]</code></pre>
+                </div>
+
+                <p><strong>When to use zero-shot:</strong></p>
+                <ul>
+                    <li>Simple, well-known tasks (translation, basic classification)</li>
+                    <li>Using large, instruction-tuned models (GPT-4, ChatGPT)</li>
+                    <li>When you don't have examples readily available</li>
+                    <li>For quick prototyping and exploration</li>
+                </ul>
+
+                <p><strong>Limitations:</strong></p>
+                <ul>
+                    <li>Less reliable for domain-specific or complex tasks</li>
+                    <li>Output format may vary without examples</li>
+                    <li>Smaller models struggle with zero-shot</li>
+                </ul>
+
+                <h3>2. One-Shot Prompting</h3>
+                <p>
+                    Provide a single example to demonstrate the task and desired format.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Prompt:
+"Extract company name and ticker symbol.
+
+Text: 'Apple Inc. reported strong earnings.'
+Extraction: Company: Apple Inc., Ticker: AAPL
+
+Text: 'Microsoft announced a new AI product.'
+Extraction:"</code></pre>
+                </div>
+
+                <h3>3. Few-Shot Prompting (In-Context Learning)</h3>
+                <p>
+                    Provide multiple examples (typically 2-5) to teach the model the task pattern. This is one of the most powerful techniques—discovered with GPT-3 in 2020.
+                </p>
+
+                <div class="example-box">
+                    <h3>Few-Shot Example: Custom Classification</h3>
+                    <pre><code class="language-text">Prompt:
+"Classify product reviews by urgency (urgent, moderate, low):
+
+Review: 'Product broken, need refund ASAP!'
+Urgency: urgent
+
+Review: 'Great product, works well'
+Urgency: low
+
+Review: 'Missing a part, can you send it?'
+Urgency: moderate
+
+Review: 'Love it but instructions unclear'
+Urgency: low
+
+Review: 'Received wrong item, need correct one immediately'
+Urgency:"</code></pre>
+                </div>
+
+                <p><strong>Few-shot best practices:</strong></p>
+                <ul>
+                    <li><strong>2-5 examples:</strong> More isn't always better (diminishing returns)</li>
+                    <li><strong>Diverse examples:</strong> Cover different cases, edge cases</li>
+                    <li><strong>Consistent format:</strong> Keep input/output structure identical</li>
+                    <li><strong>Order matters:</strong> Later examples have more influence</li>
+                    <li><strong>Quality over quantity:</strong> 3 good examples beat 10 mediocre ones</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>Why Few-Shot Works:</strong> The model recognizes the pattern in your examples and applies it to new inputs—without any parameter updates! This is called "in-context learning" and it's a remarkable emergent ability of large models.</p>
+                </div>
+
+                <h3>4. Chain-of-Thought (CoT) Prompting ⭐</h3>
+                <p>
+                    Ask the model to reason step-by-step before giving the final answer. This dramatically improves performance on complex reasoning tasks.
+                </p>
+
+                <div class="example-box">
+                    <h3>Without Chain-of-Thought</h3>
+                    <pre><code class="language-text">Prompt: "If John has 10 apples and gives 3 to Mary, then buys 5 more, how many does he have?"
+Output: "12"  ❌ (often wrong on multi-step problems)</code></pre>
+
+                    <h3>With Chain-of-Thought</h3>
+                    <pre><code class="language-text">Prompt: "If John has 10 apples and gives 3 to Mary, then buys 5 more, how many does he have? Let's think step by step."
+
+Output: "Let's solve this step by step:
+1. John starts with 10 apples
+2. He gives 3 to Mary: 10 - 3 = 7 apples
+3. He buys 5 more: 7 + 5 = 12 apples
+Final answer: John has 12 apples."  ✅</code></pre>
+                </div>
+
+                <p><strong>When to use CoT:</strong></p>
+                <ul>
+                    <li>Math word problems</li>
+                    <li>Multi-step reasoning</li>
+                    <li>Logical deduction</li>
+                    <li>Commonsense reasoning</li>
+                    <li>Planning and problem-solving</li>
+                </ul>
+
+                <h4>Zero-Shot CoT (Magic Phrase)</h4>
+                <p>
+                    Simply adding "Let's think step by step" or "Let's solve this step by step" often triggers reasoning!
+                </p>
+
+                <h4>Few-Shot CoT</h4>
+                <p>
+                    Show examples with reasoning chains included:
+                </p>
+                <div class="example-box">
+                    <pre><code class="language-text">Q: Roger has 5 tennis balls. He buys 2 more cans with 3 balls each. How many balls does he have?
+A: Roger starts with 5 balls. 2 cans × 3 balls = 6 balls. 5 + 6 = 11 balls. Answer: 11
+
+Q: The cafeteria had 23 apples. If they used 20 to make lunch and bought 6 more, how many do they have?
+A: Cafeteria starts with 23. They use 20: 23 - 20 = 3. They buy 6: 3 + 6 = 9 apples. Answer: 9
+
+Q: [Your actual question]</code></pre>
+                </div>
+
+                <h3>5. Role Prompting</h3>
+                <p>
+                    Frame the model as an expert in a specific domain to get more targeted, authoritative responses.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Generic: "Explain neural networks"
+Output: Basic, generic explanation
+
+Role-based: "You are a machine learning professor teaching a graduate-level course. Explain neural networks to PhD students, focusing on backpropagation mathematics and optimization challenges."
+Output: Technical, sophisticated explanation with mathematical depth</code></pre>
+                </div>
+
+                <p><strong>Effective roles:</strong></p>
+                <ul>
+                    <li>"You are an expert software engineer..."</li>
+                    <li>"You are a helpful teaching assistant..."</li>
+                    <li>"You are a professional copywriter specializing in..."</li>
+                    <li>"Act as a Python debugging expert..."</li>
+                    <li>"You are a business analyst with 10 years experience..."</li>
+                </ul>
+
+                <h3>6. Instruction Prompting</h3>
+                <p>
+                    Be explicit about what you want, how you want it, and any constraints.
+                </p>
+
+                <div class="example-box">
+                    <h3>Structured Instruction Template</h3>
+                    <pre><code class="language-text">Task: [What to do]
+Context: [Background information]
+Format: [How to structure output]
+Constraints: [Limitations, things to avoid]
+Tone: [Formal, casual, technical, etc.]
+
+Example:
+Task: Write a product description
+Context: For a noise-canceling headphone targeting commuters
+Format: 3 bullet points followed by a call-to-action
+Constraints: Under 100 words, avoid technical jargon
+Tone: Friendly and persuasive</code></pre>
+                </div>
+
+                <h3>7. Structured Output Prompting</h3>
+                <p>
+                    Request specific output formats for easy parsing and integration.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Prompt: "Extract information from this text and return as JSON:
+{
+  'name': string,
+  'company': string,
+  'email': string,
+  'phone': string
+}
+
+Text: 'Contact John Smith at Apple Inc., email john@apple.com or call 555-0123'"
+
+Output:
+{
+  "name": "John Smith",
+  "company": "Apple Inc.",
+  "email": "john@apple.com",
+  "phone": "555-0123"
+}</code></pre>
+                </div>
+
+                <h3>Comparison of Techniques</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Technique</th>
+                            <th>Complexity</th>
+                            <th>Performance</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Zero-Shot</strong></td>
+                            <td>Simple</td>
+                            <td>Good for GPT-4</td>
+                            <td>Well-known tasks, prototyping</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Few-Shot</strong></td>
+                            <td>Medium</td>
+                            <td>Excellent</td>
+                            <td>Custom formats, domain-specific</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chain-of-Thought</strong></td>
+                            <td>Medium</td>
+                            <td>Best for reasoning</td>
+                            <td>Math, logic, multi-step problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Role Prompting</strong></td>
+                            <td>Simple</td>
+                            <td>Good</td>
+                            <td>Domain expertise, tone control</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Instruction</strong></td>
+                            <td>Simple</td>
+                            <td>Very Good</td>
+                            <td>Complex tasks, specific requirements</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Parameter Tuning</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🌡️</div>
+                        <h3>Temperature</h3>
+                        <p><strong>0.0-0.3:</strong> Deterministic, focused<br><strong>0.7-1.0:</strong> Creative, varied<br><strong>1.5+:</strong> Very random</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Top-p (Nucleus)</h3>
+                        <p><strong>0.1:</strong> Very focused<br><strong>0.9:</strong> Diverse<br><strong>1.0:</strong> All tokens</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Max Tokens</h3>
+                        <p>Limits output length. Set appropriately for task to save costs</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚫</div>
+                        <h3>Stop Sequences</h3>
+                        <p>Terminate generation at specific strings (e.g., "###", "\n\n")</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💡 Advanced Prompt Engineering Techniques</h2>
+                
+                <h3>1. Self-Consistency</h3>
+                <p>
+                    Generate multiple responses to the same prompt and select the most common answer. This reduces hallucinations and improves reliability on reasoning tasks.
+                </p>
+
+                <div class="example-box">
+                    <h3>Self-Consistency Process</h3>
+                    <pre><code class="language-python">import openai
+from collections import Counter
+
+prompt = "If a train travels 120 km in 2 hours, what's its average speed? Think step by step."
+
+# Generate 5 responses
+responses = []
+for i in range(5):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7  # Some randomness for diversity
+    )
+    answer = extract_answer(response.choices[0].message.content)
+    responses.append(answer)
+
+# Take majority vote
+final_answer = Counter(responses).most_common(1)[0][0]
+print(f"Responses: {responses}")
+print(f"Final answer: {final_answer}")
+
+# Output: Responses: ['60 km/h', '60 km/h', '60 km/h', '60 km/h', '60 km/h']
+#         Final answer: 60 km/h</code></pre>
+                </div>
+
+                <p><strong>When to use:</strong> Critical decisions, math problems, complex reasoning where accuracy matters more than cost.</p>
+
+                <h3>2. Tree-of-Thought (ToT)</h3>
+                <p>
+                    Explore multiple reasoning paths like a search tree, evaluate intermediate steps, and select the best path. This is like beam search for reasoning.
+                </p>
+
+                <div class="example-box">
+                    <h3>Tree-of-Thought Example</h3>
+                    <pre><code class="language-text">Problem: Plan a 3-day trip to Paris with $500 budget
+
+Step 1: Generate multiple high-level plans
+  Path A: Focus on museums (Louvre, Orsay, etc.)
+  Path B: Focus on landmarks (Eiffel, Notre-Dame, etc.)
+  Path C: Mix of culture + food experiences
+
+Step 2: For each path, generate detailed itineraries
+  Path A Day 1: [detailed plan]
+  Path A Day 2: [detailed plan]
+  ...
+
+Step 3: Evaluate each complete plan
+  Path A: Budget check, feasibility, user preferences
+  Path B: Budget check, feasibility, user preferences
+  Path C: Budget check, feasibility, user preferences
+
+Step 4: Select best path based on evaluation
+  Winner: Path C (balanced, within budget, diverse experiences)</code></pre>
+                </div>
+
+                <p><strong>Use cases:</strong> Planning, strategic decision-making, complex problem-solving with multiple constraints.</p>
+
+                <h3>3. ReAct (Reasoning + Acting)</h3>
+                <p>
+                    Interleave reasoning with actions (tool use, searches, API calls). The model thinks, acts, observes results, and thinks again.
+                </p>
+
+                <div class="example-box">
+                    <h3>ReAct Pattern</h3>
+                    <pre><code class="language-text">Question: What's the current population of Tokyo?
+
+Thought 1: I need to find current data. My training cutoff is 2023, so I should search.
+Action 1: Search["Tokyo population 2024"]
+Observation 1: Tokyo metropolitan area has approximately 37.4 million people as of 2024
+
+Thought 2: I found the answer. Let me verify this is the metropolitan area, not just Tokyo proper.
+Action 2: Search["Tokyo city proper population"]
+Observation 2: Tokyo city proper (23 wards) has about 14 million people
+
+Thought 3: The question likely refers to the metro area, which is more commonly cited.
+Answer: Tokyo's metropolitan area has approximately 37.4 million people as of 2024.</code></pre>
+                </div>
+
+                <p><strong>Implementation requires:</strong> Tool integration (search APIs, calculators, databases) and orchestration framework (LangChain, AutoGPT).</p>
+
+                <h3>4. Prompt Chaining</h3>
+                <p>
+                    Break complex tasks into sequential, simpler steps. Each step's output becomes the next step's input.
+                </p>
+
+                <div class="example-box">
+                    <h3>Prompt Chaining Example: Content Pipeline</h3>
+                    <pre><code class="language-python"># Step 1: Extract key information
+prompt_1 = f"Extract main points from this article: {article_text}"
+summary = llm(prompt_1)
+
+# Step 2: Generate questions
+prompt_2 = f"Generate 3 questions answered by this summary: {summary}"
+questions = llm(prompt_2)
+
+# Step 3: Create social media posts
+prompt_3 = f\"\"\"Create 3 tweet-length posts promoting this content.
+Summary: {summary}
+Questions: {questions}
+Format: Engaging, under 280 chars each\"\"\"
+tweets = llm(prompt_3)
+
+# Step 4: Generate hashtags
+prompt_4 = f"Generate 5 relevant hashtags for: {tweets}"
+hashtags = llm(prompt_4)</code></pre>
+                </div>
+
+                <p><strong>Benefits:</strong></p>
+                <ul>
+                    <li>Simpler prompts for each step (easier to debug)</li>
+                    <li>Can use different models for different steps (cost optimization)</li>
+                    <li>Intermediate outputs can be cached/reused</li>
+                    <li>Better error handling and retry logic</li>
+                </ul>
+
+                <h3>5. Retrieval Augmented Generation (RAG)</h3>
+                <p>
+                    Ground LLM responses in external knowledge by retrieving relevant documents and including them in the prompt. This reduces hallucinations and enables up-to-date information.
+                </p>
+
+                <div class="example-box">
+                    <h3>RAG Architecture</h3>
+                    <pre><code class="language-text">1. User Query: "What's our company's return policy for electronics?"
+
+2. Embedding: Convert query to vector using embedding model
+
+3. Retrieval: Search vector database for similar documents
+   Retrieved: ["Electronics Return Policy v2.3", "Warranty Terms", ...]
+
+4. Augmented Prompt:
+   \"\"\"Use the following context to answer the question.
+   
+   Context:
+   [Document 1: Electronics Return Policy v2.3]
+   Electronics can be returned within 30 days with receipt...
+   
+   [Document 2: Warranty Terms]
+   Extended warranty available for purchase...
+   
+   Question: What's our company's return policy for electronics?
+   
+   Answer based only on the context provided. If the context doesn't contain 
+   the answer, say "I don't have that information."
+   \"\"\"
+
+5. LLM Generation: Model generates answer grounded in retrieved docs</code></pre>
+                </div>
+
+                <p><strong>Code Example:</strong></p>
+                <pre><code class="language-python">from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.llms import OpenAI
+from langchain.chains import RetrievalQA
+
+# 1. Create vector store from documents
+embeddings = OpenAIEmbeddings()
+docs = load_documents()  # Your knowledge base
+vectorstore = FAISS.from_documents(docs, embeddings)
+
+# 2. Create RAG chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=OpenAI(temperature=0),
+    chain_type="stuff",
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3})
+)
+
+# 3. Query with automatic retrieval
+query = "What's the return policy for electronics?"
+answer = qa_chain.run(query)
+print(answer)</code></pre>
+
+                <div class="success-box">
+                    <p><strong>RAG Benefits:</strong> Reduces hallucinations, enables up-to-date info, cites sources, handles private/proprietary knowledge, more cost-effective than fine-tuning for knowledge updates.</p>
+                </div>
+
+                <h3>6. Prompt Decomposition</h3>
+                <p>
+                    Break complex questions into sub-questions, answer each, then synthesize.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Complex Question: "Compare the economies of Japan and Germany"
+
+Decomposition:
+1. What's Japan's GDP, growth rate, and key industries?
+2. What's Germany's GDP, growth rate, and key industries?
+3. What are the major economic challenges each faces?
+4. How do their trade relationships differ?
+
+[Answer each sub-question]
+
+Synthesis:
+Combine all answers into comprehensive comparison</code></pre>
+                </div>
+
+                <h3>7. Constrained Generation</h3>
+                <p>
+                    Force the model to follow specific formats, constraints, or rules.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Prompt: \"Write a haiku about AI. 
+Strict requirements:
+- Line 1: exactly 5 syllables
+- Line 2: exactly 7 syllables  
+- Line 3: exactly 5 syllables
+- Theme: artificial intelligence
+- Tone: contemplative
+
+Count syllables before submitting your answer.\"
+
+Output:
+Thinking machines learn (5)
+From vast oceans of data (7)
+Mirror of our minds (5)</code></pre>
+                </div>
+
+                <h3>8. Negative Prompting</h3>
+                <p>
+                    Tell the model what NOT to do, avoiding common failure modes.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Prompt: \"Explain quantum computing to a 10-year-old.
+
+DO NOT:
+- Use technical jargon (qubits, superposition, entanglement)
+- Give mathematical formulas
+- Make it longer than 100 words
+- Use analogies involving cats in boxes
+
+DO:
+- Use simple everyday examples
+- Keep it fun and engaging
+- Focus on what it can do, not how it works\"</code></pre>
+                </div>
+
+                <h3>9. Iterative Refinement</h3>
+                <p>
+                    Generate draft, critique it, refine it. Repeat until quality is acceptable.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Iteration 1: \"Write a product description for wireless earbuds\"
+Output 1: [Generic description]
+
+Iteration 2: \"Improve this description. Make it more compelling, add specific features (battery life, noise cancellation), and include a clear benefit statement: [Output 1]\"
+Output 2: [Better description]
+
+Iteration 3: \"Refine further. Add social proof element and create urgency: [Output 2]\"
+Output 3: [Polished description]</code></pre>
+                </div>
+
+                <h3>10. Meta-Prompting (Constitutional AI)</h3>
+                <p>
+                    Have the model critique and improve its own outputs based on principles.
+                </p>
+
+                <div class="example-box">
+                    <pre><code class="language-text">Step 1 - Generate:
+\"Write a news article about climate change\"
+[Article generated]
+
+Step 2 - Critique:
+\"Critique this article for:
+1. Bias or one-sided viewpoints
+2. Missing important perspectives
+3. Factual accuracy concerns
+4. Emotional manipulation
+[Article text]\"
+
+Step 3 - Revise:
+\"Revise the article addressing these critiques: [critique]
+Original: [article]\"</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎓 Best Practices & Guidelines</h2>
+                
+                <h3>The 5 C's of Effective Prompting</h3>
+
+                <h4>1. Clear</h4>
+                <p>Be explicit about what you want. Ambiguity leads to unpredictable outputs.</p>
+                <div class="example-box">
+                    <pre><code class="language-text">❌ Vague: "Write code"
+✅ Clear: "Write a Python function that reads a CSV file, calculates the average of the 'price' column, and returns the result as a float"</code></pre>
+                </div>
+
+                <h4>2. Contextual</h4>
+                <p>Provide relevant background information.</p>
+                <div class="example-box">
+                    <pre><code class="language-text">❌ No context: "How do I fix this?"
+✅ With context: "I'm a Python developer working with pandas. My DataFrame has missing values in the 'age' column. How do I fill them with the median age?"</code></pre>
+                </div>
+
+                <h4>3. Constrained</h4>
+                <p>Set boundaries on length, format, style, and scope.</p>
+                <div class="example-box">
+                    <pre><code class="language-text">✅ "Explain neural networks in exactly 3 sentences, suitable for a software engineer, avoiding mathematical notation"</code></pre>
+                </div>
+
+                <h4>4. Complete</h4>
+                <p>Include all necessary information in the prompt.</p>
+                <div class="example-box">
+                    <pre><code class="language-text">✅ "Translate this product description to Spanish. Target audience: Mexican consumers. Tone: Friendly and professional. Length: match original."</code></pre>
+                </div>
+
+                <h4>5. Consistent</h4>
+                <p>Maintain consistent formatting and terminology across examples.</p>
+
+                <h3>Prompt Engineering Checklist</h3>
+                <ul>
+                    <li>✅ <strong>Clarity:</strong> Is the task unambiguous?</li>
+                    <li>✅ <strong>Format:</strong> Did you specify output format (JSON, list, paragraph)?</li>
+                    <li>✅ <strong>Length:</strong> Did you constrain output length?</li>
+                    <li>✅ <strong>Examples:</strong> For complex tasks, did you provide 2-5 examples?</li>
+                    <li>✅ <strong>Tone/Style:</strong> Did you specify desired tone (formal, casual, technical)?</li>
+                    <li>✅ <strong>Edge Cases:</strong> Did you address potential ambiguities?</li>
+                    <li>✅ <strong>Success Criteria:</strong> Is it clear what "good" output looks like?</li>
+                    <li>✅ <strong>Reasoning:</strong> For complex tasks, did you ask for step-by-step thinking?</li>
+                </ul>
+
+                <h3>Common Mistakes to Avoid</h3>
+                <div class="warning-box">
+                    <h3>⚠️ Anti-Patterns</h3>
+                    <ul>
+                        <li><strong>Being too vague:</strong> "Tell me about AI" → What aspect? What level of detail?</li>
+                        <li><strong>Asking compound questions:</strong> Break into separate prompts</li>
+                        <li><strong>Ignoring context window:</strong> Pasting entire 100-page documents</li>
+                        <li><strong>No format specification:</strong> Getting inconsistent outputs</li>
+                        <li><strong>Unrealistic expectations:</strong> Asking for real-time data or personal opinions</li>
+                        <li><strong>Not testing variations:</strong> Using first prompt that comes to mind</li>
+                        <li><strong>Forgetting to constrain:</strong> Getting 10-page essays when you wanted a summary</li>
+                        <li><strong>Mixing multiple languages:</strong> Unless intentional, stick to one language</li>
+                    </ul>
+                </div>
+
+                <h3>Prompt Templates for Common Tasks</h3>
+
+                <h4>Text Summarization</h4>
+                <pre><code class="language-text">\"\"\"Summarize the following text in [X] sentences/words.
+Focus on [key aspects].
+Target audience: [audience].
+Tone: [tone].
+
+Text:
+[content]
+
+Summary:\"\"\"</code></pre>
+
+                <h4>Code Generation</h4>
+                <pre><code class="language-text">\"\"\"Write a [language] function that:
+- [requirement 1]
+- [requirement 2]
+- [requirement 3]
+
+Include:
+- Docstring explaining the function
+- Type hints (if applicable)
+- Error handling for edge cases
+- Example usage
+
+Function name: [name]\"\"\"</code></pre>
+
+                <h4>Data Extraction</h4>
+                <pre><code class="language-text">\"\"\"Extract the following information from the text below.
+Return as JSON with these exact keys: [list keys]
+If information is missing, use null.
+
+Text:
+[content]
+
+JSON:\"\"\"</code></pre>
+
+                <h4>Creative Writing</h4>
+                <pre><code class="language-text">\"\"\"Write a [type] about [topic].
+Length: [X] words
+Tone: [tone]
+Target audience: [audience]
+Include: [specific elements]
+Avoid: [things to exclude]
+
+[Optional: Opening line to continue from]\"\"\"</code></pre>
+
+                <h3>Optimizing for Cost and Speed</h3>
+                <ul>
+                    <li><strong>Use cheaper models for simple tasks:</strong> GPT-3.5 for classification, GPT-4 for complex reasoning</li>
+                    <li><strong>Constrain max_tokens:</strong> Don't let model ramble, saves money</li>
+                    <li><strong>Cache frequent prompts:</strong> Store and reuse common responses</li>
+                    <li><strong>Batch similar requests:</strong> Process multiple items in one prompt when possible</li>
+                    <li><strong>Use stop sequences:</strong> Terminate generation early when done</li>
+                </ul>
+
+                <div class="example-box">
+                    <h3>Cost Optimization Example</h3>
+                    <pre><code class="language-python"># Instead of 100 separate API calls:
+for review in reviews:
+    sentiment = llm(f"Classify sentiment: {review}")  # $$$
+
+# Batch process in one call:
+prompt = \"\"\"Classify sentiment for each review (positive/negative/neutral):
+
+1. "Great product!" → 
+2. "Terrible service" → 
+3. "It's okay" → 
+...
+100. "Amazing!" → 
+\"\"\"
+results = llm(prompt)  # $$ (much cheaper!)</code></pre>
+                </div>
+
+                <h3>Safety and Ethics</h3>
+                <div class="warning-box">
+                    <h3>⚠️ Ethical Guidelines</h3>
+                    <ul>
+                        <li><strong>No jailbreaking:</strong> Don't try to bypass safety guidelines (violates ToS, unethical)</li>
+                        <li><strong>Respect privacy:</strong> Don't prompt models with private/sensitive information</li>
+                        <li><strong>No harmful content:</strong> Don't generate hate speech, violence, illegal content</li>
+                        <li><strong>Academic integrity:</strong> Disclose AI use in academic work</li>
+                        <li><strong>Transparency:</strong> Make it clear when content is AI-generated</li>
+                        <li><strong>Bias awareness:</strong> LLMs can exhibit biases; review outputs critically</li>
+                        <li><strong>Fact-check:</strong> Verify factual claims, don't trust blindly</li>
+                    </ul>
+                </div>
+
+                <h3>Prompt Versioning & Management</h3>
+                <p>
+                    For production applications, treat prompts like code:
+                </p>
+                <ul>
+                    <li><strong>Version control:</strong> Store prompts in git with clear versioning</li>
+                    <li><strong>A/B testing:</strong> Compare prompt variants on real data</li>
+                    <li><strong>Performance tracking:</strong> Monitor accuracy, latency, cost per prompt</li>
+                    <li><strong>Documentation:</strong> Document why specific phrasing was chosen</li>
+                    <li><strong>Rollback capability:</strong> Keep previous versions when updating prompts</li>
+                </ul>
+
+                <pre><code class="language-python"># Example prompt management
+PROMPTS = {
+    "sentiment_v1": "Classify sentiment: {text}",
+    "sentiment_v2": "Analyze the sentiment (positive/negative/neutral): {text}",
+    "sentiment_v3": \"\"\"You are a sentiment analysis expert.
+                      Classify this review's sentiment.
+                      Review: {text}
+                      Sentiment:\"\"\"
+}
+
+# Track performance
+METRICS = {
+    "sentiment_v1": {"accuracy": 0.82, "avg_cost": 0.0003},
+    "sentiment_v2": {"accuracy": 0.87, "avg_cost": 0.0004},
+    "sentiment_v3": {"accuracy": 0.91, "avg_cost": 0.0006}
+}
+
+# Use best prompt for production
+current_prompt = "sentiment_v2"  # Best balance of accuracy and cost</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Prompt Engineering at Scale</h2>
+                
+                <h3>Building a Prompt Engineering Pipeline</h3>
+                <p>
+                    For production systems, systematic prompt development is crucial:
+                </p>
+
+                <h4>1. Define Evaluation Metrics</h4>
+                <pre><code class="language-python">from sklearn.metrics import accuracy_score, f1_score
+
+# Metrics depend on task type
+METRICS = {
+    'classification': ['accuracy', 'f1', 'precision', 'recall'],
+    'generation': ['bleu', 'rouge', 'human_eval'],
+    'extraction': ['exact_match', 'f1'],
+    'summarization': ['rouge', 'coherence', 'faithfulness']
+}</code></pre>
+
+                <h4>2. Create Test Dataset</h4>
+                <pre><code class="language-python"># Create diverse test set with ground truth
+test_data = [
+    {
+        'input': 'This product is amazing! Love it!',
+        'expected': 'positive',
+        'category': 'clear_positive'
+    },
+    {
+        'input': 'Not bad, but could be better',
+        'expected': 'neutral',
+        'category': 'ambiguous'
+    },
+    # Include edge cases, ambiguous examples, etc.
+]</code></pre>
+
+                <h4>3. Test Multiple Prompt Variants</h4>
+                <pre><code class="language-python">import openai
+import pandas as pd
+
+prompt_variants = {
+    'v1_simple': \"Classify sentiment: {text}\",
+    'v2_explicit': \"Classify this review as positive, negative, or neutral: {text}\",
+    'v3_role': \"\"\"You are a sentiment analysis expert. 
+                   Classify sentiment (positive/negative/neutral): {text}
+                   Sentiment:\"\"\",
+    'v4_cot': \"\"\"Classify sentiment with reasoning:
+                 Review: {text}
+                 Analysis: [Think about tone, keywords, context]
+                 Sentiment:\"\"\",
+    'v5_fewshot': \"\"\"Classify sentiment:
+                     
+                     'Great product!' → positive
+                     'Terrible!' → negative
+                     'It's okay' → neutral
+                     
+                     '{text}' → \"\"\"
+}
+
+results = []
+for variant_name, template in prompt_variants.items():
+    correct = 0
+    total_cost = 0
+    latencies = []
+    
+    for test_case in test_data:
+        prompt = template.format(text=test_case['input'])
+        
+        # Measure latency
+        import time
+        start = time.time()
+        response = openai.ChatCompletion.create(
+            model=\"gpt-3.5-turbo\",
+            messages=[{\"role\": \"user\", \"content\": prompt}],
+            temperature=0
+        )
+        latency = time.time() - start
+        
+        # Extract answer and evaluate
+        answer = response.choices[0].message.content.strip().lower()
+        correct += (answer == test_case['expected'])
+        
+        # Calculate cost (example: $0.002 per 1K tokens)
+        tokens_used = response.usage.total_tokens
+        total_cost += (tokens_used / 1000) * 0.002
+        latencies.append(latency)
+    
+    results.append({
+        'variant': variant_name,
+        'accuracy': correct / len(test_data),
+        'avg_cost': total_cost / len(test_data),
+        'avg_latency': sum(latencies) / len(latencies),
+        'total_cost': total_cost
+    })
+
+# Analyze results
+df = pd.DataFrame(results)
+df = df.sort_values('accuracy', ascending=False)
+print(df)</code></pre>
+
+                <div class="example-box">
+                    <h3>Example Output</h3>
+                    <pre><code class="language-text">variant        accuracy  avg_cost  avg_latency  total_cost
+v5_fewshot        0.94     0.0006       1.2s        0.06
+v4_cot            0.91     0.0008       1.5s        0.08
+v3_role           0.87     0.0004       0.9s        0.04
+v2_explicit       0.83     0.0003       0.8s        0.03
+v1_simple         0.78     0.0002       0.7s        0.02
+
+Decision: Use v5_fewshot for production (best accuracy)
+Alternative: v3_role if cost is primary concern (good balance)</code></pre>
+                </div>
+
+                <h4>4. Continuous Monitoring</h4>
+                <pre><code class="language-python"># Production monitoring
+class PromptMonitor:
+    def __init__(self):
+        self.metrics = {
+            'success_rate': [],
+            'latency': [],
+            'cost': [],
+            'user_feedback': []
+        }
+    
+    def log_call(self, prompt_version, latency, cost, success):
+        # Log all metrics
+        self.metrics['latency'].append(latency)
+        self.metrics['cost'].append(cost)
+        self.metrics['success_rate'].append(1 if success else 0)
+        
+        # Alert if performance degrades
+        if self.get_recent_success_rate() < 0.85:
+            self.alert_team(\"Prompt performance degraded!\")
+    
+    def get_recent_success_rate(self, window=100):
+        recent = self.metrics['success_rate'][-window:]
+        return sum(recent) / len(recent) if recent else 0
+
+monitor = PromptMonitor()
+
+# In production
+response = llm(prompt)
+monitor.log_call(\"v5_fewshot\", latency, cost, success)</code></pre>
+
+                <h3>Tools & Frameworks</h3>
+                <div class=\"cards-grid\">
+                    <div class=\"info-card\">
+                        <div class=\"card-icon\">🔧</div>
+                        <h3>LangChain</h3>
+                        <p>Framework for LLM apps with prompt templates, chains, agents</p>
+                    </div>
+
+                    <div class=\"info-card\">
+                        <div class=\"card-icon\">📊</div>
+                        <h3>PromptTools</h3>
+                        <p>Testing and evaluation framework for prompts</p>
+                    </div>
+
+                    <div class=\"info-card\">
+                        <div class=\"card-icon\">🎯</div>
+                        <h3>DSPy</h3>
+                        <p>Automatic prompt optimization framework</p>
+                    </div>
+
+                    <div class=\"info-card\">
+                        <div class=\"card-icon\">📈</div>
+                        <h3>PromptLayer</h3>
+                        <p>Version control and tracking for prompts</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class=\"content-section\">
+                <h2>🎯 Real-World Prompt Engineering Examples</h2>
+                
+                <h3>Example 1: Customer Support Chatbot</h3>
+                <div class=\"example-box\">
+                    <pre><code class=\"language-text\">System Prompt:
+\"\"\"You are a helpful customer support agent for TechCo, an electronics retailer.
+
+Guidelines:
+- Be friendly, professional, and empathetic
+- Always greet customers warmly
+- Ask clarifying questions if request is unclear
+- Provide specific, actionable solutions
+- If you can't help, escalate to human agent
+- Never make up return policies or prices
+- Use customer's name if provided
+
+Available information:
+- Return policy: 30 days with receipt
+- Warranty: 1 year manufacturer warranty
+- Support hours: Mon-Fri 9am-5pm EST
+- Phone: 1-800-TECH-CO
+
+Response format:
+1. Acknowledge the customer's issue
+2. Provide solution or next steps
+3. Ask if they need additional help"""
+
+User: My headphones stopped working after 2 weeks!
+
+
+AI: I'm sorry to hear that! I understand how frustrating it must be when new headphones stop working so soon.  
+
+I'd be happy to help you with this. Since your headphones failed after just 2 weeks, they're well within our 30-day return period. Here's what we can do:
+
+**Option 1 - Full Refund:**
+- Bring the headphones and your receipt to any TechCo store
+- We'll process a full refund to your original payment method
+
+**Option 2 - Exchange:**
+- We can exchange them for the same model or a different one
+- Available immediately at any store location
+
+**Option 3 - Manufacturer Warranty:**
+- Your headphones also have a 1-year manufacturer warranty
+- We can help you process a warranty claim if you prefer
+
+Which option works best for you? Also, do you still have your receipt?
+
+If you have any other questions, I'm here to help! 😊
+"""
+
+Expected outcome: Empathetic, solution-oriented, clear options, asks for clarification
+                    </code></pre>
+                </div>
+                
+                <h3>Example 2: Content Generation</h3>
+                <pre><code class="language-python"># Blog Post Generator with Quality Control
+prompt_template = """Write a {word_count}-word blog post about: {topic}
+
+Requirements:
+- Target audience: {audience}
+- Tone: {tone}
+- Include these keywords: {keywords}
+- Structure: Introduction, 3-5 main sections, conclusion
+- Add 2-3 actionable takeaways
+- Include relevant examples or statistics
+
+SEO Guidelines:
+- Primary keyword appears in first 100 words
+- Use H2/H3 subheadings
+- Meta description friendly first paragraph
+- Natural keyword density (1-2%)
+
+Output format:
+Title: [Engaging title with primary keyword]
+Meta Description: [150-160 characters]
+[Blog content]
+Takeaways: [Bullet points]"""
+
+# Usage
+result = generate(
+    prompt_template.format(
+        word_count=1000,
+        topic="Prompt Engineering Best Practices",
+        audience="Software developers",
+        tone="Professional but conversational",
+        keywords="prompt engineering, AI, LLMs, best practices"
+    )
+)
+
+# Quality check function
+def check_quality(content, requirements):
+    checks = {
+        'word_count': len(content.split()),
+        'has_headings': '<h2>' in content or '##' in content,
+        'keyword_density': content.lower().count('prompt engineering') / len(content.split()),
+        'has_takeaways': 'takeaways' in content.lower()
+    }
+    return all([
+        checks['word_count'] >= requirements['min_words'],
+        checks['has_headings'],
+        0.01 <= checks['keyword_density'] <= 0.02,
+        checks['has_takeaways']
+    ])
+                </code></pre>
+                
+                <h3>Example 3: Data Extraction</h3>
+                <pre><code class="language-python"># Resume Parser with Structured Output
+extraction_prompt = """Extract information from this resume and return as JSON.
+
+Resume text:
+{resume_text}
+
+Extract these fields (use null if not found):
+{
+  "personal": {
+    "name": "string",
+    "email": "string",
+    "phone": "string",
+    "location": "string",
+    "linkedin": "string"
+  },
+  "summary": "string",
+  "experience": [
+    {
+      "company": "string",
+      "position": "string",
+      "start_date": "YYYY-MM",
+      "end_date": "YYYY-MM or 'Present'",
+      "responsibilities": ["string"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "string",
+      "degree": "string",
+      "field": "string",
+      "graduation_year": "YYYY"
+    }
+  ],
+  "skills": {
+    "technical": ["string"],
+    "soft": ["string"]
+  },
+  "certifications": ["string"]
+}
+
+Rules:
+- Return ONLY valid JSON, no markdown formatting
+- Dates in ISO format when possible
+- Standardize job titles (e.g., "Sr. Engineer" -> "Senior Engineer")
+- Extract all skills mentioned, categorize appropriately
+- If multiple emails/phones, prioritize professional/primary"""
+
+# Validation function
+import json
+import re
+
+def validate_extraction(response):
+    try:
+        data = json.loads(response)
+        
+        # Check required fields
+        assert 'personal' in data
+        assert 'experience' in data
+        
+        # Validate email format
+        if data['personal'].get('email'):
+            assert re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', data['personal']['email'])
+        
+        # Validate dates
+        for job in data.get('experience', []):
+            if job.get('start_date'):
+                assert re.match(r'\d{4}-\d{2}', job['start_date'])
+        
+        return True, data
+    except Exception as e:
+        return False, str(e)
+
+# Usage with retry logic
+def extract_with_retry(resume_text, max_retries=3):
+    for attempt in range(max_retries):
+        response = llm.complete(extraction_prompt.format(resume_text=resume_text))
+        valid, result = validate_extraction(response)
+        
+        if valid:
+            return result
+        else:
+            # Refine prompt based on error
+            error_feedback = f"\n\nPrevious attempt failed: {result}. Please correct and return valid JSON."
+            extraction_prompt += error_feedback
+    
+    raise ValueError("Failed to extract valid data after retries")
+                </code></pre>
+
+                <div class="info-box">
+                    <strong>💡 Pro Tips for Real-World Prompts:</strong>
+                    <ul>
+                        <li><strong>Version control:</strong> Track prompt versions with git, tag working versions</li>
+                        <li><strong>A/B testing:</strong> Test prompt variants with real data before deploying</li>
+                        <li><strong>Error handling:</strong> Always plan for unexpected outputs, implement retries</li>
+                        <li><strong>Cost monitoring:</strong> Log token usage, set budget alerts, optimize regularly</li>
+                        <li><strong>User feedback:</strong> Collect ratings on outputs to improve prompts iteratively</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📚 Summary</h2>
+                
+                <div class="success-box">
+                    <strong>🎉 Congratulations!</strong> You've completed the comprehensive guide to prompt engineering!
+                </div>
+                
+                <h3>Key Concepts Mastered</h3>
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h4>🎯 Core Techniques</h4>
+                        <ul>
+                            <li>Zero-shot prompting</li>
+                            <li>Few-shot in-context learning</li>
+                            <li>Chain-of-Thought reasoning</li>
+                            <li>Role and instruction prompting</li>
+                            <li>Structured output formatting</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h4>🚀 Advanced Methods</h4>
+                        <ul>
+                            <li>Self-consistency ensembling</li>
+                            <li>Tree-of-Thought exploration</li>
+                            <li>ReAct (Reasoning + Acting)</li>
+                            <li>RAG (Retrieval Augmented Generation)</li>
+                            <li>Prompt chaining and decomposition</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h4>⚙️ Production Skills</h4>
+                        <ul>
+                            <li>Evaluation metrics and testing</li>
+                            <li>Cost optimization strategies</li>
+                            <li>Version control and A/B testing</li>
+                            <li>Monitoring and observability</li>
+                            <li>Safety and ethical guidelines</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h4>🛠️ Tools & Frameworks</h4>
+                        <ul>
+                            <li>LangChain for chaining</li>
+                            <li>PromptTools for testing</li>
+                            <li>DSPy for optimization</li>
+                            <li>PromptLayer for tracking</li>
+                            <li>OpenAI API parameters</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Technique Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Technique</th>
+                            <th>Complexity</th>
+                            <th>Tokens Used</th>
+                            <th>Best For</th>
+                            <th>Limitations</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Zero-shot</td>
+                            <td>Low</td>
+                            <td>Minimal</td>
+                            <td>Simple, common tasks</td>
+                            <td>Inconsistent on complex tasks</td>
+                        </tr>
+                        <tr>
+                            <td>Few-shot</td>
+                            <td>Medium</td>
+                            <td>Medium-High</td>
+                            <td>Specific formats, edge cases</td>
+                            <td>Context window limits</td>
+                        </tr>
+                        <tr>
+                            <td>Chain-of-Thought</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td>Reasoning, math, logic</td>
+                            <td>Slower, more expensive</td>
+                        </tr>
+                        <tr>
+                            <td>RAG</td>
+                            <td>High</td>
+                            <td>High</td>
+                            <td>Knowledge-intensive tasks</td>
+                            <td>Requires vector database</td>
+                        </tr>
+                        <tr>
+                            <td>ReAct</td>
+                            <td>High</td>
+                            <td>Very High</td>
+                            <td>Multi-step tool use</td>
+                            <td>Complex implementation</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>What You Can Build Now</h3>
+                <ul class="checkmark-list">
+                    <li>✅ Customer support chatbots with consistent, helpful responses</li>
+                    <li>✅ Content generation systems with quality control</li>
+                    <li>✅ Data extraction pipelines with structured output</li>
+                    <li>✅ Research assistants using RAG for up-to-date information</li>
+                    <li>✅ Code generation tools with iterative refinement</li>
+                    <li>✅ Multi-agent systems with prompt chaining</li>
+                    <li>✅ Production-ready LLM applications with monitoring</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <strong>⚠️ Remember:</strong>
+                    <ul>
+                        <li>Always test prompts with diverse inputs before production</li>
+                        <li>Monitor costs and token usage continuously</li>
+                        <li>Implement safety checks for user-facing applications</li>
+                        <li>Version control your prompts like you version control code</li>
+                        <li>Consider privacy and data protection in your prompts</li>
+                    </ul>
+                </div>
+                
+                <h3>Next Steps</h3>
+                <p>Now that you've mastered prompt engineering, you're ready to dive deeper into:</p>
+                <ul>
+                    <li><strong>In-Context Learning & RAG:</strong> Build sophisticated retrieval systems</li>
+                    <li><strong>Fine-tuning:</strong> Customize models for specific domains</li>
+                    <li><strong>LLM Applications:</strong> Deploy production-ready AI systems</li>
+                </ul>
+                
+                <div class="info-box">
+                    <strong>🎯 Practice Exercise:</strong>
+                    <p>Build a complete prompt engineering pipeline:</p>
+                    <ol>
+                        <li>Choose a real-world task (customer support, content generation, etc.)</li>
+                        <li>Design prompts using techniques from this tutorial</li>
+                        <li>Implement A/B testing with multiple prompt variants</li>
+                        <li>Add evaluation metrics and monitoring</li>
+                        <li>Optimize for cost and performance</li>
+                        <li>Deploy with proper error handling</li>
+                    </ol>
+                    <p><strong>Share your results!</strong> Document what worked, what didn't, and your learnings.</p>
+                </div>
+
+                <div class="quiz-container">
+                    <h3>🧠 Self-Check Quiz</h3>
+                    
+                    <div class="quiz-question" data-answer="few-shot">
+                        <p><strong>1. Which technique is best when you need the model to follow a specific output format?</strong></p>
+                        <div class="quiz-option" data-value="zero-shot">Zero-shot prompting</div>
+                        <div class="quiz-option" data-value="few-shot">Few-shot prompting with format examples</div>
+                        <div class="quiz-option" data-value="cot">Chain-of-Thought</div>
+                        <div class="quiz-option" data-value="rag">RAG</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="rag">
+                        <p><strong>2. For a chatbot that needs current information not in the training data, which technique is most appropriate?</strong></p>
+                        <div class="quiz-option" data-value="few-shot">Few-shot learning</div>
+                        <div class="quiz-option" data-value="cot">Chain-of-Thought</div>
+                        <div class="quiz-option" data-value="rag">Retrieval Augmented Generation (RAG)</div>
+                        <div class="quiz-option" data-value="react">ReAct</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="temp">
+                        <p><strong>3. Which parameter controls the randomness/creativity of model outputs?</strong></p>
+                        <div class="quiz-option" data-value="max">max_tokens</div>
+                        <div class="quiz-option" data-value="temp">temperature</div>
+                        <div class="quiz-option" data-value="stop">stop_sequences</div>
+                        <div class="quiz-option" data-value="freq">frequency_penalty</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="selfcons">
+                        <p><strong>4. Which advanced technique generates multiple reasoning paths and picks the most common answer?</strong></p>
+                        <div class="quiz-option" data-value="tot">Tree-of-Thought</div>
+                        <div class="quiz-option" data-value="selfcons">Self-consistency</div>
+                        <div class="quiz-option" data-value="chain">Prompt chaining</div>
+                        <div class="quiz-option" data-value="meta">Meta-prompting</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="batching">
+                        <p><strong>5. Which is the MOST effective cost optimization strategy for production prompts?</strong></p>
+                        <div class="quiz-option" data-value="shorter">Making prompts shorter</div>
+                        <div class="quiz-option" data-value="batching">Batching multiple requests</div>
+                        <div class="quiz-option" data-value="caching">Caching common responses</div>
+                        <div class="quiz-option" data-value="smaller">Using smaller models</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="test">
+                        <p><strong>6. Before deploying a production prompt, you should ALWAYS:</strong></p>
+                        <div class="quiz-option" data-value="launch">Launch immediately to get user feedback</div>
+                        <div class="quiz-option" data-value="test">Test with diverse inputs and edge cases</div>
+                        <div class="quiz-option" data-value="perfect">Make the prompt as long as possible</div>
+                        <div class="quiz-option" data-value="guess">Guess the best approach</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    
+                    <div class="quiz-question" data-answer="all">
+                        <p><strong>7. The 5 C's framework includes: Clear, Contextual, Constrained, Complete, and:</strong></p>
+                        <div class="quiz-option" data-value="complex">Complex</div>
+                        <div class="quiz-option" data-value="all">Consistent</div>
+                        <div class="quiz-option" data-value="cheap">Cheap</div>
+                        <div class="quiz-option" data-value="creative">Creative</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="tokenization-and-embeddings.html" class="btn btn-secondary">← Previous: Tokenization & Embeddings</a>
+                <a href="in-context-learning-and-rag.html" class="btn btn-primary">Next: In-Context Learning & RAG →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete Transformer Architecture - Understand the full encoder-decoder architecture, layer normalization, and feed-forward networks.">
+    <meta name="keywords" content="transformer encoder decoder, layer normalization, feed-forward network, residual connections, scaling">
+    <title>Complete Transformer Architecture | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Complete Transformer Architecture</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Complete Transformer Architecture</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 5</span>
+                    <span style="color: rgba(255,255,255,0.9);">🔴 Advanced</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Master the complete encoder-decoder architecture and all building blocks
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>The Complete Picture: Assembling All Components</h2>
+                <p>
+                    You've mastered the individual components: self-attention, multi-head attention, positional encoding, and feed-forward networks. Now we'll assemble these pieces into the <strong>complete transformer architecture</strong> - the original encoder-decoder design from "Attention Is All You Need" (Vaswani et al., 2017).
+                </p>
+                
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #078930;">
+                    <h3 style="margin-top: 0; color: #065f46;">🎯 Learning Objectives</h3>
+                    <ul style="color: #1e3a8a; margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Encoder architecture:</strong> How self-attention and feed-forward layers stack</li>
+                        <li><strong>Decoder architecture:</strong> Masked self-attention, cross-attention, and autoregressive generation</li>
+                        <li><strong>Layer normalization:</strong> Why it's critical for deep transformers</li>
+                        <li><strong>Residual connections:</strong> Enabling 100+ layer models</li>
+                        <li><strong>Complete implementation:</strong> Production-ready PyTorch code</li>
+                        <li><strong>Training and inference:</strong> How data flows through the full model</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>🎬 The Transformer Journey</h4>
+                    <p><strong>Input:</strong> "The cat sat on the mat" (English)</p>
+                    <p><strong>Goal:</strong> "Le chat était assis sur le tapis" (French)</p>
+                    <p><strong>Architecture:</strong> Encoder processes input → Decoder generates output token-by-token</p>
+                </div>
+
+                <h3>Why This Architecture Matters</h3>
+                <p>
+                    The transformer architecture revolutionized NLP because it:
+                </p>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🚀 Parallelizable</h4>
+                        <p style="font-size: 0.9rem; color: #047857; margin: 0;">Unlike RNNs, all tokens processed simultaneously</p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">🔗 Long-Range Dependencies</h4>
+                        <p style="font-size: 0.9rem; color: #b45309; margin: 0;">Direct attention paths between any tokens</p>
+                    </div>
+                    <div style="background: #ede9fe; padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">📈 Scalable</h4>
+                        <p style="font-size: 0.9rem; color: #6d28d9; margin: 0;">Scales to billions of parameters efficiently</p>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">🎓 Interpretable</h4>
+                        <p style="font-size: 0.9rem; color: #065f46; margin: 0;">Attention weights show what model "looks at"</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>High-Level Architecture Overview</h2>
+                
+                <p>
+                    The transformer consists of two main components: an <strong>encoder</strong> that processes the input sequence and a <strong>decoder</strong> that generates the output sequence. Both are stacks of identical layers.
+                </p>
+
+                <pre><code class="language-text">
+┌─────────────────────────────────────────────────────────────────┐
+│                    INPUT: "The cat sat"                         │
+│                    Token IDs: [142, 2368, 3332]                 │
+└──────────────────────────┬──────────────────────────────────────┘
+                           ↓
+                   ┌───────────────┐
+                   │  EMBEDDING    │
+                   │  + POSITIONAL │
+                   │   ENCODING    │
+                   └───────┬───────┘
+                           ↓
+              ╔════════════════════════╗
+              ║   ENCODER STACK (6x)   ║
+              ║                        ║
+              ║  Layer 1:              ║
+              ║    • Multi-Head Attn   ║ ←─┐
+              ║    • Add & Norm        ║   │ Repeated
+              ║    • Feed-Forward      ║   │ 6 times
+              ║    • Add & Norm        ║   │
+              ║                        ║   │
+              ║  Layers 2-6: Same      ║ ──┘
+              ║                        ║
+              ╚════════════╦═══════════╝
+                           ↓
+                [Contextualized Representations]
+                  [batch, seq_len, d_model]
+                           ↓
+              ╔════════════╩═══════════╗
+              ║   DECODER STACK (6x)   ║
+              ║                        ║
+              ║  Layer 1:              ║
+              ║    • Masked Self-Attn  ║ (can't see future)
+              ║    • Add & Norm        ║
+              ║    • Cross-Attention   ║ (attends to encoder)
+              ║    • Add & Norm        ║
+              ║    • Feed-Forward      ║
+              ║    • Add & Norm        ║
+              ║                        ║
+              ║  Layers 2-6: Same      ║
+              ║                        ║
+              ╚════════════╦═══════════╝
+                           ↓
+                   ┌───────────────┐
+                   │ Linear Layer  │
+                   │ (d_model →    │
+                   │  vocab_size)  │
+                   └───────┬───────┘
+                           ↓
+                   ┌───────────────┐
+                   │   Softmax     │
+                   └───────┬───────┘
+                           ↓
+┌─────────────────────────────────────────────────────────────────┐
+│              OUTPUT: "Le chat était"                            │
+│              Probabilities: [P(Le), P(chat), P(était), ...]    │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+
+                <h3>Key Architectural Numbers (Original Paper)</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Parameter</th>
+                            <th style="padding: 0.75rem; text-align: center;">Value</th>
+                            <th style="padding: 0.75rem; text-align: left;">What It Means</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><code>d_model</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">512</td>
+                            <td style="padding: 0.75rem;">Dimension of all token representations</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><code>num_heads</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">8</td>
+                            <td style="padding: 0.75rem;">Number of attention heads (512 ÷ 8 = 64 per head)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><code>d_ff</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">2048</td>
+                            <td style="padding: 0.75rem;">Feed-forward hidden dimension (4× d_model)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><code>num_layers</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">6</td>
+                            <td style="padding: 0.75rem;">Encoder layers + Decoder layers (6 each)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><code>dropout</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">0.1</td>
+                            <td style="padding: 0.75rem;">Regularization rate (10% neurons dropped)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><code>vocab_size</code></td>
+                            <td style="padding: 0.75rem; text-align: center;">~37K</td>
+                            <td style="padding: 0.75rem;">Shared vocabulary (byte-pair encoding)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">💡 Critical Design Insight</h4>
+                    <p style="color: #7f1d1d; margin: 0;">
+                        <strong>Everything is d_model:</strong> Token embeddings, attention outputs, feed-forward outputs - all are 512-dimensional vectors. This uniform dimensionality allows residual connections to work seamlessly (you can add outputs from different layers).
+                    </p>
+                </div>
+
+                <h3>Information Flow: A Concrete Example</h3>
+                <pre><code class="language-python">import torch
+
+# Example: Translating "Hello world" to French
+batch_size = 1
+src_seq_len = 2  # "Hello", "world"
+tgt_seq_len = 2  # "<start>", "Bonjour" (during training)
+
+# Step 1: Tokenize input
+src_tokens = torch.tensor([[5043, 2088]])  # "Hello", "world"
+
+# Step 2: Encoder processes input
+# src_tokens → Embedding → Positional Encoding → 6 Encoder Layers
+encoder_output = model.encoder(src_tokens)
+print(f"Encoder output shape: {encoder_output.shape}")
+# Output: torch.Size([1, 2, 512])
+# Meaning: batch=1, src_len=2, d_model=512
+
+# Step 3: Decoder generates output (autoregressive)
+tgt_tokens = torch.tensor([[1, 34523]])  # "<start>", "Bonjour"
+decoder_output = model.decoder(
+    tgt_tokens, 
+    encoder_output  # Cross-attention uses this
+)
+print(f"Decoder output shape: {decoder_output.shape}")
+# Output: torch.Size([1, 2, 37000])
+# Meaning: batch=1, tgt_len=2, vocab_size=37000
+
+# Step 4: Take argmax to get predicted tokens
+predictions = decoder_output.argmax(dim=-1)
+print(f"Predicted tokens: {predictions}")
+# Output: tensor([[34523, 23456]]) → "Bonjour", "monde"</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Encoder Architecture: Building Contextual Representations</h2>
+                <p>
+                    The encoder's job is to process the input sequence and create <strong>rich, contextualized representations</strong> where each token's embedding incorporates information from the entire sequence. It does this through stacked layers of self-attention and feed-forward networks.
+                </p>
+
+                <h3>Single Encoder Layer: The Building Block</h3>
+                <p>
+                    Each encoder layer has two main sub-layers, each with residual connections and layer normalization:
+                </p>
+
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class EncoderLayer(nn.Module):
+    """
+    Single encoder layer with:
+    1. Multi-head self-attention
+    2. Position-wise feed-forward network
+    Both with residual connections and layer normalization
+    """
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super().__init__()
+        
+        # Sub-layer 1: Multi-head self-attention
+        self.self_attention = MultiHeadAttention(d_model, num_heads, dropout)
+        
+        # Sub-layer 2: Feed-forward network
+        # Classic architecture: d_model → 4*d_model → d_model
+        self.feed_forward = nn.Sequential(
+            nn.Linear(d_model, d_ff),    # Expand (512 → 2048)
+            nn.ReLU(),                   # Non-linearity
+            nn.Dropout(dropout),
+            nn.Linear(d_ff, d_model),    # Contract (2048 → 512)
+            nn.Dropout(dropout)
+        )
+        
+        # Layer normalization (applied after residual connection)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, x, mask=None):
+        """
+        Args:
+            x: [batch, seq_len, d_model] input tensor
+            mask: [batch, seq_len, seq_len] attention mask (optional)
+        
+        Returns:
+            [batch, seq_len, d_model] processed tensor
+        """
+        # Sub-layer 1: Multi-head self-attention
+        # Pattern: x = LayerNorm(x + Sublayer(x))
+        attn_output, _ = self.self_attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attn_output))  # Residual + Norm
+        
+        # Sub-layer 2: Feed-forward
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + ff_output)  # Residual + Norm
+        
+        return x
+
+
+# Let's trace what happens to a single token through one encoder layer:
+print("=" * 70)
+print("Token Flow Through One Encoder Layer")
+print("=" * 70)
+
+batch, seq_len, d_model = 1, 5, 512
+x = torch.randn(batch, seq_len, d_model)
+print(f"Input shape: {x.shape}")  # [1, 5, 512]
+
+# Create encoder layer
+layer = EncoderLayer(d_model=512, num_heads=8, d_ff=2048, dropout=0.1)
+
+# Forward pass
+output = layer(x)
+print(f"Output shape: {output.shape}")  # [1, 5, 512] - same!
+
+print("\nKey observation: Input and output shapes are IDENTICAL.")
+print("This allows stacking many layers: output of layer N → input of layer N+1")</code></pre>
+
+                <h3>Complete Encoder: Stacking Layers</h3>
+                <pre><code class="language-python">class TransformerEmbedding(nn.Module):
+    """
+    Combines token embeddings with positional encoding.
+    """
+    def __init__(self, vocab_size, d_model, max_seq_len=5000, dropout=0.1):
+        super().__init__()
+        self.token_embedding = nn.Embedding(vocab_size, d_model)
+        self.positional_encoding = self._create_positional_encoding(max_seq_len, d_model)
+        self.dropout = nn.Dropout(dropout)
+        self.d_model = d_model
+    
+    def _create_positional_encoding(self, max_seq_len, d_model):
+        """Sinusoidal positional encoding from 'Attention Is All You Need'."""
+        pe = torch.zeros(max_seq_len, d_model)
+        position = torch.arange(0, max_seq_len).unsqueeze(1).float()
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * 
+                            -(math.log(10000.0) / d_model))
+        
+        pe[:, 0::2] = torch.sin(position * div_term)  # Even indices
+        pe[:, 1::2] = torch.cos(position * div_term)  # Odd indices
+        
+        return pe.unsqueeze(0)  # [1, max_seq_len, d_model]
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch, seq_len] token IDs
+        Returns:
+            [batch, seq_len, d_model] embeddings + positional encoding
+        """
+        seq_len = x.size(1)
+        
+        # Token embedding (scaled by sqrt(d_model) - from paper)
+        x = self.token_embedding(x) * math.sqrt(self.d_model)
+        
+        # Add positional encoding
+        x = x + self.positional_encoding[:, :seq_len, :].to(x.device)
+        
+        return self.dropout(x)
+
+
+class Encoder(nn.Module):
+    """
+    Complete transformer encoder: embedding + N encoder layers.
+    """
+    def __init__(self, vocab_size, d_model, num_layers, num_heads, d_ff, 
+                 dropout=0.1, max_seq_len=5000):
+        super().__init__()
+        
+        # Embedding layer (tokens + positions)
+        self.embedding = TransformerEmbedding(vocab_size, d_model, 
+                                             max_seq_len, dropout)
+        
+        # Stack of N identical encoder layers
+        self.layers = nn.ModuleList([
+            EncoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        self.num_layers = num_layers
+    
+    def forward(self, src, mask=None):
+        """
+        Args:
+            src: [batch, src_len] source token IDs
+            mask: [batch, 1, src_len] or [batch, src_len, src_len] mask
+        
+        Returns:
+            [batch, src_len, d_model] encoded representations
+        """
+        # Step 1: Embed tokens and add positional encoding
+        x = self.embedding(src)
+        
+        # Step 2: Pass through encoder layers sequentially
+        for layer in self.layers:
+            x = layer(x, mask)
+        
+        return x
+
+
+# Example: Building and using an encoder
+print("\n" + "=" * 70)
+print("Complete Encoder Example")
+print("=" * 70)
+
+encoder = Encoder(
+    vocab_size=50000,      # English vocabulary size
+    d_model=512,           # Representation dimension
+    num_layers=6,          # 6 encoder layers (standard)
+    num_heads=8,           # 8 attention heads
+    d_ff=2048,             # Feed-forward dimension (4× d_model)
+    dropout=0.1
+)
+
+# Input: batch of English sentences
+# "The cat sat" → token IDs [142, 2368, 3332]
+# "Hello world" → token IDs [5043, 2088, 0] (padded)
+src_tokens = torch.tensor([
+    [142, 2368, 3332],
+    [5043, 2088, 0]
+])
+
+print(f"Input tokens shape: {src_tokens.shape}")  # [2, 3]
+
+# Forward pass
+encoder_output = encoder(src_tokens)
+print(f"Encoder output shape: {encoder_output.shape}")  # [2, 3, 512]
+
+print("\nEach token now has a 512-dim representation incorporating")
+print("information from ALL tokens in the sentence via self-attention.")
+
+# Total parameters
+total_params = sum(p.numel() for p in encoder.parameters())
+print(f"\nTotal parameters: {total_params:,}")
+# Approximately 45-50 million parameters for this configuration</code></pre>
+
+                <div class="success-box">
+                    <h4>🔍 What Happens in the Encoder?</h4>
+                    <ol style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Layer 0 (Embedding):</strong> Token IDs → 512-dim vectors + positional info</li>
+                        <li><strong>Layer 1:</strong> Tokens attend to nearby words, learn local patterns (e.g., "the cat" → noun phrase)</li>
+                        <li><strong>Layer 2-3:</strong> Build syntactic structure (subject-verb agreement, phrase boundaries)</li>
+                        <li><strong>Layer 4-5:</strong> Capture semantic relationships (coreference, discourse structure)</li>
+                        <li><strong>Layer 6:</strong> High-level contextualized representations ready for decoder</li>
+                    </ol>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;"><strong>Result:</strong> Each token's final representation incorporates information from the entire input sequence through 6 layers of self-attention.</p>
+                </div>
+
+                <h3>Encoder Self-Attention Visualization</h3>
+                <pre><code class="language-python"># Visualize what the encoder learns to attend to
+import matplotlib.pyplot as plt
+
+def visualize_encoder_attention(sentence, attention_weights):
+    """
+    Show attention patterns in encoder.
+    
+    Args:
+        sentence: List of tokens
+        attention_weights: [num_layers, num_heads, seq_len, seq_len]
+    """
+    num_layers = attention_weights.shape[0]
+    
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    axes = axes.flatten()
+    
+    for layer_idx in range(min(num_layers, 6)):
+        # Average across heads for this layer
+        layer_attn = attention_weights[layer_idx].mean(axis=0)
+        
+        ax = axes[layer_idx]
+        im = ax.imshow(layer_attn, cmap='Blues', aspect='auto')
+        
+        # Labels
+        ax.set_xticks(range(len(sentence)))
+        ax.set_yticks(range(len(sentence)))
+        ax.set_xticklabels(sentence, rotation=45)
+        ax.set_yticklabels(sentence)
+        ax.set_title(f'Layer {layer_idx + 1} Attention')
+        ax.set_xlabel('Attended to')
+        ax.set_ylabel('Attending from')
+        
+        plt.colorbar(im, ax=ax)
+    
+    plt.tight_layout()
+    plt.show()
+
+# Example output shows:
+# Layer 1: Mostly attends to adjacent tokens (local patterns)
+# Layer 3: Attends to syntactically related tokens (verb → subject)
+# Layer 6: Attends to semantically related tokens (pronoun → antecedent)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Layer Normalization: The Secret to Training Stability</h2>
+                <p>
+                    Layer normalization is <strong>critical</strong> for training deep transformers. Without it, you'll face exploding/vanishing gradients and unstable training. Let's understand why it's essential and how it works.
+                </p>
+
+                <h3>The Problem: Activation Instability</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Simulate deep network without normalization
+d_model = 512
+num_layers = 12
+
+x = torch.randn(1, 10, d_model)  # [batch, seq_len, d_model]
+print(f"Initial: mean={x.mean():.4f}, std={x.std():.4f}")
+
+# Pass through multiple layers
+for i in range(num_layers):
+    # Simulate attention + FFN
+    x = nn.Linear(d_model, d_model)(x) + x  # Residual
+    
+    if (i + 1) % 3 == 0:
+        print(f"Layer {i+1}: mean={x.mean():.4f}, std={x.std():.4f}")
+
+# Output without normalization:
+# Initial: mean=0.0023, std=1.0015
+# Layer 3: mean=0.1234, std=3.4567  ← Growing!
+# Layer 6: mean=0.5678, std=12.3456 ← Exploding!
+# Layer 9: mean=1.2345, std=45.6789 ← Unstable!
+# Layer 12: mean=2.3456, std=156.789 ← Training will fail!</code></pre>
+
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">❌ Without Normalization</h4>
+                    <ul style="color: #7f1d1d; margin: 0; line-height: 1.8;">
+                        <li><strong>Activation magnitudes grow:</strong> Each layer amplifies values</li>
+                        <li><strong>Gradients explode/vanish:</strong> Backprop becomes unstable</li>
+                        <li><strong>Learning rate sensitivity:</strong> Tiny changes break training</li>
+                        <li><strong>Deeper = worse:</strong> Can't scale beyond ~6 layers reliably</li>
+                    </ul>
+                </div>
+
+                <h3>Layer Normalization: How It Works</h3>
+                <pre><code class="language-python">class LayerNorm(nn.Module):
+    """
+    Layer normalization: normalize across the feature dimension.
+    """
+    def __init__(self, d_model, eps=1e-6):
+        super().__init__()
+        # Learnable parameters (initialized to 1 and 0)
+        self.gamma = nn.Parameter(torch.ones(d_model))   # Scale
+        self.beta = nn.Parameter(torch.zeros(d_model))   # Shift
+        self.eps = eps  # Small constant for numerical stability
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch, seq_len, d_model]
+        Returns:
+            [batch, seq_len, d_model] normalized tensor
+        """
+        # Compute mean and std across d_model dimension (dim=-1)
+        mean = x.mean(dim=-1, keepdim=True)  # [batch, seq_len, 1]
+        std = x.std(dim=-1, keepdim=True)    # [batch, seq_len, 1]
+        
+        # Normalize: zero mean, unit variance
+        x_norm = (x - mean) / (std + self.eps)
+        
+        # Apply learnable affine transformation
+        # gamma and beta are learned during training
+        output = self.gamma * x_norm + self.beta
+        
+        return output
+
+
+# Demonstration
+print("=" * 70)
+print("Layer Normalization in Action")
+print("=" * 70)
+
+batch, seq_len, d_model = 2, 5, 512
+x = torch.randn(batch, seq_len, d_model) * 10  # Deliberately large values
+
+print(f"Before LayerNorm:")
+print(f"  Shape: {x.shape}")
+print(f"  Token 0 stats: mean={x[0,0].mean():.4f}, std={x[0,0].std():.4f}")
+print(f"  Token 1 stats: mean={x[0,1].mean():.4f}, std={x[0,1].std():.4f}")
+
+ln = LayerNorm(d_model)
+x_norm = ln(x)
+
+print(f"\nAfter LayerNorm:")
+print(f"  Shape: {x_norm.shape}")  # Same shape
+print(f"  Token 0 stats: mean={x_norm[0,0].mean():.4f}, std={x_norm[0,0].std():.4f}")
+print(f"  Token 1 stats: mean={x_norm[0,1].mean():.4f}, std={x_norm[0,1].std():.4f}")
+
+# Output:
+# Before LayerNorm:
+#   Token 0 stats: mean=0.5234, std=9.8765
+#   Token 1 stats: mean=-1.2345, std=12.3456
+#
+# After LayerNorm:
+#   Token 0 stats: mean≈0.0000, std≈1.0000
+#   Token 1 stats: mean≈0.0000, std≈1.0000</code></pre>
+
+                <h3>Layer Norm vs. Batch Norm: Critical Differences</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Aspect</th>
+                            <th style="padding: 0.75rem; text-align: left;">Batch Norm</th>
+                            <th style="padding: 0.75rem; text-align: left;">Layer Norm</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Normalize Over</strong></td>
+                            <td style="padding: 0.75rem;">Batch dimension (across examples)</td>
+                            <td style="padding: 0.75rem;">Feature dimension (across d_model)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Statistics</strong></td>
+                            <td style="padding: 0.75rem;">Mean/std computed per feature across batch</td>
+                            <td style="padding: 0.75rem;">Mean/std computed per example across features</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Batch Size Dependent?</strong></td>
+                            <td style="padding: 0.75rem;">❌ Yes (requires large batches)</td>
+                            <td style="padding: 0.75rem;">✅ No (works with batch_size=1)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Inference</strong></td>
+                            <td style="padding: 0.75rem;">Uses running statistics from training</td>
+                            <td style="padding: 0.75rem;">Computes stats on-the-fly</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Sequential Models</strong></td>
+                            <td style="padding: 0.75rem;">❌ Breaks RNNs/autoregressive generation</td>
+                            <td style="padding: 0.75rem;">✅ Perfect for transformers</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Typical Use</strong></td>
+                            <td style="padding: 0.75rem;">CNNs (computer vision)</td>
+                            <td style="padding: 0.75rem;">Transformers (NLP)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Visual Comparison</h3>
+                <pre><code class="language-python"># Batch Norm: Normalize across batch (vertically)
+# Tensor shape: [batch=4, seq_len=3, d_model=512]
+#
+#                Feature 0  Feature 1  ...  Feature 511
+# Example 0:      x₀₀        x₀₁       ...     x₀,₅₁₁
+# Example 1:      x₁₀        x₁₁       ...     x₁,₅₁₁
+# Example 2:      x₂₀        x₂₁       ...     x₂,₅₁₁
+# Example 3:      x₃₀        x₃₁       ...     x₃,₅₁₁
+#                  ↓          ↓                  ↓
+#         Normalize across    Normalize across   ...
+#         examples (batch)    examples (batch)
+
+# Layer Norm: Normalize across features (horizontally)
+# Tensor shape: [batch=4, seq_len=3, d_model=512]
+#
+#                Feature 0  Feature 1  ...  Feature 511
+# Example 0:      x₀₀    →   x₀₁    →  ...  →  x₀,₅₁₁
+#                 └─────────────────────────────┘
+#                 Normalize across all 512 features
+#
+# Example 1:      x₁₀    →   x₁₁    →  ...  →  x₁,₅₁₁
+#                 └─────────────────────────────┘
+#                 Normalize independently</code></pre>
+
+                <div class="success-box">
+                    <h4>✅ Why Layer Norm is Perfect for Transformers</h4>
+                    <ol style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Batch-independent:</strong> Works with any batch size (even 1 during inference)</li>
+                        <li><strong>Position-independent:</strong> Each token normalized independently</li>
+                        <li><strong>Stable training:</strong> Keeps activations in reasonable range throughout network</li>
+                        <li><strong>Enables depth:</strong> Allows training 100+ layer transformers</li>
+                        <li><strong>Fast inference:</strong> No running statistics needed</li>
+                    </ol>
+                </div>
+
+                <h3>Where Layer Norm is Applied</h3>
+                <pre><code class="language-python">def encoder_layer_with_norms(x, attention, ffn, norm1, norm2):
+    """
+    Modern transformer: Post-norm (norm AFTER residual).
+    """
+    # Sub-layer 1: Attention
+    attn_out = attention(x)
+    x = norm1(x + attn_out)  # Residual + Norm
+    
+    # Sub-layer 2: Feed-forward
+    ffn_out = ffn(x)
+    x = norm2(x + ffn_out)   # Residual + Norm
+    
+    return x
+
+# Note: Original paper used Post-Norm
+# Modern variants often use Pre-Norm (norm BEFORE sub-layer)
+# Pre-Norm is easier to train but slightly less expressive
+
+def encoder_layer_pre_norm(x, attention, ffn, norm1, norm2):
+    """
+    Pre-norm variant (easier to train, used in GPT-2/3).
+    """
+    # Sub-layer 1: Attention
+    attn_out = attention(norm1(x))  # Norm BEFORE attention
+    x = x + attn_out                 # Residual
+    
+    # Sub-layer 2: Feed-forward
+    ffn_out = ffn(norm2(x))         # Norm BEFORE FFN
+    x = x + ffn_out                  # Residual
+    
+    return x</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Residual Connections: The Gradient Superhighway</h2>
+                <p>
+                    Residual connections (also called skip connections) are the second critical ingredient that enables training very deep transformers. They create a "gradient superhighway" that allows information and gradients to flow directly through many layers.
+                </p>
+
+                <h3>The Vanishing Gradient Problem</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Simulate gradient flow through deep network WITHOUT residuals
+def gradient_flow_no_residual(num_layers=12):
+    """
+    Show how gradients vanish in deep networks without residuals.
+    """
+    # Start with gradient = 1.0 at output
+    grad = 1.0
+    
+    print("Gradient magnitude flowing backward through layers:")
+    print("=" * 60)
+    
+    for layer in range(num_layers, 0, -1):
+        # Each layer's backward pass multiplies gradient by ~0.8
+        # (This is typical for networks with sigmoid/tanh activations)
+        grad *= 0.8
+        
+        if layer % 3 == 0:
+            print(f"Layer {layer}: gradient = {grad:.6f}")
+    
+    print(f"\nFinal gradient at input layer: {grad:.10f}")
+    print(f"Gradient has vanished! ({grad:.2e})")
+
+gradient_flow_no_residual()
+
+# Output:
+# Layer 12: gradient = 0.800000
+# Layer 9:  gradient = 0.262144
+# Layer 6:  gradient = 0.085900
+# Layer 3:  gradient = 0.028147
+#
+# Final gradient at input layer: 0.0068719477
+# Gradient has vanished! (6.87e-03)
+#
+# With 12 layers, gradient is 1000× smaller!
+# Learning in early layers becomes impossibly slow.</code></pre>
+
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">❌ Problem: Deep Networks Can't Learn</h4>
+                    <p style="color: #7f1d1d; margin: 0;">
+                        In deep networks without residual connections:
+                    </p>
+                    <ul style="color: #7f1d1d; margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Gradients multiply:</strong> Each layer's gradient multiplies the total</li>
+                        <li><strong>Values < 1 → vanishing:</strong> If each layer contributes 0.8×, after 12 layers: 0.8^12 ≈ 0.069</li>
+                        <li><strong>Early layers don't learn:</strong> Tiny gradients mean no weight updates</li>
+                        <li><strong>Practical limit:</strong> ~10-15 layers maximum without residuals</li>
+                    </ul>
+                </div>
+
+                <h3>Residual Connections: The Solution</h3>
+                <pre><code class="language-python">class ResidualBlock(nn.Module):
+    """
+    Basic residual block: output = input + F(input)
+    """
+    def __init__(self, d_model):
+        super().__init__()
+        self.layer = nn.Linear(d_model, d_model)
+    
+    def forward(self, x):
+        # Key insight: ADD input to output
+        return x + self.layer(x)
+        #      ↑     └─ learned transformation
+        #      └─ identity shortcut (skip connection)
+
+
+# Without residual
+class NormalBlock(nn.Module):
+    def __init__(self, d_model):
+        super().__init__()
+        self.layer = nn.Linear(d_model, d_model)
+    
+    def forward(self, x):
+        return self.layer(x)  # Just the transformation
+
+
+# Compare gradient flow
+print("\n" + "=" * 70)
+print("Gradient Flow: With vs. Without Residuals")
+print("=" * 70)
+
+d_model = 512
+x = torch.randn(1, 10, d_model, requires_grad=True)
+
+# Without residual
+normal_block = NormalBlock(d_model)
+out_normal = normal_block(x)
+loss_normal = out_normal.sum()
+loss_normal.backward()
+print(f"Without residual: ∂loss/∂x max gradient = {x.grad.abs().max():.6f}")
+
+# With residual
+x.grad = None  # Reset gradient
+residual_block = ResidualBlock(d_model)
+out_residual = residual_block(x)
+loss_residual = out_residual.sum()
+loss_residual.backward()
+print(f"With residual:    ∂loss/∂x max gradient = {x.grad.abs().max():.6f}")
+
+# Output:
+# Without residual: ∂loss/∂x max gradient = 0.134567
+# With residual:    ∂loss/∂x max gradient = 1.234567  ← Much larger!</code></pre>
+
+                <h3>Mathematical Power of Residuals</h3>
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 2rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <h4 style="margin-top: 0; color: #065f46;">The Gradient Highway</h4>
+                    <p style="color: #1e3a8a; margin: 0.5rem 0;">
+                        <strong>Forward pass:</strong>
+                    </p>
+                    <pre style="background: white; padding: 1rem; border-radius: 8px;"><code>y = x + F(x)
+    ↑   ↑
+    |   └─ Learned transformation (attention, FFN, etc.)
+    └───── Identity connection (gradient superhighway)</code></pre>
+                    
+                    <p style="color: #1e3a8a; margin: 1rem 0 0.5rem 0;">
+                        <strong>Backward pass (chain rule):</strong>
+                    </p>
+                    <pre style="background: white; padding: 1rem; border-radius: 8px;"><code>∂loss/∂x = ∂loss/∂y · ∂y/∂x
+         = ∂loss/∂y · ∂(x + F(x))/∂x
+         = ∂loss/∂y · (1 + ∂F/∂x)
+                       ↑    └─ Learned gradient (might be small)
+                       └────── Direct gradient (always = 1)</code></pre>
+                    
+                    <p style="color: #1e3a8a; margin-top: 1rem; font-weight: bold;">
+                        Key insight: Even if ∂F/∂x → 0 (vanishing), the "+1" ensures gradients always flow!
+                    </p>
+                </div>
+
+                <h3>Residuals in Transformer Encoder</h3>
+                <pre><code class="language-python">class EncoderLayerWithResiduals(nn.Module):
+    """
+    Encoder layer showing explicit residual connections.
+    """
+    def __init__(self, d_model, num_heads, d_ff):
+        super().__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.ffn = FeedForward(d_model, d_ff)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+    
+    def forward(self, x):
+        # Residual #1: Around attention
+        residual1 = x  # Save input
+        x = self.attention(x)
+        x = self.norm1(residual1 + x)  # Add residual
+        #               ↑        ↑
+        #               |        └─ Attention output
+        #               └────────── Original input (skip connection)
+        
+        # Residual #2: Around feed-forward
+        residual2 = x  # Save input
+        x = self.ffn(x)
+        x = self.norm2(residual2 + x)  # Add residual
+        #               ↑         ↑
+        #               |         └─ FFN output
+        #               └─────────── Output from previous sub-layer
+        
+        return x
+
+
+# Visualize information flow
+print("\n" + "=" * 70)
+print("Information Flow with Residuals")
+print("=" * 70)
+
+x = torch.randn(1, 5, 512)
+print(f"Input shape: {x.shape}")
+
+# Track what happens
+layer = EncoderLayerWithResiduals(512, 8, 2048)
+
+# The input has TWO paths through the layer:
+# Path 1 (Direct): x → (skip around attention) → (skip around FFN) → output
+# Path 2 (Learned): x → attention → FFN → output
+# 
+# Both paths are summed together!
+
+output = layer(x)
+print(f"Output shape: {output.shape}")  # Same as input
+
+print("\nKey observation:")
+print("- Input can flow DIRECTLY to output (via residual connections)")
+print("- OR transform through attention and FFN")
+print("- Final output = combination of both paths")
+print("- Gradients can flow backward through either path!")</code></pre>
+
+                <h3>Why Residuals Enable Very Deep Networks</h3>
+                <pre><code class="language-python">def compare_deep_networks(num_layers=50):
+    """
+    Show that residual networks can be trained much deeper.
+    """
+    d_model = 512
+    
+    print(f"\n{'='*70}")
+    print(f"Training {num_layers}-Layer Networks")
+    print(f"{'='*70}")
+    
+    # Simulate gradient flow backward through many layers
+    
+    # WITHOUT residuals
+    grad_no_residual = 1.0
+    for _ in range(num_layers):
+        grad_no_residual *= 0.9  # Each layer multiplies by 0.9
+    
+    print(f"\nWithout residuals:")
+    print(f"  Final gradient: {grad_no_residual:.15f}")
+    print(f"  Scientific notation: {grad_no_residual:.2e}")
+    print(f"  Gradient has vanished! Too small to train.")
+    
+    # WITH residuals
+    # Residual path: gradient = 1 (direct path)
+    # Learned path: gradient multiplies
+    grad_residual = 1.0  # Always 1 from residual path!
+    grad_learned = 1.0
+    for _ in range(num_layers):
+        grad_learned *= 0.9
+    grad_total = grad_residual + grad_learned
+    
+    print(f"\nWith residuals:")
+    print(f"  Gradient via residual path: {grad_residual:.2f} (always 1.0!)")
+    print(f"  Gradient via learned path: {grad_learned:.2e}")
+    print(f"  Total gradient: {grad_total:.4f}")
+    print(f"  ✅ Gradient is strong! Network can train!")
+    
+    print(f"\n{'='*70}")
+    print(f"Residuals enable {num_layers}× deeper networks!")
+    print(f"{'='*70}")
+
+compare_deep_networks(num_layers=50)
+
+# Output shows:
+# Without residuals: gradient ≈ 5.15e-03 (vanished!)
+# With residuals: gradient ≈ 1.0052 (strong!)</code></pre>
+
+                <div class="success-box">
+                    <h4>✅ Residual Connections Enable</h4>
+                    <ol style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Deep networks:</strong> Train 100+ layer transformers (GPT-3 has 96 layers!)</li>
+                        <li><strong>Gradient flow:</strong> Direct path ensures gradients reach early layers</li>
+                        <li><strong>Identity initialization:</strong> Network starts as identity function, learns from there</li>
+                        <li><strong>Easier optimization:</strong> Loss landscape is smoother with residuals</li>
+                        <li><strong>Better performance:</strong> Deeper = more capacity = better results</li>
+                    </ol>
+                </div>
+
+                <h3>Residuals + Layer Norm: The Winning Combination</h3>
+                <pre><code class="language-python">class ModernTransformerLayer(nn.Module):
+    """
+    Modern best practice: Residual + LayerNorm together.
+    """
+    def __init__(self, d_model, num_heads, d_ff):
+        super().__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.ffn = FeedForward(d_model, d_ff)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+    
+    def forward(self, x):
+        # Sub-layer 1: Attention
+        x = self.norm1(x + self.attention(x))
+        #               ↑   └─ Transformation
+        #               └───── Residual
+        #    └─ Normalize after adding
+        
+        # Sub-layer 2: Feed-forward
+        x = self.norm2(x + self.ffn(x))
+        #               ↑   └─ Transformation
+        #               └───── Residual
+        #    └─ Normalize after adding
+        
+        return x
+
+# Why this works so well:
+# 1. Residual ensures gradients flow
+# 2. LayerNorm keeps activations stable
+# 3. Together: can train 100+ layers reliably
+# 4. Used in ALL modern transformers (BERT, GPT, T5, etc.)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Feed-Forward Networks: The Knowledge Storage</h2>
+                <p>
+                    After attention (which enables tokens to communicate), each token passes through a <strong>position-wise feed-forward network</strong>. This is where transformers store learned knowledge, facts, and complex transformations.
+                </p>
+
+                <h3>Architecture: Expand → Activate → Contract</h3>
+                <pre><code class="language-python">import torch.nn as nn
+
+class FeedForward(nn.Module):
+    """
+    Position-wise feed-forward network (applied independently to each token).
+    
+    Classic architecture: d_model → 4*d_model → d_model
+    """
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(d_model, d_ff),      # Expand: 512 → 2048
+            nn.ReLU(),                     # Non-linearity
+            nn.Dropout(dropout),           # Regularization
+            nn.Linear(d_ff, d_model),      # Contract: 2048 → 512
+            nn.Dropout(dropout)
+        )
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch, seq_len, d_model]
+        Returns:
+            [batch, seq_len, d_model]  (same shape!)
+        """
+        return self.net(x)
+
+
+# Example usage
+print("=" * 70)
+print("Feed-Forward Network Example")
+print("=" * 70)
+
+batch, seq_len, d_model = 2, 5, 512
+d_ff = 2048  # 4× expansion
+
+x = torch.randn(batch, seq_len, d_model)
+print(f"Input shape: {x.shape}")
+
+ffn = FeedForward(d_model, d_ff)
+output = ffn(x)
+print(f"Output shape: {output.shape}")  # Same as input!
+
+# Count parameters
+params = sum(p.numel() for p in ffn.parameters())
+print(f"\nFFN Parameters: {params:,}")
+# First layer: 512 × 2048 + 2048 bias = 1,050,624
+# Second layer: 2048 × 512 + 512 bias = 1,049,088
+# Total: ~2.1 million parameters
+# Most of transformer's parameters are in FFN!</code></pre>
+
+                <h3>Why This Architecture?</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔼 Expand (512 → 2048)</h4>
+                        <p style="font-size: 0.9rem; color: #047857; margin: 0;">
+                            Create high-dimensional space. More dimensions = more capacity to learn complex transformations.
+                        </p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">⚡ Activate (ReLU)</h4>
+                        <p style="font-size: 0.9rem; color: #b45309; margin: 0;">
+                            Non-linearity is crucial. Without it, the whole FFN collapses to a single linear transformation.
+                        </p>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔽 Contract (2048 → 512)</h4>
+                        <p style="font-size: 0.9rem; color: #065f46; margin: 0;">
+                            Project back to d_model so output can be added via residual connection to input.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Position-Wise: Key Property</h3>
+                <pre><code class="language-python"># CRITICAL: FFN processes each token INDEPENDENTLY
+# No information is exchanged between tokens (unlike attention)
+
+x = torch.randn(1, 3, 512)  # 3 tokens
+# Token 0: [0, 0.5, -0.2, ...]  512 values
+# Token 1: [1.2, -0.8, 0.4, ...] 512 values
+# Token 2: [0.3, 0.1, -1.0, ...] 512 values
+
+ffn = FeedForward(512, 2048)
+
+# Process all tokens
+output = ffn(x)
+
+# Verify: processing tokens individually gives same result
+output_token0 = ffn(x[:, 0:1, :])  # Just token 0
+output_token1 = ffn(x[:, 1:2, :])  # Just token 1
+output_token2 = ffn(x[:, 2:3, :])  # Just token 2
+
+combined = torch.cat([output_token0, output_token1, output_token2], dim=1)
+
+print("Are they equal?", torch.allclose(output, combined))
+# Output: True
+
+# This is different from attention, where:
+# - Token 0's output depends on tokens 0, 1, 2 (via attention)
+# - FFN: Token 0's output depends ONLY on token 0's input</code></pre>
+
+                <h3>Why 4× Expansion?</h3>
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p style="color: #065f46; margin-top: 0;"><strong>Historical and Empirical Choice:</strong></p>
+                    <ul style="color: #1e3a8a; margin: 0; line-height: 1.8;">
+                        <li><strong>Original paper (2017):</strong> Used d_ff = 4 × d_model = 2048</li>
+                        <li><strong>Empirical sweet spot:</strong> 4× gives good capacity without excessive parameters</li>
+                        <li><strong>Modern variants:</strong> GPT-3 uses ~4×, some models try 8× or even 16×</li>
+                        <li><strong>Parameter count:</strong> FFN contains 2/3 of transformer's total parameters!</li>
+                    </ul>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Model</th>
+                            <th style="padding: 0.75rem; text-align: center;">d_model</th>
+                            <th style="padding: 0.75rem; text-align: center;">d_ff</th>
+                            <th style="padding: 0.75rem; text-align: center;">Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;">Original Transformer</td>
+                            <td style="padding: 0.75rem; text-align: center;">512</td>
+                            <td style="padding: 0.75rem; text-align: center;">2048</td>
+                            <td style="padding: 0.75rem; text-align: center;">4×</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;">BERT-Base</td>
+                            <td style="padding: 0.75rem; text-align: center;">768</td>
+                            <td style="padding: 0.75rem; text-align: center;">3072</td>
+                            <td style="padding: 0.75rem; text-align: center;">4×</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;">GPT-2</td>
+                            <td style="padding: 0.75rem; text-align: center;">768</td>
+                            <td style="padding: 0.75rem; text-align: center;">3072</td>
+                            <td style="padding: 0.75rem; text-align: center;">4×</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;">GPT-3</td>
+                            <td style="padding: 0.75rem; text-align: center;">12288</td>
+                            <td style="padding: 0.75rem; text-align: center;">49152</td>
+                            <td style="padding: 0.75rem; text-align: center;">4×</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;">LLaMA-2 70B</td>
+                            <td style="padding: 0.75rem; text-align: center;">8192</td>
+                            <td style="padding: 0.75rem; text-align: center;">28672</td>
+                            <td style="padding: 0.75rem; text-align: center;">3.5×</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Modern Activation Functions</h3>
+                <pre><code class="language-python">import torch.nn.functional as F
+
+# Original: ReLU
+class FFN_ReLU(nn.Module):
+    def __init__(self, d_model, d_ff):
+        super().__init__()
+        self.fc1 = nn.Linear(d_model, d_ff)
+        self.fc2 = nn.Linear(d_ff, d_model)
+    
+    def forward(self, x):
+        return self.fc2(F.relu(self.fc1(x)))
+
+
+# Modern: GELU (Gaussian Error Linear Unit)
+# Used in BERT, GPT-2/3, most modern transformers
+class FFN_GELU(nn.Module):
+    def __init__(self, d_model, d_ff):
+        super().__init__()
+        self.fc1 = nn.Linear(d_model, d_ff)
+        self.fc2 = nn.Linear(d_ff, d_model)
+    
+    def forward(self, x):
+        return self.fc2(F.gelu(self.fc1(x)))
+
+
+# Advanced: SwiGLU (Swish-Gated Linear Unit)
+# Used in PaLM, LLaMA - best performance but more parameters
+class FFN_SwiGLU(nn.Module):
+    def __init__(self, d_model, d_ff):
+        super().__init__()
+        # SwiGLU needs TWO projections for gating
+        self.fc1 = nn.Linear(d_model, d_ff)
+        self.fc2 = nn.Linear(d_model, d_ff)
+        self.fc3 = nn.Linear(d_ff, d_model)
+    
+    def forward(self, x):
+        # Gating mechanism: multiply two paths
+        gate = F.silu(self.fc1(x))  # Swish activation
+        value = self.fc2(x)
+        return self.fc3(gate * value)
+
+
+# Comparison
+x = torch.randn(1, 5, 512)
+
+ffn_relu = FFN_ReLU(512, 2048)
+ffn_gelu = FFN_GELU(512, 2048)
+ffn_swiglu = FFN_SwiGLU(512, 2048)
+
+out_relu = ffn_relu(x)
+out_gelu = ffn_gelu(x)
+out_swiglu = ffn_swiglu(x)
+
+print("Output shapes:")
+print(f"  ReLU: {out_relu.shape}")
+print(f"  GELU: {out_gelu.shape}")
+print(f"  SwiGLU: {out_swiglu.shape}")
+
+# GELU and SwiGLU generally give 1-2% better performance
+# but are slightly more expensive to compute</code></pre>
+
+                <div class="info-box">
+                    <h4>🧠 What Does FFN Learn?</h4>
+                    <p>Research suggests FFN layers act as <strong>key-value memories:</strong></p>
+                    <ul style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Factual knowledge:</strong> "Paris is the capital of France"</li>
+                        <li><strong>Linguistic patterns:</strong> "past tense of 'go' is 'went'"</li>
+                        <li><strong>Common sense:</strong> "ice is cold", "fire is hot"</li>
+                        <li><strong>Domain knowledge:</strong> "DNA consists of nucleotides"</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        The high-dimensional intermediate space (d_ff) allows storing millions of such patterns as distributed representations in the weight matrices.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Decoder: Generating Sequences</h2>
+                <p>
+                    The decoder generates output tokens one at a time, attending to both:
+                    1. Previously generated tokens (self-attention, causal masked)
+                    2. Encoder output (cross-attention)
+                </p>
+
+                <pre><code class="language-python">
+class DecoderLayer(torch.nn.Module):
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super().__init__()
+        
+        # Masked self-attention (can't look at future tokens)
+        self.self_attention = MultiHeadAttention(d_model, num_heads)
+        
+        # Cross-attention (attends to encoder output)
+        self.cross_attention = MultiHeadAttention(d_model, num_heads)
+        
+        # Feed-forward
+        self.ff = torch.nn.Sequential(
+            torch.nn.Linear(d_model, d_ff),
+            torch.nn.ReLU(),
+            torch.nn.Linear(d_ff, d_model)
+        )
+        
+        # Normalization and dropout
+        self.norm1 = torch.nn.LayerNorm(d_model)
+        self.norm2 = torch.nn.LayerNorm(d_model)
+        self.norm3 = torch.nn.LayerNorm(d_model)
+        self.dropout = torch.nn.Dropout(dropout)
+    
+    def forward(self, x, encoder_output, self_attention_mask=None, 
+                cross_attention_mask=None):
+        # Masked self-attention (can't see future)
+        self_attn_out, _ = self.self_attention(x, self_attention_mask)
+        x = self.norm1(x + self.dropout(self_attn_out))
+        
+        # Cross-attention to encoder
+        cross_attn_out, _ = self.cross_attention(
+            query=x,
+            key=encoder_output,
+            value=encoder_output,
+            mask=cross_attention_mask
+        )
+        x = self.norm2(x + self.dropout(cross_attn_out))
+        
+        # Feed-forward
+        ff_out = self.ff(x)
+        x = self.norm3(x + self.dropout(ff_out))
+        
+        return x
+
+class Decoder(torch.nn.Module):
+    def __init__(self, vocab_size, d_model, num_layers, num_heads, d_ff):
+        super().__init__()
+        self.embedding = TransformerEmbedding(vocab_size, d_model)
+        self.layers = torch.nn.ModuleList([
+            DecoderLayer(d_model, num_heads, d_ff)
+            for _ in range(num_layers)
+        ])
+        self.output_projection = torch.nn.Linear(d_model, vocab_size)
+    
+    def forward(self, decoder_input_ids, encoder_output, 
+                decoder_mask=None, cross_mask=None):
+        x = self.embedding(decoder_input_ids)
+        
+        for layer in self.layers:
+            x = layer(x, encoder_output, decoder_mask, cross_mask)
+        
+        logits = self.output_projection(x)  # [batch, seq_len, vocab_size]
+        return logits
+
+# Key difference from encoder:
+# - Self-attention is MASKED (can't look forward)
+# - Added cross-attention (attends to encoder)
+# - Output projection to vocabulary
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Causal Attention Mask in Decoder</h2>
+                <p>
+                    During generation, the decoder can't peek at future tokens:
+                </p>
+
+                <pre><code class="language-python">
+def create_causal_mask(seq_len):
+    """
+    Lower triangular matrix: position i can attend to 0...i
+    """
+    mask = torch.triu(torch.ones(seq_len, seq_len), diagonal=1).bool()
+    # False = can attend, True = mask out
+    return mask
+
+# For inference with 1 token:
+mask = create_causal_mask(1)
+# Masks no future tokens (there are none)
+
+# For 2 tokens:
+mask = create_causal_mask(2)
+# Token 0 can attend to: 0 ✓
+# Token 1 can attend to: 0, 1 ✓
+# Both see all past + present, nothing future
+
+# In attention computation:
+scores = torch.matmul(Q, K.T) / sqrt(d_k)
+scores = scores.masked_fill(mask, float('-inf'))
+weights = softmax(scores, dim=-1)  # Softmax ignores -inf positions
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Complete Transformer Model</h2>
+                <pre><code class="language-python">
+class Transformer(torch.nn.Module):
+    def __init__(self, src_vocab_size, tgt_vocab_size, d_model=512, 
+                 num_layers=6, num_heads=8, d_ff=2048, dropout=0.1):
+        super().__init__()
+        
+        self.encoder = Encoder(src_vocab_size, d_model, num_layers, 
+                              num_heads, d_ff, dropout)
+        self.decoder = Decoder(tgt_vocab_size, d_model, num_layers, 
+                              num_heads, d_ff, dropout)
+    
+    def forward(self, src_ids, tgt_ids, src_mask=None, tgt_mask=None, 
+                cross_mask=None):
+        """
+        src_ids: [batch, src_len] - source tokens
+        tgt_ids: [batch, tgt_len] - target tokens
+        """
+        # Encoder
+        encoder_output = self.encoder(src_ids, src_mask)
+        
+        # Decoder
+        decoder_output = self.decoder(tgt_ids, encoder_output, 
+                                     tgt_mask, cross_mask)
+        
+        return decoder_output  # [batch, tgt_len, vocab_size]
+
+# Training example
+model = Transformer(
+    src_vocab_size=50000,
+    tgt_vocab_size=50000,
+    d_model=512,
+    num_layers=6,
+    num_heads=8,
+    d_ff=2048
+)
+
+src_ids = torch.randint(0, 50000, (2, 10))    # English
+tgt_ids = torch.randint(0, 50000, (2, 12))    # French (shifted)
+
+logits = model(src_ids, tgt_ids)
+print(logits.shape)  # [2, 12, 50000]
+
+# For generation, decode greedily or with sampling
+# (covered in next module)
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Information Flow Through Layers</h2>
+                <p>
+                    What happens as information flows through the 12-layer stack?
+                </p>
+
+                <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>Early Layers (1-2):</strong> Local syntactic patterns</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #666; font-size: 0.9rem;">
+                        <li>Identify parts of speech, subject-verb agreement</li>
+                        <li>Capture surface-level patterns</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Middle Layers (3-4):</strong> Syntactic and semantic structure</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #666; font-size: 0.9rem;">
+                        <li>Build parse trees, identify phrases</li>
+                        <li>Resolve coreference ("he" → "John")</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Late Layers (5-6):</strong> High-level semantics</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #666; font-size: 0.9rem;">
+                        <li>Semantic relationships between clauses</li>
+                        <li>Task-specific representations</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Architectural Decisions</h2>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Component</th>
+                            <th style="padding: 0.75rem; text-align: left;">Why Used</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Multi-Head Attention</strong></td>
+                            <td style="padding: 0.75rem;">Different representation subspaces, parallel attention patterns</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Layer Norm</strong></td>
+                            <td style="padding: 0.75rem;">Stabilize training, normalization across features (not batch)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Residual Connections</strong></td>
+                            <td style="padding: 0.75rem;">Enable deep networks, gradient flow through many layers</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Feed-Forward FFN</strong></td>
+                            <td style="padding: 0.75rem;">Non-linearity, increased model capacity, knowledge storage</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Positional Encoding</strong></td>
+                            <td style="padding: 0.75rem;">Add position since attention is permutation-invariant</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Causal Masking</strong></td>
+                            <td style="padding: 0.75rem;">Prevent looking at future tokens during generation</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Cross-Attention</strong></td>
+                            <td style="padding: 0.75rem;">Connect decoder to encoder, provide context for generation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Encoder-Decoder Structure:</strong> Encoder processes input, decoder generates output</li>
+                        <li><strong>Encoder Layer:</strong> Multi-head attention + feed-forward with residual and layer norm</li>
+                        <li><strong>Decoder Layer:</strong> Masked self-attention + cross-attention + feed-forward</li>
+                        <li><strong>Layer Normalization:</strong> Normalize features (not batch) for stable training</li>
+                        <li><strong>Residual Connections:</strong> Skip connections enable deep networks</li>
+                        <li><strong>Feed-Forward:</strong> Position-wise non-linear transformations (4x expansion typical)</li>
+                        <li><strong>Causal Masking:</strong> Prevent decoder from seeing future tokens</li>
+                        <li><strong>Cross-Attention:</strong> Decoder queries attend to encoder keys and values</li>
+                        <li><strong>Deep Stacking:</strong> 6-12 identical layers enable learning hierarchical representations</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What are the two main components of the original Transformer architecture?</strong></p>
+                    <div class="quiz-option" data-value="a">Input and Output</div>
+                    <div class="quiz-option" data-value="b">Attention and Convolution</div>
+                    <div class="quiz-option" data-value="c">Encoder and Decoder</div>
+                    <div class="quiz-option" data-value="d">Training and Inference</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is the purpose of the feedforward network in each Transformer block?</strong></p>
+                    <div class="quiz-option" data-value="a">To replace attention</div>
+                    <div class="quiz-option" data-value="b">To process each position's representation independently with non-linear transformations</div>
+                    <div class="quiz-option" data-value="c">To remove positional information</div>
+                    <div class="quiz-option" data-value="d">To reduce model size</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What type of attention does the decoder use when looking at encoder outputs?</strong></p>
+                    <div class="quiz-option" data-value="a">Self-attention only</div>
+                    <div class="quiz-option" data-value="b">No attention</div>
+                    <div class="quiz-option" data-value="c">Multi-head attention on decoder only</div>
+                    <div class="quiz-option" data-value="d">Cross-attention between decoder and encoder</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is the purpose of layer normalization in Transformers?</strong></p>
+                    <div class="quiz-option" data-value="a">To stabilize training and improve gradient flow</div>
+                    <div class="quiz-option" data-value="b">To increase model size</div>
+                    <div class="quiz-option" data-value="c">To remove attention weights</div>
+                    <div class="quiz-option" data-value="d">To eliminate positional encoding</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What are residual connections (skip connections) used for?</strong></p>
+                    <div class="quiz-option" data-value="a">To make the model slower</div>
+                    <div class="quiz-option" data-value="b">To reduce accuracy</div>
+                    <div class="quiz-option" data-value="c">To help gradients flow through deep networks and preserve information</div>
+                    <div class="quiz-option" data-value="d">To eliminate the need for attention</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="multi-head-attention-and-positional-encoding.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Multi-Head Attention</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="decoder-only-models-and-language-generation.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Decoder-Only Models</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Python conditional statements: if, elif, and else to make your programs intelligent and responsive">
+    <title>Python Conditional Statements - Complete Guide - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Conditional Statements in Python</h1>
+            <p class="page-subtitle">Learn to make decisions in your code with if, elif, and else</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Should your app send a discount code? Is the user old enough to create an account? Does the password match? Every meaningful program needs to make decisions, and that's exactly what <strong>conditional statements</strong> do. They're the decision-making brain of your code, allowing your programs to respond differently based on different situations. In this tutorial, you'll learn how to use <code>if</code>, <code>elif</code>, and <code>else</code> to build programs that think.</p>
+        
+        <h2>What Are Conditional Statements?</h2>
+        
+        <p><strong>Conditionals</strong> are code structures that run different blocks of code based on whether a condition is true or false. Think of them as decision points in your program—like a choose-your-own-adventure book where the story branches based on your choices.</p>
+        
+        <p>You've already learned about comparison operators (<code>></code>, <code>==</code>, <code>!=</code>) and logical operators (<code>and</code>, <code>or</code>, <code>not</code>) that produce True or False values. Conditionals use these boolean values to decide which code to execute.</p>
+        
+        <h3>Why Are Conditionals Essential?</h3>
+        
+        <p>Without conditionals, your programs would be completely linear—they'd execute the same code every single time, regardless of input or circumstances. Conditionals give your programs:</p>
+        
+        <ul>
+            <li><strong>Intelligence</strong> - Respond differently to different inputs</li>
+            <li><strong>Flexibility</strong> - Handle multiple scenarios with one program</li>
+            <li><strong>User interaction</strong> - Create personalized experiences</li>
+            <li><strong>Error handling</strong> - Deal with invalid or unexpected data</li>
+        </ul>
+        
+        <h2>The Perfect Analogy: Traffic Lights</h2>
+        
+        <p>Think of conditionals like a traffic light system. When you approach an intersection:</p>
+        
+        <ul>
+            <li><strong>Green light</strong> → Go (first condition is True)</li>
+            <li><strong>Yellow light</strong> → Slow down/make a decision (second condition checked)</li>
+            <li><strong>Red light</strong> → Stop (default action when nothing else applies)</li>
+        </ul>
+        
+        <p>Your program checks each condition in order, just like you check the traffic light. Once it finds a true condition, it executes that block of code and moves on. If no conditions are true, it falls back to the "else" block—the red light that says "do this by default."</p>
+        
+        <h2>Visual Mental Model</h2>
+        
+        <div class="visual-diagram">
+            <strong>How Conditionals Flow:</strong><br><br>
+            
+            if condition:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;# Execute this if condition is True<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+            elif other_condition:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;# Execute this if first was False, this is True<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;...<br>
+            else:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;# Execute this if all above were False<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;...<br><br>
+            
+            <strong>Decision Flow:</strong><br>
+            Check condition → True? Execute → Skip rest<br>
+            Check condition → False? Move to next → Repeat<br>
+            All False? → Execute else block
+        </div>
+        
+        <p>Notice the pattern: Python checks each condition from top to bottom. The moment it finds a true condition, it executes that block and skips all the rest. If nothing is true, the <code>else</code> block runs as a fallback.</p>
+        
+        <h2>The Basic if Statement</h2>
+        
+        <p>The simplest conditional is a standalone <code>if</code> statement. It says: "If this condition is true, do something."</p>
+        
+        <h3>Example 1: Simple Age Check</h3>
+        
+        <pre><code class="language-python"># Check if user is an adult
+age = 25
+
+if age >= 18:
+    print("You are an adult.")
+    print("You can create a full account.")
+
+print("Thank you for visiting!")  # This always runs</code></pre>
+        
+        <p><strong>Output:</strong></p>
+        <pre><code>You are an adult.
+You can create a full account.
+Thank you for visiting!</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Critical Detail:</strong> Notice the indentation! The two print statements under <code>if</code> are indented by 4 spaces. This tells Python they belong to the if block. The last print statement is NOT indented, so it runs regardless of the condition.</p>
+        </div>
+        
+        <h3>Example 2: Conditional Discount</h3>
+        
+        <pre><code class="language-python"># Apply discount for large orders
+total = 150
+
+if total >= 100:
+    print("Congratulations! You qualify for a 10% discount.")
+    discount = total * 0.10
+    total = total - discount
+    print(f"Your new total: ${total:.2f}")</code></pre>
+        
+        <p><strong>Output:</strong></p>
+        <pre><code>Congratulations! You qualify for a 10% discount.
+Your new total: $135.00</code></pre>
+        
+        <h2>The if-else Statement</h2>
+        
+        <p>Often, you want to do one thing if a condition is true, and something different if it's false. That's where <code>else</code> comes in.</p>
+        
+        <h3>Example 3: Account Type Decision</h3>
+        
+        <pre><code class="language-python"># Determine account type based on age
+age = int(input("Enter your age: "))
+
+if age >= 18:
+    print("Adult account created.")
+    print("Full features unlocked.")
+else:
+    print("Child account created.")
+    print("Parental controls enabled.")
+
+print("Welcome to our platform!")</code></pre>
+        
+        <p>If you enter 25:</p>
+        <pre><code>Adult account created.
+Full features unlocked.
+Welcome to our platform!</code></pre>
+        
+        <p>If you enter 12:</p>
+        <pre><code>Child account created.
+Parental controls enabled.
+Welcome to our platform!</code></pre>
+        
+        <div class="warning-box">
+            <p>⚠️ <strong>Important:</strong> Only ONE of the blocks will execute—either the <code>if</code> block OR the <code>else</code> block, never both. The final print statement always runs because it's not indented under either block.</p>
+        </div>
+        
+        <h2>The if-elif-else Statement</h2>
+        
+        <p>When you have more than two possibilities, use <code>elif</code> (short for "else if"). This lets you check multiple conditions in sequence.</p>
+        
+        <h3>Example 4: Three-Way Account System</h3>
+        
+        <pre><code class="language-python"># Create age-appropriate accounts
+age = int(input("Enter your age: "))
+
+if age >= 18:
+    print("Adult account created.")
+    print("All features available.")
+elif age >= 13:
+    print("Teen account created.")
+    print("Some restrictions apply.")
+else:
+    print("Child account created.")
+    print("Heavy parental controls active.")
+
+print("\nAccount setup complete!")</code></pre>
+        
+        <p>Let's see what happens with different ages:</p>
+        
+        <p><strong>Age 25:</strong></p>
+        <pre><code>Adult account created.
+All features available.
+
+Account setup complete!</code></pre>
+        
+        <p><strong>Age 15:</strong></p>
+        <pre><code>Teen account created.
+Some restrictions apply.
+
+Account setup complete!</code></pre>
+        
+        <p><strong>Age 8:</strong></p>
+        <pre><code>Child account created.
+Heavy parental controls active.
+
+Account setup complete!</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>How it works:</strong> Python checks <code>age >= 18</code> first. If false, it checks <code>age >= 13</code>. If that's also false, it executes the <code>else</code> block. Only ONE block ever runs.</p>
+        </div>
+        
+        <h2>Multiple Conditions with Logical Operators</h2>
+        
+        <p>You can combine multiple checks in a single condition using <code>and</code>, <code>or</code>, and <code>not</code>.</p>
+        
+        <h3>Example 5: Login System</h3>
+        
+        <pre><code class="language-python"># Simple login validation
+correct_username = "admin"
+correct_password = "secret123"
+
+username = input("Username: ")
+password = input("Password: ")
+
+if username == correct_username and password == correct_password:
+    print("Welcome! Login successful.")
+    print("Access granted to dashboard.")
+else:
+    print("Invalid credentials.")
+    print("Access denied.")</code></pre>
+        
+        <p>Both conditions must be true for login to succeed. If either the username OR password is wrong, access is denied.</p>
+        
+        <h3>Example 6: Eligibility Checker</h3>
+        
+        <pre><code class="language-python"># Check driving eligibility
+age = 17
+has_license = True
+has_insurance = False
+
+if age >= 18 and has_license and has_insurance:
+    print("You can drive legally.")
+elif age >= 18 and has_license:
+    print("You can drive but need insurance first.")
+elif age >= 18:
+    print("You need a license and insurance.")
+else:
+    print("You must be 18 or older to drive.")</code></pre>
+        
+        <h2>Hands-On Exercise: Grade Classifier</h2>
+        
+        <p>Let's build a program that converts numerical scores to letter grades. This is a perfect exercise for practicing <code>if-elif-else</code> statements.</p>
+        
+        <h3>Requirements</h3>
+        <ul>
+            <li>A (≥90): Excellent</li>
+            <li>B (80–89): Good</li>
+            <li>C (70–79): Satisfactory</li>
+            <li>D (60–69): Needs Improvement</li>
+            <li>F (<60): Failing</li>
+        </ul>
+        
+        <h3>Step 1: Get the Score</h3>
+        
+        <p>Create a file called <code>grade_classifier.py</code>:</p>
+        
+        <pre><code class="language-python"># Grade Classifier
+print("=== Grade Classifier ===\n")
+
+# Get student's score
+score = int(input("Enter your score (0-100): "))</code></pre>
+        
+        <h3>Step 2: Add the Conditional Logic</h3>
+        
+        <pre><code class="language-python"># Classify the grade
+if score >= 90:
+    grade = "A"
+    message = "Excellent work!"
+elif score >= 80:
+    grade = "B"
+    message = "Good job!"
+elif score >= 70:
+    grade = "C"
+    message = "Satisfactory."
+elif score >= 60:
+    grade = "D"
+    message = "Needs improvement."
+else:
+    grade = "F"
+    message = "Failing. Please seek help."</code></pre>
+        
+        <h3>Step 3: Display the Result</h3>
+        
+        <pre><code class="language-python"># Show the results
+print(f"\nYour score: {score}")
+print(f"Your grade: {grade}")
+print(f"Comment: {message}")</code></pre>
+        
+        <h3>Complete Code</h3>
+        
+        <pre><code class="language-python"># Grade Classifier
+print("=== Grade Classifier ===\n")
+
+# Get student's score
+score = int(input("Enter your score (0-100): "))
+
+# Classify the grade
+if score >= 90:
+    grade = "A"
+    message = "Excellent work!"
+elif score >= 80:
+    grade = "B"
+    message = "Good job!"
+elif score >= 70:
+    grade = "C"
+    message = "Satisfactory."
+elif score >= 60:
+    grade = "D"
+    message = "Needs improvement."
+else:
+    grade = "F"
+    message = "Failing. Please seek help."
+
+# Show the results
+print(f"\nYour score: {score}")
+print(f"Your grade: {grade}")
+print(f"Comment: {message}")</code></pre>
+        
+        <h3>Test Your Code</h3>
+        
+        <p>Run it with different scores:</p>
+        
+        <p><strong>Input: 95</strong></p>
+        <pre><code>=== Grade Classifier ===
+
+Enter your score (0-100): 95
+
+Your score: 95
+Your grade: A
+Comment: Excellent work!</code></pre>
+        
+        <p><strong>Input: 73</strong></p>
+        <pre><code>=== Grade Classifier ===
+
+Enter your score (0-100): 73
+
+Your score: 73
+Your grade: C
+Comment: Satisfactory.</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Challenge:</strong> Add validation to ensure the score is between 0 and 100. If it's not, print an error message instead of classifying.</p>
+        </div>
+        
+        <h2>Common Mistakes to Avoid</h2>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 1: Forgetting Indentation</h4>
+            <p><strong>Problem:</strong> Python throws an "IndentationError" or code doesn't execute as expected.</p>
+            <p><strong>Why it happens:</strong> Python uses indentation to determine which code belongs to which block.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌
+if age >= 18:
+print("Adult")  # No indentation!
+
+# CORRECT ✅
+if age >= 18:
+    print("Adult")  # Indented with 4 spaces</code></pre>
+            <p><strong>Prevention:</strong> Always indent code inside if/elif/else blocks by 4 spaces. Most code editors do this automatically when you press Tab.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 2: Overlapping Conditions</h4>
+            <p><strong>Problem:</strong> The wrong condition executes because earlier conditions catch cases you didn't intend.</p>
+            <p><strong>Why it happens:</strong> Python checks conditions from top to bottom and stops at the first true one.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌ - overlapping ranges
+if score >= 60:
+    grade = "D"
+elif score >= 70:  # This will never run!
+    grade = "C"
+
+# CORRECT ✅ - most specific first
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+elif score >= 60:
+    grade = "D"</code></pre>
+            <p><strong>Prevention:</strong> Order your conditions from most specific to least specific, or from highest to lowest values.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 3: Using = Instead of ==</h4>
+            <p><strong>Problem:</strong> Your condition always evaluates to True, or you get an error.</p>
+            <p><strong>Why it happens:</strong> Using a single = assigns a value; == compares values.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌
+if password = "secret":  # This assigns, not compares!
+
+# CORRECT ✅
+if password == "secret":  # This compares</code></pre>
+            <p><strong>Prevention:</strong> Remember: = is for assignment, == is for comparison.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 4: Forgetting the Colon</h4>
+            <p><strong>Problem:</strong> Python throws a "SyntaxError: invalid syntax".</p>
+            <p><strong>Why it happens:</strong> Every if/elif/else line must end with a colon.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌
+if age >= 18
+    print("Adult")
+
+# CORRECT ✅
+if age >= 18:
+    print("Adult")</code></pre>
+            <p><strong>Prevention:</strong> Always end conditional statements with a colon (:).</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 5: Illogical Conditions</h4>
+            <p><strong>Problem:</strong> Your condition can never be true.</p>
+            <p><strong>Why it happens:</strong> Using "and" when you need "or", or vice versa.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌ - impossible condition
+if age > 18 and age < 18:  # Can't be both!
+    print("Teen")
+
+# CORRECT ✅ - range check
+if age >= 13 and age < 18:  # Between 13 and 17
+    print("Teen")
+
+# WRONG ❌ - too restrictive
+if has_license and has_insurance:  # Must have both
+
+# MAYBE CORRECT ✅ - depends on intent
+if has_license or has_insurance:  # Has at least one</code></pre>
+            <p><strong>Prevention:</strong> Think through your logic: "and" means both must be true, "or" means at least one must be true.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 6: Missing Edge Cases</h4>
+            <p><strong>Problem:</strong> Your program crashes or behaves unexpectedly for certain inputs.</p>
+            <p><strong>Why it happens:</strong> Not considering all possible values or scenarios.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># INCOMPLETE ❌
+score = int(input("Score: "))
+if score >= 90:
+    grade = "A"
+# What if score is negative? Or > 100?
+
+# COMPLETE ✅
+score = int(input("Score: "))
+if score < 0 or score > 100:
+    print("Invalid score! Must be 0-100.")
+elif score >= 90:
+    grade = "A"
+# ... rest of conditions</code></pre>
+            <p><strong>Prevention:</strong> Always test edge cases: negative numbers, zero, maximum values, empty strings, etc.</p>
+        </div>
+        
+        <h2>Mini-Project: Login Simulation</h2>
+        
+        <p><strong>Project Goal:</strong> Build a secure login system that validates usernames and passwords.</p>
+        
+        <h3>Requirements</h3>
+        <ul>
+            <li>Store a correct username and password</li>
+            <li>Prompt the user for their credentials</li>
+            <li>Check if both username AND password match</li>
+            <li>Display appropriate success or error messages</li>
+            <li>Bonus: Track failed login attempts and lock after 3 failures</li>
+        </ul>
+        
+        <h3>Basic Implementation</h3>
+        
+        <pre><code class="language-python"># Simple Login System
+print("=== Login System ===\n")
+
+# Stored credentials
+correct_user = "admin"
+correct_pass = "secret123"
+
+# Get user input
+username = input("Username: ")
+password = input("Password: ")
+
+# Validate credentials
+if username == correct_user and password == correct_pass:
+    print("\n✓ Welcome! Login successful.")
+    print("Access granted to dashboard.")
+else:
+    print("\n✗ Invalid credentials.")
+    print("Access denied.")
+    
+    # Give specific feedback
+    if username != correct_user:
+        print("Hint: Username is incorrect.")
+    if password != correct_pass:
+        print("Hint: Password is incorrect.")</code></pre>
+        
+        <h3>Enhanced Version with Attempt Tracking</h3>
+        
+        <pre><code class="language-python"># Login System with Attempt Tracking
+print("=== Secure Login System ===\n")
+
+# Stored credentials
+correct_user = "admin"
+correct_pass = "secret123"
+
+# Track attempts
+max_attempts = 3
+attempts = 0
+
+while attempts < max_attempts:
+    # Get user input
+    username = input("\nUsername: ")
+    password = input("Password: ")
+    
+    # Validate credentials
+    if username == correct_user and password == correct_pass:
+        print("\n✓ Welcome! Login successful.")
+        print("Access granted to dashboard.")
+        break  # Exit the loop on success
+    else:
+        attempts += 1
+        remaining = max_attempts - attempts
+        
+        print(f"\n✗ Invalid credentials.")
+        
+        if remaining > 0:
+            print(f"You have {remaining} attempt(s) remaining.")
+        else:
+            print("Account locked due to too many failed attempts.")
+            print("Please contact support.")</code></pre>
+        
+        <h3>Bonus Challenges</h3>
+        
+        <ol>
+            <li><strong>Multiple users:</strong> Store multiple username/password pairs and check against all of them</li>
+            <li><strong>Password strength:</strong> Check if password is at least 8 characters and contains a number</li>
+            <li><strong>Case-insensitive username:</strong> Accept usernames in any case (ADMIN, admin, Admin)</li>
+        </ol>
+        
+        <div class="info-box">
+            <p>💡 <strong>Hint:</strong> For case-insensitive comparison, use the <code>.lower()</code> method: <code>if username.lower() == correct_user.lower():</code></p>
+        </div>
+        
+        <h2>Summary: Key Takeaways</h2>
+        
+        <p>You've mastered the decision-making structures in Python! Here's what you now know:</p>
+        
+        <ul>
+            <li>✅ <strong>if statements</strong> execute code only when a condition is true</li>
+            <li>✅ <strong>if-else statements</strong> provide two paths: one for true, one for false</li>
+            <li>✅ <strong>if-elif-else statements</strong> handle multiple conditions in sequence</li>
+            <li>✅ <strong>Logical operators</strong> (<code>and</code>, <code>or</code>, <code>not</code>) let you combine conditions</li>
+            <li>✅ <strong>Indentation is critical</strong> - it defines which code belongs to which block</li>
+            <li>✅ <strong>Order matters</strong> - Python checks conditions from top to bottom</li>
+        </ul>
+        
+        <h3>What Makes Conditionals Powerful</h3>
+        
+        <ul>
+            <li>They give your programs <strong>intelligence</strong> - the ability to respond to different situations</li>
+            <li>They enable <strong>user interaction</strong> - programs can adapt to user input</li>
+            <li>They're <strong>universal</strong> - every programming language has conditionals</li>
+            <li>They're the foundation for <strong>complex logic</strong> - most programs are built on chains of decisions</li>
+        </ul>
+        
+        <h3>Your Next Steps</h3>
+        
+        <p>Now that you can make decisions, you're ready to repeat actions with <strong>loops</strong>. Here's your action plan:</p>
+        
+        <ul>
+            <li>✅ Complete the grade classifier and test it with different scores</li>
+            <li>✅ Build the login simulation with attempt tracking</li>
+            <li>✅ Experiment with combining multiple conditions using <code>and</code>/<code>or</code></li>
+            <li>✅ Move on to the next tutorial: <strong>Loops (for and while)</strong> - where you'll learn to repeat actions efficiently</li>
+        </ul>
+        
+        <div class="info-box">
+            <p>🚀 <strong>You're making real progress!</strong> Conditionals are where your programs start to feel intelligent. Combined with operators, you now have everything you need to build programs that think and decide. Next up: loops will let you repeat these decisions hundreds or thousands of times without writing repetitive code!</p>
+        </div>
+        
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Conditional Statements</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What will this code print if age = 16?<br><code>if age >= 18:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Adult")<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("Minor")</code></p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Adult</div>
+                    <div class="quiz-option" data-correct="true">Minor</div>
+                    <div class="quiz-option" data-correct="false">Nothing</div>
+                    <div class="quiz-option" data-correct="false">Error</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Which symbol must appear at the end of every if/elif/else line?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">;</div>
+                    <div class="quiz-option" data-correct="true">:</div>
+                    <div class="quiz-option" data-correct="false">.</div>
+                    <div class="quiz-option" data-correct="false">None</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. How many blocks can execute in an if-elif-else statement?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">All of them</div>
+                    <div class="quiz-option" data-correct="true">Exactly one</div>
+                    <div class="quiz-option" data-correct="false">None if all conditions are false</div>
+                    <div class="quiz-option" data-correct="false">Two maximum</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What's wrong with this code?<br><code>if score >= 90:<br>print("A")</code></p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Missing colon</div>
+                    <div class="quiz-option" data-correct="true">Missing indentation</div>
+                    <div class="quiz-option" data-correct="false">Wrong operator</div>
+                    <div class="quiz-option" data-correct="false">Nothing wrong</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">5. What does this condition check?<br><code>if age >= 18 and has_license:</code></p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Either condition is true</div>
+                    <div class="quiz-option" data-correct="true">Both conditions are true</div>
+                    <div class="quiz-option" data-correct="false">Neither condition is true</div>
+                    <div class="quiz-option" data-correct="false">Age is 18 or has license</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">6. Which order should you check grade conditions?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Lowest to highest (60, 70, 80, 90)</div>
+                    <div class="quiz-option" data-correct="true">Highest to lowest (90, 80, 70, 60)</div>
+                    <div class="quiz-option" data-correct="false">Random order is fine</div>
+                    <div class="quiz-option" data-correct="false">Only use one condition</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="python-operators-tutorial.html" class="btn btn-secondary">← Previous: Operators</a>
+                <a href="python-loops-tutorial.html" class="btn btn-primary">Next: Loops →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

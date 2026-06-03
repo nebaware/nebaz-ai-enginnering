@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Bayesian statistics and inference for AI. Learn Bayesian thinking, prior/posterior distributions, Bayesian updating, MCMC, and Bayesian ML algorithms with Python.">
+    <meta name="keywords" content="Bayesian statistics, Bayesian inference, prior, posterior, likelihood, Bayes theorem, MCMC, Bayesian machine learning, credible intervals, conjugate priors">
+    <title>Bayesian Statistics & Inference - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="bayesian-statistics.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .content-section h3 {
+            color: #078930;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #078930;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #065f46;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Bayesian Statistics & Inference</span>
+            </div>
+            <h1>Bayesian Statistics & Inference</h1>
+            <p class="tutorial-intro">
+                Think like a Bayesian: update beliefs with evidence and build probabilistic models for uncertain AI systems
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 6</span>
+                <span class="meta-item">🎓 Advanced</span>
+                <span class="meta-item">⏱️ 70 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Final Tutorial! Complete this to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Bayesian Statistics?</h2>
+                    <p>
+                        "There's a 70% chance of rain tomorrow." "This email is 95% likely to be spam." "The model is 80% confident this is a cat." These are Bayesian statements—they express uncertainty as probability. Unlike frequentist statistics, which treats parameters as fixed unknowns, Bayesian statistics treats everything as a probability distribution.
+                    </p>
+                    <p>
+                        Bayesian thinking is how humans naturally reason: we start with beliefs (priors), observe data (likelihood), and update our beliefs (posterior). This framework is incredibly powerful for AI: it handles small data elegantly, quantifies uncertainty naturally, incorporates domain knowledge systematically, and updates beliefs incrementally as new evidence arrives.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Bayesian methods power: spam filters (Naive Bayes), recommendation systems (Bayesian collaborative filtering), A/B testing with continuous monitoring, medical diagnosis systems, search engines (probabilistic information retrieval), reinforcement learning (Bayesian optimization), and AutoML hyperparameter tuning. Modern deep learning uses Bayesian neural networks for uncertainty quantification in safety-critical systems like autonomous vehicles.</p>
+                    </div>
+                </section>
+
+                <!-- Bayesian vs Frequentist -->
+                <section class="content-section">
+                    <h2>🔄 Bayesian vs Frequentist Paradigms</h2>
+                    <p>
+                        These are two fundamentally different philosophies for statistical inference. Understanding both makes you a better data scientist.
+                    </p>
+                    
+                    <div style="overflow-x: auto; margin: 2rem 0;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <thead>
+                                <tr style="background: #078930; color: white;">
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Aspect</th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Frequentist</th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Bayesian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Parameters</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Fixed but unknown</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Random variables with distributions</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Probability</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Long-run frequency</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Degree of belief</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Inference</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Point estimates, p-values, confidence intervals</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Posterior distributions, credible intervals</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Interpretation</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">"If we repeated this experiment..."</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">"Given this data, I believe..."</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Prior knowledge</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Cannot incorporate formally</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Incorporated via prior distribution</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold;">Small samples</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Problematic (need large n)</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Handles naturally via priors</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Example: Estimating Coin Bias</h3>
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Observe 7 heads in 10 flips
+heads = 7
+n = 10
+
+print("="*70)
+print("Estimating Coin Bias: Frequentist vs Bayesian")
+print("="*70)
+
+# FREQUENTIST APPROACH
+print("\n🔵 FREQUENTIST APPROACH")
+print("-" * 70)
+
+# Point estimate (MLE)
+p_mle = heads / n
+print(f"Point estimate (MLE): p̂ = {p_mle:.2f}")
+
+# 95% confidence interval (Wald method)
+se = np.sqrt(p_mle * (1 - p_mle) / n)
+ci_freq = stats.norm.interval(0.95, loc=p_mle, scale=se)
+print(f"95% CI: [{ci_freq[0]:.3f}, {ci_freq[1]:.3f}]")
+print(f"\nInterpretation: If we repeated this experiment many times,")
+print(f"95% of intervals would contain the true (fixed) value of p")
+print(f"⚠️  We CANNOT say 'p has 95% probability of being in this interval'")
+
+# BAYESIAN APPROACH
+print("\n🟢 BAYESIAN APPROACH")
+print("-" * 70)
+
+# Prior: Beta(2, 2) - slightly favor fair coins
+alpha_prior = 2
+beta_prior = 2
+print(f"Prior: Beta({alpha_prior}, {beta_prior}) - weak belief coin is fair")
+
+# Likelihood: Binomial(n=10, k=7)
+print(f"Data: {heads} heads in {n} flips")
+
+# Posterior: Beta(alpha_prior + heads, beta_prior + tails)
+alpha_post = alpha_prior + heads
+beta_post = beta_prior + (n - heads)
+print(f"Posterior: Beta({alpha_post}, {beta_post})")
+
+# Posterior mean
+p_bayes = alpha_post / (alpha_post + beta_post)
+print(f"\nPosterior mean: {p_bayes:.3f}")
+
+# 95% credible interval
+ci_bayes = stats.beta.interval(0.95, alpha_post, beta_post)
+print(f"95% Credible interval: [{ci_bayes[0]:.3f}, {ci_bayes[1]:.3f}]")
+print(f"\nInterpretation: Given the data, there's a 95% probability")
+print(f"that p is between {ci_bayes[0]:.3f} and {ci_bayes[1]:.3f}")
+print(f"✅ This is the intuitive interpretation we want!")
+
+# Visualize
+p_values = np.linspace(0, 1, 1000)
+
+# Prior
+prior = stats.beta.pdf(p_values, alpha_prior, beta_prior)
+
+# Likelihood (scaled for visualization)
+likelihood = stats.binom.pmf(heads, n, p_values)
+likelihood = likelihood / likelihood.max() * prior.max()
+
+# Posterior
+posterior = stats.beta.pdf(p_values, alpha_post, beta_post)
+
+plt.figure(figsize=(10, 6))
+plt.plot(p_values, prior, 'b--', linewidth=2, label='Prior: Beta(2,2)')
+plt.plot(p_values, likelihood, 'g:', linewidth=2, label='Likelihood (scaled)')
+plt.plot(p_values, posterior, 'r-', linewidth=2, label='Posterior: Beta(9,5)')
+plt.axvline(p_bayes, color='red', linestyle='--', alpha=0.5, label=f'Posterior mean: {p_bayes:.2f}')
+plt.axvspan(ci_bayes[0], ci_bayes[1], alpha=0.2, color='red', label='95% Credible Interval')
+
+plt.xlabel('Coin Bias (p)')
+plt.ylabel('Density')
+plt.title('Bayesian Updating: Prior × Likelihood → Posterior')
+plt.legend()
+plt.grid(True, alpha=0.3)
+# plt.show()
+
+print(f"\n💡 Key Insight:")
+print(f"Bayesian posterior is a compromise between prior and data.")
+print(f"With more data, posterior converges regardless of prior.")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ When to Use Each</strong>
+                        <p><strong>Use Frequentist:</strong> Large samples, no prior knowledge, want objective analysis, regulatory requirements (FDA, etc.)<br>
+                        <strong>Use Bayesian:</strong> Small samples, have domain knowledge, need uncertainty quantification, sequential decision-making, complex hierarchical models</p>
+                    </div>
+                </section>
+
+                <!-- Bayes Theorem Deep Dive -->
+                <section class="content-section">
+                    <h2>🧮 Bayes' Theorem: The Foundation</h2>
+                    <p>
+                        Bayes' theorem is the engine of Bayesian inference. It tells us how to update beliefs in light of new evidence.
+                    </p>
+                    
+                    <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center;">
+                        <p style="font-size: 1.5rem; font-weight: bold; color: #065f46; margin: 0;">
+                            P(θ | D) = P(D | θ) × P(θ) / P(D)
+                        </p>
+                        <p style="margin-top: 1rem; color: #64748b;">
+                            Posterior = Likelihood × Prior / Evidence
+                        </p>
+                    </div>
+                    
+                    <h3>Components Explained</h3>
+                    <ul>
+                        <li><strong>Prior P(θ):</strong> What we believe about parameter θ before seeing data</li>
+                        <li><strong>Likelihood P(D | θ):</strong> Probability of observing data D given θ</li>
+                        <li><strong>Evidence P(D):</strong> Total probability of data (normalizing constant)</li>
+                        <li><strong>Posterior P(θ | D):</strong> Updated belief about θ after seeing data D</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def bayesian_updating_demo():
+    """Demonstrate how Bayes' theorem updates beliefs"""
+    
+    # Medical test example
+    print("🏥 Medical Diagnosis with Bayes' Theorem")
+    print("="*70)
+    
+    # Scenario: Testing for rare disease
+    prevalence = 0.01  # 1% of population has disease
+    sensitivity = 0.95  # P(+test | disease) - true positive rate
+    specificity = 0.90  # P(-test | no disease) - true negative rate
+    
+    print(f"Disease prevalence: {prevalence*100}%")
+    print(f"Test sensitivity: {sensitivity*100}%")
+    print(f"Test specificity: {specificity*100}%")
+    
+    # Prior: P(disease)
+    p_disease = prevalence
+    p_no_disease = 1 - prevalence
+    
+    print(f"\nPRIOR (before test):")
+    print(f"  P(Disease) = {p_disease:.4f}")
+    print(f"  P(No Disease) = {p_no_disease:.4f}")
+    
+    # Likelihood: P(positive test | condition)
+    p_pos_given_disease = sensitivity
+    p_pos_given_no_disease = 1 - specificity
+    
+    # Evidence: P(positive test) - total probability
+    p_positive = (p_pos_given_disease * p_disease + 
+                  p_pos_given_no_disease * p_no_disease)
+    
+    print(f"\nLIKELIHOOD:")
+    print(f"  P(+test | Disease) = {p_pos_given_disease:.4f}")
+    print(f"  P(+test | No Disease) = {p_pos_given_no_disease:.4f}")
+    
+    print(f"\nEVIDENCE:")
+    print(f"  P(+test) = {p_positive:.4f}")
+    
+    # Posterior: P(disease | positive test) - Bayes' theorem!
+    p_disease_given_pos = (p_pos_given_disease * p_disease) / p_positive
+    
+    print(f"\nPOSTERIOR (after positive test):")
+    print(f"  P(Disease | +test) = {p_disease_given_pos:.4f}")
+    print(f"  = {p_disease_given_pos*100:.2f}%")
+    
+    print(f"\n💡 Key Insight:")
+    print(f"Even with positive test (95% sensitivity),")
+    print(f"only {p_disease_given_pos*100:.1f}% chance of disease")
+    print(f"because disease is rare (1% prevalence)!")
+    
+    # What if we test positive twice?
+    print(f"\n" + "="*70)
+    print(f"Sequential Updating: What if second test is also positive?")
+    print(f"="*70)
+    
+    # First test posterior becomes second test prior
+    p_disease_after_1st = p_disease_given_pos
+    p_no_disease_after_1st = 1 - p_disease_after_1st
+    
+    # Second test (assuming independent)
+    p_positive_2nd = (p_pos_given_disease * p_disease_after_1st + 
+                      p_pos_given_no_disease * p_no_disease_after_1st)
+    
+    p_disease_after_2nd = (p_pos_given_disease * p_disease_after_1st) / p_positive_2nd
+    
+    print(f"After 1st positive: {p_disease_after_1st*100:.2f}%")
+    print(f"After 2nd positive: {p_disease_after_2nd*100:.2f}%")
+    print(f"\nConfidence increased dramatically with more evidence!")
+    
+    return p_disease, p_disease_given_pos, p_disease_after_2nd
+
+# Run demonstration
+probs = bayesian_updating_demo()</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Base Rate Fallacy</strong>
+                        <p>People often ignore base rates (priors) and focus only on test accuracy. A 95% accurate test for a 1% prevalent disease means most positives are false positives! This is why Bayesian thinking matters—it forces you to consider base rates.</p>
+                    </div>
+                </section>
+
+                <!-- Conjugate Priors -->
+                <section class="content-section">
+                    <h2>🔗 Conjugate Priors</h2>
+                    <p>
+                        Some prior-likelihood pairs result in posteriors from the same family as the prior. These "conjugate" relationships make Bayesian inference computationally tractable.
+                    </p>
+                    
+                    <div style="overflow-x: auto; margin: 2rem 0;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <thead>
+                                <tr style="background: #078930; color: white;">
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Likelihood</th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Conjugate Prior</th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Binomial</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Beta</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Coin flips, conversion rates</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Poisson</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Gamma</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Event counts, traffic rates</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Normal (known σ)</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Normal</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Measurement errors</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Normal (unknown σ)</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">Normal-Inverse-Gamma</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd;">General continuous data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Beta-Binomial: The Workhorse</h3>
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def beta_binomial_conjugacy():
+    """Demonstrate Beta-Binomial conjugacy for A/B testing"""
+    
+    print("🧪 Bayesian A/B Test: Email Subject Lines")
+    print("="*70)
+    
+    # Scenario: Testing two email subject lines
+    # Variant A: 45 opens out of 200 sends
+    # Variant B: 58 opens out of 200 sends
+    
+    # Prior: Beta(1, 1) = Uniform [0,1] - no prior knowledge
+    alpha_prior = 1
+    beta_prior = 1
+    
+    # Data
+    opens_a = 45
+    sends_a = 200
+    opens_b = 58
+    sends_b = 200
+    
+    print(f"Variant A: {opens_a}/{sends_a} opens ({opens_a/sends_a*100:.1f}%)")
+    print(f"Variant B: {opens_b}/{sends_b} opens ({opens_b/sends_b*100:.1f}%)")
+    
+    # Posterior for A: Beta(alpha_prior + opens_a, beta_prior + (sends_a - opens_a))
+    alpha_post_a = alpha_prior + opens_a
+    beta_post_a = beta_prior + (sends_a - opens_a)
+    
+    # Posterior for B
+    alpha_post_b = alpha_prior + opens_b
+    beta_post_b = beta_prior + (sends_b - opens_b)
+    
+    print(f"\nPosterior A: Beta({alpha_post_a}, {beta_post_a})")
+    print(f"Posterior B: Beta({alpha_post_b}, {beta_post_b})")
+    
+    # Posterior means
+    mean_a = alpha_post_a / (alpha_post_a + beta_post_a)
+    mean_b = alpha_post_b / (alpha_post_b + beta_post_b)
+    
+    print(f"\nPosterior means:")
+    print(f"  E[p_A | data] = {mean_a:.4f}")
+    print(f"  E[p_B | data] = {mean_b:.4f}")
+    
+    # Credible intervals
+    ci_a = stats.beta.interval(0.95, alpha_post_a, beta_post_a)
+    ci_b = stats.beta.interval(0.95, alpha_post_b, beta_post_b)
+    
+    print(f"\n95% Credible Intervals:")
+    print(f"  A: [{ci_a[0]:.4f}, {ci_a[1]:.4f}]")
+    print(f"  B: [{ci_b[0]:.4f}, {ci_b[1]:.4f}]")
+    
+    # Probability B > A (via Monte Carlo)
+    np.random.seed(42)
+    samples_a = np.random.beta(alpha_post_a, beta_post_a, 10000)
+    samples_b = np.random.beta(alpha_post_b, beta_post_b, 10000)
+    
+    prob_b_better = (samples_b > samples_a).mean()
+    
+    print(f"\n🎯 Decision Metric:")
+    print(f"P(p_B > p_A | data) = {prob_b_better:.4f} = {prob_b_better*100:.2f}%")
+    
+    if prob_b_better > 0.95:
+        print(f"✅ Strong evidence that B is better! Launch B.")
+    elif prob_b_better > 0.90:
+        print(f"⚠️  Moderate evidence B is better. Consider more data.")
+    else:
+        print(f"❌ Not enough evidence. Continue testing.")
+    
+    # Visualize posteriors
+    p_values = np.linspace(0, 0.5, 1000)
+    pdf_a = stats.beta.pdf(p_values, alpha_post_a, beta_post_a)
+    pdf_b = stats.beta.pdf(p_values, alpha_post_b, beta_post_b)
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(p_values, pdf_a, 'b-', linewidth=2, label=f'Variant A')
+    plt.plot(p_values, pdf_b, 'r-', linewidth=2, label=f'Variant B')
+    plt.axvline(mean_a, color='blue', linestyle='--', alpha=0.5)
+    plt.axvline(mean_b, color='red', linestyle='--', alpha=0.5)
+    
+    plt.xlabel('Open Rate')
+    plt.ylabel('Posterior Density')
+    plt.title(f'Bayesian A/B Test: P(B better) = {prob_b_better:.2%}')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    # plt.show()
+    
+    return prob_b_better
+
+# Run demo
+prob = beta_binomial_conjugacy()</code></pre>
+                </section>
+
+                <!-- Bayesian ML Algorithms -->
+                <section class="content-section">
+                    <h2>🤖 Bayesian Machine Learning</h2>
+                    <p>
+                        Many ML algorithms have Bayesian interpretations or implementations. Let's explore the most important ones.
+                    </p>
+                    
+                    <h3>1. Naive Bayes Classifier (Revisited)</h3>
+                    <pre><code class="language-python">from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+# Email spam classification
+emails = [
+    ("Win free money now!", "spam"),
+    ("Meeting at 3pm tomorrow", "ham"),
+    ("Congratulations! You won!", "spam"),
+    ("Can you review this document?", "ham"),
+    ("Claim your prize today", "spam"),
+    ("Lunch on Thursday?", "ham"),
+    ("Limited time offer!!!", "spam"),
+    ("Project deadline reminder", "ham"),
+] * 50  # Repeat to have more data
+
+texts, labels = zip(*emails)
+
+# Vectorize
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(texts)
+y = np.array([1 if label == "spam" else 0 for label in labels])
+
+# Train Naive Bayes
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+nb = MultinomialNB(alpha=1.0)  # alpha is Laplace smoothing (prior)
+nb.fit(X_train, y_train)
+
+print("📧 Naive Bayes Email Classifier")
+print("="*70)
+print(f"Training accuracy: {nb.score(X_train, y_train):.3f}")
+print(f"Test accuracy: {nb.score(X_test, y_test):.3f}")
+
+# Test new emails
+new_emails = [
+    "Free prize waiting for you",
+    "Can we schedule a meeting",
+]
+
+X_new = vectorizer.transform(new_emails)
+predictions = nb.predict(X_new)
+probabilities = nb.predict_proba(X_new)
+
+print(f"\nPredictions with probabilities:")
+for email, pred, prob in zip(new_emails, predictions, probabilities):
+    label = "spam" if pred == 1 else "ham"
+    confidence = prob[pred]
+    print(f"\n  '{email}'")
+    print(f"  → {label.upper()} (confidence: {confidence:.3f})")
+    print(f"     P(spam|text) = {prob[1]:.3f}")
+    print(f"     P(ham|text) = {prob[0]:.3f}")
+
+print(f"\n💡 Why 'Naive'?")
+print(f"Assumes word probabilities are independent given class.")
+print(f"P(spam|'free','prize') = P(spam) × P('free'|spam) × P('prize'|spam)")
+print(f"This is naive but works surprisingly well in practice!")</code></pre>
+
+                    <h3>2. Bayesian Linear Regression</h3>
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+def bayesian_linear_regression():
+    """Bayesian approach to linear regression with uncertainty"""
+    
+    np.random.seed(42)
+    
+    # Generate data: y = 2x + 1 + noise
+    n_points = 10
+    X_train = np.linspace(0, 10, n_points)
+    y_train = 2 * X_train + 1 + np.random.normal(0, 2, n_points)
+    
+    print("📈 Bayesian Linear Regression")
+    print("="*70)
+    print(f"Training on {n_points} data points")
+    
+    # For simplicity, assume known noise variance
+    sigma_noise = 2.0
+    
+    # Prior: Normal distribution for slope and intercept
+    # P(slope) ~ N(0, 10) - vague prior
+    # P(intercept) ~ N(0, 10)
+    
+    # Frequentist fit (for comparison)
+    slope_freq = np.cov(X_train, y_train)[0, 1] / np.var(X_train)
+    intercept_freq = y_train.mean() - slope_freq * X_train.mean()
+    
+    print(f"\nFrequentist estimate:")
+    print(f"  y = {slope_freq:.2f}x + {intercept_freq:.2f}")
+    
+    # Bayesian approach: posterior distribution over parameters
+    # (Simplified - in practice use MCMC or variational inference)
+    
+    # Posterior mean (MAP estimate with vague prior ≈ MLE)
+    X_design = np.column_stack([np.ones(len(X_train)), X_train])
+    
+    # Posterior covariance
+    prior_cov = np.eye(2) * 100  # Vague prior
+    post_cov_inv = np.linalg.inv(prior_cov) + (X_design.T @ X_design) / sigma_noise**2
+    post_cov = np.linalg.inv(post_cov_inv)
+    
+    # Posterior mean
+    post_mean = post_cov @ (X_design.T @ y_train) / sigma_noise**2
+    
+    slope_bayes = post_mean[1]
+    intercept_bayes = post_mean[0]
+    
+    print(f"\nBayesian estimate (posterior mean):")
+    print(f"  y = {slope_bayes:.2f}x + {intercept_bayes:.2f}")
+    
+    # Uncertainty in predictions
+    X_test = np.linspace(-2, 12, 100)
+    X_test_design = np.column_stack([np.ones(len(X_test)), X_test])
+    
+    # Posterior predictive mean
+    y_pred = X_test_design @ post_mean
+    
+    # Posterior predictive variance (epistemic + aleatoric)
+    pred_var = np.array([x @ post_cov @ x for x in X_test_design]) + sigma_noise**2
+    pred_std = np.sqrt(pred_var)
+    
+    # 95% credible interval
+    ci_lower = y_pred - 1.96 * pred_std
+    ci_upper = y_pred + 1.96 * pred_std
+    
+    # Plot
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X_train, y_train, color='blue', s=50, label='Training data', zorder=3)
+    plt.plot(X_test, y_pred, 'r-', linewidth=2, label='Posterior mean', zorder=2)
+    plt.fill_between(X_test, ci_lower, ci_upper, alpha=0.3, color='red', 
+                     label='95% Credible interval', zorder=1)
+    
+    plt.xlabel('X')
+    plt.ylabel('y')
+    plt.title('Bayesian Linear Regression: Uncertainty Quantification')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    # plt.show()
+    
+    print(f"\n💡 Key Insight:")
+    print(f"Uncertainty is high where we have no data (extrapolation).")
+    print(f"Uncertainty decreases where we have observations.")
+    print(f"This is automatic in Bayesian approach!")
+    
+    return post_mean, post_cov
+
+# Run demo
+params = bayesian_linear_regression()</code></pre>
+
+                    <h3>3. Bayesian Optimization for Hyperparameter Tuning</h3>
+                    <pre><code class="language-python">from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, ConstantKernel
+from scipy.stats import norm
+import numpy as np
+import matplotlib.pyplot as plt
+
+def bayesian_optimization_demo():
+    """Simple Bayesian Optimization example"""
+    
+    print("🎯 Bayesian Optimization: Finding Optimal Hyperparameter")
+    print("="*70)
+    
+    # Objective function (unknown to optimizer)
+    # Simulating model performance as function of learning rate
+    def objective(x):
+        return -((x - 0.7)**2) * np.sin(14 * x)  # Complex function
+    
+    # Initial random samples
+    np.random.seed(42)
+    X_init = np.random.uniform(0, 1, 3).reshape(-1, 1)
+    y_init = objective(X_init).ravel()
+    
+    print(f"Starting with {len(X_init)} random evaluations")
+    
+    # Bayesian optimization loop
+    X_samples = X_init.copy()
+    y_samples = y_init.copy()
+    
+    n_iterations = 7
+    
+    for iteration in range(n_iterations):
+        # Fit Gaussian Process
+        kernel = ConstantKernel(1.0) * RBF(length_scale=0.1)
+        gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10, random_state=42)
+        gp.fit(X_samples, y_samples)
+        
+        # Acquisition function: Upper Confidence Bound (UCB)
+        X_test = np.linspace(0, 1, 1000).reshape(-1, 1)
+        mu, sigma = gp.predict(X_test, return_std=True)
+        
+        # UCB = mean + kappa * std (exploration-exploitation trade-off)
+        kappa = 2.0
+        ucb = mu + kappa * sigma
+        
+        # Find next point to sample
+        next_x = X_test[np.argmax(ucb)]
+        next_y = objective(next_x)
+        
+        # Add to samples
+        X_samples = np.vstack([X_samples, next_x])
+        y_samples = np.append(y_samples, next_y)
+        
+        print(f"Iteration {iteration+1}: x={next_x[0]:.3f}, f(x)={next_y:.3f}")
+    
+    # Best found
+    best_idx = np.argmax(y_samples)
+    best_x = X_samples[best_idx]
+    best_y = y_samples[best_idx]
+    
+    # True optimum (for comparison)
+    X_true = np.linspace(0, 1, 10000).reshape(-1, 1)
+    y_true = objective(X_true).ravel()
+    true_best_idx = np.argmax(y_true)
+    true_best_x = X_true[true_best_idx]
+    true_best_y = y_true[true_best_idx]
+    
+    print(f"\n🏆 Results:")
+    print(f"Best found: x={best_x[0]:.3f}, f(x)={best_y:.3f}")
+    print(f"True optimum: x={true_best_x[0]:.3f}, f(x)={true_best_y:.3f}")
+    print(f"Found {best_y/true_best_y*100:.1f}% of optimal in {len(X_samples)} evaluations")
+    
+    print(f"\n💡 Why Bayesian Optimization?")
+    print(f"- Uses Gaussian Process to model objective function")
+    print(f"- Balances exploration (uncertain regions) and exploitation (promising regions)")
+    print(f"- Much more sample-efficient than grid/random search")
+    print(f"- Perfect for expensive evaluations (deep learning hyperparameters)")
+    
+    return best_x, best_y
+
+# Run demo
+best = bayesian_optimization_demo()</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 Bayesian Deep Learning</strong>
+                        <p>Modern research extends Bayesian methods to neural networks: <strong>Bayesian Neural Networks</strong> place distributions over weights for uncertainty quantification. <strong>Dropout as Bayesian Approximation</strong> - Monte Carlo dropout estimates uncertainty. <strong>Variational Inference</strong> - approximate posteriors in high dimensions. Used in safety-critical applications: autonomous vehicles (know when model is uncertain), medical diagnosis (quantify confidence), reinforcement learning (exploration-exploitation).</p>
+                    </div>
+                </section>
+
+                <!-- MCMC -->
+                <section class="content-section">
+                    <h2>🎲 MCMC: Sampling from Posteriors</h2>
+                    <p>
+                        For complex models, we can't compute posterior distributions analytically. Markov Chain Monte Carlo (MCMC) methods let us sample from posteriors even when we can't write them down.
+                    </p>
+                    
+                    <h3>The Idea</h3>
+                    <p>
+                        Instead of computing P(θ | D) exactly, we generate samples {θ₁, θ₂, ..., θₙ} that follow the posterior distribution. With enough samples, we can approximate any posterior quantity (mean, variance, credible intervals, etc.).
+                    </p>
+                    
+                    <h3>Metropolis-Hastings Algorithm (Simple MCMC)</h3>
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+def metropolis_hastings_demo():
+    """Demonstrate Metropolis-Hastings algorithm"""
+    
+    print("🎲 Metropolis-Hastings MCMC Sampling")
+    print("="*70)
+    
+    # Target distribution: mixture of two Gaussians (hard to sample directly)
+    def target_distribution(x):
+        return (0.3 * stats.norm.pdf(x, -2, 0.5) + 
+                0.7 * stats.norm.pdf(x, 3, 1.0))
+    
+    # Metropolis-Hastings algorithm
+    def metropolis_hastings(target, n_samples=10000, proposal_std=1.0):
+        samples = []
+        current = 0.0  # Starting point
+        
+        accepted = 0
+        
+        for i in range(n_samples):
+            # Propose new state
+            proposal = current + np.random.normal(0, proposal_std)
+            
+            # Calculate acceptance ratio
+            acceptance_ratio = target(proposal) / target(current)
+            
+            # Accept or reject
+            if np.random.uniform() < acceptance_ratio:
+                current = proposal
+                accepted += 1
+            
+            samples.append(current)
+        
+        acceptance_rate = accepted / n_samples
+        return np.array(samples), acceptance_rate
+    
+    # Run MCMC
+    samples, acc_rate = metropolis_hastings(target_distribution, n_samples=10000)
+    
+    print(f"Generated {len(samples)} samples")
+    print(f"Acceptance rate: {acc_rate:.3f}")
+    
+    # Compute statistics from samples
+    print(f"\nPosterior statistics (from samples):")
+    print(f"  Mean: {samples.mean():.3f}")
+    print(f"  Median: {np.median(samples):.3f}")
+    print(f"  Std: {samples.std():.3f}")
+    
+    # 95% credible interval
+    ci = np.percentile(samples, [2.5, 97.5])
+    print(f"  95% Credible Interval: [{ci[0]:.3f}, {ci[1]:.3f}]")
+    
+    # Visualize
+    x = np.linspace(-5, 6, 1000)
+    true_pdf = target_distribution(x)
+    
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # True distribution vs samples
+    axes[0, 0].plot(x, true_pdf, 'r-', linewidth=2, label='True distribution')
+    axes[0, 0].hist(samples[1000:], bins=50, density=True, alpha=0.6, label='MCMC samples')
+    axes[0, 0].set_xlabel('x')
+    axes[0, 0].set_ylabel('Density')
+    axes[0, 0].set_title('Samples vs True Distribution')
+    axes[0, 0].legend()
+    axes[0, 0].grid(True, alpha=0.3)
+    
+    # Trace plot
+    axes[0, 1].plot(samples[:1000], alpha=0.7)
+    axes[0, 1].set_xlabel('Iteration')
+    axes[0, 1].set_ylabel('Value')
+    axes[0, 1].set_title('Trace Plot (first 1000 samples)')
+    axes[0, 1].grid(True, alpha=0.3)
+    
+    # Autocorrelation
+    from numpy import correlate
+    autocorr = correlate(samples - samples.mean(), samples - samples.mean(), mode='full')
+    autocorr = autocorr[len(autocorr)//2:]
+    autocorr = autocorr / autocorr[0]
+    
+    axes[1, 0].plot(autocorr[:100])
+    axes[1, 0].set_xlabel('Lag')
+    axes[1, 0].set_ylabel('Autocorrelation')
+    axes[1, 0].set_title('Autocorrelation Plot')
+    axes[1, 0].grid(True, alpha=0.3)
+    
+    # Running mean
+    running_mean = np.cumsum(samples) / np.arange(1, len(samples) + 1)
+    axes[1, 1].plot(running_mean)
+    axes[1, 1].axhline(samples.mean(), color='r', linestyle='--', label='Final mean')
+    axes[1, 1].set_xlabel('Iteration')
+    axes[1, 1].set_ylabel('Running Mean')
+    axes[1, 1].set_title('Convergence: Running Mean')
+    axes[1, 1].legend()
+    axes[1, 1].grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    # plt.show()
+    
+    print(f"\n💡 Key MCMC Concepts:")
+    print(f"- Trace plot: Should look like 'fuzzy caterpillar' (good mixing)")
+    print(f"- Autocorrelation: Should decay quickly (independent samples)")
+    print(f"- Running mean: Should converge (chain has converged)")
+    print(f"- Burn-in: Discard first samples (before convergence)")
+    
+    return samples
+
+# Run demo
+samples = metropolis_hastings_demo()</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ Modern MCMC Tools</strong>
+                        <p>In practice, use specialized libraries: <strong>PyMC3/PyMC</strong> - Probabilistic programming in Python. <strong>Stan</strong> - Fast Hamiltonian Monte Carlo. <strong>TensorFlow Probability</strong> - Bayesian deep learning. <strong>Pyro</strong> - Deep probabilistic programming. These handle complex models automatically and are much more efficient than basic Metropolis-Hastings.</p>
+                    </div>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <h3>Exercise 1: Medical Diagnosis</h3>
+                    <p><strong>Scenario:</strong> Disease affects 0.5% of population. Test has 99% sensitivity and 95% specificity.</p>
+                    <ol>
+                        <li>If you test positive, what's probability you have disease?</li>
+                        <li>If you test negative, what's probability you're healthy?</li>
+                        <li>Why is the answer to question 1 so surprising?</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Beta-Binomial Updating</h3>
+                    <p><strong>Scenario:</strong> Prior belief: Beta(2, 2). Observe 8 successes in 10 trials.</p>
+                    <ol>
+                        <li>What is the posterior distribution?</li>
+                        <li>What is the posterior mean?</li>
+                        <li>Calculate 95% credible interval</li>
+                        <li>How does this differ from a uniform Beta(1,1) prior?</li>
+                    </ol>
+                    
+                    <h3>Exercise 3: Bayesian A/B Test</h3>
+                    <p><strong>Scenario:</strong> Control: 120/1000 conversions. Treatment: 140/1000 conversions.</p>
+                    <ol>
+                        <li>Use Beta-Binomial model to estimate P(treatment > control)</li>
+                        <li>Would you launch treatment if threshold is 95%?</li>
+                        <li>How many more samples needed to reach 95% confidence?</li>
+                    </ol>
+                    
+                    <h3>Exercise 4: Prior Sensitivity</h3>
+                    <p><strong>Challenge:</strong> Compare three priors for coin flip problem (5 heads in 10 flips):</p>
+                    <ul>
+                        <li>Uniform: Beta(1, 1)</li>
+                        <li>Skeptical: Beta(10, 10) - believes coin is fair</li>
+                        <li>Optimistic: Beta(8, 2) - believes heads likely</li>
+                    </ul>
+                    <ol>
+                        <li>Calculate posterior for each prior</li>
+                        <li>How do posteriors differ?</li>
+                        <li>Which prior is most affected by data?</li>
+                    </ol>
+                    
+                    <h3>Exercise 5: Credible vs Confidence Intervals</h3>
+                    <p><strong>Scenario:</strong> Sample mean = 75, sample std = 10, n = 25. True population mean unknown.</p>
+                    <ol>
+                        <li>Calculate 95% confidence interval (frequentist)</li>
+                        <li>Calculate 95% credible interval (Bayesian with vague prior)</li>
+                        <li>Write correct interpretation for each</li>
+                        <li>Which interpretation is more intuitive?</li>
+                    </ol>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>Congratulations! You've completed the Statistics for AI course. You've mastered the Bayesian paradigm—the foundation of probabilistic thinking in AI:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎯 Bayesian Paradigm</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Probability as belief. Parameters as distributions. Update beliefs with data via Bayes' theorem. More intuitive than frequentist approach.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🧮 Bayes' Theorem</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Posterior = Likelihood × Prior / Evidence. Foundation of all Bayesian inference. Combines data with prior knowledge systematically.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🔗 Conjugate Priors</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Beta-Binomial, Gamma-Poisson, Normal-Normal. Analytical posteriors. Foundation for efficient Bayesian inference in simple models.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🤖 Bayesian ML</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Naive Bayes, Bayesian regression, Bayesian optimization, Bayesian neural networks. Uncertainty quantification built-in.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🎲 MCMC Sampling</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Sample from complex posteriors. Metropolis-Hastings, Hamiltonian MC. Modern tools: PyMC, Stan, TensorFlow Probability.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">📊 Practical Applications</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">A/B testing, spam filtering, medical diagnosis, hyperparameter tuning, recommender systems. Bayesian thinking everywhere in modern AI.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>🎓 Course Complete!</strong>
+                        <p>You've mastered statistics for AI across 6 comprehensive tutorials: descriptive statistics, probability foundations, distributions, sampling & CLT, hypothesis testing, and Bayesian inference. You now have the statistical toolkit to: understand research papers, design rigorous experiments, build probabilistic models, quantify uncertainty, and make data-driven decisions with confidence. This is the foundation every AI practitioner needs!</p>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center;">
+                        <h3 style="color: white; margin-top: 0;">🏆 Ready to Earn Your Certificate?</h3>
+                        <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Complete the quiz below to demonstrate your mastery and earn your free Statistics for AI certificate!</p>
+                        <a href="../../certificates/verify.html?course=statistics-for-ai" style="display: inline-block; background: white; color: #059669; padding: 1rem 2rem; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem;">Generate My Certificate →</a>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 1:</strong> In Bayesian inference, the posterior distribution represents:</p>
+                            <div class="quiz-option" data-value="a">a) Our belief before seeing data</div>
+                            <div class="quiz-option" data-value="b">b) The probability of the data</div>
+                            <div class="quiz-option" data-value="c">c) Our updated belief after observing data</div>
+                            <div class="quiz-option" data-value="d">d) The likelihood function</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 2:</strong> A 95% credible interval means:</p>
+                            <div class="quiz-option" data-value="a">a) 95% of repeated experiments will contain the true parameter</div>
+                            <div class="quiz-option" data-value="b">b) There's 95% probability the parameter is in this interval given the data</div>
+                            <div class="quiz-option" data-value="c">c) The parameter is definitely in this range</div>
+                            <div class="quiz-option" data-value="d">d) Same as a confidence interval</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 3:</strong> For a Binomial likelihood, the conjugate prior is:</p>
+                            <div class="quiz-option" data-value="a">a) Beta distribution</div>
+                            <div class="quiz-option" data-value="b">b) Gamma distribution</div>
+                            <div class="quiz-option" data-value="c">c) Normal distribution</div>
+                            <div class="quiz-option" data-value="d">d) Uniform distribution</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 4:</strong> The main advantage of Bayesian methods over frequentist is:</p>
+                            <div class="quiz-option" data-value="a">a) Always gives the same answer</div>
+                            <div class="quiz-option" data-value="b">b) Computationally faster</div>
+                            <div class="quiz-option" data-value="c">c) Doesn't require assumptions</div>
+                            <div class="quiz-option" data-value="d">d) Natural uncertainty quantification and incorporation of prior knowledge</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 5:</strong> MCMC methods are used to:</p>
+                            <div class="quiz-option" data-value="a">a) Calculate exact posteriors</div>
+                            <div class="quiz-option" data-value="b">b) Avoid using priors</div>
+                            <div class="quiz-option" data-value="c">c) Sample from complex posterior distributions</div>
+                            <div class="quiz-option" data-value="d">d) Compute p-values</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 6:</strong> In Bayesian A/B testing, to decide if treatment is better we calculate:</p>
+                            <div class="quiz-option" data-value="a">a) A p-value</div>
+                            <div class="quiz-option" data-value="b">b) P(treatment > control | data)</div>
+                            <div class="quiz-option" data-value="c">c) A confidence interval</div>
+                            <div class="quiz-option" data-value="d">d) The z-statistic</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 7:</strong> The "Naive" in Naive Bayes refers to:</p>
+                            <div class="quiz-option" data-value="a">a) Assumption that features are independent given the class</div>
+                            <div class="quiz-option" data-value="b">b) It's a simple algorithm</div>
+                            <div class="quiz-option" data-value="c">c) It doesn't use Bayes' theorem correctly</div>
+                            <div class="quiz-option" data-value="d">d) It ignores prior probabilities</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 8:</strong> Bayesian optimization is particularly useful for:</p>
+                            <div class="quiz-option" data-value="a">a) Large datasets with many evaluations</div>
+                            <div class="quiz-option" data-value="b">b) Computing exact solutions</div>
+                            <div class="quiz-option" data-value="c">c) Expensive function evaluations like hyperparameter tuning</div>
+                            <div class="quiz-option" data-value="d">d) Linear regression problems</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="hypothesis-testing.html" class="nav-button">← Previous: Hypothesis Testing</a>
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button">Back to Course</a>
+                    <a href="../../certificates/verify.html?course=statistics-for-ai" class="nav-button" style="background: #10b981;">Get Certificate →</a>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

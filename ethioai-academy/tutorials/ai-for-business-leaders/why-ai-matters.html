@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Why AI Matters for Your Business - Understand the fundamental importance of AI in modern business and why you can't afford to ignore it.">
+    <title>Why AI Matters for Your Business - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            opacity: 0.8;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            margin: 1rem auto;
+            max-width: 700px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin-bottom: 4rem;
+        }
+        
+        .content-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
+            line-height: 1.3;
+        }
+        
+        .content-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 1.25rem;
+            margin-top: 2.5rem;
+            line-height: 1.4;
+        }
+        
+        .content-section h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+            color: #475569;
+            font-size: 1.05rem;
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+            line-height: 1.9;
+            color: #475569;
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+        
+        .tutorial-content strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 4px solid #078930;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+        }
+        
+        .info-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+        }
+        
+        .warning-box h4 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+        }
+        
+        .success-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .example-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2rem 0;
+        }
+        
+        .example-box h4 {
+            color: #334155;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .key-takeaway {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            border-left: 4px solid #9333ea;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 3rem 0;
+        }
+        
+        .key-takeaway h3 {
+            color: #6b21a8;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #078930;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="tutorial-breadcrumb">
+            <a href="../../index.html">Home</a> &gt; 
+            <a href="../../courses/ai-for-business-leaders.html">AI for Business Leaders</a> &gt; 
+            Module 1
+        </div>
+        <h1>Why AI Matters for Your Business</h1>
+        <p class="tutorial-intro">
+            Understand the fundamental importance of AI in modern business and why you can't afford to ignore it.
+        </p>
+        <div class="tutorial-meta-info">
+            <span class="meta-item">🎯 Beginner</span>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        <!-- Certificate Motivation Banner -->
+        <div class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+            <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                🎓 <strong>Complete all 17 modules to earn your Free AI Business Leadership Certificate</strong><br>
+                <span style="font-size: 0.95rem; opacity: 0.9;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+            </p>
+        </div>
+
+        <div class="content-section">
+            <h2>The AI Revolution is Here—And It's Not Slowing Down</h2>
+            
+            <p>
+                Imagine waking up to discover that your competitors have somehow doubled their productivity overnight, 
+                are making better decisions faster, and are delighting customers in ways you can't match. This isn't 
+                a hypothetical scenario—it's happening right now as businesses embrace artificial intelligence.
+            </p>
+
+            <p>
+                Whether you're leading a Fortune 500 company or a startup, AI is no longer a futuristic technology. 
+                It's a present-day competitive necessity. Companies that harness AI effectively are pulling ahead, 
+                while those that hesitate are falling behind at an accelerating pace.
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">83%</div>
+                    <div class="stat-label">of executives say AI is a strategic priority</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">$15.7T</div>
+                    <div class="stat-label">predicted global economic impact by 2030</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">average productivity increase in early adopters</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">2.5x</div>
+                    <div class="stat-label">faster decision-making with AI analytics</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Why Now? The Perfect Storm of AI Enablers</h2>
+            
+            <p>
+                Three critical factors have converged to make AI accessible and powerful for businesses of all sizes:
+            </p>
+
+            <h3>1. Computing Power Has Become Abundant and Affordable</h3>
+            <p>
+                Cloud computing platforms like AWS, Azure, and Google Cloud provide massive computational resources 
+                on-demand. What once required millions in infrastructure investment now costs mere dollars per hour.
+            </p>
+
+            <h3>2. Data is Everywhere—And Growing Exponentially</h3>
+            <p>
+                Every customer interaction, transaction, and process generates data. Companies are now sitting on 
+                goldmines of information that AI can transform into competitive advantages. The average business 
+                generates <strong>2.5 quintillion bytes of data daily</strong>.
+            </p>
+
+            <h3>3. AI Models Have Become Remarkably Capable</h3>
+            <p>
+                Modern AI systems like GPT-4, Claude, and specialized industry models can understand context, 
+                generate insights, and make predictions with unprecedented accuracy. These aren't just pattern 
+                matchers—they're powerful reasoning engines.
+            </p>
+
+            <div class="info-box">
+                <h4>💡 Key Insight</h4>
+                <p>
+                    The combination of cheap computing, abundant data, and advanced AI models means that 
+                    <strong>the barrier to entry has never been lower</strong>. Small businesses can now access 
+                    AI capabilities that were exclusive to tech giants just five years ago.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>The Real Cost of Ignoring AI</h2>
+            
+            <p>
+                Some executives still view AI as "nice to have" or "something to explore next year." This mindset 
+                is becoming increasingly dangerous. Here's what's at stake:
+            </p>
+
+            <h3>1. Competitive Displacement</h3>
+            <p>
+                Your competitors are using AI to operate faster, smarter, and more efficiently. They're automating 
+                tasks that take you hours, personalizing customer experiences at scale, and making data-driven 
+                decisions while you're still gathering reports.
+            </p>
+
+            <div class="example-box">
+                <h4>📊 Real-World Example: Retail</h4>
+                <p>
+                    A mid-sized retailer implemented AI-powered inventory management and demand forecasting. 
+                    Results after 6 months:
+                </p>
+                <ul>
+                    <li><strong>23% reduction in stockouts</strong> – customers find what they want when they want it</li>
+                    <li><strong>31% decrease in excess inventory</strong> – freed up $4.2M in working capital</li>
+                    <li><strong>18% improvement in gross margins</strong> – better pricing and promotional strategies</li>
+                </ul>
+                <p>
+                    Their traditional competitors saw market share decline as customers shifted to the AI-powered store.
+                </p>
+            </div>
+
+            <h3>2. Talent Exodus</h3>
+            <p>
+                Top performers want to work with cutting-edge tools. Companies that don't embrace AI risk losing 
+                their best people to more innovative competitors. A recent survey found that <strong>62% of 
+                high-performing employees</strong> would consider leaving for a company with better AI tools.
+            </p>
+
+            <h3>3. Customer Expectations Are Rising—Fast</h3>
+            <p>
+                Your customers interact with AI-powered companies daily: Netflix recommendations, Amazon's 
+                personalization, ChatGPT for problem-solving. They now expect instant, personalized, intelligent 
+                service from <em>every</em> business they deal with.
+            </p>
+
+            <div class="warning-box">
+                <h4>⚠️ Critical Warning</h4>
+                <p>
+                    The "AI gap" between leaders and laggards is growing exponentially, not linearly. Companies 
+                    that wait "just one more year" may find themselves 5-10 years behind in competitive capability. 
+                    The cost of catching up increases dramatically with each passing quarter.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>How AI is Transforming Every Business Function</h2>
+            
+            <p>
+                AI isn't just for tech companies or data scientists. It's revolutionizing how every department 
+                operates:
+            </p>
+
+            <h3>Sales & Marketing</h3>
+            <ul>
+                <li><strong>Predictive lead scoring:</strong> AI identifies which prospects are most likely to buy, allowing sales teams to focus on high-value opportunities</li>
+                <li><strong>Hyper-personalization:</strong> Every customer sees tailored messaging, offers, and content based on their behavior and preferences</li>
+                <li><strong>Content generation:</strong> AI creates first drafts of emails, social posts, and marketing copy in seconds</li>
+                <li><strong>Customer sentiment analysis:</strong> Real-time monitoring of brand perception across all channels</li>
+            </ul>
+
+            <h3>Operations</h3>
+            <ul>
+                <li><strong>Demand forecasting:</strong> Predict customer demand with 85-95% accuracy, optimizing inventory and production</li>
+                <li><strong>Process optimization:</strong> AI identifies bottlenecks and suggests improvements in complex workflows</li>
+                <li><strong>Predictive maintenance:</strong> Prevent equipment failures before they happen, reducing downtime by up to 50%</li>
+                <li><strong>Supply chain optimization:</strong> Dynamic routing, supplier selection, and logistics planning</li>
+            </ul>
+
+            <h3>Finance</h3>
+            <ul>
+                <li><strong>Fraud detection:</strong> Real-time anomaly detection catches suspicious activity immediately</li>
+                <li><strong>Financial forecasting:</strong> More accurate budgets and projections with AI-powered modeling</li>
+                <li><strong>Automated reconciliation:</strong> Reduce month-end close time by 60-70%</li>
+                <li><strong>Risk assessment:</strong> Comprehensive risk analysis across portfolio, credit, and market risks</li>
+            </ul>
+
+            <h3>Human Resources</h3>
+            <ul>
+                <li><strong>Talent acquisition:</strong> AI screens resumes, identifies top candidates, and even conducts initial interviews</li>
+                <li><strong>Employee retention:</strong> Predictive models identify flight risks before employees leave</li>
+                <li><strong>Personalized learning:</strong> AI creates customized training paths for each employee</li>
+                <li><strong>Compensation analysis:</strong> Ensure competitive, fair pay across the organization</li>
+            </ul>
+
+            <h3>Customer Service</h3>
+            <ul>
+                <li><strong>24/7 intelligent chatbots:</strong> Handle 60-80% of routine inquiries without human intervention</li>
+                <li><strong>Sentiment routing:</strong> Automatically escalate frustrated customers to experienced agents</li>
+                <li><strong>Knowledge base optimization:</strong> AI identifies gaps and suggests new help articles</li>
+                <li><strong>Agent assistance:</strong> Real-time suggestions help agents resolve issues faster</li>
+            </ul>
+
+            <div class="success-box">
+                <h4>✅ Success Story: Manufacturing Leader</h4>
+                <p>
+                    A manufacturing company implemented AI across operations, supply chain, and quality control:
+                </p>
+                <ul>
+                    <li>Production efficiency increased by <strong>27%</strong></li>
+                    <li>Defect rates dropped by <strong>41%</strong></li>
+                    <li>Supply chain costs reduced by <strong>$18M annually</strong></li>
+                    <li>Customer delivery times improved by <strong>35%</strong></li>
+                </ul>
+                <p>
+                    <strong>ROI achieved in just 14 months.</strong> Their CEO now says: "AI isn't our competitive 
+                    advantage—it's our survival strategy."
+                </p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>The Window of Opportunity is Limited</h2>
+            
+            <p>
+                Here's the uncomfortable truth: <strong>being a "fast follower" with AI is getting harder every day</strong>.
+            </p>
+
+            <p>
+                Companies that adopt AI early are building several advantages that compound over time:
+            </p>
+
+            <ol>
+                <li><strong>Data advantage:</strong> They're collecting more data and training better models right now</li>
+                <li><strong>Experience advantage:</strong> Their teams are learning what works through trial and error</li>
+                <li><strong>Cultural advantage:</strong> They're building AI-native cultures that attract top talent</li>
+                <li><strong>Network effects:</strong> Better AI leads to better customer experiences, which leads to more customers, more data, and even better AI</li>
+            </ol>
+
+            <p>
+                The companies that figure out AI first will pull so far ahead that catching up becomes nearly 
+                impossible. We've seen this pattern before with the internet, mobile, and cloud computing.
+            </p>
+
+            <div class="info-box">
+                <h4>📈 Market Leader Analysis</h4>
+                <p>
+                    A McKinsey study found that companies in the top quartile of AI adoption are seeing:
+                </p>
+                <ul>
+                    <li><strong>3x higher profit margins</strong> than their industry peers</li>
+                    <li><strong>45% faster revenue growth</strong> over a three-year period</li>
+                    <li><strong>60% higher customer satisfaction scores</strong></li>
+                </ul>
+                <p>
+                    Most critically: The gap between leaders and laggards has <strong>doubled in just 18 months</strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Starting Your AI Journey: What's Actually Required</h2>
+            
+            <p>
+                Good news: You don't need a PhD in machine learning or a $50M budget to begin. Successful AI 
+                adoption requires three things:
+            </p>
+
+            <h3>1. Executive Commitment</h3>
+            <p>
+                AI transformation must be driven from the top. It requires investment, organizational change, 
+                and patience as teams learn new ways of working. Without CEO and board support, AI initiatives 
+                will stall.
+            </p>
+
+            <h3>2. Strategic Clarity</h3>
+            <p>
+                Don't implement AI just because competitors are. Identify specific business problems where AI 
+                can drive measurable impact. Start with high-ROI use cases that align with your strategic priorities.
+            </p>
+
+            <h3>3. Willingness to Learn and Iterate</h3>
+            <p>
+                AI adoption is a journey, not a destination. Early projects may fail or underperform. The key 
+                is to learn quickly, adjust, and keep moving forward. Companies that succeed with AI embrace 
+                experimentation.
+            </p>
+        </div>
+
+        <div class="key-takeaway">
+            <h3>🎯 Key Takeaways</h3>
+            <ul>
+                <li>AI is no longer experimental—it's a competitive necessity driving $15.7T in economic impact by 2030</li>
+                <li>The convergence of affordable computing, abundant data, and capable AI models makes this the perfect time to act</li>
+                <li>Ignoring AI carries serious risks: competitive displacement, talent loss, and failure to meet rising customer expectations</li>
+                <li>Every business function—from sales to operations to HR—can benefit significantly from AI</li>
+                <li>Early adopters are building compounding advantages that make fast-follower strategies increasingly difficult</li>
+                <li>You don't need massive budgets or technical expertise to start—you need commitment, strategy, and willingness to learn</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>What's Next?</h2>
+            
+            <p>
+                Now that you understand <em>why</em> AI matters, the next challenge is often internal: convincing 
+                skeptical stakeholders who have concerns about cost, complexity, or disruption.
+            </p>
+
+            <p>
+                In the next lesson, we'll equip you with proven strategies to address objections, build consensus, 
+                and secure buy-in for AI initiatives across your organization.
+            </p>
+        <!-- Executive Toolkit CTA -->
+        <style>
+            .toolkit-cta {
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                border-left: 4px solid #0057b7;
+                border-radius: 8px;
+                padding: 20px 24px;
+                margin: 32px 0;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .toolkit-cta-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .toolkit-cta-icon {
+                font-size: 1.5rem;
+            }
+            
+            .toolkit-cta-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #0f172a;
+                margin: 0;
+            }
+            
+            .toolkit-cta-text {
+                color: #475569;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                margin: 0 0 16px 0;
+            }
+            
+            .toolkit-cta-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #0057b7;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
+            
+            .toolkit-cta-button:hover {
+                background: #003d82;
+                transform: translateX(4px);
+                text-decoration: none;
+            }
+            
+            /* Dark mode */
+            body.dark-mode .toolkit-cta,
+            html[data-theme='dark'] .toolkit-cta {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                border-left-color: #078930;
+            }
+            
+            body.dark-mode .toolkit-cta-title,
+            html[data-theme='dark'] .toolkit-cta-title {
+                color: #f1f5f9;
+            }
+            
+            body.dark-mode .toolkit-cta-text,
+            html[data-theme='dark'] .toolkit-cta-text {
+                color: #cbd5e1;
+            }
+            
+            body.dark-mode .toolkit-cta-button,
+            html[data-theme='dark'] .toolkit-cta-button {
+                background: #078930;
+            }
+            
+            body.dark-mode .toolkit-cta-button:hover,
+            html[data-theme='dark'] .toolkit-cta-button:hover {
+                background: #065f46;
+            }
+        </style>
+        
+        <div class="toolkit-cta">
+            <div class="toolkit-cta-header">
+                <span class="toolkit-cta-icon">🎯</span>
+                <h3 class="toolkit-cta-title">Ready to Take Action?</h3>
+            </div>
+            <p class="toolkit-cta-text">
+                Access our curated Executive AI Toolkit featuring 20 enterprise-ready tools for strategy, marketing, finance, and operations — each vetted for ROI and ease of implementation.
+            </p>
+            <a href="executive-ai-toolkit.html" class="toolkit-cta-button">
+                <span>Explore AI Toolkit</span>
+                <span>→</span>
+            </a>
+        </div>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of why AI matters for business!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="C">
+                    <h4>1. What is the primary business impact of AI according to this tutorial?</h4>
+                    <div class="quiz-option" data-value="A">A) Replacing all human workers</div>
+                    <div class="quiz-option" data-value="B">B) Reducing operational costs only</div>
+                    <div class="quiz-option" data-value="C">C) Transforming decision-making and creating competitive advantages</div>
+                    <div class="quiz-option" data-value="D">D) Eliminating the need for business strategy</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>2. Why is now the critical time for businesses to adopt AI?</h4>
+                    <div class="quiz-option" data-value="A">A) AI is a temporary trend</div>
+                    <div class="quiz-option" data-value="B">B) Early adopters gain significant competitive advantages</div>
+                    <div class="quiz-option" data-value="C">C) AI will become obsolete soon</div>
+                    <div class="quiz-option" data-value="D">D) Government mandates require it</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. What is a key misconception about AI in business?</h4>
+                    <div class="quiz-option" data-value="A">A) That AI is only for tech companies</div>
+                    <div class="quiz-option" data-value="B">B) That AI can improve efficiency</div>
+                    <div class="quiz-option" data-value="C">C) That AI requires data</div>
+                    <div class="quiz-option" data-value="D">D) That AI needs strategic planning</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What role should business leaders play in AI adoption?</h4>
+                    <div class="quiz-option" data-value="A">A) Leave it entirely to IT departments</div>
+                    <div class="quiz-option" data-value="B">B) Ignore AI until it's fully mature</div>
+                    <div class="quiz-option" data-value="C">C) Wait for competitors to adopt first</div>
+                    <div class="quiz-option" data-value="D">D) Drive strategic AI initiatives and understand its implications</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. What is the first step for businesses starting with AI?</h4>
+                    <div class="quiz-option" data-value="A">A) Replace all existing systems immediately</div>
+                    <div class="quiz-option" data-value="B">B) Identify specific business problems AI can solve</div>
+                    <div class="quiz-option" data-value="C">C) Hire hundreds of data scientists</div>
+                    <div class="quiz-option" data-value="D">D) Build custom AI models from scratch</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tutorial-nav">
+            <a href="../../courses/ai-for-business-leaders.html" class="prev">← Back to Course</a>
+            <a href="convincing-skeptics.html" class="next">Next: Convincing Skeptics →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-plaintext.min.html"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

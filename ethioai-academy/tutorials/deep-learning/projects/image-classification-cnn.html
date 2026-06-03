@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build an image classification system using CNNs and transfer learning with TensorFlow and Keras. Learn data augmentation, model architecture, and deployment.">
+    <meta name="keywords" content="image classification, CNN, convolutional neural networks, deep learning project, transfer learning, TensorFlow">
+    <title>Project: Image Classification with CNNs | Nebaz AI Academy</title>
+    <link rel="canonical" href="image-classification-cnn.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Image Classification CNN Project</span>
+            </div>
+            <h1>📸 Image Classification with CNNs</h1>
+            <p class="tutorial-intro">Build a state-of-the-art image classifier using CNNs and transfer learning with TensorFlow</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Intermediate</span>
+                <span class="meta-item">⏱️ 6 hours</span>
+                <span class="meta-item">💻 Python + TensorFlow</span>
+                <span class="meta-item">🖼️ Computer Vision Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Image classification powers face recognition, medical diagnosis, autonomous vehicles, and countless AI applications. In this project, you'll build a CNN classifier achieving 90%+ accuracy on CIFAR-10, then boost it to 95%+ using transfer learning.
+                </p>
+
+                <h3>Real-World Applications</h3>
+                <ul>
+                    <li><strong>Medical Imaging:</strong> Detect diseases from X-rays, MRIs, CT scans</li>
+                    <li><strong>Autonomous Vehicles:</strong> Recognize traffic signs, pedestrians, obstacles</li>
+                    <li><strong>Security:</strong> Face recognition, anomaly detection in surveillance</li>
+                    <li><strong>E-Commerce:</strong> Visual search, product categorization</li>
+                    <li><strong>Agriculture:</strong> Crop disease identification, yield prediction</li>
+                </ul>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>Custom CNN Architecture:</strong> From-scratch convolutional neural network</li>
+                    <li><strong>Data Augmentation:</strong> Rotation, flip, zoom for robustness</li>
+                    <li><strong>Transfer Learning:</strong> Fine-tune pre-trained VGG16 model</li>
+                    <li><strong>Visualization:</strong> Training curves, confusion matrix, grad-CAM heatmaps</li>
+                    <li><strong>Model Deployment:</strong> Save model and create prediction pipeline</li>
+                    <li><strong>Performance Optimization:</strong> Achieve 90-95% accuracy</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🚀 <strong>Industry Essential:</strong> Computer vision is one of the hottest AI fields. This project demonstrates your ability to build production-ready image classifiers!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Dataset & Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Dependencies</h3>
+                    <pre><code class="language-bash">pip install tensorflow numpy matplotlib seaborn scikit-learn pillow</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Load CIFAR-10 Dataset</h3>
+                    <pre><code class="language-python">import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers, models
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Check GPU availability
+print("TensorFlow version:", tf.__version__)
+print("GPU available:", len(tf.config.list_physical_devices('GPU')) > 0)
+
+# Load CIFAR-10 (60,000 32x32 color images in 10 classes)
+(X_train, y_train), (X_test, y_test) = keras.datasets.cifar10.load_data()
+
+# Class names
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 
+               'dog', 'frog', 'horse', 'ship', 'truck']
+
+print(f"\nDataset Info:")
+print(f"Training images: {X_train.shape}")  # (50000, 32, 32, 3)
+print(f"Training labels: {y_train.shape}")  # (50000, 1)
+print(f"Test images: {X_test.shape}")        # (10000, 32, 32, 3)
+print(f"Test labels: {y_test.shape}")        # (10000, 1)
+print(f"Number of classes: {len(class_names)}")
+print(f"Image shape: {X_train[0].shape}")     # 32x32 RGB</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 CIFAR-10 Dataset:</strong> 60,000 32x32 color images in 10 classes (6,000 images per class). It's a standard benchmark in computer vision research. Small image size makes training fast!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 1: Data Exploration & Preprocessing</h2>
+                
+                <h3>Visualize Sample Images</h3>
+                <pre><code class="language-python"># Display sample images
+plt.figure(figsize=(12, 8))
+for i in range(25):
+    plt.subplot(5, 5, i+1)
+    plt.imshow(X_train[i])
+    plt.title(class_names[y_train[i][0]])
+    plt.axis('off')
+plt.tight_layout()
+plt.show()
+
+# Class distribution
+unique, counts = np.unique(y_train, return_counts=True)
+plt.figure(figsize=(10, 5))
+plt.bar(class_names, counts, color='#f59e0b')
+plt.xlabel('Class')
+plt.ylabel('Number of Images')
+plt.title('Training Data Distribution')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+print(f"\n✅ Dataset is balanced: ~{counts[0]} images per class")</code></pre>
+
+                <h3>Data Preprocessing</h3>
+                <pre><code class="language-python"># Normalize pixel values to [0, 1]
+X_train_norm = X_train.astype('float32') / 255.0
+X_test_norm = X_test.astype('float32') / 255.0
+
+# Convert labels to categorical (one-hot encoding)
+y_train_cat = keras.utils.to_categorical(y_train, 10)
+y_test_cat = keras.utils.to_categorical(y_test, 10)
+
+print("Normalized pixel range:", X_train_norm.min(), "to", X_train_norm.max())
+print("Label shape after one-hot:", y_train_cat.shape)  # (50000, 10)
+print("Example label:", y_train_cat[0])  # [0, 0, 0, ..., 1, ..., 0]</code></pre>
+
+                <h3>Data Augmentation</h3>
+                <pre><code class="language-python"># Create data augmentation pipeline
+data_augmentation = keras.Sequential([
+    layers.RandomFlip("horizontal"),
+    layers.RandomRotation(0.1),
+    layers.RandomZoom(0.1),
+    layers.RandomContrast(0.1)
+])
+
+# Visualize augmentation
+plt.figure(figsize=(12, 4))
+sample_image = X_train_norm[0:1]  # Take first image
+
+for i in range(6):
+    augmented = data_augmentation(sample_image, training=True)
+    plt.subplot(1, 6, i+1)
+    plt.imshow(augmented[0])
+    plt.axis('off')
+plt.suptitle('Data Augmentation Examples')
+plt.show()
+
+print("✅ Data augmentation will prevent overfitting!")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: Data Ready</h3>
+                    <p>Preprocessing complete:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>50,000 training images, 10,000 test images</li>
+                        <li>Pixels normalized to [0, 1]</li>
+                        <li>Labels one-hot encoded</li>
+                        <li>Data augmentation pipeline created</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ Part 2: Build Custom CNN</h2>
+                
+                <h3>CNN Architecture</h3>
+                <pre><code class="language-python"># Build CNN model from scratch
+def create_cnn_model():
+    model = models.Sequential([
+        # Input layer
+        layers.Input(shape=(32, 32, 3)),
+        
+        # Data augmentation (applied during training)
+        data_augmentation,
+        
+        # Block 1: Conv → Conv → MaxPool
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        # Block 2: Conv → Conv → MaxPool
+        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        # Block 3: Conv → Conv → MaxPool
+        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.Conv2D(128, (3, 3), activation='relu', padding='same'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D((2, 2)),
+        layers.Dropout(0.25),
+        
+        # Flatten and Dense layers
+        layers.Flatten(),
+        layers.Dense(256, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.5),
+        layers.Dense(128, activation='relu'),
+        layers.Dropout(0.5),
+        layers.Dense(10, activation='softmax')  # 10 classes
+    ])
+    
+    return model
+
+# Create model
+cnn_model = create_cnn_model()
+
+# Display architecture
+cnn_model.summary()
+
+# Count parameters
+total_params = cnn_model.count_params()
+print(f"\nTotal parameters: {total_params:,}")</code></pre>
+
+                <h3>Compile Model</h3>
+                <pre><code class="language-python"># Compile with Adam optimizer
+cnn_model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+print("✅ Model compiled and ready to train!")</code></pre>
+
+                <h3>Training with Callbacks</h3>
+                <pre><code class="language-python"># Set up callbacks
+callbacks = [
+    keras.callbacks.EarlyStopping(
+        monitor='val_loss',
+        patience=5,
+        restore_best_weights=True
+    ),
+    keras.callbacks.ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.5,
+        patience=3,
+        min_lr=1e-6
+    ),
+    keras.callbacks.ModelCheckpoint(
+        'best_cnn_model.h5',
+        monitor='val_accuracy',
+        save_best_only=True
+    )
+]
+
+# Train model
+print("\n🚀 Starting training...")
+history = cnn_model.fit(
+    X_train_norm, y_train_cat,
+    batch_size=128,
+    epochs=50,
+    validation_split=0.2,
+    callbacks=callbacks,
+    verbose=1
+)
+
+print("\n✅ Training complete!")</code></pre>
+
+                <h3>Visualize Training History</h3>
+                <pre><code class="language-python"># Plot training curves
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Accuracy
+axes[0].plot(history.history['accuracy'], label='Train Accuracy', linewidth=2)
+axes[0].plot(history.history['val_accuracy'], label='Val Accuracy', linewidth=2)
+axes[0].set_xlabel('Epoch')
+axes[0].set_ylabel('Accuracy')
+axes[0].set_title('Model Accuracy')
+axes[0].legend()
+axes[0].grid(alpha=0.3)
+
+# Loss
+axes[1].plot(history.history['loss'], label='Train Loss', linewidth=2)
+axes[1].plot(history.history['val_loss'], label='Val Loss', linewidth=2)
+axes[1].set_xlabel('Epoch')
+axes[1].set_ylabel('Loss')
+axes[1].set_title('Model Loss')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Best epoch
+best_epoch = np.argmax(history.history['val_accuracy']) + 1
+best_val_acc = max(history.history['val_accuracy'])
+print(f"\n🏆 Best validation accuracy: {best_val_acc:.2%} at epoch {best_epoch}")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: CNN Trained</h3>
+                    <p>Model training complete:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Custom CNN with 3 convolutional blocks</li>
+                        <li>Data augmentation reduces overfitting</li>
+                        <li>Early stopping prevents overtraining</li>
+                        <li>Expected: 85-90% validation accuracy</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 3: Evaluate & Analyze</h2>
+                
+                <h3>Test Set Evaluation</h3>
+                <pre><code class="language-python"># Evaluate on test set
+test_loss, test_accuracy = cnn_model.evaluate(X_test_norm, y_test_cat, verbose=0)
+print(f"\n📊 TEST SET RESULTS")
+print("="*60)
+print(f"Test Loss: {test_loss:.4f}")
+print(f"Test Accuracy: {test_accuracy:.2%}")
+
+# Predictions
+y_pred_probs = cnn_model.predict(X_test_norm, verbose=0)
+y_pred = np.argmax(y_pred_probs, axis=1)
+y_true = y_test.flatten()
+
+# Classification report
+print("\n" + "="*60)
+print("CLASSIFICATION REPORT")
+print("="*60)
+print(classification_report(y_true, y_pred, target_names=class_names))</code></pre>
+
+                <h3>Confusion Matrix</h3>
+                <pre><code class="language-python"># Compute confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+
+# Visualize
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=class_names,
+            yticklabels=class_names)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.xticks(rotation=45)
+plt.yticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+# Per-class accuracy
+class_accuracy = cm.diagonal() / cm.sum(axis=1)
+for i, acc in enumerate(class_accuracy):
+    print(f"{class_names[i]:.<15} {acc:.1%}")</code></pre>
+
+                <h3>Visualize Predictions</h3>
+                <pre><code class="language-python"># Show sample predictions
+fig, axes = plt.subplots(4, 4, figsize=(12, 12))
+
+for i, ax in enumerate(axes.flat):
+    # Random test image
+    idx = np.random.randint(len(X_test))
+    img = X_test[idx]
+    true_label = class_names[y_true[idx]]
+    pred_label = class_names[y_pred[idx]]
+    confidence = y_pred_probs[idx][y_pred[idx]] * 100
+    
+    # Display
+    ax.imshow(img)
+    color = 'green' if true_label == pred_label else 'red'
+    ax.set_title(f"True: {true_label}\nPred: {pred_label} ({confidence:.1f}%)", 
+                 color=color, fontsize=9)
+    ax.axis('off')
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Evaluation Complete</h3>
+                    <p>Performance analyzed:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Test accuracy typically 85-90%</li>
+                        <li>Confusion matrix reveals class confusions</li>
+                        <li>Cat/dog confusion common (similar features)</li>
+                        <li>Ready for transfer learning improvement!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Part 4: Transfer Learning with VGG16</h2>
+                
+                <h3>Load Pre-trained VGG16</h3>
+                <pre><code class="language-python"># Load VGG16 (pre-trained on ImageNet)
+base_model = keras.applications.VGG16(
+    weights='imagenet',
+    include_top=False,
+    input_shape=(32, 32, 3)
+)
+
+# Freeze base model layers
+base_model.trainable = False
+
+print(f"VGG16 loaded with {len(base_model.layers)} layers")
+print(f"Total parameters: {base_model.count_params():,}")</code></pre>
+
+                <h3>Build Transfer Learning Model</h3>
+                <pre><code class="language-python"># Add custom classification head
+transfer_model = models.Sequential([
+    # Pre-trained base
+    base_model,
+    
+    # Custom head
+    layers.Flatten(),
+    layers.Dense(256, activation='relu'),
+    layers.BatchNormalization(),
+    layers.Dropout(0.5),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(10, activation='softmax')
+])
+
+# Compile
+transfer_model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=1e-4),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+transfer_model.summary()
+
+# Train
+print("\n🚀 Training transfer learning model...")
+transfer_history = transfer_model.fit(
+    X_train_norm, y_train_cat,
+    batch_size=128,
+    epochs=20,
+    validation_split=0.2,
+    callbacks=callbacks,
+    verbose=1
+)
+
+# Evaluate
+transfer_test_loss, transfer_test_acc = transfer_model.evaluate(X_test_norm, y_test_cat)
+print(f"\n🏆 Transfer Learning Test Accuracy: {transfer_test_acc:.2%}")
+print(f"Improvement: +{(transfer_test_acc - test_accuracy)*100:.1f}%")</code></pre>
+
+                <h3>Fine-Tuning (Optional)</h3>
+                <pre><code class="language-python"># Unfreeze last few layers of VGG16 for fine-tuning
+base_model.trainable = True
+
+# Freeze all except last 4 layers
+for layer in base_model.layers[:-4]:
+    layer.trainable = False
+
+print(f"Trainable layers: {sum([layer.trainable for layer in base_model.layers])}")
+
+# Recompile with lower learning rate
+transfer_model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=1e-5),  # Lower LR
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Fine-tune
+print("\n🎯 Fine-tuning...")
+fine_tune_history = transfer_model.fit(
+    X_train_norm, y_train_cat,
+    batch_size=128,
+    epochs=10,
+    validation_split=0.2,
+    callbacks=callbacks,
+    verbose=1
+)
+
+# Final evaluation
+final_test_loss, final_test_acc = transfer_model.evaluate(X_test_norm, y_test_cat)
+print(f"\n🎉 FINAL Test Accuracy: {final_test_acc:.2%}")
+print(f"Total improvement: +{(final_test_acc - test_accuracy)*100:.1f}%")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 4: Transfer Learning Success</h3>
+                    <p>Performance boost achieved:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Custom CNN: ~85-90% accuracy</li>
+                        <li>Transfer learning: ~90-93% accuracy</li>
+                        <li>Fine-tuning: ~92-95% accuracy</li>
+                        <li>5-10% improvement from pre-trained weights!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 5: Model Deployment</h2>
+                
+                <pre><code class="language-python"># Save best model
+transfer_model.save('cifar10_transfer_model.h5')
+print("✅ Model saved as: cifar10_transfer_model.h5")
+
+# Prediction function
+def predict_image(img_array, model_path='cifar10_transfer_model.h5'):
+    """
+    Predict class for a single image
+    
+    Parameters:
+    -----------
+    img_array : numpy array
+        Image array (32, 32, 3)
+    model_path : str
+        Path to saved model
+    
+    Returns:
+    --------
+    dict with predicted class, confidence, and top-3 predictions
+    """
+    # Load model
+    model = keras.models.load_model(model_path)
+    
+    # Preprocess
+    img_norm = img_array.astype('float32') / 255.0
+    img_batch = np.expand_dims(img_norm, axis=0)
+    
+    # Predict
+    predictions = model.predict(img_batch, verbose=0)[0]
+    
+    # Top-3
+    top3_idx = np.argsort(predictions)[-3:][::-1]
+    top3 = [(class_names[i], float(predictions[i])) for i in top3_idx]
+    
+    # Best prediction
+    best_idx = np.argmax(predictions)
+    best_class = class_names[best_idx]
+    confidence = float(predictions[best_idx])
+    
+    return {
+        'predicted_class': best_class,
+        'confidence': confidence,
+        'top_3': top3
+    }
+
+# Example prediction
+sample_img = X_test[0]
+result = predict_image(sample_img)
+
+print("\n" + "="*60)
+print("PREDICTION RESULT")
+print("="*60)
+print(f"Predicted Class: {result['predicted_class']}")
+print(f"Confidence: {result['confidence']:.1%}")
+print("\nTop 3 Predictions:")
+for i, (class_name, prob) in enumerate(result['top_3'], 1):
+    print(f"{i}. {class_name}: {prob:.1%}")
+
+# Display image
+plt.figure(figsize=(5, 5))
+plt.imshow(sample_img)
+plt.title(f"Predicted: {result['predicted_class']} ({result['confidence']:.1%})")
+plt.axis('off')
+plt.show()</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Outstanding Achievement!</h3>
+                    <p style="font-size: 1.1rem;">You've built a state-of-the-art image classifier using modern deep learning techniques!</p>
+                </div>
+
+                <h3>🏆 Key Accomplishments</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Built custom CNN:</strong> 3-block architecture with 85-90% accuracy</li>
+                    <li>✅ <strong>Applied transfer learning:</strong> VGG16 pre-trained on ImageNet</li>
+                    <li>✅ <strong>Achieved 92-95% accuracy:</strong> Through fine-tuning</li>
+                    <li>✅ <strong>Data augmentation:</strong> Reduced overfitting significantly</li>
+                    <li>✅ <strong>Comprehensive evaluation:</strong> Confusion matrix, per-class metrics</li>
+                    <li>✅ <strong>Production-ready deployment:</strong> Saved model with prediction API</li>
+                </ul>
+
+                <h3>🚀 Next Level Enhancements</h3>
+                <ul>
+                    <li><strong>Try ResNet/EfficientNet:</strong> Modern architectures for better performance</li>
+                    <li><strong>Grad-CAM visualization:</strong> See what the model "sees"</li>
+                    <li><strong>Deploy as web app:</strong> Flask/FastAPI + React frontend</li>
+                    <li><strong>Custom dataset:</strong> Collect and label your own images</li>
+                    <li><strong>Object detection:</strong> Extend to YOLO for bounding boxes</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💼 Interview Talking Points:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>"Built CNN image classifier achieving 95% accuracy on CIFAR-10 using transfer learning"</li>
+                        <li>"Applied data augmentation and dropout to reduce overfitting by 15%"</li>
+                        <li>"Fine-tuned VGG16 pre-trained on ImageNet, improving baseline by 10%"</li>
+                        <li>"Deployed production-ready model with inference API for real-time predictions"</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <a href="../../../courses/deep-learning.html" style="padding: 0.75rem 1.5rem; background-color: #f1f5f9; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">← Back to DL Course</a>
+                <a href="sentiment-analysis-rnn.html" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">Next: Sentiment Analysis RNN →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,631 @@
+/**
+ * AITutor Widget Styles
+ * Matches Nebaz AI Academy theme (blue/teal gradient)
+ * Mobile-responsive and dark mode compatible
+ */
+
+/* Widget Container */
+#aitutor-widget {
+    position: fixed;
+    z-index: 9999;
+}
+
+/* Backdrop Overlay (mobile only) */
+.aitutor-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9997;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.aitutor-backdrop.aitutor-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hide backdrop on desktop */
+@media (min-width: 769px) {
+    .aitutor-backdrop {
+        display: none;
+    }
+}
+
+/* Floating Action Button */
+.aitutor-fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: auto;
+    height: 56px;
+    padding: 0 1.5rem;
+    background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+    border: none;
+    border-radius: 28px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.aitutor-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.aitutor-fab svg {
+    width: 24px;
+    height: 24px;
+}
+
+.aitutor-fab.aitutor-hidden {
+    display: none;
+}
+
+/* Chat Panel */
+.aitutor-panel {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 400px;
+    max-width: calc(100vw - 4rem);
+    height: 600px;
+    max-height: calc(100vh - 4rem);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    /* Ensure proper stacking */
+    z-index: 9998;
+    /* Better mobile performance */
+    -webkit-overflow-scrolling: touch;
+}
+
+.aitutor-panel.aitutor-hidden {
+    display: none;
+}
+
+/* Accessibility: Focus trap and keyboard navigation */
+.aitutor-panel:focus {
+    outline: 2px solid #078930;
+    outline-offset: 2px;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .aitutor-panel {
+        background: #1e293b;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+}
+
+body.dark-mode .aitutor-panel {
+    background: #1e293b;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Header */
+.aitutor-header {
+    background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+    color: white;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.aitutor-header-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.aitutor-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.aitutor-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.aitutor-status {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.aitutor-close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.aitutor-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Messages Container */
+.aitutor-messages {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #f8fafc;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-messages {
+        background: #0f172a;
+    }
+}
+
+body.dark-mode .aitutor-messages {
+    background: #0f172a;
+}
+
+/* Individual Message */
+.aitutor-message {
+    display: flex;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.aitutor-message-content {
+    max-width: 85%;
+    padding: 0.875rem 1rem;
+    border-radius: 12px;
+    word-wrap: break-word;
+}
+
+/* Bot Message */
+.aitutor-message.aitutor-bot .aitutor-message-content {
+    background: white;
+    color: #334155;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-right: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-message.aitutor-bot .aitutor-message-content {
+        background: #1e293b;
+        color: #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+}
+
+body.dark-mode .aitutor-message.aitutor-bot .aitutor-message-content {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* User Message */
+.aitutor-message.aitutor-user .aitutor-message-content {
+    background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+    color: white;
+    margin-left: auto;
+}
+
+/* Message Text Formatting */
+.aitutor-message-content p {
+    margin: 0 0 0.5rem;
+    line-height: 1.6;
+}
+
+.aitutor-message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.aitutor-message-content strong {
+    font-weight: 600;
+}
+
+.aitutor-message-content code {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.875em;
+}
+
+.aitutor-message.aitutor-user .aitutor-message-content code {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Loading State */
+.aitutor-message-content.aitutor-loading {
+    background: #e2e8f0;
+    color: #64748b;
+    font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-message-content.aitutor-loading {
+        background: #334155;
+        color: #94a3b8;
+    }
+}
+
+body.dark-mode .aitutor-message-content.aitutor-loading {
+    background: #334155;
+    color: #94a3b8;
+}
+
+.aitutor-loading-dots {
+    display: inline-block;
+    margin-right: 0.25rem;
+}
+
+.aitutor-loading-dots span {
+    animation: blink 1.4s infinite;
+}
+
+.aitutor-loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.aitutor-loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 60%, 100% {
+        opacity: 0.3;
+    }
+    30% {
+        opacity: 1;
+    }
+}
+
+/* Error State */
+.aitutor-message-content.aitutor-error {
+    background: #fee;
+    color: #b91c1c;
+    border-left: 3px solid #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-message-content.aitutor-error {
+        background: #7f1d1d;
+        color: #fca5a5;
+    }
+}
+
+body.dark-mode .aitutor-message-content.aitutor-error {
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+
+/* Suggestion Buttons */
+.aitutor-suggestions {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.aitutor-suggestion-btn {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.625rem 0.875rem;
+    color: #078930;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.aitutor-suggestion-btn:hover {
+    background: #ecfdf5;
+    border-color: #078930;
+    transform: translateX(2px);
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-suggestion-btn {
+        background: #1e293b;
+        border-color: #334155;
+        color: #34d399;
+    }
+    
+    .aitutor-suggestion-btn:hover {
+        background: #0f172a;
+        border-color: #078930;
+    }
+}
+
+body.dark-mode .aitutor-suggestion-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: #34d399;
+}
+
+body.dark-mode .aitutor-suggestion-btn:hover {
+    background: #0f172a;
+    border-color: #078930;
+}
+
+/* Input Container */
+.aitutor-input-container {
+    padding: 1rem;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-input-container {
+        background: #1e293b;
+        border-top-color: #334155;
+    }
+}
+
+body.dark-mode .aitutor-input-container {
+    background: #1e293b;
+    border-top-color: #334155;
+}
+
+.aitutor-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-family: inherit;
+    resize: none;
+    transition: border-color 0.2s;
+}
+
+.aitutor-input:focus {
+    outline: none;
+    border-color: #078930;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-input {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-color: #334155;
+    }
+    
+    .aitutor-input:focus {
+        border-color: #0d9488;
+    }
+}
+
+body.dark-mode .aitutor-input {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+
+body.dark-mode .aitutor-input:focus {
+    border-color: #0d9488;
+}
+
+.aitutor-send-btn {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.aitutor-send-btn:hover {
+    transform: scale(1.05);
+}
+
+.aitutor-send-btn:active {
+    transform: scale(0.95);
+}
+
+/* Warning Message */
+.aitutor-warning {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-warning {
+        background: #78350f;
+        color: #fde68a;
+    }
+}
+
+body.dark-mode .aitutor-warning {
+    background: #78350f;
+    color: #fde68a;
+}
+
+.aitutor-warning.aitutor-hidden {
+    display: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .aitutor-fab {
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 0;
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        justify-content: center;
+    }
+    
+    .aitutor-fab span {
+        display: none;
+    }
+    
+    .aitutor-panel {
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 70vh;
+        max-height: 70vh;
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .aitutor-messages {
+        padding: 1rem;
+    }
+    
+    .aitutor-input-container {
+        padding: 0.875rem;
+    }
+}
+
+/* Small Mobile Devices (smaller than iPhone SE) */
+@media (max-width: 375px) {
+    .aitutor-fab {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        width: 52px;
+        height: 52px;
+    }
+    
+    .aitutor-panel {
+        height: 75vh;
+        max-height: 75vh;
+    }
+    
+    .aitutor-header {
+        padding: 1rem;
+    }
+    
+    .aitutor-header h3 {
+        font-size: 1rem;
+    }
+    
+    .aitutor-status {
+        font-size: 0.8125rem;
+    }
+    
+    .aitutor-messages {
+        padding: 0.875rem;
+        gap: 0.75rem;
+    }
+    
+    .aitutor-input-container {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
+    
+    .aitutor-input {
+        font-size: 0.875rem;
+        padding: 0.625rem;
+    }
+    
+    .aitutor-send-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Tablet Landscape Mode */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .aitutor-panel {
+        width: 380px;
+        height: 550px;
+    }
+}
+
+/* Scrollbar Styling */
+.aitutor-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.aitutor-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.aitutor-messages::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.aitutor-messages::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aitutor-messages::-webkit-scrollbar-thumb {
+        background: #475569;
+    }
+    
+    .aitutor-messages::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+    }
+}
+
+body.dark-mode .aitutor-messages::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+body.dark-mode .aitutor-messages::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}

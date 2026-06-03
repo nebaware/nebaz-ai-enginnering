@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master ChatGPT for coding - write functions, debug errors, generate tests, create documentation, and accelerate programming learning.">
+    <title>Tutorial 6: ChatGPT for Coding & Technical Work - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .code-use-case {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            border-left: 6px solid #078930;
+        }
+        
+        .use-case-title {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 6</span>
+            </div>
+            <h1>Tutorial 6: ChatGPT for Coding & Technical Work</h1>
+            <p class="tutorial-intro">Code generation, debugging, testing, and learning programming 10x faster</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 2</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p><strong>Error on line 47. Stack overflow. Segmentation fault.</strong></p>
+                
+                <p>You've been debugging for 3 hours. Coffee's cold. Deadline looming. The code <em>should</em> work, but...</p>
+                
+                <p>Enter ChatGPT: paste your error, get fix in 30 seconds. <strong>But here's the catch</strong> — if you don't know <em>how to ask</em>, you'll get broken code that makes things worse.</p>
+                
+                <p>This module teaches you to use ChatGPT as your <strong>senior developer pair programmer</strong> — whether you're a pro or learning your first language.</p>
+                
+                <div class="success-box">
+                    <p><strong>💡 In this module, you'll master:</strong></p>
+                    <ul>
+                        <li>Code generation (functions, components, scripts)</li>
+                        <li>Debugging strategies (error analysis, step-by-step fixes)</li>
+                        <li>Test generation (unit tests, edge cases)</li>
+                        <li>Documentation writing (docstrings, README files)</li>
+                        <li>Code explanation & learning new languages</li>
+                        <li>Refactoring & optimization techniques</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Code Generation -->
+            <section class="content-section">
+                <h2>💻 Use Case 1: Code Generation</h2>
+                
+                <div class="code-use-case">
+                    <div class="use-case-title">The Perfect Code Generation Prompt</div>
+                    
+                    <div class="success-box">
+                        <h3>🎯 Template Formula</h3>
+                        <div class="code-block">
+Role: Expert [Language] developer
+Task: Write [function/class/component] that [does what]
+
+Requirements:
+- Input: [parameters, types, constraints]
+- Output: [return value, format]
+- Error handling: [what to check]
+- Edge cases: [scenarios to handle]
+- Style: [conventions, best practices]
+
+Include:
+- Type hints/annotations
+- Docstring/comments
+- Usage example
+- Test cases
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Real Examples</h3>
+                
+                <div class="code-use-case">
+                    <h4 style="color: #078930;">Example 1: Python Function</h4>
+                    <div class="code-block">
+Role: Expert Python developer following PEP 8
+
+Task: Write a function to validate email addresses
+
+Requirements:
+- Input: email string
+- Output: Boolean (True if valid, False otherwise)
+- Check for: @ symbol, domain, no spaces, proper format
+- Handle edge cases: empty string, None, special characters
+
+Include:
+- Type hints
+- Docstring with examples
+- 5 test cases showing valid/invalid emails
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: 1rem;">
+                        <p><strong>ChatGPT Output:</strong></p>
+                        <pre class="code-block" style="white-space: pre-wrap; font-size: 0.8rem;">
+import re
+from typing import Optional
+
+def validate_email(email: Optional[str]) -> bool:
+    """
+    Validate email address format.
+    
+    Args:
+        email: Email string to validate
+        
+    Returns:
+        True if email is valid format, False otherwise
+        
+    Examples:
+        >>> validate_email("user@example.com")
+        True
+        >>> validate_email("invalid.email")
+        False
+        >>> validate_email(None)
+        False
+    """
+    if not email or not isinstance(email, str):
+        return False
+    
+    # Basic email regex pattern
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return bool(re.match(pattern, email.strip()))
+
+# Test cases
+test_cases = [
+    ("user@example.com", True),      # Valid
+    ("test.email@domain.co.uk", True),  # Valid with subdomain
+    ("invalid.email", False),         # No @ symbol
+    ("user @domain.com", False),      # Contains space
+    (None, False),                    # None input
+]
+
+for email, expected in test_cases:
+    result = validate_email(email)
+    print(f"{email}: {result} (expected: {expected})")
+                        </pre>
+                    </div>
+                </div>
+                
+                <div class="code-use-case">
+                    <h4 style="color: #078930;">Example 2: React Component</h4>
+                    <div class="code-block">
+Role: Senior React developer using TypeScript and modern hooks
+
+Task: Create a reusable Button component with loading state
+
+Requirements:
+- Props: label, onClick, isLoading, disabled, variant (primary/secondary)
+- Show spinner when isLoading is true
+- Disable button when loading or disabled
+- Variants use different colors
+- Accessible (ARIA labels)
+
+Include:
+- TypeScript interface for props
+- Styled with CSS-in-JS or className
+- Usage example with all variants
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Pro tip:</strong> Be specific about:</p>
+                    <ul>
+                        <li><strong>Language version:</strong> "Python 3.11" not just "Python"</li>
+                        <li><strong>Libraries:</strong> "Using pandas, not numpy" if you have preference</li>
+                        <li><strong>Style guide:</strong> "Follow Airbnb style guide" for JavaScript</li>
+                        <li><strong>Performance:</strong> "Optimize for speed" vs "Optimize for readability"</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Debugging -->
+            <section class="content-section">
+                <h2>🐛 Use Case 2: Debugging</h2>
+                
+                <div class="code-use-case">
+                    <div class="use-case-title">The Debugging Framework</div>
+                    
+                    <div class="code-block">
+I'm getting this error: [PASTE FULL ERROR MESSAGE]
+
+Here's my code:
+```[language]
+[PASTE RELEVANT CODE - include context]
+```
+
+Context:
+- What I'm trying to do: [Goal]
+- What's happening instead: [Actual behavior]
+- Environment: [Python 3.10, Django 4.2, etc.]
+- What I've tried: [Previous attempts]
+
+Please:
+1. Explain what's causing the error
+2. Provide fixed code
+3. Suggest how to prevent this in future
+                    </div>
+                </div>
+                
+                <h3>Real Debugging Example</h3>
+                
+                <div class="code-use-case">
+                    <div class="code-block">
+Error: TypeError: unsupported operand type(s) for +: 'int' and 'str'
+
+My code:
+```python
+def calculate_total(prices):
+    total = 0
+    for price in prices:
+        total = total + price
+    return total
+
+prices = ["10", "20", "30"]
+result = calculate_total(prices)
+print(result)
+```
+
+Context:
+- Trying to sum prices from user input
+- Getting type error
+- Prices are strings from a form
+
+What's the fix?
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 1rem;">
+                        <p><strong>ChatGPT Response (example):</strong></p>
+                        <p><strong>1. Root cause:</strong> You're trying to add strings to an integer. The prices list contains strings ("10") not integers.</p>
+                        <p><strong>2. Fixed code:</strong></p>
+                        <pre class="code-block" style="white-space: pre-wrap; font-size: 0.8rem;">
+def calculate_total(prices):
+    total = 0
+    for price in prices:
+        total += int(price)  # Convert string to int
+    return total
+
+# Or more Pythonic:
+def calculate_total(prices):
+    return sum(int(price) for price in prices)
+
+# With error handling:
+def calculate_total(prices):
+    try:
+        return sum(int(price) for price in prices)
+    except ValueError as e:
+        print(f"Invalid price format: {e}")
+        return 0
+                        </pre>
+                        <p><strong>3. Prevention:</strong> Always validate and convert data types when accepting user input. Use type hints and validate at the boundary of your system.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Test Generation -->
+            <section class="content-section">
+                <h2>🧪 Use Case 3: Test Generation</h2>
+                
+                <div class="code-use-case">
+                    <div class="use-case-title">Automated Test Writing</div>
+                    
+                    <div class="code-block">
+Generate unit tests for this function:
+
+```python
+def calculate_discount(price, discount_percent, member_tier):
+    """Calculate final price after discount.
+    
+    Args:
+        price: Original price (float)
+        discount_percent: Discount percentage (0-100)
+        member_tier: 'bronze', 'silver', 'gold' (extra discount)
+    """
+    if price <= 0:
+        raise ValueError("Price must be positive")
+    
+    if not 0 <= discount_percent <= 100:
+        raise ValueError("Discount must be 0-100")
+    
+    # Apply base discount
+    discounted = price * (1 - discount_percent / 100)
+    
+    # Member tier bonus
+    tier_bonuses = {'bronze': 0.05, 'silver': 0.10, 'gold': 0.15}
+    if member_tier in tier_bonuses:
+        discounted *= (1 - tier_bonuses[member_tier])
+    
+    return round(discounted, 2)
+```
+
+Requirements:
+- Use pytest framework
+- Test all edge cases
+- Include parametrized tests
+- Test error conditions
+- Aim for 100% code coverage
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: 1rem;">
+                        <p><strong>ChatGPT generates:</strong> Complete test suite with ~15 test cases covering happy paths, edge cases, error conditions, and boundary values.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documentation -->
+            <section class="content-section">
+                <h2>📚 Use Case 4: Documentation Writing</h2>
+                
+                <div class="code-use-case">
+                    <h4 style="color: #078930;">Prompt 1: Docstrings</h4>
+                    <div class="code-block">
+Add comprehensive docstrings to this code:
+
+```python
+def process_data(data, filters, transform=True):
+    result = []
+    for item in data:
+        if all(f(item) for f in filters):
+            if transform:
+                item = item.upper()
+            result.append(item)
+    return result
+```
+
+Use Google-style docstrings with:
+- Brief description
+- Detailed explanation
+- Args with types
+- Returns with type
+- Examples
+- Raises (if applicable)
+                    </div>
+                    
+                    <h4 style="color: #078930; margin-top: 2rem;">Prompt 2: README File</h4>
+                    <div class="code-block">
+Create a README.md for my project:
+
+Project: Web scraper for e-commerce price comparison
+Tech stack: Python 3.10, BeautifulSoup, Selenium, SQLite
+Features:
+- Scrape prices from 5 websites
+- Store historical data
+- Price alerts via email
+- CLI interface
+
+Include:
+- Project description
+- Installation instructions
+- Usage examples
+- Configuration guide
+- Contributing guidelines
+- License (MIT)
+                    </div>
+                    
+                    <h4 style="color: #078930; margin-top: 2rem;">Prompt 3: API Documentation</h4>
+                    <div class="code-block">
+Document this REST API endpoint:
+
+Endpoint: POST /api/users
+Creates new user account
+
+Request body:
+- email (string, required): User email
+- password (string, required): Min 8 chars
+- name (string, optional): Display name
+
+Generate:
+- OpenAPI/Swagger spec
+- Example requests (curl + JavaScript fetch)
+- Response examples (success + errors)
+- Authentication requirements
+                    </div>
+                </div>
+            </section>
+
+            <!-- Code Explanation -->
+            <section class="content-section">
+                <h2>🎓 Use Case 5: Learning & Code Explanation</h2>
+                
+                <div class="code-use-case">
+                    <div class="use-case-title">Understanding Complex Code</div>
+                    
+                    <div class="code-block">
+Explain this code like I'm a beginner:
+
+```python
+result = [x**2 for x in range(10) if x % 2 == 0]
+```
+
+Include:
+1. What it does (plain English)
+2. Step-by-step breakdown
+3. Why use this vs a for loop
+4. When to use this pattern
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 1rem;">
+                        <p><strong>ChatGPT Response (example):</strong></p>
+                        <p><strong>What it does:</strong> Creates a list of squared even numbers from 0 to 9.</p>
+                        <p><strong>Breakdown:</strong></p>
+                        <ul>
+                            <li><code>range(10)</code> → numbers 0 through 9</li>
+                            <li><code>if x % 2 == 0</code> → keep only even numbers (0, 2, 4, 6, 8)</li>
+                            <li><code>x**2</code> → square each one (0, 4, 16, 36, 64)</li>
+                            <li><code>[...]</code> → collect into list</li>
+                        </ul>
+                        <p><strong>Why use this:</strong> More concise than a for loop, Pythonic, faster for simple operations</p>
+                        <p><strong>When to use:</strong> When transforming/filtering lists in one line. Avoid for complex logic.</p>
+                    </div>
+                </div>
+                
+                <h3>Learning New Languages</h3>
+                
+                <div class="code-use-case">
+                    <div class="code-block">
+I know Python. Teach me the equivalent in JavaScript.
+
+Python code:
+```python
+# List comprehension
+numbers = [1, 2, 3, 4, 5]
+squared = [x**2 for x in numbers if x % 2 == 0]
+print(squared)
+```
+
+Show me:
+1. JavaScript equivalent
+2. Key differences between languages
+3. Common gotchas for Python developers learning JS
+                    </div>
+                </div>
+            </section>
+
+            <!-- Refactoring -->
+            <section class="content-section">
+                <h2>♻️ Use Case 6: Refactoring & Optimization</h2>
+                
+                <div class="code-use-case">
+                    <div class="code-block">
+Refactor this code to be more efficient and readable:
+
+```python
+def find_duplicates(data):
+    duplicates = []
+    for i in range(len(data)):
+        for j in range(i+1, len(data)):
+            if data[i] == data[j]:
+                if data[i] not in duplicates:
+                    duplicates.append(data[i])
+    return duplicates
+```
+
+Improve:
+1. Time complexity (currently O(n²))
+2. Readability
+3. Use Python best practices
+
+Explain what changed and why.
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 1rem;">
+                        <p><strong>Refactored version:</strong></p>
+                        <pre class="code-block" style="white-space: pre-wrap; font-size: 0.8rem;">
+from collections import Counter
+
+def find_duplicates(data):
+    """Find all duplicate elements in a list.
+    
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    return [item for item, count in Counter(data).items() if count > 1]
+
+# Or using set (if order doesn't matter):
+def find_duplicates(data):
+    seen = set()
+    duplicates = set()
+    for item in data:
+        if item in seen:
+            duplicates.add(item)
+        else:
+            seen.add(item)
+    return list(duplicates)
+                        </pre>
+                        <p><strong>Changes:</strong></p>
+                        <ul>
+                            <li>O(n²) → O(n) using Counter</li>
+                            <li>Removed nested loops</li>
+                            <li>More Pythonic with list comprehension</li>
+                            <li>Added docstring</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section">
+                <h2>⚡ Coding with ChatGPT: Best Practices</h2>
+                
+                <div class="success-box">
+                    <h3>✅ DO</h3>
+                    <ul>
+                        <li><strong>Provide context:</strong> Language version, libraries, framework</li>
+                        <li><strong>Show error messages:</strong> Full stack trace helps diagnosis</li>
+                        <li><strong>Request explanations:</strong> "Explain why this works"</li>
+                        <li><strong>Ask for alternatives:</strong> "Show me 3 ways to do this"</li>
+                        <li><strong>Test generated code:</strong> Always run and verify</li>
+                        <li><strong>Iterate:</strong> "Make this more efficient" → "Add error handling"</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>❌ DON'T</h3>
+                    <ul>
+                        <li><strong>Copy-paste blindly:</strong> Understand before using</li>
+                        <li><strong>Trust for security-critical code:</strong> Review for vulnerabilities</li>
+                        <li><strong>Use outdated syntax:</strong> Specify version to get modern code</li>
+                        <li><strong>Skip testing:</strong> ChatGPT makes mistakes</li>
+                        <li><strong>Use for entire architectures:</strong> Better for functions/components</li>
+                        <li><strong>Ignore best practices:</strong> Request "follow PEP 8" or style guides</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Build a Mini Project</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Create a To-Do List CLI App</h3>
+                    
+                    <p><strong>Challenge:</strong> Use ChatGPT to build a command-line to-do list manager.</p>
+                    
+                    <p><strong>Features:</strong></p>
+                    <ol style="line-height: 2;">
+                        <li>Add tasks</li>
+                        <li>Mark tasks complete</li>
+                        <li>List all tasks</li>
+                        <li>Delete tasks</li>
+                        <li>Save/load from file</li>
+                    </ol>
+                    
+                    <p><strong>Steps:</strong></p>
+                    <ol style="line-height: 2.5;">
+                        <li>Ask ChatGPT for project structure</li>
+                        <li>Generate each function with tests</li>
+                        <li>Debug any errors you encounter</li>
+                        <li>Request refactoring suggestions</li>
+                        <li>Generate documentation</li>
+                    </ol>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Reflection:</strong></p>
+                    <ul>
+                        <li>How much faster was this vs coding alone?</li>
+                        <li>What did ChatGPT excel at? Where did you need to step in?</li>
+                        <li>Did you learn anything new about your programming language?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Continue Learning Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Your Coding Toolkit</h2>
+                
+                <ul>
+                    <li>✅ <strong>Code generation:</strong> Specify requirements, input/output, error handling, style</li>
+                    <li>✅ <strong>Debugging:</strong> Provide error + code + context + what you've tried</li>
+                    <li>✅ <strong>Tests:</strong> Generate comprehensive test suites with edge cases</li>
+                    <li>✅ <strong>Documentation:</strong> Docstrings, README files, API docs</li>
+                    <li>✅ <strong>Learning:</strong> Explain complex code, compare languages</li>
+                    <li>✅ <strong>Refactoring:</strong> Improve performance, readability, best practices</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> ChatGPT is your senior developer pair programmer — ask good questions, verify output, and learn from its suggestions. It accelerates coding 10x, but you're still the architect. Next: apply AI to business challenges.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 1: What's the most important thing to include in code generation prompts?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Just the function name</div>
+                            <div class="quiz-option" data-value="b">Only the programming language</div>
+                            <div class="quiz-option" data-value="c">Requirements: input/output, error handling, edge cases, style guide</div>
+                            <div class="quiz-option" data-value="d">Nothing - ChatGPT figures it out</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 2: When debugging, what should you provide to ChatGPT?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Just say "my code doesn't work"</div>
+                            <div class="quiz-option" data-value="b">Full error message + relevant code + context + what you've tried</div>
+                            <div class="quiz-option" data-value="c">Only the error message</div>
+                            <div class="quiz-option" data-value="d">Your entire codebase</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What's the biggest risk of using ChatGPT for coding?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Copy-pasting code without understanding or testing it</div>
+                            <div class="quiz-option" data-value="b">It's always too slow</div>
+                            <div class="quiz-option" data-value="c">The code never works</div>
+                            <div class="quiz-option" data-value="d">It only supports Python</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 4: What should you specify for better code generation?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Nothing specific</div>
+                            <div class="quiz-option" data-value="b">Just the task</div>
+                            <div class="quiz-option" data-value="c">Language version, style guide, framework, and optimization goals</div>
+                            <div class="quiz-option" data-value="d">Only the output format</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: How should you use ChatGPT for learning new programming languages?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Just ask it to write code, never understand it</div>
+                            <div class="quiz-option" data-value="b">Show code you know, ask for equivalent in new language with explanations</div>
+                            <div class="quiz-option" data-value="c">It can't help with learning</div>
+                            <div class="quiz-option" data-value="d">Only use official documentation</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: ChatGPT for Business</h2>
+                
+                <p>You've mastered writing and coding. Now let's tackle <strong>business analysis, strategy, data insights, and decision-making</strong> — turn ChatGPT into your business consultant.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Tutorial 7:</strong> ChatGPT for Business & Analysis — market research, competitive analysis, data interpretation, strategy frameworks, and executive reporting.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="chatgpt-for-writing.html" class="prev">← Tutorial 5: Writing</a>
+                    <a href="chatgpt-for-business.html" class="next">Module 7: Business →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

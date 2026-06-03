@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a customer churn prediction system using Logistic Regression, Random Forest, and XGBoost. Learn imbalanced data handling, feature importance, and business metrics.">
+    <meta name="keywords" content="customer churn prediction, classification, machine learning project, imbalanced data, business analytics">
+    <title>Project: Customer Churn Prediction | Nebaz AI Academy</title>
+    <link rel="canonical" href="customer-churn-prediction.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Customer Churn Prediction Project</span>
+            </div>
+            <h1>📊 Customer Churn Prediction</h1>
+            <p class="tutorial-intro">Build a classification system to predict which customers will leave and identify key retention factors</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📊 Advanced</span>
+                <span class="meta-item">⏱️ 6 hours</span>
+                <span class="meta-item">💻 Python + XGBoost</span>
+                <span class="meta-item">🎯 Classification Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Customer churn (when customers stop doing business with a company) costs businesses billions annually. In this project, you'll build a machine learning system to predict which customers are likely to churn, allowing companies to take preventive action.
+                </p>
+
+                <h3>Real-World Business Impact</h3>
+                <ul>
+                    <li><strong>Cost Savings:</strong> Acquiring new customers costs 5-25x more than retaining existing ones</li>
+                    <li><strong>Revenue Protection:</strong> Reducing churn by 5% can increase profits by 25-95%</li>
+                    <li><strong>Targeted Interventions:</strong> Focus retention efforts on high-risk customers</li>
+                    <li><strong>Actionable Insights:</strong> Identify key factors driving customer departures</li>
+                </ul>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>Imbalanced Classification System:</strong> Handle typical churn rates of 10-30%</li>
+                    <li><strong>Multiple ML Models:</strong> Compare Logistic Regression, Random Forest, and XGBoost</li>
+                    <li><strong>Feature Importance Analysis:</strong> Identify top churn drivers</li>
+                    <li><strong>Business Metrics:</strong> Calculate customer lifetime value and retention ROI</li>
+                    <li><strong>Risk Scoring:</strong> Assign churn probability to each customer</li>
+                    <li><strong>Intervention Strategy:</strong> Prioritize customers for retention campaigns</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>💼 <strong>High Business Value:</strong> This project directly translates ML skills into business impact - perfect for interviews at SaaS companies, telecom, banking, and e-commerce!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Dataset & Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Dependencies</h3>
+                    <pre><code class="language-bash">pip install pandas numpy scikit-learn xgboost imbalanced-learn matplotlib seaborn</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Load Telco Customer Churn Data</h3>
+                    <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Download from Kaggle: https://www.kaggle.com/blastchar/telco-customer-churn
+# Or create synthetic data:
+from sklearn.datasets import make_classification
+
+# Create synthetic churn dataset
+X, y = make_classification(
+    n_samples=7000,
+    n_features=20,
+    n_informative=15,
+    n_redundant=5,
+    n_classes=2,
+    weights=[0.80, 0.20],  # 20% churn rate (imbalanced)
+    random_state=42
+)
+
+# Create realistic feature names
+feature_names = [
+    'tenure_months', 'monthly_charges', 'total_charges', 
+    'contract_type', 'payment_method', 'internet_service',
+    'tech_support', 'online_security', 'online_backup',
+    'device_protection', 'streaming_tv', 'streaming_movies',
+    'paperless_billing', 'num_services', 'avg_call_duration',
+    'customer_service_calls', 'late_payments', 'data_usage_gb',
+    'age', 'dependents'
+]
+
+df = pd.DataFrame(X, columns=feature_names)
+df['Churn'] = y
+
+print(f"Dataset Shape: {df.shape}")
+print(f"\nChurn Rate: {df['Churn'].mean():.1%}")
+print(f"Churned Customers: {df['Churn'].sum()}")
+print(f"Retained Customers: {(df['Churn']==0).sum()}")</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Using Real Data:</strong> For production-ready project, download the Kaggle Telco Churn dataset which includes demographics, account info, and services. The code below works for both synthetic and real data!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 1: Exploratory Data Analysis</h2>
+                
+                <h3>Class Imbalance Analysis</h3>
+                <pre><code class="language-python"># Visualize class distribution
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Count plot
+churn_counts = df['Churn'].value_counts()
+axes[0].bar(['Retained', 'Churned'], churn_counts.values, color=['#10b981', '#ef4444'])
+axes[0].set_ylabel('Number of Customers')
+axes[0].set_title('Customer Distribution')
+for i, v in enumerate(churn_counts.values):
+    axes[0].text(i, v + 100, str(v), ha='center', fontweight='bold')
+
+# Percentage pie chart
+axes[1].pie(churn_counts.values, labels=['Retained (0)', 'Churned (1)'], 
+            autopct='%1.1f%%', colors=['#10b981', '#ef4444'], startangle=90)
+axes[1].set_title('Churn Rate Distribution')
+
+plt.tight_layout()
+plt.show()
+
+print(f"\n⚠️ IMBALANCED DATASET DETECTED!")
+print(f"Churn Rate: {df['Churn'].mean():.1%}")
+print("We'll need to handle this imbalance during training!")</code></pre>
+
+                <h3>Feature Analysis by Churn Status</h3>
+                <pre><code class="language-python"># Compare churned vs retained customers
+churned = df[df['Churn'] == 1]
+retained = df[df['Churn'] == 0]
+
+# Key metrics comparison
+comparison = pd.DataFrame({
+    'Metric': ['Avg Tenure (months)', 'Avg Monthly Charges', 'Avg Total Charges', 'Avg Service Calls'],
+    'Churned': [
+        churned['tenure_months'].mean(),
+        churned['monthly_charges'].mean(),
+        churned['total_charges'].mean(),
+        churned['customer_service_calls'].mean()
+    ],
+    'Retained': [
+        retained['tenure_months'].mean(),
+        retained['monthly_charges'].mean(),
+        retained['total_charges'].mean(),
+        retained['customer_service_calls'].mean()
+    ]
+})
+comparison['Difference %'] = ((comparison['Churned'] - comparison['Retained']) / comparison['Retained'] * 100).round(1)
+
+print("\n📊 Churned vs Retained Comparison:")
+print(comparison.to_string(index=False))
+
+# Visualize key differences
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Tenure distribution
+axes[0,0].hist([retained['tenure_months'], churned['tenure_months']], 
+               bins=30, label=['Retained', 'Churned'], color=['#10b981', '#ef4444'], alpha=0.7)
+axes[0,0].set_xlabel('Tenure (months)')
+axes[0,0].set_ylabel('Frequency')
+axes[0,0].set_title('Tenure Distribution')
+axes[0,0].legend()
+
+# Monthly charges
+axes[0,1].hist([retained['monthly_charges'], churned['monthly_charges']], 
+               bins=30, label=['Retained', 'Churned'], color=['#10b981', '#ef4444'], alpha=0.7)
+axes[0,1].set_xlabel('Monthly Charges')
+axes[0,1].set_title('Monthly Charges Distribution')
+axes[0,1].legend()
+
+# Customer service calls
+axes[1,0].hist([retained['customer_service_calls'], churned['customer_service_calls']], 
+               bins=20, label=['Retained', 'Churned'], color=['#10b981', '#ef4444'], alpha=0.7)
+axes[1,0].set_xlabel('Customer Service Calls')
+axes[1,0].set_title('Service Call Frequency')
+axes[1,0].legend()
+
+# Correlation heatmap (top 10 features)
+correlation = df.corr()['Churn'].sort_values(ascending=False)[1:11]
+axes[1,1].barh(range(len(correlation)), correlation.values)
+axes[1,1].set_yticks(range(len(correlation)))
+axes[1,1].set_yticklabels(correlation.index)
+axes[1,1].set_xlabel('Correlation with Churn')
+axes[1,1].set_title('Top 10 Churn Predictors')
+axes[1,1].axvline(x=0, color='black', linestyle='--', alpha=0.3)
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>Statistical Significance Testing</h3>
+                <pre><code class="language-python">from scipy.stats import ttest_ind
+
+# T-test for key metrics
+print("\n📊 Statistical Significance Tests:")
+print("="*60)
+
+for feature in ['tenure_months', 'monthly_charges', 'customer_service_calls']:
+    churned_values = df[df['Churn']==1][feature]
+    retained_values = df[df['Churn']==0][feature]
+    
+    t_stat, p_value = ttest_ind(churned_values, retained_values)
+    
+    significance = "✅ SIGNIFICANT" if p_value < 0.05 else "❌ NOT SIGNIFICANT"
+    print(f"{feature}: p-value = {p_value:.6f} - {significance}")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: EDA Insights</h3>
+                    <p>Key findings you should have discovered:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>20% churn rate (imbalanced dataset)</li>
+                        <li>Churned customers have shorter tenure</li>
+                        <li>More customer service calls = higher churn risk</li>
+                        <li>Monthly charges differ between groups</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Part 2: Data Preprocessing</h2>
+                
+                <h3>Train/Test Split (Stratified)</h3>
+                <pre><code class="language-python">from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Separate features and target
+X = df.drop('Churn', axis=1)
+y = df['Churn']
+
+# Stratified split (preserves class distribution)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training set: {len(X_train)} samples")
+print(f"Test set: {len(X_test)} samples")
+print(f"\nTrain churn rate: {y_train.mean():.1%}")
+print(f"Test churn rate: {y_test.mean():.1%}")
+
+# Feature scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Convert back to DataFrame
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)</code></pre>
+
+                <h3>Handle Class Imbalance with SMOTE</h3>
+                <pre><code class="language-python">from imblearn.over_sampling import SMOTE
+
+# Apply SMOTE (Synthetic Minority Over-sampling Technique)
+smote = SMOTE(random_state=42)
+X_train_balanced, y_train_balanced = smote.fit_resample(X_train_scaled, y_train)
+
+print(f"\nBefore SMOTE:")
+print(f"  Class 0 (Retained): {(y_train==0).sum()}")
+print(f"  Class 1 (Churned): {(y_train==1).sum()}")
+
+print(f"\nAfter SMOTE:")
+print(f"  Class 0 (Retained): {(y_train_balanced==0).sum()}")
+print(f"  Class 1 (Churned): {(y_train_balanced==1).sum()}")
+print(f"\n✅ Classes are now balanced!")</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Important:</strong> Only apply SMOTE to training data, never to test data! We test on real-world distribution.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🤖 Part 3: Model Training & Comparison</h2>
+                
+                <h3>Model 1: Logistic Regression (Baseline)</h3>
+                <pre><code class="language-python">from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
+
+# Train Logistic Regression
+lr_model = LogisticRegression(max_iter=1000, random_state=42)
+lr_model.fit(X_train_balanced, y_train_balanced)
+
+# Predictions
+y_pred_lr = lr_model.predict(X_test_scaled)
+y_proba_lr = lr_model.predict_proba(X_test_scaled)[:, 1]
+
+# Evaluation
+print("="*60)
+print("LOGISTIC REGRESSION RESULTS")
+print("="*60)
+print(classification_report(y_test, y_pred_lr, target_names=['Retained', 'Churned']))
+print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_proba_lr):.4f}")</code></pre>
+
+                <h3>Model 2: Random Forest</h3>
+                <pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+
+# Train Random Forest
+rf_model = RandomForestClassifier(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_split=10,
+    min_samples_leaf=5,
+    class_weight='balanced',  # Handle imbalance
+    random_state=42,
+    n_jobs=-1
+)
+rf_model.fit(X_train_scaled, y_train)  # Use original training data with class_weight
+
+# Predictions
+y_pred_rf = rf_model.predict(X_test_scaled)
+y_proba_rf = rf_model.predict_proba(X_test_scaled)[:, 1]
+
+# Evaluation
+print("\n" + "="*60)
+print("RANDOM FOREST RESULTS")
+print("="*60)
+print(classification_report(y_test, y_pred_rf, target_names=['Retained', 'Churned']))
+print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_proba_rf):.4f}")</code></pre>
+
+                <h3>Model 3: XGBoost (Champion)</h3>
+                <pre><code class="language-python">import xgboost as xgb
+
+# Calculate scale_pos_weight for imbalance
+scale_pos_weight = (y_train==0).sum() / (y_train==1).sum()
+
+# Train XGBoost
+xgb_model = xgb.XGBClassifier(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=6,
+    min_child_weight=3,
+    gamma=0.1,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    scale_pos_weight=scale_pos_weight,  # Handle imbalance
+    random_state=42,
+    eval_metric='logloss'
+)
+xgb_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_pred_xgb = xgb_model.predict(X_test_scaled)
+y_proba_xgb = xgb_model.predict_proba(X_test_scaled)[:, 1]
+
+# Evaluation
+print("\n" + "="*60)
+print("XGBOOST RESULTS")
+print("="*60)
+print(classification_report(y_test, y_pred_xgb, target_names=['Retained', 'Churned']))
+print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_proba_xgb):.4f}")</code></pre>
+
+                <h3>Model Comparison Dashboard</h3>
+                <pre><code class="language-python"># Compare all models
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+models_comparison = pd.DataFrame({
+    'Model': ['Logistic Regression', 'Random Forest', 'XGBoost'],
+    'Precision': [
+        precision_score(y_test, y_pred_lr, pos_label=1),
+        precision_score(y_test, y_pred_rf, pos_label=1),
+        precision_score(y_test, y_pred_xgb, pos_label=1)
+    ],
+    'Recall': [
+        recall_score(y_test, y_pred_lr, pos_label=1),
+        recall_score(y_test, y_pred_rf, pos_label=1),
+        recall_score(y_test, y_pred_xgb, pos_label=1)
+    ],
+    'F1-Score': [
+        f1_score(y_test, y_pred_lr, pos_label=1),
+        f1_score(y_test, y_pred_rf, pos_label=1),
+        f1_score(y_test, y_pred_xgb, pos_label=1)
+    ],
+    'ROC-AUC': [
+        roc_auc_score(y_test, y_proba_lr),
+        roc_auc_score(y_test, y_proba_rf),
+        roc_auc_score(y_test, y_proba_xgb)
+    ]
+})
+
+print("\n" + "="*70)
+print("MODEL COMPARISON")
+print("="*70)
+print(models_comparison.to_string(index=False))
+
+# Visualize comparison
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Metrics comparison
+metrics = ['Precision', 'Recall', 'F1-Score', 'ROC-AUC']
+x = np.arange(len(models_comparison))
+width = 0.2
+
+for i, metric in enumerate(metrics):
+    axes[0].bar(x + i*width, models_comparison[metric], width, label=metric)
+
+axes[0].set_xlabel('Models')
+axes[0].set_ylabel('Score')
+axes[0].set_title('Model Performance Comparison')
+axes[0].set_xticks(x + width * 1.5)
+axes[0].set_xticklabels(models_comparison['Model'], rotation=15)
+axes[0].legend()
+axes[0].set_ylim([0, 1])
+axes[0].grid(axis='y', alpha=0.3)
+
+# ROC Curves
+fpr_lr, tpr_lr, _ = roc_curve(y_test, y_proba_lr)
+fpr_rf, tpr_rf, _ = roc_curve(y_test, y_proba_rf)
+fpr_xgb, tpr_xgb, _ = roc_curve(y_test, y_proba_xgb)
+
+axes[1].plot(fpr_lr, tpr_lr, label=f'Logistic Reg (AUC={roc_auc_score(y_test, y_proba_lr):.3f})', linewidth=2)
+axes[1].plot(fpr_rf, tpr_rf, label=f'Random Forest (AUC={roc_auc_score(y_test, y_proba_rf):.3f})', linewidth=2)
+axes[1].plot(fpr_xgb, tpr_xgb, label=f'XGBoost (AUC={roc_auc_score(y_test, y_proba_xgb):.3f})', linewidth=2)
+axes[1].plot([0, 1], [0, 1], 'k--', label='Random Classifier', alpha=0.3)
+axes[1].set_xlabel('False Positive Rate')
+axes[1].set_ylabel('True Positive Rate')
+axes[1].set_title('ROC Curves Comparison')
+axes[1].legend()
+axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Best model
+best_idx = models_comparison['ROC-AUC'].idxmax()
+print(f"\n🏆 Best Model: {models_comparison.loc[best_idx, 'Model']}")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: Models Trained</h3>
+                    <p>You've successfully:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Handled class imbalance with SMOTE and class_weight</li>
+                        <li>Trained 3 different models</li>
+                        <li>Compared precision, recall, F1, and ROC-AUC</li>
+                        <li>Typically XGBoost achieves highest ROC-AUC (~0.85-0.90)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 4: Business Impact Analysis</h2>
+                
+                <h3>Confusion Matrix & Business Metrics</h3>
+                <pre><code class="language-python"># Use best model (XGBoost)
+cm = confusion_matrix(y_test, y_pred_xgb)
+
+# Visualize confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=['Predicted Retained', 'Predicted Churned'],
+            yticklabels=['Actually Retained', 'Actually Churned'])
+plt.title('Confusion Matrix - XGBoost')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+# Calculate business metrics
+TN, FP, FN, TP = cm.ravel()
+
+print("\n" + "="*60)
+print("CONFUSION MATRIX BREAKDOWN")
+print("="*60)
+print(f"True Negatives (Correctly predicted retained):  {TN}")
+print(f"False Positives (Incorrectly predicted churn):  {FP}")
+print(f"False Negatives (Missed churn):                  {FN}")
+print(f"True Positives (Correctly predicted churn):     {TP}")
+
+# Business impact calculations
+avg_customer_value = 1000  # Average annual revenue per customer
+retention_cost = 100       # Cost of retention campaign per customer
+churn_cost = avg_customer_value  # Lost revenue from churned customer
+
+# Scenario: Without model (no intervention)
+baseline_churn_cost = (TP + FN) * churn_cost
+
+# Scenario: With model (intervene on predicted churners)
+# Assume 60% success rate for retention campaigns
+retention_success_rate = 0.60
+customers_saved = TP * retention_success_rate
+campaign_cost = (TP + FP) * retention_cost
+remaining_churn_cost = (FN + TP * (1 - retention_success_rate)) * churn_cost
+total_cost_with_model = campaign_cost + remaining_churn_cost
+
+# ROI calculation
+cost_savings = baseline_churn_cost - total_cost_with_model
+roi = (cost_savings / campaign_cost) * 100
+
+print("\n" + "="*60)
+print("BUSINESS IMPACT ANALYSIS")
+print("="*60)
+print(f"\n📊 Without Model (Baseline):")
+print(f"  Churned Customers: {TP + FN}")
+print(f"  Total Revenue Loss: ${baseline_churn_cost:,}")
+
+print(f"\n🎯 With ML Model:")
+print(f"  Predicted Churners: {TP + FP}")
+print(f"  Retention Campaigns Sent: {TP + FP}")
+print(f"  Campaign Cost: ${campaign_cost:,}")
+print(f"  Customers Saved (~60% success): {int(customers_saved)}")
+print(f"  Remaining Churn Cost: ${remaining_churn_cost:,}")
+print(f"  Total Cost: ${total_cost_with_model:,}")
+
+print(f"\n💰 ROI:")
+print(f"  Cost Savings: ${cost_savings:,}")
+print(f"  ROI: {roi:.1f}%")
+print(f"\n✅ For every $1 spent on retention, save ${roi/100:.2f}!")</code></pre>
+
+                <h3>Feature Importance for Business Insights</h3>
+                <pre><code class="language-python"># XGBoost feature importance
+importance_df = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': xgb_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+# Visualize
+plt.figure(figsize=(10, 8))
+plt.barh(importance_df['Feature'][:15], importance_df['Importance'][:15])
+plt.xlabel('Importance Score')
+plt.title('Top 15 Churn Drivers')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+
+print("\n" + "="*60)
+print("TOP 10 CHURN DRIVERS (Actionable Insights)")
+print("="*60)
+for i, row in importance_df.head(10).iterrows():
+    print(f"{row['Feature']:.<40} {row['Importance']:.4f}")</code></pre>
+
+                <h3>Customer Risk Segmentation</h3>
+                <pre><code class="language-python"># Assign churn risk scores to all test customers
+risk_scores = xgb_model.predict_proba(X_test_scaled)[:, 1]
+
+# Create risk segments
+risk_df = pd.DataFrame({
+    'Customer_ID': X_test.index,
+    'Churn_Probability': risk_scores,
+    'Actual_Churn': y_test.values
+})
+
+# Define risk categories
+def categorize_risk(prob):
+    if prob < 0.3:
+        return 'Low Risk'
+    elif prob < 0.6:
+        return 'Medium Risk'
+    else:
+        return 'High Risk'
+
+risk_df['Risk_Category'] = risk_df['Churn_Probability'].apply(categorize_risk)
+
+# Risk segment analysis
+segment_analysis = risk_df.groupby('Risk_Category').agg({
+    'Customer_ID': 'count',
+    'Actual_Churn': 'sum',
+    'Churn_Probability': 'mean'
+}).rename(columns={'Customer_ID': 'Customer_Count', 'Actual_Churn': 'Actual_Churns'})
+segment_analysis['Churn_Rate'] = (segment_analysis['Actual_Churns'] / segment_analysis['Customer_Count'] * 100).round(1)
+
+print("\n" + "="*60)
+print("CUSTOMER RISK SEGMENTATION")
+print("="*60)
+print(segment_analysis)
+
+# Visualize risk distribution
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Risk category distribution
+segment_counts = risk_df['Risk_Category'].value_counts()
+axes[0].bar(segment_counts.index, segment_counts.values, color=['#10b981', '#f59e0b', '#ef4444'])
+axes[0].set_ylabel('Number of Customers')
+axes[0].set_title('Customer Risk Distribution')
+
+# Churn probability histogram
+axes[1].hist(risk_scores, bins=50, edgecolor='black', alpha=0.7)
+axes[1].axvline(x=0.3, color='orange', linestyle='--', label='Low/Medium threshold')
+axes[1].axvline(x=0.6, color='red', linestyle='--', label='Medium/High threshold')
+axes[1].set_xlabel('Churn Probability')
+axes[1].set_ylabel('Number of Customers')
+axes[1].set_title('Churn Probability Distribution')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+
+# High-risk customers for immediate action
+high_risk = risk_df[risk_df['Risk_Category'] == 'High Risk'].sort_values('Churn_Probability', ascending=False)
+print(f"\n🚨 {len(high_risk)} High-Risk Customers Identified")
+print("\nTop 10 Customers for Immediate Intervention:")
+print(high_risk.head(10)[['Customer_ID', 'Churn_Probability', 'Actual_Churn']])</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Business Analysis Complete</h3>
+                    <p>You've created:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>ROI calculation showing value of ML model</li>
+                        <li>Feature importance identifying top churn drivers</li>
+                        <li>Risk segmentation (Low/Medium/High)</li>
+                        <li>Prioritized list of customers for intervention</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 5: Model Deployment</h2>
+                
+                <pre><code class="language-python">import pickle
+from datetime import datetime
+
+# Save model and preprocessing objects
+model_package = {
+    'model': xgb_model,
+    'scaler': scaler,
+    'feature_names': X_train.columns.tolist(),
+    'training_date': datetime.now(),
+    'performance_metrics': {
+        'roc_auc': roc_auc_score(y_test, y_proba_xgb),
+        'precision': precision_score(y_test, y_pred_xgb, pos_label=1),
+        'recall': recall_score(y_test, y_pred_xgb, pos_label=1),
+        'f1_score': f1_score(y_test, y_pred_xgb, pos_label=1)
+    },
+    'business_metrics': {
+        'roi_percentage': roi,
+        'cost_savings': float(cost_savings)
+    }
+}
+
+# Save
+model_filename = f'churn_model_{datetime.now().strftime("%Y%m%d")}.pkl'
+with open(model_filename, 'wb') as f:
+    pickle.dump(model_package, f)
+
+print(f"✅ Model saved as: {model_filename}")
+
+# Prediction API function
+def predict_churn_risk(customer_features):
+    """
+    Predict churn risk for a single customer
+    
+    Parameters:
+    -----------
+    customer_features : dict
+        Dictionary with feature names and values
+    
+    Returns:
+    --------
+    dict with risk probability, category, and recommendation
+    """
+    # Load model
+    with open(model_filename, 'rb') as f:
+        package = pickle.load(f)
+    
+    model = package['model']
+    scaler = package['scaler']
+    
+    # Create DataFrame
+    input_df = pd.DataFrame([customer_features])
+    
+    # Scale
+    input_scaled = scaler.transform(input_df)
+    
+    # Predict
+    churn_prob = model.predict_proba(input_scaled)[0, 1]
+    
+    # Risk category
+    if churn_prob < 0.3:
+        risk_category = 'Low Risk'
+        recommendation = 'Standard engagement'
+    elif churn_prob < 0.6:
+        risk_category = 'Medium Risk'
+        recommendation = 'Monitor closely, send satisfaction survey'
+    else:
+        risk_category = 'High Risk'
+        recommendation = 'IMMEDIATE ACTION: Retention campaign, personal outreach'
+    
+    return {
+        'churn_probability': round(churn_prob, 3),
+        'risk_category': risk_category,
+        'recommendation': recommendation
+    }
+
+# Example usage
+sample_customer = {feature: X_test.iloc[0][feature] for feature in X_train.columns}
+result = predict_churn_risk(sample_customer)
+
+print("\n" + "="*60)
+print("EXAMPLE PREDICTION")
+print("="*60)
+print(f"Churn Probability: {result['churn_probability']:.1%}")
+print(f"Risk Category: {result['risk_category']}")
+print(f"Recommendation: {result['recommendation']}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Outstanding Work!</h3>
+                    <p style="font-size: 1.1rem;">You've built a production-ready churn prediction system with real business impact!</p>
+                </div>
+
+                <h3>📊 Key Achievements</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Handled imbalanced data</strong> using SMOTE and class weights</li>
+                    <li>✅ <strong>Trained 3 models</strong> achieving ~85-90% ROC-AUC</li>
+                    <li>✅ <strong>Calculated business ROI</strong> showing 3-5x return on investment</li>
+                    <li>✅ <strong>Identified churn drivers</strong> for actionable insights</li>
+                    <li>✅ <strong>Created risk segments</strong> for targeted interventions</li>
+                    <li>✅ <strong>Deployed model</strong> with prediction API</li>
+                </ul>
+
+                <h3>🚀 Next Steps</h3>
+                <ul>
+                    <li><strong>Deploy as Flask API:</strong> Create REST endpoint for real-time predictions</li>
+                    <li><strong>Build Dashboard:</strong> Use Streamlit or Dash for interactive visualization</li>
+                    <li><strong>A/B Testing:</strong> Test intervention strategies on different risk segments</li>
+                    <li><strong>Feature Engineering:</strong> Add customer behavior sequences (RFM analysis)</li>
+                    <li><strong>Time-Series:</strong> Predict when customer will churn (not just if)</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💼 Interview Talking Points:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>"Reduced customer churn by identifying 80% of at-risk customers with 85% precision"</li>
+                        <li>"Calculated 400% ROI on retention campaigns using ML-driven targeting"</li>
+                        <li>"Handled class imbalance using SMOTE and achieved 0.88 ROC-AUC with XGBoost"</li>
+                        <li>"Created risk segmentation enabling prioritized customer interventions"</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <a href="house-price-prediction.html" style="padding: 0.75rem 1.5rem; background-color: #f1f5f9; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">← Previous: House Price Prediction</a>
+                <a href="recommendation-system.html" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">Next: Recommendation System →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

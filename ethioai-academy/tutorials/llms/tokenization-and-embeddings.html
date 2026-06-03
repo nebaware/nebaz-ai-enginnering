@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master tokenization and embeddings. Learn how LLMs convert text to numbers and create meaningful representations.">
+    <meta name="keywords" content="tokenization, embeddings, word embeddings, BPE, token, LLM">
+    <title>Tokenization & Embeddings - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="tokenization-and-embeddings.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Tokenization & Embeddings</span>
+            </div>
+            <h1>Tokenization & Embeddings</h1>
+            <p class="tutorial-intro">Learn how LLMs convert text into numbers. Master tokenization strategies and understand word embeddings</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free LLMs & Transformers Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🔤 From Text to Numbers: The Foundation of LLMs</h2>
+                <p>
+                    Neural networks are mathematical functions that operate on numbers. But human language is symbolic—letters, words, and sentences. How do we bridge this gap?
+                </p>
+                <p>
+                    The answer lies in two fundamental concepts: <strong>tokenization</strong> (converting text to discrete units) and <strong>embeddings</strong> (converting those units to meaningful numerical vectors). Together, they form the input pipeline that makes LLMs possible.
+                </p>
+
+                <div class="info-box">
+                    <h3>The Complete Pipeline</h3>
+                    <p>
+                        <strong>Text</strong> ("Hello, world!") → <strong>Tokenization</strong> (["Hello", ",", "world", "!"]) → <strong>Token IDs</strong> ([15496, 11, 995, 0]) → <strong>Embeddings</strong> (768-dim vectors) → <strong>Positional Encoding</strong> → <strong>Transformer Model</strong>
+                    </p>
+                </div>
+
+                <h3>Why Not Just Use ASCII Codes?</h3>
+                <p>
+                    You might wonder: why not just use ASCII codes (A=65, B=66, etc.)? Several reasons:
+                </p>
+                <ul>
+                    <li><strong>No semantic meaning:</strong> ASCII is arbitrary. 'A' and 'B' are adjacent numbers, but have no semantic relationship.</li>
+                    <li><strong>Inefficient:</strong> Word-level or subword-level tokenization reduces sequence length dramatically.</li>
+                    <li><strong>No learned representations:</strong> LLMs need to learn that "king" and "queen" are related—embeddings enable this.</li>
+                    <li><strong>Language-agnostic:</strong> Modern tokenization works across all languages, including emojis and special characters.</li>
+                </ul>
+
+                <h3>Historical Context</h3>
+                <p>
+                    Early NLP systems used one-hot encoding (a vector with all zeros except one position). For a 50,000-word vocabulary, each word was a 50,000-dimensional sparse vector. This was:
+                </p>
+                <ul>
+                    <li><strong>Memory intensive:</strong> Huge sparse vectors</li>
+                    <li><strong>No semantic relationships:</strong> Every word was equally distant from every other</li>
+                    <li><strong>Not scalable:</strong> Can't handle new words</li>
+                </ul>
+
+                <p>
+                    Modern embeddings solve all these problems by learning dense, low-dimensional representations where semantic similarity = vector similarity.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🔓 Tokenization: Breaking Text into Pieces</h2>
+                
+                <p>
+                    <strong>Tokenization</strong> is the process of splitting text into discrete units called <strong>tokens</strong>. A token can be a character, word, subword, or even byte. The choice dramatically affects model performance and efficiency.
+                </p>
+
+                <h3>1. Character-Level Tokenization</h3>
+                <p>
+                    Split text into individual characters. Simple and universal.
+                </p>
+                <div class="example-box">
+                    <pre><code class="language-text">Text: "Hello"
+Tokens: ['H', 'e', 'l', 'l', 'o']
+Vocabulary size: ~256 (ASCII) or ~1,000+ (Unicode)
+Sequence length: Very long (one char per token)</code></pre>
+                </div>
+
+                <p><strong>Pros:</strong></p>
+                <ul>
+                    <li>Tiny vocabulary (can fit all possible characters)</li>
+                    <li>No out-of-vocabulary (OOV) issues</li>
+                    <li>Works for any language</li>
+                </ul>
+
+                <p><strong>Cons:</strong></p>
+                <ul>
+                    <li>Very long sequences (computationally expensive)</li>
+                    <li>Model must learn to compose characters into words (harder)</li>
+                    <li>Loses word-level semantic information</li>
+                </ul>
+
+                <p><strong>Used by:</strong> Some early models, byte-level models</p>
+
+                <h3>2. Word-Level Tokenization</h3>
+                <p>
+                    Split text by whitespace and punctuation. Intuitive and natural.
+                </p>
+                <div class="example-box">
+                    <pre><code class="language-text">Text: "Hello world! This is NLP."
+Tokens: ['Hello', 'world', '!', 'This', 'is', 'NLP', '.']
+Vocabulary size: 50,000-500,000+ words
+Sequence length: Moderate</code></pre>
+                </div>
+
+                <p><strong>Pros:</strong></p>
+                <ul>
+                    <li>Shorter sequences than character-level</li>
+                    <li>Semantically meaningful units</li>
+                    <li>Intuitive for humans</li>
+                </ul>
+
+                <p><strong>Cons:</strong></p>
+                <ul>
+                    <li>Huge vocabulary (every word needs an ID)</li>
+                    <li>Poor handling of rare/misspelled words (becomes UNK token)</li>
+                    <li>Can't handle morphology ("run", "running", "runs" are separate)</li>
+                    <li>Different vocab for each language</li>
+                </ul>
+
+                <p><strong>Used by:</strong> Early Word2Vec, GloVe embeddings</p>
+
+                <h3>3. Subword Tokenization (Modern Standard) ⭐</h3>
+                <p>
+                    Split text into subword units—<strong>the best of both worlds</strong>. This is what GPT, BERT, and modern LLMs use.
+                </p>
+                <div class="example-box">
+                    <pre><code class="language-text">Text: "unbelievable ChatGPT"
+Tokens: ['un', 'believ', 'able', 'Chat', 'G', 'PT']
+Vocabulary size: 30,000-100,000 subwords
+Sequence length: Balanced</code></pre>
+                </div>
+
+                <p><strong>Pros:</strong></p>
+                <ul>
+                    <li>Moderate vocabulary size (32k-50k typical)</li>
+                    <li>Handles rare words by breaking into subwords</li>
+                    <li>Captures morphology (prefix/suffix patterns)</li>
+                    <li>No UNK tokens (can represent any word)</li>
+                    <li>Works across languages</li>
+                </ul>
+
+                <p><strong>Cons:</strong></p>
+                <ul>
+                    <li>Less intuitive for humans</li>
+                    <li>Requires training a tokenizer on corpus</li>
+                </ul>
+
+                <p><strong>Used by:</strong> GPT (BPE), BERT (WordPiece), T5 (SentencePiece)</p>
+
+                <h3>Subword Algorithms Deep Dive</h3>
+
+                <h4>Byte Pair Encoding (BPE) - Used by GPT</h4>
+                <p>
+                    BPE starts with characters and iteratively merges the most frequent pairs. Here's how it works step-by-step:
+                </p>
+
+                <div class="example-box">
+                    <h3>BPE Training Example</h3>
+                    <p><strong>Corpus:</strong> "low low low lower lowest"</p>
+                    
+                    <p><strong>Step 1:</strong> Initialize with characters</p>
+                    <pre><code class="language-text">Vocabulary: ['l', 'o', 'w', 'e', 'r', 's', 't']
+Words: ['l o w', 'l o w', 'l o w', 'l o w e r', 'l o w e s t']</code></pre>
+
+                    <p><strong>Step 2:</strong> Count all adjacent pairs</p>
+                    <pre><code class="language-text">('l', 'o'): 4 times
+('o', 'w'): 4 times
+('w', 'e'): 2 times
+('e', 'r'): 1 time
+('e', 's'): 1 time
+('s', 't'): 1 time</code></pre>
+
+                    <p><strong>Step 3:</strong> Merge most frequent pair: ('l', 'o') → 'lo'</p>
+                    <pre><code class="language-text">Vocabulary: ['l', 'o', 'w', 'e', 'r', 's', 't', 'lo']
+Words: ['lo w', 'lo w', 'lo w', 'lo w e r', 'lo w e s t']</code></pre>
+
+                    <p><strong>Step 4:</strong> Repeat: merge ('lo', 'w') → 'low'</p>
+                    <pre><code class="language-text">Vocabulary: ['l', 'o', 'w', 'e', 'r', 's', 't', 'lo', 'low']
+Words: ['low', 'low', 'low', 'low e r', 'low e s t']</code></pre>
+
+                    <p><strong>Step 5:</strong> Continue until vocabulary reaches target size (e.g., 50,000)</p>
+                </div>
+
+                <p>During inference, BPE applies these merge rules in the same order to segment new text:</p>
+                <pre><code class="language-text">Input: "lower"
+Step 1: ['l', 'o', 'w', 'e', 'r']
+Apply merge 'lo': ['lo', 'w', 'e', 'r']
+Apply merge 'low': ['low', 'e', 'r']
+Final: ['low', 'e', 'r']</code></pre>
+
+                <h4>WordPiece - Used by BERT</h4>
+                <p>
+                    Similar to BPE, but merges based on likelihood rather than frequency. Adds "##" prefix to indicate continuation tokens:
+                </p>
+                <pre><code class="language-text">"playing" → ['play', '##ing']
+"unhappiness" → ['un', '##hap', '##pi', '##ness']</code></pre>
+
+                <h4>SentencePiece - Used by T5, Llama</h4>
+                <p>
+                    Works directly on raw text (bytes) without pre-tokenization. Language-agnostic and handles whitespace as tokens:
+                </p>
+                <pre><code class="language-text">"Hello world" → ['▁Hello', '▁world']  # ▁ represents space</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Modern LLM Tokenizers:</strong></p>
+                    <ul>
+                        <li><strong>GPT-2/GPT-3:</strong> BPE, 50,257 tokens</li>
+                        <li><strong>GPT-4:</strong> BPE (estimated 100,000 tokens)</li>
+                        <li><strong>BERT:</strong> WordPiece, 30,522 tokens</li>
+                        <li><strong>Llama 2:</strong> SentencePiece, 32,000 tokens</li>
+                        <li><strong>Mistral:</strong> SentencePiece, 32,000 tokens</li>
+                    </ul>
+                </div>
+
+                <h3>Special Tokens</h3>
+                <p>
+                    LLMs use special tokens to mark boundaries and roles:
+                </p>
+                <ul>
+                    <li><strong>[PAD]:</strong> Padding token (for batching sequences of different lengths)</li>
+                    <li><strong>[UNK]:</strong> Unknown token (rarely used with subword tokenization)</li>
+                    <li><strong>[CLS]:</strong> Classification token (BERT uses for sentence-level tasks)</li>
+                    <li><strong>[SEP]:</strong> Separator token (marks boundaries between segments)</li>
+                    <li><strong>&lt;|endoftext|&gt;:</strong> End of text (GPT-2)</li>
+                    <li><strong>&lt;s&gt;, &lt;/s&gt;:</strong> Start/end of sequence (many models)</li>
+                </ul>
+
+                <h3>Practical Tokenization with HuggingFace</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer
+
+# Load different tokenizers
+gpt2_tokenizer = AutoTokenizer.from_pretrained("gpt2")
+bert_tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+llama_tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-hf")
+
+# Tokenize text
+text = "Hello, world! How are you?"
+
+print("=== GPT-2 (BPE) ===")
+tokens_gpt = gpt2_tokenizer.tokenize(text)
+print(f"Tokens: {tokens_gpt}")
+print(f"Token IDs: {gpt2_tokenizer.encode(text)}")
+print(f"Count: {len(tokens_gpt)}\n")
+
+print("=== BERT (WordPiece) ===")
+tokens_bert = bert_tokenizer.tokenize(text)
+print(f"Tokens: {tokens_bert}")
+print(f"Token IDs: {bert_tokenizer.encode(text)}")
+print(f"Count: {len(tokens_bert)}\n")
+
+# Decode back
+decoded = gpt2_tokenizer.decode([15496, 11, 995, 0])
+print(f"Decoded: {decoded}")</code></pre>
+
+                <div class="example-box">
+                    <h3>Output</h3>
+                    <pre><code class="language-text">=== GPT-2 (BPE) ===
+Tokens: ['Hello', ',', 'Ġworld', '!', 'ĠHow', 'Ġare', 'Ġyou', '?']
+Token IDs: [15496, 11, 995, 0, 1374, 389, 345, 30]
+Count: 8
+
+=== BERT (WordPiece) ===
+Tokens: ['hello', ',', 'world', '!', 'how', 'are', 'you', '?']
+Token IDs: [101, 7592, 1010, 2088, 999, 2129, 2024, 2017, 1029, 102]
+Count: 10 (includes [CLS] and [SEP])
+
+Decoded: Hello, world!</code></pre>
+                </div>
+
+                <h3>Advanced Tokenization Features</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+
+# Batch tokenization
+texts = ["Hello world", "Tokenization is important"]
+encoded = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+print(encoded)
+# Returns: {'input_ids': tensor([[...], [...]]), 'attention_mask': tensor([[...], [...]])}
+
+# Truncation and padding
+long_text = "This is a very long text..." * 100
+encoded = tokenizer(
+    long_text, 
+    max_length=512,  # Limit to 512 tokens
+    truncation=True,  # Cut off excess
+    padding='max_length',  # Pad to 512
+    return_tensors="pt"
+)
+
+# Get token count (useful for API limits)
+token_count = len(tokenizer.encode(text))
+print(f"Token count: {token_count}")
+
+# Encode/decode special tokens
+text_with_special = tokenizer.decode([50256])  # GPT-2 end-of-text token
+print(f"Special token: {text_with_special}")</code></pre>
+
+                <h3>Token Count and Cost Estimation</h3>
+                <p>
+                    Understanding token counts is crucial for API usage and costs:
+                </p>
+                <div class="example-box">
+                    <pre><code class="language-python">from transformers import AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+
+# Rule of thumb: 1 token ≈ 0.75 words (English)
+text = "The quick brown fox jumps over the lazy dog"
+tokens = tokenizer.encode(text)
+print(f"Words: {len(text.split())}")
+print(f"Tokens: {len(tokens)}")
+print(f"Ratio: {len(text.split()) / len(tokens):.2f} words per token")
+
+# OpenAI pricing example (as of 2023)
+# GPT-3.5-turbo: $0.002 per 1K tokens
+total_tokens = len(tokens)
+cost = (total_tokens / 1000) * 0.002
+print(f"Estimated cost: ${cost:.6f}")</code></pre>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>Token Limit Constraints:</strong></p>
+                    <ul>
+                        <li><strong>GPT-3.5:</strong> 4,096 tokens (input + output)</li>
+                        <li><strong>GPT-4:</strong> 8,192 or 32,768 tokens</li>
+                        <li><strong>Claude 2:</strong> 100,000 tokens</li>
+                        <li><strong>Llama 2:</strong> 4,096 tokens</li>
+                    </ul>
+                    <p>Exceeding limits = truncation or API errors!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Embeddings: From IDs to Meaning</h2>
+                
+                <p>
+                    After tokenization, we have token IDs (integers). But neural networks need to understand <strong>semantic relationships</strong>. A token ID is just an arbitrary number—it doesn't capture that "king" and "queen" are related, or that "cat" and "dog" are both animals.
+                </p>
+                <p>
+                    <strong>Embeddings</strong> solve this by converting token IDs into dense vectors (lists of numbers) where <strong>semantically similar tokens have similar vectors</strong>.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔢</div>
+                        <h3>Token ID</h3>
+                        <p>A unique integer for each token<br>Example: 2891 for "king"</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">➡️</div>
+                        <h3>Embedding Vector</h3>
+                        <p>Dense vector capturing meaning<br>Example: [0.2, -0.5, 0.1, ..., -0.1] (768 dims)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Embedding Table</h3>
+                        <p>Lookup matrix: vocab_size × embedding_dim<br>Example: 50,000 × 768 = 38.4M parameters</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎓</div>
+                        <h3>Learning Process</h3>
+                        <p>Embeddings are learned during pre-training via backpropagation, not predefined</p>
+                    </div>
+                </div>
+
+                <h3>How Embeddings Work</h3>
+                <p>
+                    An embedding layer is essentially a lookup table (matrix) with shape: <strong>[vocabulary_size, embedding_dimension]</strong>
+                </p>
+
+                <div class="example-box">
+                    <h3>Embedding Table Structure</h3>
+                    <pre><code class="language-text">Vocabulary size: 50,000 tokens
+Embedding dimension: 768 (GPT-2), 1536 (GPT-3), 4096 (Llama 2 70B)
+
+Embedding Matrix Shape: [50,000 × 768]
+Total parameters: 38,400,000
+
+Token ID 2891 ("king")  → row 2891 → [0.21, -0.53, 0.12, 0.31, ..., -0.08]
+Token ID 2737 ("queen") → row 2737 → [0.19, -0.51, 0.15, 0.29, ..., -0.06]
+Token ID 1234 ("apple") → row 1234 → [0.05, 0.23, -0.34, 0.01, ..., 0.42]</code></pre>
+                </div>
+
+                <p>
+                    Notice "king" and "queen" have very similar vectors (small differences). "apple" is quite different. This similarity structure is <strong>learned automatically</strong> during training!
+                </p>
+
+                <h3>Why Embeddings Capture Meaning</h3>
+                <p>
+                    During pre-training, the model learns to predict the next token. To do this well, it must learn that:
+                </p>
+                <ul>
+                    <li>"The king sat on the throne" and "The queen sat on the throne" are both valid</li>
+                    <li>So "king" and "queen" should have similar embeddings</li>
+                    <li>But "The apple sat on the throne" is unusual, so "apple" embeddings should differ</li>
+                </ul>
+
+                <p>
+                    Through billions of training examples, embeddings naturally organize themselves to reflect semantic similarity. This is called <strong>distributional semantics</strong>: "words that appear in similar contexts have similar meanings."
+                </p>
+
+                <h3>Famous Word Analogy Property</h3>
+                <p>
+                    One of the most fascinating properties of embeddings is vector arithmetic that captures relationships:
+                </p>
+                <div class="example-box">
+                    <pre><code class=\"language-text\">embedding("king") - embedding("man") + embedding("woman") ≈ embedding("queen")
+
+embedding("Paris") - embedding("France") + embedding("Italy") ≈ embedding("Rome")
+
+embedding("walking") - embedding("walk") + embedding("run") ≈ embedding("running")
+
+embedding("big") - embedding("bigger") + embedding("small") ≈ embedding("smaller")</code></pre>
+                </div>
+
+                <p>
+                    This works because embeddings capture relationships like:
+                </p>
+                <ul>
+                    <li><strong>Gender:</strong> male ↔ female</li>
+                    <li><strong>Geography:</strong> capital ↔ country</li>
+                    <li><strong>Grammar:</strong> base form ↔ inflection</li>
+                    <li><strong>Size/degree:</strong> comparative relationships</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>Key Insight:</strong> These relationships emerge naturally from training. They're not programmed—they're learned by observing how words co-occur in billions of sentences!</p>
+                </div>
+
+                <h3>Visualizing Embeddings</h3>
+                <p>
+                    Embeddings are high-dimensional (768D for GPT-2). We can use dimensionality reduction (t-SNE, PCA) to visualize them in 2D:
+                </p>
+
+                <div class="example-box">
+                    <h3>Conceptual Visualization (2D projection)</h3>
+                    <pre><code class=\"language-text\">                    * queen
+                    * king
+       * woman              * prince
+       * girl               * princess
+
+       
+* cat                    
+* dog                     * Python
+* lion                    * JavaScript
+* tiger                   * Java
+
+
+           * apple
+           * banana
+           * orange</code></pre>
+                    <p>
+                        Similar words cluster together. Related concepts (royalty, animals, programming, fruits) form distinct regions.
+                    </p>
+                </div>
+
+                <h3>Evolution of Word Embeddings</h3>
+                
+                <h4>Static Embeddings (2013-2018)</h4>
+                <p>
+                    Early approaches learned fixed embeddings for each word:
+                </p>
+                <ul>
+                    <li><strong>Word2Vec (2013):</strong> CBOW and Skip-gram models. Each word = one vector.</li>
+                    <li><strong>GloVe (2014):</strong> Global vectors based on co-occurrence statistics.</li>
+                    <li><strong>FastText (2016):</strong> Uses character n-grams, handles rare words better.</li>
+                </ul>
+
+                <p><strong>Limitation:</strong> One embedding per word, regardless of context. "bank" (river) vs "bank" (money) have the same embedding.</p>
+
+                <h4>Contextualized Embeddings (2018-Present)</h4>
+                <p>
+                    Modern LLMs generate different embeddings based on context:
+                </p>
+                <ul>
+                    <li><strong>ELMo (2018):</strong> Bidirectional LSTM, context-aware embeddings.</li>
+                    <li><strong>BERT (2018):</strong> Transformer-based, deeply contextualized.</li>
+                    <li><strong>GPT-3 (2020):</strong> Contextual embeddings in massive decoder-only model.</li>
+                </ul>
+
+                <div class="example-box">
+                    <p><strong>Example of Contextualization:</strong></p>
+                    <pre><code class=\"language-text\">Sentence 1: "I went to the river bank."
+"bank" embedding: [0.2, 0.5, -0.1, ...] (closer to "river", "water")
+
+Sentence 2: "I deposited money at the bank."
+"bank" embedding: [0.8, -0.2, 0.3, ...] (closer to "money", "financial")
+
+Same word, different contexts → different embeddings!</code></pre>
+                </div>
+
+                <h3>Embedding Dimensions</h3>
+                <p>
+                    Different models use different embedding dimensions:
+                </p>
+                <table class="comparison-table" style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Embedding Dim</th>
+                            <th>Vocab Size</th>
+                            <th>Embedding Params</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Word2Vec</strong></td>
+                            <td>300</td>
+                            <td>3M</td>
+                            <td>900M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BERT-Base</strong></td>
+                            <td>768</td>
+                            <td>30k</td>
+                            <td>23M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPT-2</strong></td>
+                            <td>768</td>
+                            <td>50k</td>
+                            <td>38M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPT-3</strong></td>
+                            <td>12,288</td>
+                            <td>50k</td>
+                            <td>614M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Llama 2 (7B)</strong></td>
+                            <td>4,096</td>
+                            <td>32k</td>
+                            <td>131M</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Llama 2 (70B)</strong></td>
+                            <td>8,192</td>
+                            <td>32k</td>
+                            <td>262M</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>
+                    Higher dimensions = more capacity to represent nuanced meanings, but also more parameters to train.
+                </p>
+
+                <h3>Code: Extracting and Using Embeddings</h3>
+                <pre><code class=\"language-python\">import torch\nfrom transformers import AutoModel, AutoTokenizer\n\n# Load model and tokenizer\nmodel_name = \"bert-base-uncased\"\nmodel = AutoModel.from_pretrained(model_name)\ntokenizer = AutoTokenizer.from_pretrained(model_name)\n\ntext = \"I love machine learning\"\n\n# Tokenize\ninputs = tokenizer(text, return_tensors=\"pt\")\nprint(f\"Token IDs: {inputs['input_ids']}\")\nprint(f\"Tokens: {tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])}\")\n\n# Get embeddings\nwith torch.no_grad():\n    outputs = model(**inputs)\n    # Last hidden state = final embeddings\n    embeddings = outputs.last_hidden_state  \n\nprint(f\"\\nEmbedding shape: {embeddings.shape}\")  \n# Output: torch.Size([1, 7, 768])\n# [batch_size, sequence_length, embedding_dim]\n\n# Access individual token embeddings\nfor i, token in enumerate(tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])):\n    token_embedding = embeddings[0, i, :]\n    print(f\"Token '{token}': {token_embedding[:5]}...\")  # First 5 dims</code></pre>\n\n                <div class=\"example-box\">\n                    <h3>Output</h3>\n                    <pre><code class=\"language-text\">Token IDs: tensor([[ 101, 1045, 2293, 3698, 4083,  102]])\nTokens: ['[CLS]', 'i', 'love', 'machine', 'learning', '[SEP]']\n\nEmbedding shape: torch.Size([1, 7, 768])\n\nToken '[CLS]': tensor([-0.1234, 0.5678, -0.9012, 0.3456, -0.7890])...\nToken 'i': tensor([0.2345, -0.6789, 0.0123, -0.4567, 0.8901])...\nToken 'love': tensor([0.3456, 0.7890, -0.1234, 0.5678, -0.9012])...\n...</code></pre>\n                </div>\n\n                <h3>Sentence Embeddings</h3>\n                <p>\n                    For tasks like semantic search or clustering, we need a single vector for an entire sentence. Common approaches:
+                </p>
+
+                <h4>1. Mean Pooling</h4>\n                <pre><code class=\"language-python\">import torch\n\n# Average all token embeddings\nsentence_embedding = embeddings.mean(dim=1)  # Shape: [1, 768]\nprint(f\"Sentence embedding shape: {sentence_embedding.shape}\")</code></pre>\n\n                <h4>2. CLS Token (BERT-style)</h4>\n                <pre><code class=\"language-python\"># Use the [CLS] token embedding (first token)\nsentence_embedding = embeddings[:, 0, :]  # Shape: [1, 768]</code></pre>\n\n                <h4>3. Max Pooling</h4>\n                <pre><code class=\"language-python\"># Take maximum value across sequence for each dimension\nsentence_embedding = embeddings.max(dim=1)[0]  # Shape: [1, 768]</code></pre>\n\n                <h4>4. Specialized Sentence Embedders</h4>\n                <pre><code class=\"language-python\">from sentence_transformers import SentenceTransformer\n\n# Models specifically trained for sentence similarity\nmodel = SentenceTransformer('all-MiniLM-L6-v2')\n\nsentences = [\n    \"I love machine learning\",\n    \"Deep learning is fascinating\",\n    \"I enjoy cooking pasta\"\n]\n\nembeddings = model.encode(sentences)\nprint(f\"Embeddings shape: {embeddings.shape}\")  # (3, 384)\n\n# Compute similarity\nfrom sklearn.metrics.pairwise import cosine_similarity\n\nsimilarity = cosine_similarity(embeddings)\nprint(f\"\\nSimilarity matrix:\\n{similarity}\")\n# Sentences 1 and 2 will have high similarity (both about ML)\n# Sentence 3 will have low similarity to 1 and 2</code></pre>\n\n                <div class=\"example-box\">\n                    <h3>Output</h3>\n                    <pre><code class=\"language-text\">Embeddings shape: (3, 384)\n\nSimilarity matrix:\n[[1.0   0.72  0.15]   ← \"I love machine learning\"\n [0.72  1.0   0.18]   ← \"Deep learning is fascinating\"\n [0.15  0.18  1.0]]   ← \"I enjoy cooking pasta\"\n\nML sentences are 72% similar\nML vs cooking is only 15% similar</code></pre>\n                </div>\n\n                <h3>Applications of Embeddings</h3>\n                <div class=\"cards-grid\">\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">🔍</div>\n                        <h3>Semantic Search</h3>\n                        <p>Convert queries and documents to embeddings, find nearest neighbors for relevant results</p>\n                    </div>\n\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">🔗</div>\n                        <h3>Recommendation</h3>\n                        <p>Embed items and users, recommend items with similar embeddings to user preferences</p>\n                    </div>\n\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">📊</div>\n                        <h3>Clustering</h3>\n                        <p>Group similar documents/texts by clustering their embeddings (k-means, DBSCAN)</p>\n                    </div>\n\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">🎯</div>\n                        <h3>Classification</h3>\n                        <p>Use embeddings as features for downstream classifiers (sentiment, topic, intent)</p>\n                    </div>\n\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">🌐</div>\n                        <h3>Translation</h3>\n                        <p>Map embeddings across languages using aligned embedding spaces</p>\n                    </div>\n\n                    <div class=\"info-card\">\n                        <div class=\"card-icon\">🤖</div>\n                        <h3>RAG Systems</h3>\n                        <p>Retrieve relevant documents by embedding similarity before LLM generation</p>\n                    </div>\n                </div>\n\n                <div class=\"warning-box\">\n                    <p><strong>Embedding Quality Matters:</strong> Different models produce embeddings of different quality. For semantic search, use models trained specifically for similarity (e.g., sentence-transformers), not general LLM embeddings.</p>\n                </div>\n            </section>
+
+            <section class="content-section">
+                <h2>🔗 Positional Embeddings: Adding Order Information</h2>
+                
+                <p>
+                    Token embeddings alone have a critical limitation: <strong>they don't capture position</strong>. The sentences "John loves Mary" and "Mary loves John" would have identical token embeddings (just in different order), but they mean completely different things!
+                </p>
+
+                <p>
+                    Transformers process all tokens in parallel (unlike RNNs which process sequentially), so they need an explicit way to encode position information. This is where <strong>positional embeddings</strong> come in.
+                </p>
+
+                <div class="info-box">
+                    <h3>The Problem</h3>
+                    <p>
+                        Without positional information, these are indistinguishable to the model:<br>
+                        "The cat sat on the mat" = "sat on the The mat cat" (same tokens, different order)
+                    </p>
+                </div>
+
+                <h3>How Positional Embeddings Work</h3>
+                <p>
+                    The final input embedding is the sum of token embedding and positional embedding:
+                </p>
+
+                <pre><code class="language-text">Input Embedding = Token Embedding + Positional Embedding
+
+For "John loves Mary":
+
+Token "John" at position 0:
+  Token embedding:      [0.5, -0.2, 0.8, ...]
+  Positional embedding: [0.0, 0.1, 0.0, ...]
+  Final embedding:      [0.5, -0.1, 0.8, ...]
+
+Token "loves" at position 1:
+  Token embedding:      [0.3, 0.7, -0.1, ...]
+  Positional embedding: [0.1, 0.05, 0.02, ...]
+  Final embedding:      [0.4, 0.75, -0.08, ...]
+
+Token "Mary" at position 2:
+  Token embedding:      [-0.1, 0.4, 0.6, ...]
+  Positional embedding: [0.15, 0.03, 0.04, ...]
+  Final embedding:      [0.05, 0.43, 0.64, ...]</code></pre>
+
+                <p>
+                    Now the same token at different positions has different final embeddings, preserving word order!
+                </p>
+
+                <h3>Types of Positional Encodings</h3>
+
+                <h4>1. Sinusoidal Positional Encoding (Original Transformer)</h4>
+                <p>
+                    The original "Attention Is All You Need" paper used fixed sinusoidal functions:
+                </p>
+
+                <pre><code class="language-text">PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+
+Where:
+- pos = position in sequence (0, 1, 2, ...)
+- i = dimension index (0 to d_model/2)
+- d_model = embedding dimension (512, 768, etc.)</code></pre>
+
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>Deterministic (no learning required)</li>
+                    <li>Works for any sequence length (can extrapolate)</li>
+                    <li>Smooth gradual change with position</li>
+                    <li>Model can learn to attend to relative positions</li>
+                </ul>
+
+                <p><strong>Used by:</strong> Original Transformer, many encoder-decoder models</p>
+
+                <h4>2. Learned Positional Embeddings (BERT, GPT)</h4>
+                <p>
+                    Modern LLMs learn positional embeddings during training, just like token embeddings:
+                </p>
+
+                <pre><code class="language-text">Positional Embedding Table:
+[
+  Position 0: [0.01, -0.05, 0.12, ...],  # Learned vector for position 0
+  Position 1: [0.03, -0.02, 0.15, ...],  # Learned vector for position 1
+  Position 2: [0.05, 0.01, 0.18, ...],   # Learned vector for position 2
+  ...
+  Position 511: [0.45, 0.32, -0.21, ...]  # Max position for BERT
+]</code></pre>
+
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>Can be optimized for specific tasks during training</li>
+                    <li>Often performs slightly better than sinusoidal</li>
+                    <li>Simpler to implement</li>
+                </ul>
+
+                <p><strong>Limitations:</strong></p>
+                <ul>
+                    <li>Fixed maximum sequence length (can't extrapolate beyond training length)</li>
+                    <li>Requires learning additional parameters</li>
+                </ul>
+
+                <p><strong>Used by:</strong> BERT, GPT-2, GPT-3, RoBERTa</p>
+
+                <h4>3. Relative Positional Encoding (T5, Transformer-XL)</h4>
+                <p>
+                    Instead of absolute positions, encode relative distances between tokens:
+                </p>
+
+                <pre><code class="language-text">Instead of: "token at position 5"
+Encode:     "token is 3 positions before the current token"
+
+Benefits:
+- Better generalization to longer sequences
+- Captures relationships more naturally (\"two words apart\" matters more than \"position 5 vs 7\")
+- Can handle unbounded sequence lengths</code></pre>
+
+                <p><strong>Used by:</strong> T5, Transformer-XL, DeBERTa</p>
+
+                <h4>4. Rotary Position Embedding (RoPE) - Modern LLMs</h4>
+                <p>
+                    Recent models use RoPE, which rotates embedding vectors based on position:
+                </p>
+
+                <ul>
+                    <li>Encodes absolute position information</li>
+                    <li>Also captures relative positions naturally</li>
+                    <li>Better extrapolation to longer sequences</li>
+                    <li>More efficient than learned embeddings</li>
+                </ul>
+
+                <p><strong>Used by:</strong> Llama, Llama 2, GPT-NeoX, PaLM</p>
+
+                <h4>5. ALiBi (Attention with Linear Biases)</h4>
+                <p>
+                    Adds position-dependent bias to attention scores (no position embeddings at all):
+                </p>
+
+                <ul>
+                    <li>Very simple: penalize attention based on distance</li>
+                    <li>Excellent extrapolation to longer sequences</li>
+                    <li>No additional parameters</li>
+                </ul>
+
+                <p><strong>Used by:</strong> BLOOM, MPT, some Llama variants</p>
+
+                <h3>Visualizing Positional Encodings</h3>
+                <div class="example-box">
+                    <h3>Sinusoidal Positional Encoding Pattern</h3>
+                    <pre><code class="language-text">Position Encoding Heatmap (first 8 dimensions, positions 0-16):
+
+Dim    Pos: 0    1    2    3    4    5    6    7    8  ...
+ 0:   [ 0.0  0.8  1.0  0.8  0.0 -0.8 -1.0 -0.8  0.0 ...]
+ 1:   [ 1.0  0.5  0.0 -0.5 -1.0 -0.5  0.0  0.5  1.0 ...]
+ 2:   [ 0.0  0.3  0.5  0.7  0.9  1.0  0.9  0.7  0.5 ...]
+ 3:   [ 1.0  0.9  0.8  0.6  0.3  0.0 -0.3 -0.6 -0.8 ...]
+ ...
+
+Notice: Each dimension has a different frequency
+→ Model can learn to attend to positions using these patterns</code></pre>
+                </div>
+
+                <h3>Code: Adding Positional Embeddings</h3>
+                <pre><code class="language-python">import torch
+import math
+
+def sinusoidal_positional_encoding(seq_len, d_model):
+    \"\"\"Generate sinusoidal positional encodings\"\"\"
+    position = torch.arange(0, seq_len).unsqueeze(1)
+    div_term = torch.exp(
+        torch.arange(0, d_model, 2) * -(math.log(10000.0) / d_model)
+    )
+    
+    pos_encoding = torch.zeros(seq_len, d_model)
+    pos_encoding[:, 0::2] = torch.sin(position * div_term)
+    pos_encoding[:, 1::2] = torch.cos(position * div_term)
+    
+    return pos_encoding
+
+# Generate for sequence length 10, embedding dim 512
+pos_enc = sinusoidal_positional_encoding(seq_len=10, d_model=512)
+print(f"Positional encoding shape: {pos_enc.shape}")  # [10, 512]
+
+# Visualize first position
+print(f"Position 0 encoding (first 10 dims): {pos_enc[0, :10]}\")</code></pre>
+
+                <h3>Practical Example with Transformers</h3>
+                <pre><code class="language-python">from transformers import BertModel, BertTokenizer
+import torch
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased')
+
+text = "John loves Mary"
+inputs = tokenizer(text, return_tensors="pt")
+
+# BERT automatically adds positional embeddings
+with torch.no_grad():
+    outputs = model(**inputs, output_hidden_states=True)
+    
+    # Token embeddings (before positional encoding is added)
+    token_embeddings = model.embeddings.word_embeddings(inputs['input_ids'])
+    print(f"Token embeddings shape: {token_embeddings.shape}")  # [1, 5, 768]
+    
+    # Positional embeddings
+    position_ids = torch.arange(inputs['input_ids'].size(1)).unsqueeze(0)
+    position_embeddings = model.embeddings.position_embeddings(position_ids)
+    print(f"Position embeddings shape: {position_embeddings.shape}\")  # [1, 5, 768]
+    
+    # Combined (with layer norm and dropout applied)
+    final_embeddings = outputs.last_hidden_state[0]
+    print(f"Final embeddings shape: {final_embeddings.shape}\")  # [1, 5, 768]</code></pre>
+
+                <div class="success-box">
+                    <p><strong>Key Takeaway:</strong> Positional embeddings are crucial for Transformers. Without them, the model has no sense of word order, making it impossible to understand language properly!</p>
+                </div>
+
+                <h3>Context Window Limits</h3>
+                <p>
+                    Positional embeddings impose sequence length limits:
+                </p>
+                <ul>
+                    <li><strong>BERT:</strong> 512 tokens (learned positional embeddings)</li>
+                    <li><strong>GPT-2:</strong> 1,024 tokens (learned)</li>
+                    <li><strong>GPT-3:</strong> 2,048 tokens (learned)</li>
+                    <li><strong>GPT-3.5/4:</strong> 4k-32k tokens (advanced techniques)</li>
+                    <li><strong>Claude 2:</strong> 100k tokens (extended context methods)</li>
+                    <li><strong>Llama 2:</strong> 4,096 tokens (RoPE, can be extended)</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p><strong>Going Beyond Training Length:</strong> Models struggle with sequences longer than training length when using learned positional embeddings. Modern techniques like RoPE and ALiBi enable better extrapolation to longer contexts.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Practical Tips & Best Practices</h2>
+                
+                <h3>Tokenization Best Practices</h3>
+                <ul>
+                    <li><strong>Use the right tokenizer:</strong> Always use the tokenizer that matches your model (GPT-2 tokenizer for GPT-2, BERT tokenizer for BERT)</li>
+                    <li><strong>Watch token counts:</strong> APIs charge per token. Use <code>len(tokenizer.encode(text))</code> to estimate costs</li>
+                    <li><strong>Handle truncation gracefully:</strong> Long documents should be chunked intelligently, not just cut off mid-sentence</li>
+                    <li><strong>Test on your data:</strong> Check how your specific text tokenizes (especially domain-specific terms, code, non-English text)</li>
+                    <li><strong>Be aware of special tokens:</strong> Models add [CLS], [SEP], etc. Factor these into token counts</li>
+                </ul>
+
+                <h3>Embedding Best Practices</h3>
+                <ul>
+                    <li><strong>Use pre-trained embeddings:</strong> Don't train from scratch unless you have massive datasets</li>
+                    <li><strong>Fine-tune when needed:</strong> For domain-specific tasks, fine-tune embeddings on your data</li>
+                    <li><strong>Match embedding model to task:</strong> Use sentence-transformers for semantic search, not general LLM embeddings</li>
+                    <li><strong>Normalize embeddings:</strong> For cosine similarity, normalize vectors to unit length</li>
+                    <li><strong>Cache embeddings:</strong> Computing embeddings is expensive. Cache and reuse when possible</li>
+                </ul>
+
+                <h3>Common Pitfalls to Avoid</h3>
+                <div class="warning-box">
+                    <ul>
+                        <li><strong>Tokenizer mismatch:</strong> Using wrong tokenizer for a model causes gibberish output</li>
+                        <li><strong>Ignoring special tokens:</strong> Forgetting to account for [CLS], [SEP] in token counts</li>
+                        <li><strong>Exceeding context length:</strong> Going beyond model's max length causes errors or truncation</li>
+                        <li><strong>Not handling edge cases:</strong> Emojis, code, URLs can tokenize unexpectedly</li>
+                        <li><strong>Using wrong pooling:</strong> CLS token pooling doesn't work well for non-BERT models</li>
+                    </ul>
+                </div>
+
+                <h3>Real-World Example: Building a Semantic Search System</h3>
+                <pre><code class="language-python">from sentence_transformers import SentenceTransformer
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+# 1. Load specialized embedding model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# 2. Your document corpus
+documents = [
+    \"Machine learning is a subset of AI\",
+    \"Deep learning uses neural networks\",
+    \"Python is a programming language\",
+    \"Natural language processing handles text\",
+    \"Computer vision processes images\"
+]
+
+# 3. Embed all documents (do this once, cache results)
+doc_embeddings = model.encode(documents)
+print(f\"Document embeddings shape: {doc_embeddings.shape}\")  # (5, 384)
+
+# 4. User query
+query = \"Tell me about artificial intelligence\"
+query_embedding = model.encode([query])
+
+# 5. Find most similar documents
+similarities = cosine_similarity(query_embedding, doc_embeddings)[0]
+
+# 6. Rank and retrieve
+ranked_indices = np.argsort(similarities)[::-1]  # Descending order
+print(\"\\nSearch Results:\")
+for i, idx in enumerate(ranked_indices[:3], 1):
+    print(f\"{i}. {documents[idx]} (similarity: {similarities[idx]:.3f})\")</code></pre>
+
+                <div class="example-box">
+                    <h3>Output</h3>
+                    <pre><code class="language-text">Document embeddings shape: (5, 384)
+
+Search Results:
+1. Machine learning is a subset of AI (similarity: 0.652)
+2. Deep learning uses neural networks (similarity: 0.531)
+3. Natural language processing handles text (similarity: 0.398)</code></pre>
+                    <p>The system correctly retrieves AI-related documents first!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Chapter Summary</h2>
+                
+                <h3>Key Concepts Mastered:</h3>
+                <ul>
+                    <li>✅ <strong>Tokenization Fundamentals:</strong> Converting text into discrete units (tokens) that models can process</li>
+                    <li>✅ <strong>Tokenization Strategies:</strong> Character-level (small vocab, long sequences), Word-level (intuitive but large vocab), Subword (optimal balance)</li>
+                    <li>✅ <strong>BPE Algorithm:</strong> Iteratively merges most frequent character pairs to build subword vocabulary</li>
+                    <li>✅ <strong>Modern Tokenizers:</strong> GPT uses BPE, BERT uses WordPiece, Llama uses SentencePiece</li>
+                    <li>✅ <strong>Token IDs:</strong> Integer representation of tokens from vocabulary (e.g., "king" → 2891)</li>
+                    <li>✅ <strong>Embeddings:</strong> Dense vectors that capture semantic meaning where similar words have similar vectors</li>
+                    <li>✅ <strong>Embedding Learning:</strong> Automatically learned during pre-training, not manually programmed</li>
+                    <li>✅ <strong>Vector Arithmetic:</strong> king - man + woman ≈ queen (relationships emerge naturally)</li>
+                    <li>✅ <strong>Contextualized Embeddings:</strong> Modern LLMs generate different embeddings for same word in different contexts</li>
+                    <li>✅ <strong>Positional Embeddings:</strong> Add position information so models understand word order</li>
+                    <li>✅ <strong>Positional Strategies:</strong> Sinusoidal (fixed), Learned (BERT/GPT), Relative (T5), RoPE (Llama), ALiBi (BLOOM)</li>
+                </ul>
+
+                <h3>Technical Specifications Learned:</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Purpose</th>
+                            <th>Example Dimensions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Vocabulary Size</td>
+                            <td>Number of unique tokens</td>
+                            <td>30k-100k tokens</td>
+                        </tr>
+                        <tr>
+                            <td>Token ID</td>
+                            <td>Integer index in vocabulary</td>
+                            <td>0 to vocab_size-1</td>
+                        </tr>
+                        <tr>
+                            <td>Embedding Dimension</td>
+                            <td>Vector size for each token</td>
+                            <td>768 (BERT/GPT-2), 4096 (Llama)</td>
+                        </tr>
+                        <tr>
+                            <td>Embedding Table</td>
+                            <td>Lookup matrix for embeddings</td>
+                            <td>[50k × 768] = 38M params</td>
+                        </tr>
+                        <tr>
+                            <td>Position Embedding</td>
+                            <td>Encode token position in sequence</td>
+                            <td>Same dim as token embeddings</td>
+                        </tr>
+                        <tr>
+                            <td>Context Length</td>
+                            <td>Max sequence length</td>
+                            <td>512-100k tokens (model-dependent)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Code Skills Acquired:</h3>
+                <ul>
+                    <li>✅ Load and use HuggingFace tokenizers for different models</li>
+                    <li>✅ Tokenize text and decode token IDs back to text</li>
+                    <li>✅ Count tokens for API cost estimation</li>
+                    <li>✅ Handle truncation and padding for batch processing</li>
+                    <li>✅ Extract token embeddings from pre-trained models</li>
+                    <li>✅ Generate sentence embeddings (mean pooling, CLS token)</li>
+                    <li>✅ Compute semantic similarity using cosine similarity</li>
+                    <li>✅ Build semantic search systems with embeddings</li>
+                    <li>✅ Implement sinusoidal positional encoding</li>
+                </ul>
+
+                <h3>Practical Applications:</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Semantic Search</h3>
+                        <p>Embed documents, find similar ones via cosine similarity</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Text Classification</h3>
+                        <p>Use embeddings as features for sentiment, topic, intent classification</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔗</div>
+                        <h3>Clustering</h3>
+                        <p>Group similar documents by clustering embeddings</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🤖</div>
+                        <h3>RAG Systems</h3>
+                        <p>Retrieve relevant context using embedding similarity before generation</p>
+                    </div>
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    Now that you understand how text becomes numbers (tokenization) and how those numbers capture meaning (embeddings), you're ready to learn how to communicate effectively with LLMs.
+                </p>
+                <p>
+                    In the next tutorial, <strong>Prompt Engineering</strong>, you'll master:
+                </p>
+                <ul>
+                    <li>Crafting effective prompts for different tasks</li>
+                    <li>Zero-shot, one-shot, and few-shot learning techniques</li>
+                    <li>Chain-of-thought prompting for complex reasoning</li>
+                    <li>Prompt templates and best practices</li>
+                    <li>Common pitfalls and how to avoid them</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Excellent Progress!</strong> You've completed Module 2 and now have deep understanding of the input pipeline for LLMs. Tokenization and embeddings are the foundation—every LLM interaction starts here. This knowledge will be invaluable as we explore more advanced topics!</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 Quick Self-Check Questions</h3>
+                    <ol>
+                        <li>Why do modern LLMs use subword tokenization instead of word-level?</li>
+                        <li>How does BPE decide which character pairs to merge?</li>
+                        <li>What does it mean that embeddings are "learned"?</li>
+                        <li>Why do we need positional embeddings in Transformers?</li>
+                        <li>What's the difference between static and contextualized embeddings?</li>
+                    </ol>
+                    <p><em>Answers: (1) Balances vocab size and sequence length, handles rare words; (2) Merges most frequent pairs iteratively; (3) Updated during training via backpropagation, not predefined; (4) Transformers process in parallel, no inherent position info; (5) Static = same vector always, contextualized = different based on surrounding words</em></p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main advantage of Byte-Pair Encoding (BPE) tokenization?</strong></p>
+                    <div class="quiz-option" data-value="a">It only works with English text</div>
+                    <div class="quiz-option" data-value="b">It creates fixed-length tokens</div>
+                    <div class="quiz-option" data-value="c">It balances vocabulary size and sequence length while handling rare words</div>
+                    <div class="quiz-option" data-value="d">It doesn't require training</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: How does BPE build its vocabulary?</strong></p>
+                    <div class="quiz-option" data-value="a">By randomly selecting common words</div>
+                    <div class="quiz-option" data-value="b">By iteratively merging the most frequent character or subword pairs</div>
+                    <div class="quiz-option" data-value="c">By using a predefined dictionary</div>
+                    <div class="quiz-option" data-value="d">By analyzing sentence structure</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: How are learned embeddings different from predefined embeddings?</strong></p>
+                    <div class="quiz-option" data-value="a">Learned embeddings are larger</div>
+                    <div class="quiz-option" data-value="b">Predefined embeddings work better</div>
+                    <div class="quiz-option" data-value="c">Learned embeddings are randomly initialized and never change</div>
+                    <div class="quiz-option" data-value="d">Learned embeddings are updated during training via backpropagation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: Why do Transformers need positional embeddings?</strong></p>
+                    <div class="quiz-option" data-value="a">Because Transformers process tokens in parallel and have no inherent position information</div>
+                    <div class="quiz-option" data-value="b">To increase model size</div>
+                    <div class="quiz-option" data-value="c">To reduce computational cost</div>
+                    <div class="quiz-option" data-value="d">They don't actually need them</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is the difference between static and contextualized embeddings?</strong></p>
+                    <div class="quiz-option" data-value="a">Static embeddings are always better</div>
+                    <div class="quiz-option" data-value="b">There is no difference</div>
+                    <div class="quiz-option" data-value="c">Static embeddings give the same vector for a word regardless of context; contextualized vary based on surrounding words</div>
+                    <div class="quiz-option" data-value="d">Contextualized embeddings don't use neural networks</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="what-are-llms.html" class="btn btn-secondary">← Previous: What Are LLMs?</a>
+                <a href="prompt-engineering.html" class="btn btn-primary">Next: Prompt Engineering →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

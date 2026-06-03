@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a complete house price prediction system using Linear Regression, Random Forests, and Gradient Boosting. Learn data cleaning, feature engineering, and model deployment.">
+    <meta name="keywords" content="house price prediction, machine learning project, regression, feature engineering, model deployment">
+    <title>Project: House Price Prediction | Nebaz AI Academy</title>
+    <link rel="canonical" href="house-price-prediction.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; transition: all 0.3s ease; }
+        .step-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>House Price Prediction Project</span>
+            </div>
+            <h1>🏠 House Price Prediction</h1>
+            <p class="tutorial-intro">Build an end-to-end machine learning system to predict house prices using real data</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 5 hours</span>
+                <span class="meta-item">💻 Python + Scikit-learn</span>
+                <span class="meta-item">🎯 Regression Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    In this comprehensive project, you'll build a complete machine learning system to predict house prices based on features like location, size, number of rooms, and more. This is one of the most popular beginner-to-intermediate ML projects and closely mirrors real-world data science work.
+                </p>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>Data Pipeline:</strong> Load, clean, and explore real housing data</li>
+                    <li><strong>Feature Engineering:</strong> Create new features and handle missing values</li>
+                    <li><strong>Multiple Models:</strong> Train Linear Regression, Random Forest, and Gradient Boosting</li>
+                    <li><strong>Model Evaluation:</strong> Compare models using RMSE, MAE, and R² metrics</li>
+                    <li><strong>Visualization Dashboard:</strong> Create plots showing predictions vs actual prices</li>
+                    <li><strong>Deployment-Ready Code:</strong> Export model for production use</li>
+                </ul>
+
+                <h3>Skills You'll Practice</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>📊 Data Science</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Exploratory Data Analysis (EDA)</li>
+                            <li>Correlation analysis</li>
+                            <li>Outlier detection</li>
+                        </ul>
+                    </div>
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>🔧 Feature Engineering</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Handling missing data</li>
+                            <li>Creating interaction features</li>
+                            <li>Feature scaling</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>🤖 Machine Learning</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Training multiple models</li>
+                            <li>Hyperparameter tuning</li>
+                            <li>Cross-validation</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fecaca; padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <strong>📈 Evaluation</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Model comparison</li>
+                            <li>Residual analysis</li>
+                            <li>Performance visualization</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p>🎓 <strong>Portfolio Worthy:</strong> This project demonstrates end-to-end ML skills that employers look for. Add it to your GitHub and resume!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Prerequisites</h2>
+                <p>Before starting this project, make sure you're comfortable with:</p>
+                <ul>
+                    <li>✅ Python basics (variables, functions, loops)</li>
+                    <li>✅ Pandas for data manipulation</li>
+                    <li>✅ Linear Regression concepts</li>
+                    <li>✅ Basic statistics (mean, median, correlation)</li>
+                </ul>
+
+                <p><strong>Required Courses:</strong></p>
+                <ul>
+                    <li><a href="../introduction-to-ml.html">Module 1: Introduction to Machine Learning</a></li>
+                    <li><a href="../linear-regression.html">Module 2: Linear Regression</a></li>
+                    <li><a href="../random-forests.html">Module 5: Random Forests</a> (optional but recommended)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🛠️ Setup & Installation</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Required Libraries</h3>
+                    <pre><code class="language-bash"># Create virtual environment (recommended)
+python -m venv house_price_env
+source house_price_env/bin/activate  # On Windows: house_price_env\Scripts\activate
+
+# Install required packages
+pip install numpy pandas scikit-learn matplotlib seaborn jupyter</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Download the Dataset</h3>
+                    <p>We'll use the California Housing dataset (built into scikit-learn) or you can use Kaggle's House Prices dataset.</p>
+                    <pre><code class="language-python"># Option 1: Built-in California Housing (easier)
+from sklearn.datasets import fetch_california_housing
+housing = fetch_california_housing(as_frame=True)
+df = housing.frame
+
+# Option 2: Kaggle House Prices (more realistic)
+# Download from: https://www.kaggle.com/c/house-prices-advanced-regression-techniques
+# import pandas as pd
+# df = pd.read_csv('train.csv')</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">3</span> Create Project Structure</h3>
+                    <pre><code class="language-bash">house-price-prediction/
+├── data/
+│   └── housing_data.csv
+├── notebooks/
+│   ├── 01_eda.ipynb
+│   ├── 02_feature_engineering.ipynb
+│   └── 03_modeling.ipynb
+├── models/
+│   └── saved_model.pkl
+├── src/
+│   ├── data_preprocessing.py
+│   ├── model_training.py
+│   └── predict.py
+└── README.md</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 1: Exploratory Data Analysis</h2>
+                
+                <h3>Load and Inspect Data</h3>
+                <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import fetch_california_housing
+
+# Set visualization style
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (12, 6)
+
+# Load data
+housing = fetch_california_housing(as_frame=True)
+df = housing.frame
+
+# First look at the data
+print("Dataset Shape:", df.shape)
+print("\nFirst 5 rows:")
+print(df.head())
+
+print("\nDataset Info:")
+print(df.info())
+
+print("\nBasic Statistics:")
+print(df.describe())</code></pre>
+
+                <div class="info-box">
+                    <h3>Expected Output</h3>
+                    <p>You should see 20,640 houses with 8 features: MedInc (median income), HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude, and MedHouseVal (target)</p>
+                </div>
+
+                <h3>Check for Missing Values</h3>
+                <pre><code class="language-python"># Missing values analysis
+missing = df.isnull().sum()
+print("Missing Values:")
+print(missing[missing > 0])
+
+# Visualize missing data
+plt.figure(figsize=(10, 6))
+sns.heatmap(df.isnull(), cbar=False, yticklabels=False, cmap='viridis')
+plt.title('Missing Data Heatmap')
+plt.show()
+
+# Good news: California Housing has NO missing values!
+# For Kaggle dataset, you'd need imputation strategies</code></pre>
+
+                <h3>Understand Target Variable Distribution</h3>
+                <pre><code class="language-python"># Target variable: MedHouseVal (median house value in $100,000s)
+target = df['MedHouseVal']
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# Histogram
+axes[0].hist(target, bins=50, edgecolor='black', alpha=0.7)
+axes[0].set_xlabel('Median House Value ($100k)')
+axes[0].set_ylabel('Frequency')
+axes[0].set_title('Distribution of House Prices')
+
+# Box plot (detect outliers)
+axes[1].boxplot(target)
+axes[1].set_ylabel('Median House Value ($100k)')
+axes[1].set_title('Box Plot - Outlier Detection')
+
+# Q-Q plot (check normality)
+from scipy import stats
+stats.probplot(target, dist="norm", plot=axes[2])
+axes[2].set_title('Q-Q Plot')
+
+plt.tight_layout()
+plt.show()
+
+# Key statistics
+print(f"Mean House Price: ${target.mean() * 100000:,.0f}")
+print(f"Median House Price: ${target.median() * 100000:,.0f}")
+print(f"Price Range: ${target.min() * 100000:,.0f} - ${target.max() * 100000:,.0f}")</code></pre>
+
+                <h3>Feature Correlations</h3>
+                <pre><code class="language-python"># Correlation matrix
+correlation_matrix = df.corr()
+
+# Heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, annot=True, fmt='.2f', cmap='coolwarm', 
+            center=0, square=True, linewidths=1)
+plt.title('Feature Correlation Heatmap')
+plt.tight_layout()
+plt.show()
+
+# Top correlations with target
+target_corr = correlation_matrix['MedHouseVal'].sort_values(ascending=False)
+print("\nCorrelations with House Price:")
+print(target_corr)
+
+# Key insight: MedInc (median income) has strongest correlation (0.69)</code></pre>
+
+                <h3>Pairwise Relationships</h3>
+                <pre><code class="language-python"># Select most important features for pairplot
+important_features = ['MedInc', 'HouseAge', 'AveRooms', 'MedHouseVal']
+sns.pairplot(df[important_features], diag_kind='kde', plot_kws={'alpha': 0.6})
+plt.suptitle('Pairwise Relationships', y=1.02)
+plt.show()
+
+# Scatter plot: Price vs Income (strongest predictor)
+plt.figure(figsize=(10, 6))
+plt.scatter(df['MedInc'], df['MedHouseVal'], alpha=0.3)
+plt.xlabel('Median Income (tens of thousands)')
+plt.ylabel('Median House Value ($100k)')
+plt.title('House Price vs Median Income')
+plt.grid(alpha=0.3)
+plt.show()</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: EDA Complete</h3>
+                    <p>By now you should have:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Loaded and inspected the dataset</li>
+                        <li>Checked for missing values (none!)</li>
+                        <li>Visualized target variable distribution</li>
+                        <li>Identified MedInc as the strongest predictor</li>
+                        <li>Created correlation heatmap</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Part 2: Feature Engineering</h2>
+                
+                <h3>Create New Features</h3>
+                <pre><code class="language-python"># Create meaningful derived features
+df_engineered = df.copy()
+
+# 1. Rooms per household
+df_engineered['RoomsPerHousehold'] = df_engineered['AveRooms'] * df_engineered['AveOccup']
+
+# 2. Bedrooms ratio
+df_engineered['BedroomsRatio'] = df_engineered['AveBedrms'] / df_engineered['AveRooms']
+
+# 3. People per household
+df_engineered['PeoplePerHousehold'] = df_engineered['Population'] / df_engineered['AveOccup']
+
+# 4. Income category (binning)
+df_engineered['IncomeCategory'] = pd.cut(df_engineered['MedInc'], 
+                                          bins=[0, 1.5, 3.0, 4.5, 6.0, np.inf],
+                                          labels=['VeryLow', 'Low', 'Medium', 'High', 'VeryHigh'])
+
+# 5. Location-based feature (simple geographical zones)
+df_engineered['LocationZone'] = 'Other'
+# Coastal (latitude > 37 and longitude < -122)
+coastal_mask = (df_engineered['Latitude'] > 37) & (df_engineered['Longitude'] < -122)
+df_engineered.loc[coastal_mask, 'LocationZone'] = 'Coastal'
+
+print("New Features Created:")
+print(df_engineered[['RoomsPerHousehold', 'BedroomsRatio', 'PeoplePerHousehold']].head())
+
+# Check correlation of new features with target
+new_features_corr = df_engineered[['RoomsPerHousehold', 'BedroomsRatio', 
+                                     'PeoplePerHousehold', 'MedHouseVal']].corr()['MedHouseVal']
+print("\nNew Feature Correlations:")
+print(new_features_corr.sort_values(ascending=False))</code></pre>
+
+                <h3>Handle Outliers</h3>
+                <pre><code class="language-python"># Detect outliers using IQR method
+def remove_outliers_iqr(df, column, multiplier=1.5):
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_bound = Q1 - multiplier * IQR
+    upper_bound = Q3 + multiplier * IQR
+    return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
+
+# Remove outliers from target variable
+print(f"Before outlier removal: {len(df_engineered)} samples")
+df_clean = remove_outliers_iqr(df_engineered, 'MedHouseVal', multiplier=1.5)
+print(f"After outlier removal: {len(df_clean)} samples")
+print(f"Removed: {len(df_engineered) - len(df_clean)} outliers")
+
+# Visualize before/after
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].scatter(df_engineered['MedInc'], df_engineered['MedHouseVal'], alpha=0.3)
+axes[0].set_title('Before Outlier Removal')
+axes[0].set_xlabel('Median Income')
+axes[0].set_ylabel('House Price')
+
+axes[1].scatter(df_clean['MedInc'], df_clean['MedHouseVal'], alpha=0.3)
+axes[1].set_title('After Outlier Removal')
+axes[1].set_xlabel('Median Income')
+axes[1].set_ylabel('House Price')
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>Feature Scaling</h3>
+                <pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+# Prepare features and target
+X = df_clean.drop(['MedHouseVal', 'IncomeCategory', 'LocationZone'], axis=1)
+y = df_clean['MedHouseVal']
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+print(f"Training set: {len(X_train)} samples")
+print(f"Test set: {len(X_test)} samples")
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Convert back to DataFrame for readability
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=X_train.columns, index=X_train.index)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=X_test.columns, index=X_test.index)
+
+print("\nFeature scaling complete!")
+print("\nScaled features (first 3 rows):")
+print(X_train_scaled.head(3))</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: Feature Engineering Complete</h3>
+                    <p>You've successfully:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Created 5 new meaningful features</li>
+                        <li>Removed outliers using IQR method</li>
+                        <li>Split data into train/test sets (80/20)</li>
+                        <li>Scaled features using StandardScaler</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🤖 Part 3: Model Training & Evaluation</h2>
+                
+                <h3>Baseline Model: Linear Regression</h3>
+                <pre><code class="language-python">from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# Train Linear Regression
+lr_model = LinearRegression()
+lr_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_train_pred_lr = lr_model.predict(X_train_scaled)
+y_test_pred_lr = lr_model.predict(X_test_scaled)
+
+# Evaluation metrics
+def evaluate_model(y_true, y_pred, model_name):
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+    mae = mean_absolute_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+    
+    print(f"\n{model_name} Performance:")
+    print(f"  RMSE: ${rmse * 100000:,.0f}")
+    print(f"  MAE:  ${mae * 100000:,.0f}")
+    print(f"  R²:   {r2:.4f}")
+    return rmse, mae, r2
+
+# Evaluate
+lr_train_metrics = evaluate_model(y_train, y_train_pred_lr, "Linear Regression (Train)")
+lr_test_metrics = evaluate_model(y_test, y_test_pred_lr, "Linear Regression (Test)")</code></pre>
+
+                <h3>Advanced Model: Random Forest</h3>
+                <pre><code class="language-python">from sklearn.ensemble import RandomForestRegressor
+
+# Train Random Forest
+rf_model = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=20,
+    min_samples_split=5,
+    min_samples_leaf=2,
+    random_state=42,
+    n_jobs=-1
+)
+rf_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_train_pred_rf = rf_model.predict(X_train_scaled)
+y_test_pred_rf = rf_model.predict(X_test_scaled)
+
+# Evaluate
+rf_train_metrics = evaluate_model(y_train, y_train_pred_rf, "Random Forest (Train)")
+rf_test_metrics = evaluate_model(y_test, y_test_pred_rf, "Random Forest (Test)")
+
+# Feature importance
+feature_importance = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': rf_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\nTop 5 Most Important Features:")
+print(feature_importance.head())</code></pre>
+
+                <h3>Champion Model: Gradient Boosting</h3>
+                <pre><code class="language-python">from sklearn.ensemble import GradientBoostingRegressor
+
+# Train Gradient Boosting
+gb_model = GradientBoostingRegressor(
+    n_estimators=200,
+    learning_rate=0.1,
+    max_depth=5,
+    min_samples_split=5,
+    min_samples_leaf=2,
+    subsample=0.8,
+    random_state=42
+)
+gb_model.fit(X_train_scaled, y_train)
+
+# Predictions
+y_train_pred_gb = gb_model.predict(X_train_scaled)
+y_test_pred_gb = gb_model.predict(X_test_scaled)
+
+# Evaluate
+gb_train_metrics = evaluate_model(y_train, y_train_pred_gb, "Gradient Boosting (Train)")
+gb_test_metrics = evaluate_model(y_test, y_test_pred_gb, "Gradient Boosting (Test)")</code></pre>
+
+                <h3>Model Comparison</h3>
+                <pre><code class="language-python"># Create comparison DataFrame
+results = pd.DataFrame({
+    'Model': ['Linear Regression', 'Random Forest', 'Gradient Boosting'],
+    'Train RMSE': [lr_train_metrics[0], rf_train_metrics[0], gb_train_metrics[0]],
+    'Test RMSE': [lr_test_metrics[0], rf_test_metrics[0], gb_test_metrics[0]],
+    'Train R²': [lr_train_metrics[2], rf_train_metrics[2], gb_train_metrics[2]],
+    'Test R²': [lr_test_metrics[2], rf_test_metrics[2], gb_test_metrics[2]]
+})
+
+print("\n" + "="*60)
+print("MODEL COMPARISON")
+print("="*60)
+print(results.to_string(index=False))
+
+# Visualize comparison
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# RMSE comparison
+axes[0].bar(results['Model'], results['Test RMSE'], color=['#078930', '#10b981', '#f59e0b'])
+axes[0].set_ylabel('RMSE (in $100k)')
+axes[0].set_title('Model RMSE Comparison (Lower is Better)')
+axes[0].tick_params(axis='x', rotation=45)
+
+# R² comparison
+axes[1].bar(results['Model'], results['Test R²'], color=['#078930', '#10b981', '#f59e0b'])
+axes[1].set_ylabel('R² Score')
+axes[1].set_ylim([0, 1])
+axes[1].set_title('Model R² Comparison (Higher is Better)')
+axes[1].tick_params(axis='x', rotation=45)
+
+plt.tight_layout()
+plt.show()
+
+# Identify best model
+best_model_idx = results['Test R²'].idxmax()
+best_model_name = results.loc[best_model_idx, 'Model']
+print(f"\n🏆 Best Model: {best_model_name}")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Models Trained</h3>
+                    <p>You've trained and compared:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Linear Regression (baseline)</li>
+                        <li>Random Forest (ensemble)</li>
+                        <li>Gradient Boosting (champion)</li>
+                        <li>Typical result: Gradient Boosting wins with R² ~0.80</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📈 Part 4: Model Analysis & Visualization</h2>
+                
+                <h3>Prediction vs Actual Plot</h3>
+                <pre><code class="language-python"># Use best model (Gradient Boosting)
+y_pred = y_test_pred_gb
+
+# Predictions vs Actual
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+plt.xlabel('Actual Price ($100k)')
+plt.ylabel('Predicted Price ($100k)')
+plt.title('Predicted vs Actual House Prices')
+plt.grid(alpha=0.3)
+plt.show()
+
+# Perfect predictions would fall on the red diagonal line</code></pre>
+
+                <h3>Residual Analysis</h3>
+                <pre><code class="language-python"># Calculate residuals
+residuals = y_test - y_pred
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Residual plot
+axes[0].scatter(y_pred, residuals, alpha=0.5)
+axes[0].axhline(y=0, color='r', linestyle='--', lw=2)
+axes[0].set_xlabel('Predicted Price ($100k)')
+axes[0].set_ylabel('Residuals ($100k)')
+axes[0].set_title('Residual Plot')
+axes[0].grid(alpha=0.3)
+
+# Residual distribution
+axes[1].hist(residuals, bins=50, edgecolor='black', alpha=0.7)
+axes[1].set_xlabel('Residuals ($100k)')
+axes[1].set_ylabel('Frequency')
+axes[1].set_title('Residual Distribution')
+axes[1].axvline(x=0, color='r', linestyle='--', lw=2)
+
+plt.tight_layout()
+plt.show()
+
+# Residual statistics
+print(f"Mean Residual: ${residuals.mean() * 100000:,.0f} (should be ~$0)")
+print(f"Std Dev of Residuals: ${residuals.std() * 100000:,.0f}")</code></pre>
+
+                <h3>Feature Importance Visualization</h3>
+                <pre><code class="language-python"># Gradient Boosting feature importance
+importance_df = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': gb_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df['Feature'][:10], importance_df['Importance'][:10])
+plt.xlabel('Importance')
+plt.title('Top 10 Most Important Features (Gradient Boosting)')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+
+print("\nFeature Importance Rankings:")
+print(importance_df)</code></pre>
+
+                <h3>Error Analysis: Best and Worst Predictions</h3>
+                <pre><code class="language-python"># Calculate absolute errors
+errors = np.abs(y_test - y_pred)
+error_df = pd.DataFrame({
+    'Actual': y_test.values,
+    'Predicted': y_pred,
+    'Error': errors.values
+}, index=y_test.index)
+
+# Best predictions (lowest error)
+print("\n🎯 Best Predictions (Top 5):")
+print(error_df.nsmallest(5, 'Error'))
+
+# Worst predictions (highest error)
+print("\n❌ Worst Predictions (Top 5):")
+print(error_df.nlargest(5, 'Error'))
+
+# Analyze worst predictions
+worst_indices = error_df.nlargest(5, 'Error').index
+worst_features = X_test.loc[worst_indices]
+print("\nFeatures of worst predictions:")
+print(worst_features)</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 4: Analysis Complete</h3>
+                    <p>You've created:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Prediction vs Actual scatter plot</li>
+                        <li>Residual analysis plots</li>
+                        <li>Feature importance visualization</li>
+                        <li>Error analysis identifying best/worst predictions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Part 5: Hyperparameter Tuning (Optional)</h2>
+                
+                <h3>Grid Search for Optimal Parameters</h3>
+                <pre><code class="language-python">from sklearn.model_selection import GridSearchCV
+
+# Define parameter grid for Gradient Boosting
+param_grid = {
+    'n_estimators': [100, 200, 300],
+    'learning_rate': [0.05, 0.1, 0.15],
+    'max_depth': [3, 5, 7],
+    'min_samples_split': [2, 5, 10]
+}
+
+# Grid search with cross-validation
+print("Starting Grid Search (this may take a few minutes)...")
+grid_search = GridSearchCV(
+    GradientBoostingRegressor(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='neg_mean_squared_error',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train_scaled, y_train)
+
+print(f"\nBest Parameters: {grid_search.best_params_}")
+print(f"Best CV Score (RMSE): ${np.sqrt(-grid_search.best_score_) * 100000:,.0f}")
+
+# Train final model with best parameters
+final_model = grid_search.best_estimator_
+y_test_pred_final = final_model.predict(X_test_scaled)
+
+# Final evaluation
+final_metrics = evaluate_model(y_test, y_test_pred_final, "Tuned Gradient Boosting")</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Note:</strong> Grid search can take 10-30 minutes depending on your machine. For quick iteration, start with fewer parameter combinations or use RandomizedSearchCV.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 6: Save Model for Production</h2>
+                
+                <pre><code class="language-python">import pickle
+from datetime import datetime
+
+# Save model
+model_filename = f'house_price_model_{datetime.now().strftime("%Y%m%d")}.pkl'
+with open(model_filename, 'wb') as f:
+    pickle.dump({
+        'model': gb_model,  # or final_model if you did tuning
+        'scaler': scaler,
+        'feature_names': X_train.columns.tolist(),
+        'training_date': datetime.now(),
+        'test_r2': gb_test_metrics[2],
+        'test_rmse': gb_test_metrics[0]
+    }, f)
+
+print(f"Model saved as: {model_filename}")
+
+# Load model (example)
+with open(model_filename, 'rb') as f:
+    loaded_data = pickle.load(f)
+    loaded_model = loaded_data['model']
+    loaded_scaler = loaded_data['scaler']
+
+print("\nModel loaded successfully!")
+print(f"Training Date: {loaded_data['training_date']}")
+print(f"Test R²: {loaded_data['test_r2']:.4f}")</code></pre>
+
+                <h3>Create Prediction Function</h3>
+                <pre><code class="language-python">def predict_house_price(model, scaler, feature_values):
+    """
+    Predict house price for new data
+    
+    Parameters:
+    -----------
+    model : trained model object
+    scaler : fitted StandardScaler
+    feature_values : dict with feature names and values
+    
+    Returns:
+    --------
+    predicted_price : float (in dollars)
+    """
+    # Create DataFrame from input
+    input_df = pd.DataFrame([feature_values])
+    
+    # Scale features
+    input_scaled = scaler.transform(input_df)
+    
+    # Predict
+    prediction = model.predict(input_scaled)[0]
+    
+    return prediction * 100000  # Convert to dollars
+
+# Example usage
+sample_house = {
+    'MedInc': 3.5,
+    'HouseAge': 25,
+    'AveRooms': 5.5,
+    'AveBedrms': 1.2,
+    'Population': 1200,
+    'AveOccup': 3.2,
+    'Latitude': 37.5,
+    'Longitude': -122.3,
+    'RoomsPerHousehold': 17.6,
+    'BedroomsRatio': 0.218,
+    'PeoplePerHousehold': 375
+}
+
+predicted_price = predict_house_price(loaded_model, loaded_scaler, sample_house)
+print(f"\nPredicted Price: ${predicted_price:,.0f}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary & Next Steps</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Congratulations!</h3>
+                    <p style="font-size: 1.1rem;">You've built a complete machine learning system from data loading to model deployment!</p>
+                </div>
+
+                <h3>📊 What You've Accomplished</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Loaded and explored</strong> 20,000+ housing records</li>
+                    <li>✅ <strong>Engineered 5 new features</strong> to improve model performance</li>
+                    <li>✅ <strong>Trained 3 different models</strong> (Linear Regression, Random Forest, Gradient Boosting)</li>
+                    <li>✅ <strong>Achieved ~80% R²</strong> on test data (strong performance!)</li>
+                    <li>✅ <strong>Created visualizations</strong> for predictions and feature importance</li>
+                    <li>✅ <strong>Saved model</strong> ready for production deployment</li>
+                </ul>
+
+                <h3>🚀 Challenge Yourself</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>📈 Improve Performance</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Try XGBoost or LightGBM</li>
+                            <li>Add more engineered features</li>
+                            <li>Use ensemble stacking</li>
+                        </ul>
+                    </div>
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>🌐 Deploy Model</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Build Flask API</li>
+                            <li>Create Streamlit web app</li>
+                            <li>Deploy to AWS/Heroku</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>📊 Advanced Analysis</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Add confidence intervals</li>
+                            <li>Perform residual analysis</li>
+                            <li>Create interactive dashboard</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fecaca; padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <strong>🎯 Real Kaggle Data</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Use Kaggle House Prices</li>
+                            <li>Handle missing values</li>
+                            <li>Submit to competition</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📚 Recommended Reading</h3>
+                <ul>
+                    <li><strong>Book:</strong> "Hands-On Machine Learning" by Aurélien Géron (Chapter 2)</li>
+                    <li><strong>Kaggle:</strong> House Prices Competition - Advanced Regression Techniques</li>
+                    <li><strong>Papers:</strong> "Feature Engineering for Machine Learning" - Alice Zheng</li>
+                </ul>
+
+                <div class="info-box">
+                    <h3>💡 Portfolio Tips</h3>
+                    <p><strong>Make this project shine on GitHub:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Add comprehensive README with results</li>
+                        <li>Include visualizations (save all plots)</li>
+                        <li>Document your feature engineering decisions</li>
+                        <li>Add requirements.txt for reproducibility</li>
+                        <li>Create Jupyter notebook with clean narrative</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="../../../courses/machine-learning.html" class="btn btn-secondary">← Back to ML Course</a>
+                <a href="customer-churn-prediction.html" class="btn btn-primary">Next Project: Customer Churn →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

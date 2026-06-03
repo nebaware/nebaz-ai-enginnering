@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build production-ready AI testing pipelines with CI/CD integration, Docker containerization, monitoring dashboards, and complete automation.">
+    <title>Tutorial 8: Building AI Testing Pipelines - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-nav .next:hover {
+            transform: translateX(3px);
+        }
+
+        .architecture-diagram {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge advanced">Advanced</div>
+            <h1 class="page-title">Building AI Testing Pipelines</h1>
+            <p class="page-subtitle">Integrate all AI testing tools into production CI/CD with Docker, monitoring, and complete automation</p>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>You've built self-healing tests, bug predictors, visual AI, test generators, and performance analyzers. Now it's time to bring them together. A production AI testing pipeline runs automatically on every commit, catches issues before deployment, and provides actionable insights—without manual intervention.</p>
+
+        <p>In this final tutorial, you'll build a complete CI/CD pipeline that orchestrates all your AI testing tools, runs them in Docker containers, monitors results, and generates comprehensive reports. This is the capstone that makes AI testing truly scalable.</p>
+
+        <h2>The Complete AI Testing Architecture</h2>
+
+        <div class="architecture-diagram">
+<pre>
+┌─────────────────────────────────────────────────────────────┐
+│                     DEVELOPER WORKFLOW                       │
+└─────────────────────────────────────────────────────────────┘
+                            ↓ (git push)
+┌─────────────────────────────────────────────────────────────┐
+│                    CI/CD TRIGGER (GitHub Actions)            │
+│  • Detect code changes                                       │
+│  • Trigger AI testing pipeline                               │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  STAGE 1: STATIC ANALYSIS                    │
+│  ├─ Bug Prediction (ML)         [5 min]                      │
+│  ├─ Code Complexity Analysis    [2 min]                      │
+│  └─ Test Generation (AI)        [3 min]                      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  STAGE 2: FUNCTIONAL TESTING                 │
+│  ├─ Self-Healing Tests          [15 min]                     │
+│  ├─ AI-Generated Test Suites    [10 min]                     │
+│  └─ Test Data Generation         [5 min]                     │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  STAGE 3: VISUAL & API TESTING               │
+│  ├─ Visual Regression (AI)      [20 min]                     │
+│  ├─ Cross-Browser Testing       [25 min]                     │
+│  └─ API Contract Tests          [10 min]                     │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  STAGE 4: PERFORMANCE TESTING                │
+│  ├─ Load Pattern Generation     [5 min]                      │
+│  ├─ AI-Guided Load Testing      [30 min]                     │
+│  ├─ Bottleneck Prediction       [5 min]                      │
+│  └─ Anomaly Detection           [3 min]                      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                  STAGE 5: REPORTING & ANALYSIS               │
+│  ├─ Aggregate Results                                        │
+│  ├─ Generate Dashboards                                      │
+│  ├─ AI Insights & Recommendations                            │
+│  └─ Notify Team (Slack/Email)                                │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+                    ✅ DEPLOY or 🚫 BLOCK
+</pre>
+        </div>
+
+        <div class="info-box">
+            <p>💡 <strong>Pipeline Philosophy:</strong> Fail fast on cheap tests (static analysis), then run expensive tests (performance) only if needed. Total time: ~30 minutes for fast feedback, ~2 hours for comprehensive validation.</p>
+        </div>
+
+        <h2>Setting Up Docker Containers</h2>
+
+        <p>First, containerize all AI testing tools for consistent environments:</p>
+
+        <pre><code class="language-dockerfile"># Dockerfile.ai-testing
+FROM python:3.11-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    chromium \
+    chromium-driver \
+    firefox-esr \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install additional AI/ML libraries
+RUN pip install --no-cache-dir \
+    scikit-learn==1.3.0 \
+    opencv-python-headless==4.8.0 \
+    pillow==10.0.0 \
+    pandas==2.1.0 \
+    numpy==1.25.0 \
+    openai==0.28.0 \
+    locust==2.15.0 \
+    selenium==4.12.0 \
+    pytest==7.4.0 \
+    faker==19.6.0 \
+    radon==6.0.1
+
+# Copy test framework
+COPY ai_testing_framework/ /app/ai_testing_framework/
+COPY tests/ /app/tests/
+COPY models/ /app/models/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV DISPLAY=:99
+
+# Default command
+CMD ["pytest", "tests/", "-v", "--html=report.html"]
+</code></pre>
+
+        <p>Create docker-compose for orchestration:</p>
+
+        <pre><code class="language-yaml"># docker-compose.yml
+version: '3.8'
+
+services:
+  # Bug Prediction Service
+  bug-predictor:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-testing
+    volumes:
+      - ./reports:/app/reports
+      - ./models:/app/models
+    environment:
+      - SERVICE_NAME=bug-predictor
+      - MODEL_PATH=/app/models/bug_predictor.pkl
+    command: python -m ai_testing_framework.bug_prediction
+
+  # Self-Healing Test Runner
+  self-healing-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-testing
+    volumes:
+      - ./reports:/app/reports
+      - ./screenshots:/app/screenshots
+    environment:
+      - SERVICE_NAME=self-healing-tests
+      - HEADLESS=true
+    command: pytest tests/self_healing/ -v --html=/app/reports/self_healing.html
+
+  # Visual AI Testing
+  visual-testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-testing
+    volumes:
+      - ./reports:/app/reports
+      - ./screenshots:/app/screenshots
+      - ./baselines:/app/baselines
+    environment:
+      - SERVICE_NAME=visual-testing
+      - APPLITOOLS_API_KEY=${APPLITOOLS_API_KEY}
+    command: pytest tests/visual/ -v --html=/app/reports/visual.html
+
+  # Performance Testing
+  performance-testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-testing
+    volumes:
+      - ./reports:/app/reports
+      - ./load_profiles:/app/load_profiles
+    environment:
+      - SERVICE_NAME=performance-testing
+      - TARGET_URL=${TARGET_URL}
+    command: locust -f tests/performance/ai_load_test.py --headless -u 100 -r 10 -t 10m --html=/app/reports/performance.html
+
+  # Test Generation Service
+  test-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-testing
+    volumes:
+      - ./reports:/app/reports
+      - ./generated_tests:/app/generated_tests
+    environment:
+      - SERVICE_NAME=test-generator
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    command: python -m ai_testing_framework.test_generation
+
+  # Monitoring Dashboard
+  monitoring:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+volumes:
+  reports:
+  screenshots:
+  baselines:
+  load_profiles:
+  generated_tests:
+  models:
+</code></pre>
+
+        <h2>GitHub Actions CI/CD Pipeline</h2>
+
+        <p>Create complete GitHub Actions workflow:</p>
+
+        <pre><code class="language-yaml"># .github/workflows/ai-testing-pipeline.yml
+name: AI Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run nightly comprehensive tests
+    - cron: '0 2 * * *'
+
+env:
+  PYTHON_VERSION: '3.11'
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  APPLITOOLS_API_KEY: ${{ secrets.APPLITOOLS_API_KEY }}
+
+jobs:
+  # Stage 1: Static Analysis & Bug Prediction
+  static-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Full history for git analysis
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install scikit-learn pandas radon
+      
+      - name: Run Bug Prediction
+        id: bug_prediction
+        run: |
+          python ai_testing_framework/bug_prediction.py --mode=ci
+          echo "high_risk_files=$(cat reports/high_risk_files.txt | wc -l)" >> $GITHUB_OUTPUT
+      
+      - name: Analyze Code Complexity
+        run: |
+          python ai_testing_framework/complexity_analysis.py
+      
+      - name: Comment PR with Risk Assessment
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const riskReport = fs.readFileSync('reports/risk_assessment.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: riskReport
+            });
+      
+      - name: Upload Bug Prediction Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bug-prediction-report
+          path: reports/bug_prediction/
+
+  # Stage 2: AI Test Generation
+  test-generation:
+    runs-on: ubuntu-latest
+    needs: static-analysis
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: pip install openai pytest faker
+      
+      - name: Generate AI Tests
+        run: |
+          python ai_testing_framework/test_generation.py \
+            --requirements-dir=requirements/ \
+            --output-dir=generated_tests/
+      
+      - name: Upload Generated Tests
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-tests
+          path: generated_tests/
+
+  # Stage 3: Self-Healing Tests
+  self-healing-tests:
+    runs-on: ubuntu-latest
+    needs: test-generation
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Download Generated Tests
+        uses: actions/download-artifact@v3
+        with:
+          name: generated-tests
+          path: generated_tests/
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@latest
+      
+      - name: Install dependencies
+        run: |
+          pip install selenium pytest webdriver-manager scikit-learn
+      
+      - name: Run Self-Healing Tests
+        run: |
+          pytest tests/self_healing/ -v \
+            --html=reports/self_healing.html \
+            --self-contained-html \
+            --junit-xml=reports/self_healing_junit.xml
+      
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: self-healing-test-results
+          path: reports/self_healing*
+      
+      - name: Publish Test Results
+        if: always()
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: reports/self_healing_junit.xml
+
+  # Stage 4: Visual AI Testing
+  visual-testing:
+    runs-on: ubuntu-latest
+    needs: self-healing-tests
+    timeout-minutes: 40
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install selenium opencv-python pillow scikit-image pytest
+          pip install eyes-selenium  # Applitools
+      
+      - name: Run Visual Tests
+        run: |
+          pytest tests/visual/ -v \
+            --html=reports/visual.html \
+            --self-contained-html
+      
+      - name: Upload Visual Diff Images
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: visual-diffs
+          path: screenshots/diffs/
+      
+      - name: Upload Visual Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: visual-test-results
+          path: reports/visual*
+
+  # Stage 5: Performance Testing (Nightly only)
+  performance-testing:
+    runs-on: ubuntu-latest
+    needs: visual-testing
+    # Only run on schedule or manual trigger
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          pip install locust pandas numpy scikit-learn
+      
+      - name: Generate AI Load Profile
+        run: |
+          python ai_testing_framework/load_pattern_generator.py \
+            --production-logs=logs/production.csv \
+            --output=load_profiles/ai_generated.json
+      
+      - name: Run Performance Tests
+        run: |
+          locust -f tests/performance/ai_load_test.py \
+            --headless \
+            --users 100 \
+            --spawn-rate 10 \
+            --run-time 30m \
+            --html reports/performance.html \
+            --csv reports/performance
+      
+      - name: Detect Performance Anomalies
+        run: |
+          python ai_testing_framework/anomaly_detection.py \
+            --results=reports/performance_stats.csv
+      
+      - name: Upload Performance Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-results
+          path: reports/performance*
+
+  # Stage 6: Comprehensive Reporting
+  reporting:
+    runs-on: ubuntu-latest
+    needs: [static-analysis, self-healing-tests, visual-testing]
+    if: always()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: pip install jinja2 pandas matplotlib
+      
+      - name: Generate Comprehensive Report
+        run: |
+          python ai_testing_framework/report_generator.py \
+            --artifacts-dir=. \
+            --output=reports/comprehensive_report.html
+      
+      - name: Upload Comprehensive Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: comprehensive-report
+          path: reports/comprehensive_report.html
+      
+      - name: Send Slack Notification
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            AI Testing Pipeline Complete
+            Results: ${{ job.status }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Report: ${{ steps.upload.outputs.artifact-url }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      
+      - name: Comment on PR with Summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('reports/pr_summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Complete Pipeline:</strong> Your CI/CD now runs bug prediction, test generation, self-healing tests, visual AI, and performance testing automatically on every commit!</p>
+        </div>
+
+        <h2>AI Testing Orchestrator</h2>
+
+        <p>Create a central orchestrator to manage all AI testing tools:</p>
+
+        <pre><code class="language-python"># ai_testing_framework/orchestrator.py
+
+import asyncio
+import json
+from datetime import datetime
+from pathlib import Path
+import subprocess
+import sys
+
+class AITestingOrchestrator:
+    """
+    Orchestrate all AI testing tools in the correct sequence
+    """
+    
+    def __init__(self, config_file='pipeline_config.json'):
+        with open(config_file, 'r') as f:
+            self.config = json.load(f)
+        
+        self.results = {}
+        self.start_time = None
+        self.reports_dir = Path('reports')
+        self.reports_dir.mkdir(exist_ok=True)
+    
+    async def run_stage(self, stage_name, commands):
+        """Run a pipeline stage with multiple commands"""
+        print(f"\n{'='*60}")
+        print(f"🚀 STAGE: {stage_name}")
+        print(f"{'='*60}")
+        
+        stage_start = datetime.now()
+        stage_results = []
+        
+        for cmd_config in commands:
+            cmd_name = cmd_config['name']
+            cmd = cmd_config['command']
+            timeout = cmd_config.get('timeout', 300)
+            
+            print(f"\n▶️ Running: {cmd_name}")
+            
+            try:
+                result = await asyncio.wait_for(
+                    self._run_command(cmd),
+                    timeout=timeout
+                )
+                
+                stage_results.append({
+                    'name': cmd_name,
+                    'status': 'SUCCESS' if result['returncode'] == 0 else 'FAILED',
+                    'duration': result['duration'],
+                    'output': result['output'][:500]  # Truncate
+                })
+                
+                if result['returncode'] == 0:
+                    print(f"✅ {cmd_name} completed successfully")
+                else:
+                    print(f"❌ {cmd_name} failed with code {result['returncode']}")
+                    
+                    # Check if this is a blocking failure
+                    if cmd_config.get('blocking', False):
+                        print(f"🚫 Blocking failure detected. Stopping pipeline.")
+                        self.results[stage_name] = stage_results
+                        return False
+                
+            except asyncio.TimeoutError:
+                print(f"⏱️ {cmd_name} timed out after {timeout}s")
+                stage_results.append({
+                    'name': cmd_name,
+                    'status': 'TIMEOUT',
+                    'duration': timeout,
+                    'output': ''
+                })
+                
+                if cmd_config.get('blocking', False):
+                    return False
+        
+        stage_duration = (datetime.now() - stage_start).total_seconds()
+        
+        print(f"\n✅ Stage '{stage_name}' completed in {stage_duration:.1f}s")
+        
+        self.results[stage_name] = {
+            'duration': stage_duration,
+            'commands': stage_results
+        }
+        
+        return True
+    
+    async def _run_command(self, cmd):
+        """Execute a shell command asynchronously"""
+        start = datetime.now()
+        
+        process = await asyncio.create_subprocess_shell(
+            cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.STDOUT
+        )
+        
+        stdout, _ = await process.communicate()
+        
+        duration = (datetime.now() - start).total_seconds()
+        
+        return {
+            'returncode': process.returncode,
+            'output': stdout.decode('utf-8'),
+            'duration': duration
+        }
+    
+    async def run_pipeline(self):
+        """Execute the complete AI testing pipeline"""
+        self.start_time = datetime.now()
+        
+        print("="*60)
+        print("🤖 AI TESTING PIPELINE STARTED")
+        print("="*60)
+        print(f"Timestamp: {self.start_time}")
+        print(f"Configuration: {len(self.config['stages'])} stages")
+        
+        for stage_config in self.config['stages']:
+            stage_name = stage_config['name']
+            
+            # Check if stage should run
+            run_condition = stage_config.get('run_if', 'always')
+            
+            if run_condition == 'nightly' and not self._is_nightly():
+                print(f"\n⏭️ Skipping '{stage_name}' (nightly only)")
+                continue
+            
+            # Run stage
+            success = await self.run_stage(stage_name, stage_config['commands'])
+            
+            if not success:
+                print(f"\n🚫 Pipeline stopped due to failure in '{stage_name}'")
+                break
+        
+        # Generate final report
+        await self.generate_final_report()
+    
+    def _is_nightly(self):
+        """Check if this is a nightly run"""
+        return 'NIGHTLY' in os.environ or datetime.now().hour < 6
+    
+    async def generate_final_report(self):
+        """Generate comprehensive pipeline report"""
+        total_duration = (datetime.now() - self.start_time).total_seconds()
+        
+        report = {
+            'pipeline_start': str(self.start_time),
+            'pipeline_duration': total_duration,
+            'stages': self.results,
+            'overall_status': self._get_overall_status()
+        }
+        
+        # Save JSON report
+        report_file = self.reports_dir / 'pipeline_results.json'
+        with open(report_file, 'w') as f:
+            json.dump(report, f, indent=2)
+        
+        # Generate HTML report
+        html_report = self._generate_html_report(report)
+        html_file = self.reports_dir / 'pipeline_report.html'
+        with open(html_file, 'w') as f:
+            f.write(html_report)
+        
+        print("\n" + "="*60)
+        print("📊 PIPELINE COMPLETE")
+        print("="*60)
+        print(f"Status: {report['overall_status']}")
+        print(f"Duration: {total_duration:.1f}s ({total_duration/60:.1f} minutes)")
+        print(f"Report: {html_file}")
+        print("="*60)
+    
+    def _get_overall_status(self):
+        """Determine overall pipeline status"""
+        for stage_name, stage_result in self.results.items():
+            for cmd in stage_result.get('commands', []):
+                if cmd['status'] in ['FAILED', 'TIMEOUT']:
+                    return 'FAILED'
+        return 'SUCCESS'
+    
+    def _generate_html_report(self, report):
+        """Generate HTML report (simplified)"""
+        html = f"""
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;AI Testing Pipeline Report&lt;/title&gt;
+    &lt;style&gt;
+        body &#123; font-family: Arial, sans-serif; margin: 20px; &#125;
+        .header &#123; background: linear-gradient(135deg, #078930, #0d9488); color: white; padding: 20px; &#125;
+        .stage &#123; margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; &#125;
+        .success &#123; background-color: #d1fae5; &#125;
+        .failed &#123; background-color: #fee2e2; &#125;
+        .command &#123; margin: 10px 0; padding: 10px; background: #f8fafc; &#125;
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="header"&gt;
+        &lt;h1&gt;AI Testing Pipeline Report&lt;/h1&gt;
+        &lt;p&gt;Status: &#123;report['overall_status']&#125;&lt;/p&gt;
+        &lt;p&gt;Duration: &#123;report['pipeline_duration']:.1f&#125;s&lt;/p&gt;
+    &lt;/div&gt;
+"""
+        
+        for stage_name, stage_data in report['stages'].items():
+            stage_class = 'success' if all(
+                c['status'] == 'SUCCESS' for c in stage_data.get('commands', [])
+            ) else 'failed'
+            
+            html += f"""
+    &lt;div class="stage &#123;stage_class&#125;"&gt;
+        &lt;h2&gt;&#123;stage_name&#125;&lt;/h2&gt;
+        &lt;p&gt;Duration: &#123;stage_data['duration']:.1f&#125;s&lt;/p&gt;
+"""
+            
+            for cmd in stage_data.get('commands', []):
+                html += f"""
+        &lt;div class="command"&gt;
+            &lt;strong&gt;&#123;cmd['name']&#125;&lt;/strong&gt;: &#123;cmd['status']&#125; (&#123;cmd['duration']:.1f&#125;s)
+        &lt;/div&gt;
+"""
+            
+            html += "    &lt;/div&gt;\n"
+        
+        html += """
+&lt;/body&gt;
+&lt;/html&gt;
+"""
+        
+        return html
+
+
+# Pipeline configuration
+pipeline_config = {
+    "stages": [
+        {
+            "name": "Static Analysis",
+            "commands": [
+                {
+                    "name": "Bug Prediction",
+                    "command": "python ai_testing_framework/bug_prediction.py --mode=ci",
+                    "timeout": 300,
+                    "blocking": True
+                },
+                {
+                    "name": "Complexity Analysis",
+                    "command": "python ai_testing_framework/complexity_analysis.py",
+                    "timeout": 120,
+                    "blocking": False
+                }
+            ]
+        },
+        {
+            "name": "Test Generation",
+            "commands": [
+                {
+                    "name": "AI Test Generation",
+                    "command": "python ai_testing_framework/test_generation.py",
+                    "timeout": 600,
+                    "blocking": False
+                }
+            ]
+        },
+        {
+            "name": "Functional Testing",
+            "commands": [
+                {
+                    "name": "Self-Healing Tests",
+                    "command": "pytest tests/self_healing/ -v --html=reports/self_healing.html",
+                    "timeout": 1800,
+                    "blocking": True
+                }
+            ]
+        },
+        {
+            "name": "Visual Testing",
+            "commands": [
+                {
+                    "name": "Visual Regression",
+                    "command": "pytest tests/visual/ -v --html=reports/visual.html",
+                    "timeout": 2400,
+                    "blocking": False
+                }
+            ]
+        },
+        {
+            "name": "Performance Testing",
+            "run_if": "nightly",
+            "commands": [
+                {
+                    "name": "Load Testing",
+                    "command": "locust -f tests/performance/ai_load_test.py --headless -u 100 -r 10 -t 30m",
+                    "timeout": 2400,
+                    "blocking": False
+                }
+            ]
+        }
+    ]
+}
+
+# Save config
+with open('pipeline_config.json', 'w') as f:
+    json.dump(pipeline_config, f, indent=2)
+
+
+# Usage
+if __name__ == '__main__':
+    import os
+    
+    orchestrator = AITestingOrchestrator('pipeline_config.json')
+    asyncio.run(orchestrator.run_pipeline())
+</code></pre>
+
+        <h2>Monitoring & Dashboards</h2>
+
+        <p>Create Grafana dashboard configuration:</p>
+
+        <pre><code class="language-json">// grafana/dashboards/ai-testing-dashboard.json
+{
+  "dashboard": {
+    "title": "AI Testing Pipeline Dashboard",
+    "panels": [
+      {
+        "title": "Pipeline Success Rate",
+        "targets": [
+          {
+            "expr": "rate(pipeline_runs_total{status='success'}[1h]) / rate(pipeline_runs_total[1h]) * 100"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Test Execution Time",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, pipeline_duration_seconds)"
+          }
+        ],
+        "type": "graph"
+      },
+      {
+        "title": "Bug Prediction Accuracy",
+        "targets": [
+          {
+            "expr": "bug_predictor_accuracy"
+          }
+        ],
+        "type": "gauge"
+      },
+      {
+        "title": "Self-Healing Events",
+        "targets": [
+          {
+            "expr": "increase(self_healing_events_total[24h])"
+          }
+        ],
+        "type": "stat"
+      },
+      {
+        "title": "Visual Regression Failures",
+        "targets": [
+          {
+            "expr": "visual_regression_failures_total"
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "title": "Performance Anomalies",
+        "targets": [
+          {
+            "expr": "rate(performance_anomalies_total[1h])"
+          }
+        ],
+        "type": "graph"
+      }
+    ]
+  }
+}
+</code></pre>
+
+        <h2>Best Practices</h2>
+
+        <ol>
+            <li><strong>Fail fast:</strong> Run cheap tests (static analysis) first, expensive tests (performance) last</li>
+            <li><strong>Parallel execution:</strong> Run independent test stages in parallel when possible</li>
+            <li><strong>Smart caching:</strong> Cache dependencies, models, baselines to speed up pipeline</li>
+            <li><strong>Progressive testing:</strong> Quick feedback on every commit, comprehensive validation nightly</li>
+            <li><strong>Actionable reports:</strong> Highlight what developers need to fix, not just raw data</li>
+            <li><strong>Cost optimization:</strong> Use GPT-3.5 for cheap tasks, GPT-4 for critical ones</li>
+            <li><strong>Baseline management:</strong> Auto-update visual baselines on approved changes</li>
+            <li><strong>Alert fatigue prevention:</strong> Only alert on high-confidence issues</li>
+            <li><strong>Continuous learning:</strong> Retrain ML models monthly with new data</li>
+            <li><strong>Security:</strong> Store API keys in secrets, never commit credentials</li>
+        </ol>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Cost Management:</strong> AI testing can get expensive! Monitor API usage, set budgets, and use caching. Estimate: $50-200/month for active project with GPT-4 test generation.</p>
+        </div>
+
+        <h2>Practice Exercise</h2>
+
+        <p><strong>Challenge:</strong> Build a complete end-to-end AI testing pipeline:</p>
+        <ol>
+            <li>Set up GitHub Actions workflow with all 5 stages</li>
+            <li>Containerize AI testing tools with Docker</li>
+            <li>Create orchestrator that runs all tools in sequence</li>
+            <li>Generate comprehensive HTML report with all results</li>
+            <li>Set up Grafana dashboard for monitoring</li>
+            <li>Configure Slack notifications for failures</li>
+            <li>Add automatic baseline updates for visual tests</li>
+            <li>Implement cost tracking for OpenAI API usage</li>
+        </ol>
+
+        <p><strong>Bonus:</strong> Add AI-powered root cause analysis that analyzes failures and suggests fixes!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+            <li>Complete AI testing requires orchestration of multiple specialized tools</li>
+            <li>CI/CD integration makes AI testing scalable and automatic</li>
+            <li>Docker containers ensure consistent environments across machines</li>
+            <li>Progressive testing strategy balances speed and thoroughness</li>
+            <li>Monitoring dashboards provide visibility into testing effectiveness</li>
+            <li>Cost management is critical for sustainable AI testing</li>
+            <li>Fail-fast approach saves time and compute resources</li>
+            <li>Comprehensive reporting makes results actionable for developers</li>
+        </ul>
+
+        <div class="success-box">
+            <p>🎉 <strong>Course Complete!</strong> You've built a production-grade AI testing system from scratch. You can now detect bugs before they're written, heal tests automatically, validate visual changes with AI, generate realistic load tests, and orchestrate everything in CI/CD. Welcome to the future of quality engineering!</p>
+        </div>
+
+        <h2>What's Next?</h2>
+
+        <p>Continue your AI testing journey:</p>
+        <ul>
+            <li><strong>Advanced ML:</strong> Explore deep learning for test prioritization and flaky test detection</li>
+            <li><strong>NLP Testing:</strong> Use GPT-4 for natural language test case understanding</li>
+            <li><strong>Continuous Learning:</strong> Build feedback loops that improve models over time</li>
+            <li><strong>Multi-modal Testing:</strong> Combine visual, audio, and text AI for comprehensive coverage</li>
+            <li><strong>Explainable AI:</strong> Make AI decisions interpretable for debugging</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💼 <strong>Career Impact:</strong> AI testing engineers earn $115k-160k+ and are in high demand. Companies like Google, Meta, Microsoft, Ethiopian tech teams, and Spotify are actively hiring. Your new skills are valuable!</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: AI Testing Pipelines</h2>
+                <p class="quiz-description">Check your understanding of production AI testing architecture</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What is the recommended testing strategy for CI/CD pipelines?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Run all tests in parallel for maximum speed</div>
+                    <div class="quiz-option" data-correct="true">Fail fast: run cheap tests (static analysis) first, expensive tests (performance) last</div>
+                    <div class="quiz-option" data-correct="false">Run performance tests first to catch critical issues</div>
+                    <div class="quiz-option" data-correct="false">Run tests randomly for better coverage</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Why use Docker containers for AI testing tools?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Docker is faster than native execution</div>
+                    <div class="quiz-option" data-correct="true">Ensures consistent environments across development, CI/CD, and production; isolates dependencies</div>
+                    <div class="quiz-option" data-correct="false">Docker reduces testing costs</div>
+                    <div class="quiz-option" data-correct="false">Docker automatically fixes test failures</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What is a "blocking failure" in a testing pipeline?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">A test that runs slowly</div>
+                    <div class="quiz-option" data-correct="false">A test that requires manual intervention</div>
+                    <div class="quiz-option" data-correct="true">A critical failure that stops the pipeline immediately (e.g., bug prediction finds high-risk code)</div>
+                    <div class="quiz-option" data-correct="false">A test that blocks deployments permanently</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What is the estimated monthly cost for active AI testing with GPT-4?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">$5-10 (minimal usage)</div>
+                    <div class="quiz-option" data-correct="true">$50-200 (active project with test generation, analysis, optimization)</div>
+                    <div class="quiz-option" data-correct="false">$1,000+ (enterprise scale)</div>
+                    <div class="quiz-option" data-correct="false">Free (open source models only)</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+        
+        <!-- Navigation to Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="performance-testing.html" class="prev">← Previous: Performance Testing</a>
+            <a href="../../courses/ai-for-qa-engineers.html" class="next">Back to Course Hub →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

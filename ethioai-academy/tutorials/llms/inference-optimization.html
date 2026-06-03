@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master inference optimization for LLMs. Learn quantization, distillation, and efficient deployment techniques. Run models faster and cheaper.">
+    <meta name="keywords" content="quantization, distillation, inference optimization, model compression, GGUF, vLLM">
+    <title>Inference Optimization - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="inference-optimization.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Inference Optimization</span>
+            </div>
+            <h1>Inference Optimization</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>Quantization</li><li>low_bandwidth</li></ul>
+  
+</div>
+            <p class="tutorial-intro">Master inference optimization techniques. Deploy models faster and cheaper with quantization, distillation, and more</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 6</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free LLMs & Transformers Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ Why Optimize Inference? The Production Reality</h2>
+                
+                <p>
+                    You've trained your LLM, fine-tuned it, achieved great results. Now comes the hard part: <strong>serving it to millions of users</strong>
+                    in production. This is where inference optimization becomes critical.
+                </p>
+
+                <div class="warning-box">
+                    <p>🎯 <strong>The 80/20 Rule:</strong> You spend 20% of your time training the model, 80% optimizing and serving it in production.
+                    Inference happens millions of times, training happens once. A 10% training speedup saves hours. A 10% inference speedup saves <strong>thousands of dollars per month</strong>.</p>
+                </div>
+
+                <h3>The Real Cost of Unoptimized Inference</h3>
+
+                <p><strong>Scenario:</strong> You're running a chatbot that serves 1 million queries per day.</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #ef4444; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Setup</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Tokens/Query</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Latency</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Cost/1M Tokens</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Monthly Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>❌ Unoptimized (FP32, no batching)</strong></td>
+                            <td style="padding: 1rem;">1,000</td>
+                            <td style="padding: 1rem;">~2.5s</td>
+                            <td style="padding: 1rem;">$20</td>
+                            <td style="padding: 1rem;"><strong style="color: #ef4444;">$600/month</strong></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>⚠️ Basic (FP16, simple batching)</strong></td>
+                            <td style="padding: 1rem;">1,000</td>
+                            <td style="padding: 1rem;">~1.2s</td>
+                            <td style="padding: 1rem;">$10</td>
+                            <td style="padding: 1rem;"><strong style="color: #f59e0b;">$300/month</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>✅ Optimized (INT8, vLLM, caching)</strong></td>
+                            <td style="padding: 1rem;">1,000</td>
+                            <td style="padding: 1rem;">~400ms</td>
+                            <td style="padding: 1rem;">$2</td>
+                            <td style="padding: 1rem;"><strong style="color: #10b981;">$60/month</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p>💰 <strong>Savings:</strong> $600 → $60 = <strong>$540/month saved</strong> = <strong>$6,480/year</strong> with proper optimization!
+                    That's the cost of an entry-level engineer. Optimization pays for itself instantly.</p>
+                </div>
+
+                <h3>What Makes Inference Slow?</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="warning-box">
+                        <p><strong>1. 🐢 Memory Bandwidth Bottleneck</strong></p>
+                        <p><strong>Problem:</strong> Loading model weights from GPU memory is slow</p>
+                        <pre style="background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem;">7B model (FP32): 28GB weights
+A100 memory bandwidth: 2 TB/s
+Time to load: 28GB ÷ 2TB/s = 14ms
+
+For each token: 14ms load + 1ms compute
+Result: Memory-bound, not compute-bound!</pre>
+                        <p><strong>Solution:</strong> Quantization (INT8/INT4) reduces memory reads 4-8x</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>2. 🔄 Sequential Generation</strong></p>
+                        <p><strong>Problem:</strong> Autoregressive models generate one token at a time</p>
+                        <pre style="background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem;">Generate 100 tokens:
+Token 1: Full forward pass
+Token 2: Full forward pass
+Token 3: Full forward pass
+...
+Total: 100 × forward pass time</pre>
+                        <p><strong>Solution:</strong> KV caching (reuse previous computations)</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>3. 🎯 Low GPU Utilization</strong></p>
+                        <p><strong>Problem:</strong> Processing one query at a time wastes GPU compute</p>
+                        <pre style="background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem;">Single query: 10% GPU utilization
+A100 80GB: $1.50/hour
+Wasted: ~$1.35/hour doing nothing!</pre>
+                        <p><strong>Solution:</strong> Batching (process multiple queries simultaneously)</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>4. ⏱️ Overhead & Latency</strong></p>
+                        <p><strong>Problem:</strong> Model loading, tokenization, decoding add latency</p>
+                        <pre style="background: #1e293b; color: #e2e8f0; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.85rem; margin-top: 0.5rem;">Tokenization: 5-10ms
+Model loading (first token): 200ms
+Generation: 50ms/token × 50 tokens = 2.5s
+Decoding: 5-10ms
+Total: ~2.8s for 50 tokens</pre>
+                        <p><strong>Solution:</strong> Keep model in memory, optimize tokenization, continuous batching</p>
+                    </div>
+                </div>
+
+                <h3>The Optimization Stack: What You'll Learn</h3>
+
+                <pre style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0;"><code>Layer 1: Model Compression
+├── Quantization (INT8, INT4, NF4)
+├── Pruning (remove unnecessary weights)
+└── Distillation (train smaller model)
+    Result: 4-8x smaller, 4-8x faster
+
+Layer 2: Serving Optimization
+├── Batching (continuous, dynamic)
+├── KV Caching (reuse computations)
+├── PagedAttention (memory efficiency)
+└── Speculative Decoding (parallel generation)
+    Result: 5-20x higher throughput
+
+Layer 3: Infrastructure
+├── vLLM / TensorRT-LLM (optimized engines)
+├── Ray Serve (distributed serving)
+├── Model parallelism (split across GPUs)
+└── Monitoring & autoscaling
+    Result: Production-ready, reliable, scalable
+
+Combined Impact: 50-100x cost reduction! 🚀</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>Priority Order for Optimization:</strong></p>
+                    <ol>
+                        <li><strong>Quantization (easiest, biggest impact):</strong> 5 minutes to implement, 4x speedup</li>
+                        <li><strong>Use vLLM (medium effort):</strong> 1 hour to setup, 5-10x throughput increase</li>
+                        <li><strong>KV caching (automatic in most frameworks):</strong> Free speedup</li>
+                        <li><strong>Batching (medium effort):</strong> Essential for production</li>
+                        <li><strong>Distillation (high effort):</strong> Only if you need maximum speed</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔴 Quantization: The #1 Optimization Technique</h2>
+                
+                <p>
+                    <strong>Quantization</strong> reduces the precision of model weights from 32-bit or 16-bit floating-point numbers to 8-bit or even 4-bit integers.
+                    This is the <strong>single most impactful optimization</strong> you can apply—easy to implement and delivers massive speedups with minimal quality loss.
+                </p>
+
+                <div class=\"success-box\">\n                    <p>🎯 <strong>Why Quantization Wins:</strong> A 7B model in FP32 is 28GB. Quantized to INT8, it's 7GB (4x smaller). This means:\n                    4x less memory bandwidth → 4x faster inference, fits on smaller/cheaper GPUs, and enables batch processing.</p>\n                </div>\n\n                <h3>Precision Levels Explained</h3>\n\n                <table style=\"width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;\">\n                    <thead style=\"background-color: #078930; color: white;\">\n                        <tr>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Format</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Bits</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">7B Model Size</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Relative Speed</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Quality Loss</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Use Case</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>FP32</strong></td>\n                            <td style=\"padding: 1rem;\">32-bit</td>\n                            <td style=\"padding: 1rem;\">28GB</td>\n                            <td style=\"padding: 1rem;\">1x (baseline)</td>\n                            <td style=\"padding: 1rem;\">0%</td>\n                            <td style=\"padding: 1rem;\">Training only</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>FP16</strong></td>\n                            <td style=\"padding: 1rem;\">16-bit</td>\n                            <td style=\"padding: 1rem;\">14GB</td>\n                            <td style=\"padding: 1rem;\">~2x</td>\n                            <td style=\"padding: 1rem;\"><0.1%</td>\n                            <td style=\"padding: 1rem;\">Default inference</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>INT8</strong></td>\n                            <td style=\"padding: 1rem;\">8-bit</td>\n                            <td style=\"padding: 1rem;\">7GB</td>\n                            <td style=\"padding: 1rem;\">~3-4x</td>\n                            <td style=\"padding: 1rem;\"><1%</td>\n                            <td style=\"padding: 1rem;\">Production (recommended)</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>NF4 (4-bit)</strong></td>\n                            <td style=\"padding: 1rem;\">4-bit</td>\n                            <td style=\"padding: 1rem;\">3.5GB</td>\n                            <td style=\"padding: 1rem;\">~6-8x</td>\n                            <td style=\"padding: 1rem;\">1-3%</td>\n                            <td style=\"padding: 1rem;\">High throughput, cost-sensitive</td>\n                        </tr>\n                        <tr>\n                            <td style=\"padding: 1rem;\"><strong>INT4 (aggressive)</strong></td>\n                            <td style=\"padding: 1rem;\">4-bit</td>\n                            <td style=\"padding: 1rem;\">3.5GB</td>\n                            <td style=\"padding: 1rem;\">~8-10x</td>\n                            <td style=\"padding: 1rem;\">3-5%</td>\n                            <td style=\"padding: 1rem;\">CPU inference, edge devices</td>\n                        </tr>\n                    </tbody>\n                </table>\n\n                <div class=\"info-box\">\n                    <p>💡 <strong>Sweet Spot: INT8</strong> provides the best quality/speed trade-off for production. You get 4x speedup with <1% quality loss.\n                    Use 4-bit only when memory/cost is critical or for CPU inference.</p>\n                </div>\n\n                <h3>Quantization Methods</h3>\n\n                <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;\">\n                    <div class=\"info-box\">\n                        <p><strong>1. 📦 Post-Training Quantization (PTQ)</strong></p>\n                        <p><strong>What:</strong> Quantize pre-trained model without retraining</p>\n                        <ul>\n                            <li><strong>Time:</strong> Minutes</li>\n                            <li><strong>Data:</strong> None or very little</li>\n                            <li><strong>Quality:</strong> Good (95-99% of FP16)</li>\n                            <li><strong>Methods:</strong> BitsAndBytes, GPTQ, AWQ</li>\n                        </ul>\n                        <p><strong>Use when:</strong> You want quick optimization without retraining</p>\n                    </div>\n\n                    <div class=\"info-box\">\n                        <p><strong>2. 🎯 Quantization-Aware Training (QAT)</strong></p>\n                        <p><strong>What:</strong> Train model with quantization in the loop</p>\n                        <ul>\n                            <li><strong>Time:</strong> Hours to days</li>\n                            <li><strong>Data:</strong> Full training set</li>\n                            <li><strong>Quality:</strong> Best (99%+ of FP16)</li>\n                            <li><strong>Methods:</strong> PyTorch QAT, TensorFlow QAT</li>\n                        </ul>\n                        <p><strong>Use when:</strong> Need maximum quality at low precision</p>\n                    </div>\n                </div>\n\n                <h3>Popular Quantization Formats</h3>\n\n                <h4>GPTQ (GPU-Optimized)</h4>\n                <p><strong>Best for:</strong> GPU inference with maximum speed</p>\n\n                <pre><code class=\"language-python\"># Quantize model to GPTQ INT4 (one-time process)\nfrom auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig\nimport torch\n\n# 1. Configure quantization\nquantize_config = BaseQuantizeConfig(\n    bits=4,  # 4-bit quantization\n    group_size=128,  # Quantize in groups of 128 weights\n    desc_act=False  # Activation order (False = faster)\n)\n\n# 2. Load model\nmodel = AutoGPTQForCausalLM.from_pretrained(\n    \"meta-llama/Llama-2-7b-hf\",\n    quantize_config=quantize_config\n)\n\n# 3. Quantize (requires ~2K calibration examples)\nimport datasets\ncalibration_data = datasets.load_dataset(\"c4\", split=\"train[:2000]\")\nmodel.quantize(calibration_data)\n\n# 4. Save quantized model\nmodel.save_quantized(\"./llama-2-7b-gptq-int4\")\n\n# Result: 28GB → 4GB model, 6-8x faster inference!\nprint(\"✅ GPTQ quantization complete!\")</code></pre>\n\n                <h4>GGUF (CPU-Optimized)</h4>\n                <p><strong>Best for:</strong> Running models on CPU (laptops, servers without GPU)</p>\n\n                <pre><code class=\"language-bash\"># Download pre-quantized GGUF model from HuggingFace\nwget https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q4_K_M.gguf\n\n# Or convert your own model using llama.cpp\ngit clone https://github.com/ggerganov/llama.cpp\ncd llama.cpp\nmake\n\n# Convert HuggingFace model to GGUF\npython convert.py /path/to/llama-2-7b --outfile llama-2-7b-f16.gguf\n\n# Quantize to 4-bit\n./quantize llama-2-7b-f16.gguf llama-2-7b-Q4_K_M.gguf Q4_K_M\n\n# Run inference on CPU!\n./main -m llama-2-7b-Q4_K_M.gguf -p \"Hello, world!\" -n 100 -t 8\n\n# Result: Run 7B model on MacBook Pro M2! 🚀</code></pre>\n\n                <h4>AWQ (Activation-Aware Quantization)</h4>\n                <p><strong>Best for:</strong> Highest quality 4-bit quantization</p>\n\n                <pre><code class=\"language-python\"># AWQ quantization (state-of-the-art quality)\nfrom awq import AutoAWQForCausalLM\nfrom transformers import AutoTokenizer\n\nmodel_path = \"meta-llama/Llama-2-7b-hf\"\nquant_path = \"llama-2-7b-awq-int4\"\n\n# Quantize\nmodel = AutoAWQForCausalLM.from_pretrained(model_path)\ntokenizer = AutoTokenizer.from_pretrained(model_path)\n\nmodel.quantize(tokenizer, quant_config={\"zero_point\": True, \"q_group_size\": 128})\nmodel.save_quantized(quant_path)\n\nprint(\"✅ AWQ quantization complete! Better quality than GPTQ.\")</code></pre>\n\n                <h3>BitsAndBytes: Easiest Quantization</h3>\n\n                <p>For quick experimentation, <strong>BitsAndBytes</strong> provides zero-effort quantization:</p>\n\n                <pre><code class=\"language-python\"># Install: pip install bitsandbytes accelerate\nfrom transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig\nimport torch\n\n# INT8 quantization (one line!)\nmodel_int8 = AutoModelForCausalLM.from_pretrained(\n    \"meta-llama/Llama-2-7b-hf\",\n    load_in_8bit=True,  # ✅ Quantize to INT8\n    device_map=\"auto\"\n)\n\n# 4-bit quantization (even faster)\nbnb_config = BitsAndBytesConfig(\n    load_in_4bit=True,\n    bnb_4bit_quant_type=\"nf4\",  # NormalFloat4 (optimal for neural nets)\n    bnb_4bit_compute_dtype=torch.float16,\n    bnb_4bit_use_double_quant=True\n)\n\nmodel_4bit = AutoModelForCausalLM.from_pretrained(\n    \"meta-llama/Llama-2-7b-hf\",\n    quantization_config=bnb_config,\n    device_map=\"auto\"\n)\n\n# Use it!\ntokenizer = AutoTokenizer.from_pretrained(\"meta-llama/Llama-2-7b-hf\")\ninputs = tokenizer(\"Hello, how are you?\", return_tensors=\"pt\").to(\"cuda\")\noutputs = model_4bit.generate(**inputs, max_new_tokens=50)\nprint(tokenizer.decode(outputs[0], skip_special_tokens=True))\n\n# Result: 7B model runs on 16GB GPU instead of 40GB! 🎉</code></pre>\n\n                <h3>Quantization Quality Comparison</h3>\n\n                <p>How much quality do you lose? Real benchmarks on Llama 2 7B:</p>\n\n                <table style=\"width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;\">\n                    <thead style=\"background-color: #10b981; color: white;\">\n                        <tr>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Format</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">MMLU</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">HellaSwag</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Perplexity</th>\n                            <th style=\"padding: 1rem; text-align: left; font-weight: 600;\">Speedup</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>FP16 (baseline)</strong></td>\n                            <td style=\"padding: 1rem;\">45.3%</td>\n                            <td style=\"padding: 1rem;\">77.2%</td>\n                            <td style=\"padding: 1rem;\">5.47</td>\n                            <td style=\"padding: 1rem;\">1.0x</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>INT8 (BitsAndBytes)</strong></td>\n                            <td style=\"padding: 1rem;\">45.1% (-0.2%)</td>\n                            <td style=\"padding: 1rem;\">76.9% (-0.3%)</td>\n                            <td style=\"padding: 1rem;\">5.49 (+0.02)</td>\n                            <td style=\"padding: 1rem;\">3.5x</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>AWQ INT4</strong></td>\n                            <td style=\"padding: 1rem;\">44.8% (-0.5%)</td>\n                            <td style=\"padding: 1rem;\">76.1% (-1.1%)</td>\n                            <td style=\"padding: 1rem;\">5.55 (+0.08)</td>\n                            <td style=\"padding: 1rem;\">6.2x</td>\n                        </tr>\n                        <tr style=\"border-bottom: 1px solid #e2e8f0;\">\n                            <td style=\"padding: 1rem;\"><strong>GPTQ INT4</strong></td>\n                            <td style=\"padding: 1rem;\">44.2% (-1.1%)</td>\n                            <td style=\"padding: 1rem;\">75.4% (-1.8%)</td>\n                            <td style=\"padding: 1rem;\">5.68 (+0.21)</td>\n                            <td style=\"padding: 1rem;\">7.8x</td>\n                        </tr>\n                        <tr>\n                            <td style=\"padding: 1rem;\"><strong>GGUF Q4_K_M</strong></td>\n                            <td style=\"padding: 1rem;\">43.7% (-1.6%)</td>\n                            <td style=\"padding: 1rem;\">74.8% (-2.4%)</td>\n                            <td style=\"padding: 1rem;\">5.82 (+0.35)</td>\n                            <td style=\"padding: 1rem;\">10x (CPU)</td>\n                        </tr>\n                    </tbody>\n                </table>\n\n                <div class=\"success-box\">\n                    <p>✅ <strong>Verdict:</strong> INT8 loses <1% accuracy with 3.5x speedup. AWQ INT4 loses ~1% with 6x speedup. GPTQ INT4 loses ~2% with 8x speedup.\n                    For production, <strong>INT8 or AWQ INT4</strong> are the sweet spots.</p>\n                </div>\n\n                <div class=\"warning-box\">\n                    <p>⚠️ <strong>When to Avoid Quantization:</strong></p>\n                    <ul>\n                        <li><strong>Math-heavy tasks:</strong> Code generation, mathematical reasoning (quality drop is more noticeable)</li>\n                        <li><strong>Small models (< 1B):</strong> Less redundancy, quantization hurts more</li>\n                        <li><strong>Already distilled models:</strong> Compact models don't quantize well</li>\n                        <li><strong>Creative writing:</strong> Some users notice quality degradation</li>\n                    </ul>\n                    <p>In these cases, use FP16 or INT8 at most, avoid INT4.</p>\n                </div>\n            </section>"}, {"explanation": "Expand distillation section with practical implementation and use cases", "oldString": "            <section class=\"content-section\">\n                <h2>📚 Distillation</h2>\n                \n                <p>\n                    Train a smaller \"student\" model to mimic a larger \"teacher\" model. Student is faster but nearly as accurate.\n                </p>\n\n                <h3>How It Works</h3>\n                <ol>\n                    <li>Train on task with large model (teacher)</li>\n                    <li>Use teacher outputs as soft targets for student</li>\n                    <li>Student learns to mimic teacher</li>\n                    <li>Deploy student (faster, smaller)</li>\n                </ol>\n\n                <h3>Results</h3>\n                <ul>\n                    <li>7B student mimics 13B teacher (10x faster)</li>\n                    <li>95-98% of teacher performance</li>\n                    <li>Much faster inference</li>\n                    <li>Works great with quantization</li>\n                </ul>\n\n                <pre><code class=\"language-python\"># Knowledge distillation (simplified)\n# Teacher model: large, accurate\n# Student model: small, fast\n# Goal: train student to match teacher\n\nfor batch in dataloader:\n    # Get teacher predictions (soft targets)\n    with torch.no_grad():\n        teacher_logits = teacher(batch)\n    \n    # Get student predictions\n    student_logits = student(batch)\n    \n    # KL divergence loss (match probabilities)\n    loss = KL_divergence(\n        student_logits / temperature,\n        teacher_logits / temperature\n    )\n    \n    loss.backward()\n    optimizer.step()</code></pre>\n            </section>", "filePath": "/Users/rameshsurapathi/Desktop/AIProjects/Nebaz AI Academy/tutorials/llms/inference-optimization.html"}]
+
+            <section class="content-section">
+                <h2>📚 Distillation</h2>
+                
+                <p>
+                    Train a smaller "student" model to mimic a larger "teacher" model. Student is faster but nearly as accurate.
+                </p>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li>Train on task with large model (teacher)</li>
+                    <li>Use teacher outputs as soft targets for student</li>
+                    <li>Student learns to mimic teacher</li>
+                    <li>Deploy student (faster, smaller)</li>
+                </ol>
+
+                <h3>Results</h3>
+                <ul>
+                    <li>7B student mimics 13B teacher (10x faster)</li>
+                    <li>95-98% of teacher performance</li>
+                    <li>Much faster inference</li>
+                    <li>Works great with quantization</li>
+                </ul>
+
+                <pre><code class="language-python"># Knowledge distillation (simplified)
+# Teacher model: large, accurate
+# Student model: small, fast
+# Goal: train student to match teacher
+
+for batch in dataloader:
+    # Get teacher predictions (soft targets)
+    with torch.no_grad():
+        teacher_logits = teacher(batch)
+    
+    # Get student predictions
+    student_logits = student(batch)
+    
+    # KL divergence loss (match probabilities)
+    loss = KL_divergence(
+        student_logits / temperature,
+        teacher_logits / temperature
+    )
+    
+    loss.backward()
+    optimizer.step()</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ Inference Frameworks</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>vLLM</h3>
+                        <p>Fastest inference. Batching, caching, GPTQ support. Use for high-throughput serving.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💻</div>
+                        <h3>llama.cpp</h3>
+                        <p>CPU inference with GGUF. Run 13B models on MacBook. No GPU needed!</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>TensorRT-LLM</h3>
+                        <p>NVIDIA's inference engine. Extreme optimization for NVIDIA GPUs.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔧</div>
+                        <h3>Ollama</h3>
+                        <p>Simple local LLM serving. Easy to use, good for development.</p>
+                    </div>
+                </div>
+
+                <h3>vLLM Example</h3>
+                <pre><code class="language-bash"># Install
+pip install vllm
+
+# Serve model
+python -m vllm.entrypoints.openai_compatible_server \
+  --model meta-llama/Llama-2-7b-hf \
+  --quantization gptq
+
+# Now use like OpenAI API!</code></pre>
+
+                <h3>llama.cpp Example</h3>
+                <pre><code class="language-bash"># Download GGUF model
+wget https://huggingface.co/TheBloke/Llama-2-7B-GGUF/resolve/main/llama-2-7b.Q4_K_M.gguf
+
+# Run locally
+./main -m llama-2-7b.Q4_K_M.gguf -p "Hello" -n 128</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Optimization Checklist</h2>
+                
+                <ol>
+                    <li><strong>Quantize:</strong> Use INT8 or INT4. 4x speed gain</li>
+                    <li><strong>Use vLLM:</strong> Batching + caching. 2x-10x speedup</li>
+                    <li><strong>Batch requests:</strong> Process multiple queries together</li>
+                    <li><strong>Cache KV values:</strong> Don't recompute for same context</li>
+                    <li><strong>Distributed inference:</strong> Split model across multiple GPUs</li>
+                    <li><strong>Monitor:</strong> Track latency, throughput, cost</li>
+                </ol>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Trade-offs:</strong> Quantization = speed but slightly lower quality. Distillation = smaller but needs training. Choose based on your requirements!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Quantization: Reduce precision (32→8/4 bit). 4-8x speed for <2% quality loss</li>
+                    <li>Distillation: Train small model to mimic large. 10x speedup with 95% quality</li>
+                    <li>vLLM: Fast batched inference with KV caching</li>
+                    <li>llama.cpp: CPU inference, run on any machine</li>
+                    <li>Optimization is critical for production deployment</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In our final tutorial, <strong>Building LLM Applications</strong>, we'll put it all together into production systems.
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Excellent!</strong> You now have the skills to deploy LLMs efficiently at scale!</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is quantization in the context of LLM optimization?</strong></p>
+                    <div class="quiz-option" data-value="a">Making models larger</div>
+                    <div class="quiz-option" data-value="b">Adding more layers to the model</div>
+                    <div class="quiz-option" data-value="c">Reducing precision of weights and activations to use fewer bits per parameter</div>
+                    <div class="quiz-option" data-value="d">Removing all parameters</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does KV cache optimization improve?</strong></p>
+                    <div class="quiz-option" data-value="a">Training speed</div>
+                    <div class="quiz-option" data-value="b">Inference speed by caching key-value pairs from previous tokens</div>
+                    <div class="quiz-option" data-value="c">Model accuracy</div>
+                    <div class="quiz-option" data-value="d">Data preprocessing</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What is the benefit of batching requests during inference?</strong></p>
+                    <div class="quiz-option" data-value="a">It increases model size</div>
+                    <div class="quiz-option" data-value="b">It reduces accuracy</div>
+                    <div class="quiz-option" data-value="c">It makes responses slower</div>
+                    <div class="quiz-option" data-value="d">It improves GPU utilization and throughput by processing multiple requests together</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is Flash Attention designed to optimize?</strong></p>
+                    <div class="quiz-option" data-value="a">Memory usage and speed of attention computations</div>
+                    <div class="quiz-option" data-value="b">Model training only</div>
+                    <div class="quiz-option" data-value="c">Data loading</div>
+                    <div class="quiz-option" data-value="d">Prompt engineering</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: When should you consider using model distillation?</strong></p>
+                    <div class="quiz-option" data-value="a">Never, it always reduces quality</div>
+                    <div class="quiz-option" data-value="b">Only for training from scratch</div>
+                    <div class="quiz-option" data-value="c">When you need a smaller, faster model that retains most of the larger model's capabilities</div>
+                    <div class="quiz-option" data-value="d">Only for image models</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="fine-tuning-llms.html" class="btn btn-secondary">← Previous: Fine-tuning LLMs</a>
+                <a href="building-llm-applications.html" class="btn btn-primary">Next: Building LLM Applications →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

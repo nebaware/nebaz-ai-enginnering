@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hands-On Project: Visualize and Analyze Transformer Attention Patterns. Understand what attention heads learn.">
+    <meta name="keywords" content="attention visualization, transformer analysis, attention patterns, bert analysis, gpt visualization, interpretability">
+    <title>Project 3: Visualize Attention Patterns | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Project 3: Visualize Attention Patterns</span>
+            </nav>
+        </div>
+    </div>
+    
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">🔍 Project 3: Visualize Attention Patterns</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Hands-On Project</span>
+                    <span style="color: rgba(255,255,255,0.9);">🔴 Advanced</span>
+                    <span style="color: rgba(255,255,255,0.9);">⏱️ 1-2 hours</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Analyze and visualize what transformer attention heads learn using pretrained models
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    In this project, you'll peek inside pretrained transformer models (BERT and GPT-2) to visualize and understand what different attention heads learn. You'll discover that different heads specialize in different linguistic patterns!
+                </p>
+
+                <div style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #f97316;">
+                    <h3 style="margin-top: 0; color: #7c2d12;">What You'll Build</h3>
+                    <ul style="color: #7c2d12; margin: 0; line-height: 1.8;">
+                        <li>✅ Load pretrained BERT and GPT-2 models</li>
+                        <li>✅ Extract attention weights from all layers</li>
+                        <li>✅ Visualize attention patterns with heatmaps</li>
+                        <li>✅ Analyze what different heads attend to</li>
+                        <li>✅ Interactive attention explorer</li>
+                        <li>✅ Compare attention across layers</li>
+                        <li>✅ Discover syntactic vs semantic patterns</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>📋 Prerequisites</h4>
+                    <ul style="margin: 0.5rem 0;">
+                        <li>Python 3.7+</li>
+                        <li>Transformers library: <code>pip install transformers</code></li>
+                        <li>Visualization: <code>pip install matplotlib seaborn</code></li>
+                        <li>PyTorch or TensorFlow</li>
+                        <li>2-4 GB RAM for model loading</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 1: Setup and Load Models</h2>
+                <pre><code class="language-python">import torch
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from transformers import BertTokenizer, BertModel, GPT2Tokenizer, GPT2LMHeadModel
+
+# Set style
+sns.set_style("whitegrid")
+plt.rcParams['figure.figsize'] = (12, 8)
+
+# Device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
+
+# Load BERT
+print("\n📥 Loading BERT-base-uncased...")
+bert_tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+bert_model = BertModel.from_pretrained('bert-base-uncased', output_attentions=True)
+bert_model.to(device)
+bert_model.eval()
+print(f"✅ BERT loaded: {bert_model.config.num_hidden_layers} layers, "
+      f"{bert_model.config.num_attention_heads} heads per layer")
+
+# Load GPT-2
+print("\n📥 Loading GPT-2...")
+gpt2_tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+gpt2_model = GPT2LMHeadModel.from_pretrained('gpt2', output_attentions=True)
+gpt2_model.to(device)
+gpt2_model.eval()
+print(f"✅ GPT-2 loaded: {gpt2_model.config.n_layer} layers, "
+      f"{gpt2_model.config.n_head} heads per layer")
+
+print("\n🎉 Models ready for analysis!")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 2: Extract Attention Weights</h2>
+                <pre><code class="language-python">def get_bert_attention(text, tokenizer, model, device):
+    """
+    Extract attention weights from BERT.
+    
+    Args:
+        text: Input text string
+        tokenizer: BERT tokenizer
+        model: BERT model
+        device: torch device
+    
+    Returns:
+        tokens: List of tokens
+        attentions: Tuple of attention tensors (one per layer)
+                   Each tensor: [batch=1, num_heads, seq_len, seq_len]
+    """
+    # Tokenize
+    inputs = tokenizer(text, return_tensors='pt', add_special_tokens=True)
+    input_ids = inputs['input_ids'].to(device)
+    
+    # Get tokens for visualization
+    tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
+    
+    # Forward pass
+    with torch.no_grad():
+        outputs = model(input_ids)
+        attentions = outputs.attentions  # Tuple of [1, num_heads, seq_len, seq_len]
+    
+    return tokens, attentions
+
+
+def get_gpt2_attention(text, tokenizer, model, device):
+    """
+    Extract attention weights from GPT-2.
+    
+    Args:
+        text: Input text string
+        tokenizer: GPT-2 tokenizer
+        model: GPT-2 model
+        device: torch device
+    
+    Returns:
+        tokens: List of tokens
+        attentions: Tuple of attention tensors (one per layer)
+    """
+    # Tokenize
+    inputs = tokenizer(text, return_tensors='pt')
+    input_ids = inputs['input_ids'].to(device)
+    
+    # Get tokens
+    tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
+    
+    # Forward pass
+    with torch.no_grad():
+        outputs = model(input_ids)
+        attentions = outputs.attentions
+    
+    return tokens, attentions
+
+
+# Test with example sentence
+example_text = "The cat sat on the mat and looked at the bird."
+
+print("\n🔍 Extracting attention from BERT...")
+bert_tokens, bert_attentions = get_bert_attention(example_text, bert_tokenizer, bert_model, device)
+print(f"✅ Tokens: {bert_tokens}")
+print(f"✅ Attention shape: {len(bert_attentions)} layers, "
+      f"each {bert_attentions[0].shape}")
+
+print("\n🔍 Extracting attention from GPT-2...")
+gpt2_tokens, gpt2_attentions = get_gpt2_attention(example_text, gpt2_tokenizer, gpt2_model, device)
+print(f"✅ Tokens: {gpt2_tokens}")
+print(f"✅ Attention shape: {len(gpt2_attentions)} layers, "
+      f"each {gpt2_attentions[0].shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 3: Visualize Single Head</h2>
+                <pre><code class="language-python">def plot_attention_head(attention, tokens, layer, head, ax=None):
+    """
+    Plot attention weights for a single head.
+    
+    Args:
+        attention: [seq_len, seq_len] attention matrix
+        tokens: List of token strings
+        layer: Layer number (for title)
+        head: Head number (for title)
+        ax: Matplotlib axis (optional)
+    """
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(10, 8))
+    
+    # Plot heatmap
+    sns.heatmap(attention, xticklabels=tokens, yticklabels=tokens, 
+                cmap='YlOrRd', vmin=0, vmax=1, 
+                square=True, linewidths=0.5, cbar_kws={'label': 'Attention Weight'},
+                ax=ax)
+    
+    ax.set_title(f'Layer {layer}, Head {head}', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Key Tokens', fontsize=12)
+    ax.set_ylabel('Query Tokens', fontsize=12)
+    
+    # Rotate labels
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+    ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+    
+    plt.tight_layout()
+
+
+# Visualize specific attention head
+layer_idx = 5  # Middle layer
+head_idx = 3   # Random head
+
+# Get attention for this layer and head
+attention = bert_attentions[layer_idx][0, head_idx].cpu().numpy()
+
+# Plot
+fig, ax = plt.subplots(figsize=(12, 10))
+plot_attention_head(attention, bert_tokens, layer_idx, head_idx, ax)
+plt.savefig(f'bert_attention_layer{layer_idx}_head{head_idx}.png', dpi=150, bbox_inches='tight')
+plt.show()
+
+print(f"✅ Visualized BERT Layer {layer_idx}, Head {head_idx}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 4: Compare All Heads in a Layer</h2>
+                <pre><code class="language-python">def plot_all_heads_in_layer(attentions, tokens, layer_idx, model_name='BERT'):
+    """
+    Plot all attention heads in a specific layer.
+    
+    Args:
+        attentions: Tuple of attention tensors
+        tokens: List of tokens
+        layer_idx: Which layer to visualize
+        model_name: Model name for title
+    """
+    # Get attention for this layer: [1, num_heads, seq_len, seq_len]
+    layer_attention = attentions[layer_idx][0].cpu().numpy()
+    num_heads = layer_attention.shape[0]
+    
+    # Create grid of subplots
+    cols = 4
+    rows = (num_heads + cols - 1) // cols
+    
+    fig, axes = plt.subplots(rows, cols, figsize=(20, rows * 4))
+    axes = axes.flatten()
+    
+    for head_idx in range(num_heads):
+        ax = axes[head_idx]
+        attention = layer_attention[head_idx]
+        
+        sns.heatmap(attention, xticklabels=tokens, yticklabels=tokens,
+                   cmap='YlOrRd', vmin=0, vmax=1, square=True,
+                   linewidths=0.2, cbar=False, ax=ax)
+        
+        ax.set_title(f'Head {head_idx}', fontsize=10, fontweight='bold')
+        ax.set_xlabel('')
+        ax.set_ylabel('')
+        ax.tick_params(labelsize=7)
+        
+        # Only show labels on outer edges
+        if head_idx % cols != 0:
+            ax.set_yticklabels([])
+        if head_idx < num_heads - cols:
+            ax.set_xticklabels([])
+        else:
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+    
+    # Hide extra subplots
+    for idx in range(num_heads, len(axes)):
+        axes[idx].axis('off')
+    
+    plt.suptitle(f'{model_name} - Layer {layer_idx} - All Attention Heads', 
+                 fontsize=16, fontweight='bold', y=0.995)
+    plt.tight_layout()
+    plt.savefig(f'{model_name.lower()}_layer{layer_idx}_all_heads.png', dpi=150, bbox_inches='tight')
+    plt.show()
+
+
+# Visualize all heads in layer 5
+plot_all_heads_in_layer(bert_attentions, bert_tokens, layer_idx=5, model_name='BERT')
+print("✅ Visualized all heads in BERT layer 5")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 5: Analyze Attention Patterns</h2>
+                <pre><code class="language-python">def analyze_attention_patterns(attentions, tokens):
+    """
+    Analyze what patterns different heads learn.
+    
+    Args:
+        attentions: Tuple of attention tensors
+        tokens: List of tokens
+    
+    Returns:
+        Dictionary with pattern analysis
+    """
+    patterns = {
+        'local_attention': [],      # Attends to nearby tokens
+        'global_attention': [],     # Attends to all tokens uniformly
+        'positional_attention': [], # Attends to specific positions
+        'special_token_attention': [] # Attends to special tokens ([CLS], [SEP])
+    }
+    
+    num_layers = len(attentions)
+    num_heads = attentions[0].shape[1]
+    
+    for layer_idx in range(num_layers):
+        for head_idx in range(num_heads):
+            attention = attentions[layer_idx][0, head_idx].cpu().numpy()
+            seq_len = attention.shape[0]
+            
+            # Measure locality (how much attention goes to nearby tokens)
+            locality_score = 0
+            for i in range(seq_len):
+                for j in range(max(0, i-2), min(seq_len, i+3)):
+                    locality_score += attention[i, j]
+            locality_score /= seq_len
+            
+            # Measure entropy (uniform distribution has high entropy)
+            entropy = -np.sum(attention * np.log(attention + 1e-10), axis=-1).mean()
+            
+            # Measure attention to first token ([CLS])
+            cls_attention = attention[:, 0].mean()
+            
+            # Categorize patterns
+            if locality_score > 0.7:
+                patterns['local_attention'].append((layer_idx, head_idx, locality_score))
+            
+            if entropy > 2.0:
+                patterns['global_attention'].append((layer_idx, head_idx, entropy))
+            
+            if cls_attention > 0.3:
+                patterns['special_token_attention'].append((layer_idx, head_idx, cls_attention))
+    
+    return patterns
+
+
+# Analyze BERT patterns
+print("\n🔬 Analyzing BERT attention patterns...")
+bert_patterns = analyze_attention_patterns(bert_attentions, bert_tokens)
+
+print(f"\n📊 Pattern Analysis Results:")
+print(f"   Local attention heads: {len(bert_patterns['local_attention'])}")
+for layer, head, score in bert_patterns['local_attention'][:5]:
+    print(f"      Layer {layer}, Head {head}: {score:.3f}")
+
+print(f"\n   Global attention heads: {len(bert_patterns['global_attention'])}")
+for layer, head, entropy in bert_patterns['global_attention'][:5]:
+    print(f"      Layer {layer}, Head {head}: entropy={entropy:.3f}")
+
+print(f"\n   Special token attention heads: {len(bert_patterns['special_token_attention'])}")
+for layer, head, score in bert_patterns['special_token_attention'][:5]:
+    print(f"      Layer {layer}, Head {head}: [CLS] attention={score:.3f}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 6: Layer-wise Attention Flow</h2>
+                <pre><code class="language-python">def plot_attention_flow(attentions, tokens, token_idx):
+    """
+    Show how a specific token's attention changes across layers.
+    
+    Args:
+        attentions: Tuple of attention tensors
+        tokens: List of tokens
+        token_idx: Index of token to track
+    """
+    num_layers = len(attentions)
+    num_heads = attentions[0].shape[1]
+    seq_len = len(tokens)
+    
+    # Extract attention from all layers for this token
+    attention_by_layer = np.zeros((num_layers, seq_len))
+    
+    for layer_idx in range(num_layers):
+        # Average across heads
+        layer_attn = attentions[layer_idx][0, :, token_idx, :].cpu().numpy()
+        attention_by_layer[layer_idx] = layer_attn.mean(axis=0)
+    
+    # Plot
+    fig, ax = plt.subplots(figsize=(14, 8))
+    
+    im = ax.imshow(attention_by_layer.T, aspect='auto', cmap='YlOrRd', 
+                   vmin=0, vmax=attention_by_layer.max())
+    
+    ax.set_xlabel('Layer', fontsize=14)
+    ax.set_ylabel('Token', fontsize=14)
+    ax.set_title(f'Attention Flow for Token: "{tokens[token_idx]}"', 
+                fontsize=16, fontweight='bold', pad=20)
+    
+    ax.set_xticks(range(num_layers))
+    ax.set_xticklabels(range(num_layers))
+    ax.set_yticks(range(seq_len))
+    ax.set_yticklabels(tokens)
+    
+    # Add colorbar
+    cbar = plt.colorbar(im, ax=ax)
+    cbar.set_label('Attention Weight', fontsize=12)
+    
+    plt.tight_layout()
+    plt.savefig(f'attention_flow_token_{token_idx}.png', dpi=150, bbox_inches='tight')
+    plt.show()
+
+
+# Visualize attention flow for the word "cat"
+cat_idx = bert_tokens.index('cat') if 'cat' in bert_tokens else 2
+plot_attention_flow(bert_attentions, bert_tokens, cat_idx)
+print(f"✅ Visualized attention flow for token '{bert_tokens[cat_idx]}'")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 7: Compare BERT vs GPT-2</h2>
+                <pre><code class="language-python">def compare_models_attention(bert_attentions, gpt2_attentions, 
+                             bert_tokens, gpt2_tokens, layer_idx=5):
+    """
+    Compare attention patterns between BERT and GPT-2.
+    
+    Args:
+        bert_attentions: BERT attention tensors
+        gpt2_attentions: GPT-2 attention tensors
+        bert_tokens: BERT tokens
+        gpt2_tokens: GPT-2 tokens
+        layer_idx: Which layer to compare
+    """
+    fig, axes = plt.subplots(1, 2, figsize=(20, 8))
+    
+    # BERT (encoder, bidirectional)
+    bert_attn = bert_attentions[layer_idx][0, 0].cpu().numpy()  # Head 0
+    sns.heatmap(bert_attn, xticklabels=bert_tokens, yticklabels=bert_tokens,
+               cmap='Blues', square=True, linewidths=0.5, ax=axes[0])
+    axes[0].set_title('BERT (Bidirectional Encoder)\nLayer 5, Head 0', 
+                     fontsize=14, fontweight='bold')
+    axes[0].set_xlabel('Key Tokens')
+    axes[0].set_ylabel('Query Tokens')
+    
+    # GPT-2 (decoder, causal)
+    gpt2_attn = gpt2_attentions[layer_idx][0, 0].cpu().numpy()  # Head 0
+    sns.heatmap(gpt2_attn, xticklabels=gpt2_tokens, yticklabels=gpt2_tokens,
+               cmap='Reds', square=True, linewidths=0.5, ax=axes[1])
+    axes[1].set_title('GPT-2 (Causal Decoder)\nLayer 5, Head 0', 
+                     fontsize=14, fontweight='bold')
+    axes[1].set_xlabel('Key Tokens')
+    axes[1].set_ylabel('Query Tokens')
+    
+    plt.suptitle('BERT vs GPT-2: Attention Patterns', fontsize=16, fontweight='bold', y=1.02)
+    plt.tight_layout()
+    plt.savefig('bert_vs_gpt2_attention.png', dpi=150, bbox_inches='tight')
+    plt.show()
+    
+    print("\n🔍 Key Differences:")
+    print("   BERT (Blue):")
+    print("      - Bidirectional: can attend to all tokens (past and future)")
+    print("      - Useful for understanding context from both directions")
+    print("      - Applications: classification, named entity recognition")
+    print()
+    print("   GPT-2 (Red):")
+    print("      - Causal (triangular pattern): only attends to past tokens")
+    print("      - Prevents information leakage during generation")
+    print("      - Applications: text generation, autocompletion")
+
+
+# Compare models
+compare_models_attention(bert_attentions, gpt2_attentions, 
+                        bert_tokens, gpt2_tokens, layer_idx=5)
+print("✅ Model comparison complete")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 8: Interactive Attention Explorer</h2>
+                <pre><code class="language-python">def interactive_attention_explorer(text, model_type='bert'):
+    """
+    Interactive tool to explore attention for any text.
+    
+    Args:
+        text: Input text
+        model_type: 'bert' or 'gpt2'
+    """
+    # Get model and tokenizer
+    if model_type == 'bert':
+        tokenizer = bert_tokenizer
+        model = bert_model
+        tokens, attentions = get_bert_attention(text, tokenizer, model, device)
+    else:
+        tokenizer = gpt2_tokenizer
+        model = gpt2_model
+        tokens, attentions = get_gpt2_attention(text, tokenizer, model, device)
+    
+    num_layers = len(attentions)
+    num_heads = attentions[0].shape[1]
+    
+    print(f"\n{'='*70}")
+    print(f"🔍 Attention Explorer - {model_type.upper()}")
+    print(f"{'='*70}")
+    print(f"Text: {text}")
+    print(f"Tokens: {tokens}")
+    print(f"Layers: {num_layers}, Heads per layer: {num_heads}")
+    print(f"{'='*70}\n")
+    
+    # Find interesting heads
+    print("🎯 Finding interesting attention patterns...\n")
+    
+    for layer_idx in range(min(3, num_layers)):  # Check first 3 layers
+        for head_idx in range(min(4, num_heads)):  # Check first 4 heads
+            attention = attentions[layer_idx][0, head_idx].cpu().numpy()
+            
+            # Check if this head has interesting patterns
+            # Pattern 1: Diagonal (local attention)
+            diagonal_sum = sum([attention[i, i] for i in range(len(tokens))])
+            
+            # Pattern 2: First column (attention to [CLS])
+            first_col_sum = attention[:, 0].sum()
+            
+            # Pattern 3: Last row (last token attending to all)
+            last_row_entropy = -np.sum(attention[-1] * np.log(attention[-1] + 1e-10))
+            
+            if diagonal_sum > 0.5:
+                print(f"   Layer {layer_idx}, Head {head_idx}: LOCAL pattern "
+                      f"(diagonal={diagonal_sum:.2f})")
+            
+            if first_col_sum > len(tokens) * 0.3:
+                print(f"   Layer {layer_idx}, Head {head_idx}: CLS/START pattern "
+                      f"(first_col={first_col_sum:.2f})")
+            
+            if last_row_entropy > 2.0:
+                print(f"   Layer {layer_idx}, Head {head_idx}: GLOBAL pattern "
+                      f"(entropy={last_row_entropy:.2f})")
+    
+    print(f"\n{'='*70}")
+    
+    # Visualize most interesting head
+    layer_idx = 2
+    head_idx = 0
+    attention = attentions[layer_idx][0, head_idx].cpu().numpy()
+    
+    fig, ax = plt.subplots(figsize=(12, 10))
+    plot_attention_head(attention, tokens, layer_idx, head_idx, ax)
+    plt.savefig(f'{model_type}_attention_explorer.png', dpi=150, bbox_inches='tight')
+    plt.show()
+
+
+# Try different sentences
+test_sentences = [
+    "The quick brown fox jumps over the lazy dog.",
+    "She sells seashells by the seashore.",
+    "To be or not to be, that is the question.",
+    "The cat and the dog are friends, but the bird is scared.",
+]
+
+print("\n🌟 Exploring Attention for Different Sentences")
+print("="*70)
+
+for sentence in test_sentences[:2]:  # Analyze first 2
+    interactive_attention_explorer(sentence, model_type='bert')
+    print("\n")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 9: Head Specialization Analysis</h2>
+                <pre><code class="language-python">def analyze_head_specialization(attentions, tokens):
+    """
+    Discover what linguistic properties different heads capture.
+    
+    Args:
+        attentions: Attention tensors
+        tokens: Token list
+    """
+    num_layers = len(attentions)
+    num_heads = attentions[0].shape[1]
+    
+    specializations = {
+        'positional': [],    # Attends based on position
+        'syntactic': [],     # Attends to grammatical relationships
+        'semantic': [],      # Attends to meaning-related tokens
+        'delimiter': [],     # Attends to punctuation/boundaries
+    }
+    
+    print("\n🧠 Head Specialization Analysis")
+    print("="*70)
+    
+    for layer_idx in range(num_layers):
+        for head_idx in range(num_heads):
+            attention = attentions[layer_idx][0, head_idx].cpu().numpy()
+            
+            # Positional pattern: attention depends mainly on distance
+            distance_correlation = 0
+            for i in range(len(tokens)):
+                for j in range(len(tokens)):
+                    distance = abs(i - j)
+                    distance_correlation += attention[i, j] * (1.0 / (distance + 1))
+            distance_correlation /= len(tokens) ** 2
+            
+            # Punctuation attention
+            punct_attention = 0
+            punct_tokens = ['.', ',', '!', '?', ';', ':']
+            for i, token in enumerate(tokens):
+                if token in punct_tokens:
+                    punct_attention += attention[:, i].mean()
+            punct_attention /= max(sum(1 for t in tokens if t in punct_tokens), 1)
+            
+            # Store findings
+            if distance_correlation > 0.15:
+                specializations['positional'].append((layer_idx, head_idx, distance_correlation))
+            
+            if punct_attention > 0.2:
+                specializations['delimiter'].append((layer_idx, head_idx, punct_attention))
+            
+            # Early layers = syntactic, late layers = semantic (heuristic)
+            if layer_idx < num_layers // 3:
+                specializations['syntactic'].append((layer_idx, head_idx))
+            elif layer_idx > 2 * num_layers // 3:
+                specializations['semantic'].append((layer_idx, head_idx))
+    
+    # Print findings
+    print("\n📍 POSITIONAL Heads (attend based on token distance):")
+    for layer, head, score in sorted(specializations['positional'], 
+                                     key=lambda x: x[2], reverse=True)[:5]:
+        print(f"   Layer {layer:2d}, Head {head}: score={score:.3f}")
+    
+    print("\n📝 DELIMITER Heads (attend to punctuation):")
+    for layer, head, score in sorted(specializations['delimiter'], 
+                                     key=lambda x: x[2], reverse=True)[:5]:
+        print(f"   Layer {layer:2d}, Head {head}: score={score:.3f}")
+    
+    print("\n🔤 SYNTACTIC Heads (early layers, grammatical structure):")
+    for layer, head in specializations['syntactic'][:5]:
+        print(f"   Layer {layer:2d}, Head {head}")
+    
+    print("\n💡 SEMANTIC Heads (late layers, meaning relationships):")
+    for layer, head in specializations['semantic'][:5]:
+        print(f"   Layer {layer:2d}, Head {head}")
+    
+    print("\n" + "="*70)
+    
+    return specializations
+
+
+# Analyze BERT head specialization
+bert_specializations = analyze_head_specialization(bert_attentions, bert_tokens)
+print("✅ Specialization analysis complete")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 10: Attention Statistics Summary</h2>
+                <pre><code class="language-python">def create_attention_summary(attentions, tokens, model_name='BERT'):
+    """
+    Create comprehensive summary visualization.
+    
+    Args:
+        attentions: Attention tensors
+        tokens: Token list
+        model_name: Model name
+    """
+    num_layers = len(attentions)
+    num_heads = attentions[0].shape[1]
+    
+    # Compute statistics
+    avg_attention_by_layer = []
+    entropy_by_layer = []
+    
+    for layer_idx in range(num_layers):
+        layer_attn = attentions[layer_idx][0].cpu().numpy()  # [num_heads, seq_len, seq_len]
+        
+        # Average attention weight
+        avg_attn = layer_attn.mean()
+        avg_attention_by_layer.append(avg_attn)
+        
+        # Average entropy (measure of attention dispersion)
+        entropy = -np.sum(layer_attn * np.log(layer_attn + 1e-10), axis=-1).mean()
+        entropy_by_layer.append(entropy)
+    
+    # Create summary plot
+    fig, axes = plt.subplots(2, 2, figsize=(16, 12))
+    
+    # Plot 1: Average attention by layer
+    axes[0, 0].plot(range(num_layers), avg_attention_by_layer, 
+                    marker='o', linewidth=2, markersize=8)
+    axes[0, 0].set_xlabel('Layer', fontsize=12)
+    axes[0, 0].set_ylabel('Average Attention Weight', fontsize=12)
+    axes[0, 0].set_title('Average Attention Across Layers', fontsize=14, fontweight='bold')
+    axes[0, 0].grid(True, alpha=0.3)
+    
+    # Plot 2: Entropy by layer
+    axes[0, 1].plot(range(num_layers), entropy_by_layer, 
+                    marker='s', linewidth=2, markersize=8, color='orange')
+    axes[0, 1].set_xlabel('Layer', fontsize=12)
+    axes[0, 1].set_ylabel('Attention Entropy', fontsize=12)
+    axes[0, 1].set_title('Attention Entropy Across Layers', fontsize=14, fontweight='bold')
+    axes[0, 1].grid(True, alpha=0.3)
+    
+    # Plot 3: Attention heatmap (average across all heads and layers)
+    avg_attention = torch.stack([a[0] for a in attentions]).mean(dim=(0, 1)).cpu().numpy()
+    sns.heatmap(avg_attention, xticklabels=tokens, yticklabels=tokens,
+               cmap='YlOrRd', square=True, linewidths=0.5, ax=axes[1, 0])
+    axes[1, 0].set_title('Average Attention (All Layers & Heads)', 
+                        fontsize=14, fontweight='bold')
+    axes[1, 0].set_xlabel('Key Tokens')
+    axes[1, 0].set_ylabel('Query Tokens')
+    
+    # Plot 4: Token-wise attention received
+    attention_received = avg_attention.sum(axis=0)
+    axes[1, 1].bar(range(len(tokens)), attention_received, color='steelblue', alpha=0.7)
+    axes[1, 1].set_xlabel('Token', fontsize=12)
+    axes[1, 1].set_ylabel('Total Attention Received', fontsize=12)
+    axes[1, 1].set_title('Attention Received by Each Token', fontsize=14, fontweight='bold')
+    axes[1, 1].set_xticks(range(len(tokens)))
+    axes[1, 1].set_xticklabels(tokens, rotation=45, ha='right')
+    axes[1, 1].grid(True, alpha=0.3, axis='y')
+    
+    plt.suptitle(f'{model_name} Attention Analysis Summary', 
+                fontsize=16, fontweight='bold', y=0.995)
+    plt.tight_layout()
+    plt.savefig(f'{model_name.lower()}_attention_summary.png', dpi=150, bbox_inches='tight')
+    plt.show()
+    
+    # Print summary
+    print(f"\n📊 {model_name} Attention Summary")
+    print("="*70)
+    print(f"   Total layers: {num_layers}")
+    print(f"   Heads per layer: {num_heads}")
+    print(f"   Sequence length: {len(tokens)}")
+    print(f"   Avg attention weight: {np.mean(avg_attention_by_layer):.4f}")
+    print(f"   Avg entropy: {np.mean(entropy_by_layer):.4f}")
+    print(f"   Most attended token: '{tokens[np.argmax(attention_received)]}'")
+    print("="*70)
+
+
+# Create summary for BERT
+create_attention_summary(bert_attentions, bert_tokens, model_name='BERT')
+print("✅ Summary visualization complete")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎉 Congratulations!</h2>
+                <div class="success-box">
+                    <h4>What You've Accomplished</h4>
+                    <ul style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li>✅ Extracted and visualized attention from BERT and GPT-2</li>
+                        <li>✅ Analyzed attention patterns across layers and heads</li>
+                        <li>✅ Discovered head specialization (positional, syntactic, semantic)</li>
+                        <li>✅ Compared bidirectional vs causal attention</li>
+                        <li>✅ Created interactive attention exploration tools</li>
+                        <li>✅ Built comprehensive visualization dashboards</li>
+                    </ul>
+                </div>
+
+                <h3>Key Discoveries</h3>
+                <div class="info-box">
+                    <h4>🔬 What We Learned About Attention</h4>
+                    <ul style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Layer Patterns:</strong> Early layers capture syntax, late layers capture semantics</li>
+                        <li><strong>Head Specialization:</strong> Different heads learn different linguistic properties</li>
+                        <li><strong>Positional Heads:</strong> Some heads mainly attend based on token distance</li>
+                        <li><strong>Delimiter Heads:</strong> Some heads focus on punctuation and boundaries</li>
+                        <li><strong>BERT vs GPT-2:</strong> Bidirectional vs causal masking creates different patterns</li>
+                        <li><strong>Attention Flow:</strong> How attention changes across layers reveals learning hierarchy</li>
+                    </ul>
+                </div>
+
+                <h3>Research Insights</h3>
+                <div style="background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #6366f1;">
+                    <h4 style="margin-top: 0; color: #3730a3;">📚 Papers on Attention Analysis</h4>
+                    <ul style="color: #3730a3; margin: 0; line-height: 1.8; font-size: 0.95rem;">
+                        <li><strong>"What Does BERT Look At?"</strong> (Clark et al., 2019)<br>
+                        <em>Found specific heads attend to syntactic relations like dependency arcs</em></li>
+                        <li><strong>"Are Sixteen Heads Really Better than One?"</strong> (Michel et al., 2019)<br>
+                        <em>Showed many heads can be pruned without hurting performance</em></li>
+                        <li><strong>"Analyzing Multi-Head Self-Attention"</strong> (Voita et al., 2019)<br>
+                        <em>Identified positional, syntactic, and rare word heads</em></li>
+                    </ul>
+                </div>
+
+                <h3>Next Steps</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔬 Experiment</h4>
+                        <ul style="font-size: 0.9rem; color: #047857; margin: 0;">
+                            <li>Try different text types (code, math, poetry)</li>
+                            <li>Analyze other models (RoBERTa, GPT-3)</li>
+                            <li>Compare multilingual attention patterns</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">🚀 Advanced</h4>
+                        <ul style="font-size: 0.9rem; color: #b45309; margin: 0;">
+                            <li>Implement attention rollout/flow</li>
+                            <li>Head pruning experiments</li>
+                            <li>Attention-based interpretability</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">📊 Research</h4>
+                        <ul style="font-size: 0.9rem; color: #065f46; margin: 0;">
+                            <li>Test linguistic hypotheses</li>
+                            <li>Correlate attention with task performance</li>
+                            <li>Study emergent linguistic properties</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center; color: white;">
+                    <p style="font-size: 1.2rem; margin: 0;">
+                        <strong>🏆 You've unlocked the black box!</strong>
+                    </p>
+                    <p style="margin-top: 1rem; color: rgba(255,255,255,0.95);">
+                        You can now visualize and understand what transformer models are actually learning. This is crucial for interpretability, debugging, and advancing AI research.
+                </p>
+            </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What do attention visualizations primarily show?</strong></p>
+                    <div class="quiz-option" data-value="a">Training loss</div>
+                    <div class="quiz-option" data-value="b">Model size</div>
+                    <div class="quiz-option" data-value="c">Which tokens the model focuses on</div>
+                    <div class="quiz-option" data-value="d">Execution speed</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What library is commonly used for creating attention heatmaps?</strong></p>
+                    <div class="quiz-option" data-value="a">NumPy</div>
+                    <div class="quiz-option" data-value="b">Matplotlib or Seaborn</div>
+                    <div class="quiz-option" data-value="c">Pandas</div>
+                    <div class="quiz-option" data-value="d">Flask</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: In attention visualizations, what do darker colors typically represent?</strong></p>
+                    <div class="quiz-option" data-value="a">Errors</div>
+                    <div class="quiz-option" data-value="b">Slower processing</div>
+                    <div class="quiz-option" data-value="c">Lower attention</div>
+                    <div class="quiz-option" data-value="d">Higher attention weights</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What insight can you gain from visualizing attention patterns?</strong></p>
+                    <div class="quiz-option" data-value="a">Which input tokens influence predictions</div>
+                    <div class="quiz-option" data-value="b">Exact training time</div>
+                    <div class="quiz-option" data-value="c">Memory usage</div>
+                    <div class="quiz-option" data-value="d">Disk space requirements</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: Why visualize attention patterns in multi-head attention?</strong></p>
+                    <div class="quiz-option" data-value="a">To reduce model size</div>
+                    <div class="quiz-option" data-value="b">To speed up training</div>
+                    <div class="quiz-option" data-value="c">To understand what different heads learn</div>
+                    <div class="quiz-option" data-value="d">To eliminate bugs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Certificate Section -->
+            <section class="certificate-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 60px 20px; border-radius: 15px; text-align: center; margin: 60px 0;">
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <div style="font-size: 48px; margin-bottom: 20px;">🎓</div>
+                    <h2 style="font-size: 2.5em; margin-bottom: 20px; color: white;">Congratulations!</h2>
+                    <p style="font-size: 1.3em; margin-bottom: 30px; line-height: 1.6;">
+                        You've completed the <strong>Transformers Architecture</strong> course! 
+                        You now understand how these powerful models work from the ground up.
+                    </p>
+                    
+                    <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px; margin: 30px 0;">
+                        <h3 style="color: white; margin-bottom: 20px;">Get Your Certificate</h3>
+                        <form id="certificateForm" style="display: flex; flex-direction: column; gap: 15px;">
+                            <input type="text" id="userName" placeholder="Enter your full name" required
+                                   style="padding: 15px; border-radius: 5px; border: none; font-size: 1em;">
+                            <input type="email" id="userEmail" placeholder="Enter your email" required
+                                   style="padding: 15px; border-radius: 5px; border: none; font-size: 1em;">
+                            <button type="submit" style="background: white; color: #667eea; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: transform 0.2s;">
+                                Generate My Certificate 🎉
+                            </button>
+                        </form>
+                        <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">
+                            Your certificate will be generated instantly and sent to your email.
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 40px; padding-top: 40px; border-top: 2px solid rgba(255,255,255,0.3);">
+                        <h3 style="color: white; margin-bottom: 20px;">Continue Your Learning Journey</h3>
+                        <p style="margin-bottom: 20px;">Explore these related courses:</p>
+                        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <a href="../../courses/ai-agents.html" style="background: rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 5px; text-decoration: none; color: white; font-weight: 600; transition: background 0.3s;">
+                                🤖 AI Agents
+                            </a>
+                            <a href="../../courses/llms-and-transformers.html" style="background: rgba(255,255,255,0.2); padding: 12px 24px; border-radius: 5px; text-decoration: none; color: white; font-weight: 600; transition: background 0.3s;">
+                                🧠 LLMs & Transformers
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="project-2-simple-language-model.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Simple Language Model</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

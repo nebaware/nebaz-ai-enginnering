@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master production ML best practices: feature stores (Feast, Tecton), model governance, compliance, cost optimization, security, and documentation for enterprise ML systems.">
+    <meta name="keywords" content="feature stores, Feast, Tecton, model governance, ML compliance, MLOps best practices, production ML, enterprise ML">
+    <title>Production Best Practices - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="production-best-practices.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Production Best Practices</span>
+            </div>
+            <h1>Production ML Best Practices</h1>
+            <p class="tutorial-intro">Feature stores with Feast and Tecton, model governance, compliance, cost optimization, security, and documentation for enterprise ML</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 13</span>
+                <span class="meta-item">🎓 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🏢 Enterprise ML Challenges</h2>
+                <p>
+                    Your ML system is deployed and working. But as you scale:
+                </p>
+                <ul>
+                    <li>Features computed differently in training vs serving (training-serving skew)</li>
+                    <li>Multiple teams building duplicate feature pipelines</li>
+                    <li>No visibility into which models use which data</li>
+                    <li>Compliance requirements: explainability, fairness, data privacy</li>
+                    <li>Cloud costs spiraling out of control</li>
+                    <li>Security vulnerabilities in model APIs</li>
+                    <li>No documentation - only original developer understands the system</li>
+                </ul>
+
+                <p>
+                    <strong>Production best practices</strong> solve these enterprise challenges with feature stores, governance frameworks, cost optimization, and systematic documentation.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 Production ML Pillars:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>Feature Stores:</strong> Centralized feature management</li>
+                        <li><strong>Model Governance:</strong> Lineage, versioning, approvals</li>
+                        <li><strong>Compliance:</strong> Explainability, fairness, privacy</li>
+                        <li><strong>Cost Optimization:</strong> Resource management</li>
+                        <li><strong>Security:</strong> Authentication, authorization, encryption</li>
+                        <li><strong>Documentation:</strong> Model cards, data sheets, runbooks</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Feature Stores -->
+            <section class="content-section" id="feature-stores">
+                <h2>🏪 Feature Stores</h2>
+                
+                <h3>What is a Feature Store?</h3>
+                <p>
+                    A <strong>feature store</strong> is a centralized repository for ML features that:
+                </p>
+                <ul>
+                    <li>Stores feature definitions and transformations</li>
+                    <li>Serves features consistently for training and inference</li>
+                    <li>Prevents training-serving skew</li>
+                    <li>Enables feature reuse across teams</li>
+                    <li>Provides point-in-time correct features for training</li>
+                    <li>Tracks feature lineage and usage</li>
+                </ul>
+
+                <h3>Feast (Open Source Feature Store)</h3>
+                
+                <h4>Installation</h4>
+                <pre><code class="language-bash">pip install feast</code></pre>
+
+                <h4>Define Feature Repository</h4>
+                <pre><code class="language-python">"""
+Feature definitions with Feast
+"""
+# feature_repo/features.py
+from datetime import timedelta
+from feast import Entity, Feature, FeatureView, ValueType
+from feast.data_source import FileSource
+
+# Define entity (unique identifier)
+user = Entity(
+    name="user_id",
+    value_type=ValueType.INT64,
+    description="User ID"
+)
+
+# Data source
+user_features_source = FileSource(
+    path="data/user_features.parquet",
+    event_timestamp_column="event_timestamp",
+)
+
+# Feature view
+user_features = FeatureView(
+    name="user_features",
+    entities=["user_id"],
+    ttl=timedelta(days=1),
+    features=[
+        Feature(name="age", dtype=ValueType.INT64),
+        Feature(name="total_purchases", dtype=ValueType.INT64),
+        Feature(name="avg_purchase_amount", dtype=ValueType.FLOAT),
+        Feature(name="days_since_last_purchase", dtype=ValueType.INT64),
+    ],
+    online=True,
+    source=user_features_source,
+    tags={"team": "ml", "project": "churn_prediction"},
+)</code></pre>
+
+                <h4>Initialize Feature Store</h4>
+                <pre><code class="language-bash"># feature_repo/feature_store.yaml
+project: ml_project
+registry: data/registry.db
+provider: local
+online_store:
+  type: sqlite
+  path: data/online_store.db
+
+# Apply feature definitions
+cd feature_repo
+feast apply</code></pre>
+
+                <h4>Materialize Features (Training)</h4>
+                <pre><code class="language-python">"""
+Get historical features for training
+"""
+from feast import FeatureStore
+from datetime import datetime
+import pandas as pd
+
+store = FeatureStore(repo_path="feature_repo")
+
+# Entity dataframe (users and timestamps)
+entity_df = pd.DataFrame({
+    "user_id": [1001, 1002, 1003],
+    "event_timestamp": [
+        datetime(2024, 1, 1),
+        datetime(2024, 1, 2),
+        datetime(2024, 1, 3),
+    ]
+})
+
+# Get historical features (point-in-time correct)
+training_df = store.get_historical_features(
+    entity_df=entity_df,
+    features=[
+        "user_features:age",
+        "user_features:total_purchases",
+        "user_features:avg_purchase_amount",
+        "user_features:days_since_last_purchase",
+    ],
+).to_df()
+
+print(training_df)</code></pre>
+
+                <h4>Serve Features (Inference)</h4>
+                <pre><code class="language-python">"""
+Get online features for real-time prediction
+"""
+# Materialize features to online store
+from datetime import datetime, timedelta
+
+store.materialize(
+    start_date=datetime.now() - timedelta(days=7),
+    end_date=datetime.now()
+)
+
+# Get online features (low latency)
+@app.post("/predict")
+async def predict(user_id: int):
+    """Prediction endpoint with Feast features"""
+    
+    # Fetch features from online store
+    features = store.get_online_features(
+        features=[
+            "user_features:age",
+            "user_features:total_purchases",
+            "user_features:avg_purchase_amount",
+            "user_features:days_since_last_purchase",
+        ],
+        entity_rows=[{"user_id": user_id}],
+    ).to_dict()
+    
+    # Convert to model input
+    feature_vector = [
+        features['age'][0],
+        features['total_purchases'][0],
+        features['avg_purchase_amount'][0],
+        features['days_since_last_purchase'][0],
+    ]
+    
+    # Predict
+    prediction = model.predict([feature_vector])[0]
+    
+    return {"user_id": user_id, "churn_probability": float(prediction)}</code></pre>
+
+                <h3>Tecton (Enterprise Feature Store)</h3>
+                <pre><code class="language-python">"""
+Tecton feature definitions with transformations
+"""
+from tecton import Entity, Feature, FeatureView, transformation
+from tecton.types import Field, String, Int64, Float64
+from datetime import timedelta
+
+# Define entity
+user = Entity(
+    name="user",
+    join_keys=[Field("user_id", Int64)],
+    description="User entity"
+)
+
+# Feature transformation
+@transformation(mode="pandas")
+def user_transaction_stats(transactions):
+    """Compute user transaction statistics"""
+    return transactions.groupby('user_id').agg({
+        'amount': ['count', 'mean', 'sum'],
+        'timestamp': 'max'
+    }).reset_index()
+
+# Feature view with transformation
+user_transaction_features = FeatureView(
+    name="user_transaction_features",
+    entities=[user],
+    features=[
+        Feature("total_transactions", Int64),
+        Feature("avg_transaction_amount", Float64),
+        Feature("total_spend", Float64),
+    ],
+    transformation=user_transaction_stats,
+    ttl=timedelta(days=30),
+    online=True,
+    offline=True,
+    feature_start_time=datetime(2024, 1, 1),
+)
+
+# Real-time features
+@transformation(mode="python", input=RequestDataSource())
+def user_context_features(request):
+    """Real-time request features"""
+    return {
+        'hour_of_day': request['timestamp'].hour,
+        'day_of_week': request['timestamp'].weekday(),
+        'device_type': request['device'],
+    }
+
+user_context = FeatureView(
+    name="user_context",
+    entities=[user],
+    features=[
+        Feature("hour_of_day", Int64),
+        Feature("day_of_week", Int64),
+        Feature("device_type", String),
+    ],
+    transformation=user_context_features,
+    online=True,
+)</code></pre>
+
+                <h3>Feature Store Benefits</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Consistency</h3>
+                        <p>Same features for training and serving</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">♻️</div>
+                        <h3>Reusability</h3>
+                        <p>Share features across teams and models</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⏱️</div>
+                        <h3>Point-in-Time</h3>
+                        <p>Correct historical features for training</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Low Latency</h3>
+                        <p>Fast online feature serving</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Model Governance -->
+            <section class="content-section" id="governance">
+                <h2>📋 Model Governance</h2>
+                
+                <h3>What is Model Governance?</h3>
+                <p>
+                    <strong>Model governance</strong> ensures models are developed responsibly, meet regulatory requirements, and maintain quality standards throughout their lifecycle.
+                </p>
+
+                <h3>Model Registry with Metadata</h3>
+                <pre><code class="language-python">"""
+Comprehensive model metadata tracking
+"""
+import mlflow
+from mlflow.tracking import MlflowClient
+
+def register_model_with_governance(model, metadata):
+    """Register model with governance metadata"""
+    
+    with mlflow.start_run() as run:
+        # Log model
+        mlflow.sklearn.log_model(model, "model")
+        
+        # Log governance metadata
+        mlflow.log_params({
+            "model_owner": metadata["owner"],
+            "model_purpose": metadata["purpose"],
+            "training_data_version": metadata["data_version"],
+            "compliance_status": metadata["compliance"],
+        })
+        
+        # Log metrics
+        mlflow.log_metrics({
+            "accuracy": metadata["accuracy"],
+            "fairness_score": metadata["fairness"],
+            "explainability_score": metadata["explainability"],
+        })
+        
+        # Log artifacts
+        mlflow.log_dict(metadata["data_lineage"], "data_lineage.json")
+        mlflow.log_dict(metadata["model_card"], "model_card.json")
+        
+        # Register
+        model_uri = f"runs:/{run.info.run_id}/model"
+        registered = mlflow.register_model(model_uri, metadata["model_name"])
+        
+        # Add governance tags
+        client = MlflowClient()
+        client.set_model_version_tag(
+            name=metadata["model_name"],
+            version=registered.version,
+            key="approved_by",
+            value=metadata["approver"]
+        )
+        client.set_model_version_tag(
+            name=metadata["model_name"],
+            version=registered.version,
+            key="compliance_reviewed",
+            value="true"
+        )
+        
+        return registered
+
+# Usage
+metadata = {
+    "model_name": "credit_risk_model",
+    "owner": "data-science-team",
+    "purpose": "Credit risk assessment",
+    "data_version": "v2024.03",
+    "compliance": "GDPR_compliant",
+    "accuracy": 0.92,
+    "fairness": 0.88,
+    "explainability": 0.85,
+    "approver": "john.doe@company.com",
+    "data_lineage": {
+        "sources": ["customer_db", "transaction_db"],
+        "transformations": ["feature_engineering_v3"],
+        "timestamp": "2024-03-15T10:00:00Z"
+    },
+    "model_card": {
+        "intended_use": "Credit approval decisions",
+        "limitations": "Not suitable for customers under 18",
+        "ethical_considerations": "Bias mitigation applied"
+    }
+}
+
+register_model_with_governance(model, metadata)</code></pre>
+
+                <h3>Approval Workflow</h3>
+                <pre><code class="language-python">"""
+Model approval workflow
+"""
+class ModelApprovalWorkflow:
+    def __init__(self, model_name, version):
+        self.model_name = model_name
+        self.version = version
+        self.client = MlflowClient()
+    
+    def request_approval(self, requester):
+        """Request model approval"""
+        
+        # Transition to staging
+        self.client.transition_model_version_stage(
+            name=self.model_name,
+            version=self.version,
+            stage="Staging"
+        )
+        
+        # Add approval request tag
+        self.client.set_model_version_tag(
+            name=self.model_name,
+            version=self.version,
+            key="approval_status",
+            value="pending"
+        )
+        self.client.set_model_version_tag(
+            name=self.model_name,
+            version=self.version,
+            key="requested_by",
+            value=requester
+        )
+        
+        # Notify approvers
+        send_approval_request(self.model_name, self.version, requester)
+    
+    def approve(self, approver, comments=""):
+        """Approve model for production"""
+        
+        # Validation checks
+        checks = self.run_validation_checks()
+        
+        if not all(checks.values()):
+            raise ValueError(f"Validation failed: {checks}")
+        
+        # Record approval
+        self.client.set_model_version_tag(
+            name=self.model_name,
+            version=self.version,
+            key="approval_status",
+            value="approved"
+        )
+        self.client.set_model_version_tag(
+            name=self.model_name,
+            version=self.version,
+            key="approved_by",
+            value=approver
+        )
+        self.client.set_model_version_tag(
+            name=self.model_name,
+            version=self.version,
+            key="approval_date",
+            value=datetime.now().isoformat()
+        )
+        
+        # Promote to production
+        self.client.transition_model_version_stage(
+            name=self.model_name,
+            version=self.version,
+            stage="Production"
+        )
+        
+        print(f"✅ Model v{self.version} approved and promoted to production")
+    
+    def run_validation_checks(self):
+        """Run governance validation checks"""
+        return {
+            "accuracy_threshold": self.check_accuracy(),
+            "fairness_check": self.check_fairness(),
+            "explainability": self.check_explainability(),
+            "data_quality": self.check_data_quality(),
+            "compliance": self.check_compliance(),
+        }
+
+# Usage
+workflow = ModelApprovalWorkflow("credit_risk_model", version=5)
+workflow.request_approval(requester="data-scientist@company.com")
+
+# Later, after review
+workflow.approve(approver="ml-lead@company.com")</code></pre>
+            </section>
+
+            <!-- Compliance -->
+            <section class="content-section" id="compliance">
+                <h2>⚖️ Compliance & Responsible AI</h2>
+                
+                <h3>Model Explainability with SHAP</h3>
+                <pre><code class="language-python">"""
+Add explainability to models
+"""
+import shap
+import matplotlib.pyplot as plt
+
+def explain_prediction(model, X_test, instance_idx=0):
+    """Generate SHAP explanations"""
+    
+    # Create explainer
+    explainer = shap.TreeExplainer(model)
+    
+    # Calculate SHAP values
+    shap_values = explainer.shap_values(X_test)
+    
+    # Explain single prediction
+    shap.initjs()
+    shap.force_plot(
+        explainer.expected_value,
+        shap_values[instance_idx],
+        X_test.iloc[instance_idx],
+        matplotlib=True
+    )
+    plt.savefig('explanation.png')
+    
+    # Feature importance
+    shap.summary_plot(shap_values, X_test, show=False)
+    plt.savefig('feature_importance.png')
+    
+    # Log to MLflow
+    mlflow.log_artifact('explanation.png')
+    mlflow.log_artifact('feature_importance.png')
+    
+    return shap_values
+
+# Add to prediction endpoint
+@app.post("/predict_with_explanation")
+async def predict_explainable(request: PredictRequest):
+    """Prediction with explanation"""
+    
+    features_df = pd.DataFrame([request.features])
+    prediction = model.predict(features_df)[0]
+    
+    # Generate explanation
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer.shap_values(features_df)[0]
+    
+    # Top contributing features
+    feature_importance = dict(zip(
+        features_df.columns,
+        shap_values
+    ))
+    top_features = sorted(
+        feature_importance.items(),
+        key=lambda x: abs(x[1]),
+        reverse=True
+    )[:5]
+    
+    return {
+        "prediction": float(prediction),
+        "explanation": {
+            "top_features": [
+                {"feature": f, "contribution": float(c)}
+                for f, c in top_features
+            ]
+        }
+    }</code></pre>
+
+                <h3>Fairness Evaluation</h3>
+                <pre><code class="language-python">"""
+Evaluate model fairness across demographic groups
+"""
+from fairlearn.metrics import (
+    demographic_parity_difference,
+    equalized_odds_difference
+)
+
+def evaluate_fairness(model, X_test, y_test, sensitive_feature):
+    """Assess model fairness"""
+    
+    predictions = model.predict(X_test)
+    
+    # Demographic parity
+    dp_diff = demographic_parity_difference(
+        y_true=y_test,
+        y_pred=predictions,
+        sensitive_features=sensitive_feature
+    )
+    
+    # Equalized odds
+    eo_diff = equalized_odds_difference(
+        y_true=y_test,
+        y_pred=predictions,
+        sensitive_features=sensitive_feature
+    )
+    
+    print(f"Demographic Parity Difference: {dp_diff:.4f}")
+    print(f"Equalized Odds Difference: {eo_diff:.4f}")
+    
+    # Log fairness metrics
+    mlflow.log_metrics({
+        "demographic_parity_diff": dp_diff,
+        "equalized_odds_diff": eo_diff,
+    })
+    
+    # Fail if unfair
+    if abs(dp_diff) > 0.1 or abs(eo_diff) > 0.1:
+        raise ValueError("Model fails fairness criteria")
+    
+    return dp_diff, eo_diff</code></pre>
+
+                <h3>Data Privacy (Differential Privacy)</h3>
+                <pre><code class="language-python">"""
+Train model with differential privacy
+"""
+from diffprivlib.models import LogisticRegression
+
+# Train with privacy guarantees
+private_model = LogisticRegression(
+    epsilon=1.0,  # Privacy budget
+    data_norm=5.0
+)
+
+private_model.fit(X_train, y_train)
+
+print(f"Model trained with ε={private_model.epsilon} differential privacy")</code></pre>
+            </section>
+
+            <!-- Cost Optimization -->
+            <section class="content-section" id="cost-optimization">
+                <h2>💰 Cost Optimization</h2>
+                
+                <h3>Resource Right-Sizing</h3>
+                <pre><code class="language-python">"""
+Monitor and optimize resource usage
+"""
+import psutil
+import time
+
+class ResourceMonitor:
+    def __init__(self):
+        self.metrics = []
+    
+    def track_prediction(self, prediction_func):
+        """Track resource usage during prediction"""
+        
+        def wrapper(*args, **kwargs):
+            # Before
+            cpu_before = psutil.cpu_percent()
+            memory_before = psutil.Process().memory_info().rss / 1024**2
+            start_time = time.time()
+            
+            # Execute
+            result = prediction_func(*args, **kwargs)
+            
+            # After
+            duration = time.time() - start_time
+            cpu_after = psutil.cpu_percent()
+            memory_after = psutil.Process().memory_info().rss / 1024**2
+            
+            self.metrics.append({
+                'duration': duration,
+                'cpu_usage': cpu_after - cpu_before,
+                'memory_mb': memory_after - memory_before,
+            })
+            
+            return result
+        
+        return wrapper
+    
+    def analyze(self):
+        """Analyze resource usage and recommend sizing"""
+        df = pd.DataFrame(self.metrics)
+        
+        avg_duration = df['duration'].mean()
+        p95_duration = df['duration'].quantile(0.95)
+        avg_memory = df['memory_mb'].mean()
+        
+        print(f"Avg latency: {avg_duration:.3f}s")
+        print(f"P95 latency: {p95_duration:.3f}s")
+        print(f"Avg memory: {avg_memory:.1f}MB")
+        
+        # Recommendations
+        if avg_memory < 512:
+            print("💡 Consider downsizing to 512MB instance")
+        if p95_duration < 0.1:
+            print("💡 Model is fast - consider batching requests")
+
+monitor = ResourceMonitor()
+
+@app.post("/predict")
+@monitor.track_prediction
+async def predict(request: PredictRequest):
+    return model.predict(request.features)</code></pre>
+
+                <h3>Batch Prediction for Cost Efficiency</h3>
+                <pre><code class="language-python">"""
+Batch predictions to reduce costs
+"""
+# Instead of real-time predictions for all use cases
+# Use scheduled batch predictions for non-critical paths
+
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+
+def batch_predict():
+    """Run batch predictions on accumulated requests"""
+    
+    # Fetch pending requests
+    requests = fetch_pending_requests()
+    
+    # Batch predict (much faster than individual)
+    features = [r['features'] for r in requests]
+    predictions = model.predict(features)
+    
+    # Store results
+    for request, prediction in zip(requests, predictions):
+        store_prediction(request['id'], prediction)
+    
+    print(f"Processed {len(requests)} predictions")
+
+dag = DAG(
+    'batch_predictions',
+    schedule_interval='*/15 * * * *',  # Every 15 minutes
+)
+
+PythonOperator(
+    task_id='batch_predict',
+    python_callable=batch_predict,
+    dag=dag
+)</code></pre>
+
+                <h3>Spot Instances for Training</h3>
+                <pre><code class="language-bash"># Use spot instances for training (70% cost reduction)
+# Kubernetes with spot instances
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ml-training
+spec:
+  nodeSelector:
+    node.kubernetes.io/instance-type: spot
+  tolerations:
+    - key: "spot"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
+  containers:
+    - name: trainer
+      image: ml-trainer:latest
+      resources:
+        requests:
+          memory: "8Gi"
+          cpu: "4"</code></pre>
+            </section>
+
+            <!-- Documentation -->
+            <section class="content-section" id="documentation">
+                <h2>📝 Documentation Best Practices</h2>
+                
+                <h3>Model Cards</h3>
+                <pre><code class="language-yaml"># model_card.yaml
+model_details:
+  name: "Customer Churn Prediction Model"
+  version: "2.1.0"
+  date: "2024-03-15"
+  owner: "Data Science Team"
+  contact: "ds-team@company.com"
+
+intended_use:
+  primary_use: "Identify customers at risk of churning"
+  users: "Customer success teams, marketing"
+  out_of_scope: "Not for individual customer targeting without human review"
+
+training_data:
+  sources:
+    - "Customer database (2022-2024)"
+    - "Transaction history"
+    - "Support tickets"
+  size: "1.2M customers"
+  preprocessing: "Feature engineering pipeline v3"
+
+metrics:
+  accuracy: 0.89
+  precision: 0.87
+  recall: 0.85
+  auc_roc: 0.93
+
+ethical_considerations:
+  fairness: "Tested across demographic groups - no significant bias detected"
+  privacy: "PII removed, differential privacy applied"
+  limitations: "Performance degrades for new product lines"
+
+recommendations:
+  monitoring: "Monitor weekly, retrain monthly"
+  thresholds: "Confidence > 0.7 for automated actions"</code></pre>
+
+                <h3>Runbooks</h3>
+                <pre><code class="language-markdown"># Model Deployment Runbook
+
+## Pre-Deployment Checklist
+- [ ] Model passes all validation tests
+- [ ] Fairness metrics within acceptable range
+- [ ] Performance validated on hold-out test set
+- [ ] Model card completed and reviewed
+- [ ] Approval obtained from ML lead
+
+## Deployment Steps
+1. **Register Model**
+   ```bash
+   mlflow models register-model runs:/abc123/model \
+     --name customer_churn
+   ```
+
+2. **Deploy to Staging**
+   ```bash
+   kubectl apply -f k8s/staging-deployment.yaml
+   ```
+
+3. **Run Shadow Mode** (48 hours)
+   - Monitor shadow vs production agreement
+   - Check for performance degradation
+
+4. **Promote to Production**
+   ```bash
+   kubectl apply -f k8s/production-deployment.yaml
+   ```
+
+## Monitoring
+- Dashboard: http://grafana.company.com/ml-models
+- Alerts: #ml-alerts Slack channel
+- On-call: data-science-oncall@company.com
+
+## Rollback Procedure
+If accuracy drops below 85% or error rate exceeds 5%:
+```bash
+# Rollback to previous version
+mlflow models transition-stage \
+  --name customer_churn \
+  --version 14 \
+  --stage Production
+```
+
+## Common Issues
+- **High latency**: Check feature store connection
+- **Low accuracy**: Verify input data quality
+- **Fairness violations**: Trigger retraining with balanced data</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered production ML best practices:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🏪</div>
+                        <h3>Feature Stores</h3>
+                        <p>Centralized feature management with Feast and Tecton</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📋</div>
+                        <h3>Governance</h3>
+                        <p>Model registry, lineage, and approval workflows</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>Compliance</h3>
+                        <p>Explainability, fairness, and privacy guarantees</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Cost Optimization</h3>
+                        <p>Resource monitoring and efficient infrastructure</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔒</div>
+                        <h3>Security</h3>
+                        <p>Authentication, authorization, and data protection</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Documentation</h3>
+                        <p>Model cards, runbooks, and knowledge sharing</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Use feature stores to prevent training-serving skew and enable feature reuse</li>
+                    <li>Implement model governance with registries, approvals, and lineage tracking</li>
+                    <li>Ensure compliance with explainability, fairness, and privacy safeguards</li>
+                    <li>Optimize costs through right-sizing, batching, and spot instances</li>
+                    <li>Document models thoroughly with model cards and runbooks</li>
+                    <li>Monitor production systems continuously and maintain rollback capabilities</li>
+                    <li>Build responsible AI systems that are transparent, fair, and secure</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations on Completing the Core Tutorials!</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've learned all the foundational MLOps concepts! Now put them into practice with hands-on projects where you'll build complete end-to-end ML systems integrating everything you've learned.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What problem do feature stores solve?</strong></p>
+                    <div class="quiz-option" data-value="a">Slow training</div>
+                    <div class="quiz-option" data-value="b">Model deployment</div>
+                    <div class="quiz-option" data-value="c">Training-serving skew, feature consistency, and reusability across teams</div>
+                    <div class="quiz-option" data-value="d">Data storage</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q2: What is model governance?</strong></p>
+                    <div class="quiz-option" data-value="a">Ensuring models meet quality, regulatory, and ethical standards with approvals and lineage tracking</div>
+                    <div class="quiz-option" data-value="b">Training models faster</div>
+                    <div class="quiz-option" data-value="c">Monitoring model accuracy</div>
+                    <div class="quiz-option" data-value="d">Deploying models</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q3: Why use SHAP for explainability?</strong></p>
+                    <div class="quiz-option" data-value="a">To train models</div>
+                    <div class="quiz-option" data-value="b">To explain individual predictions by showing feature contributions</div>
+                    <div class="quiz-option" data-value="c">To deploy models</div>
+                    <div class="quiz-option" data-value="d">To store data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: Cost optimization strategy for ML training?</strong></p>
+                    <div class="quiz-option" data-value="a">Always use largest instances</div>
+                    <div class="quiz-option" data-value="b">Train continuously</div>
+                    <div class="quiz-option" data-value="c">Never monitor resources</div>
+                    <div class="quiz-option" data-value="d">Use spot instances for training, batch predictions, and right-size resources</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What should a model card include?</strong></p>
+                    <div class="quiz-option" data-value="a">Only accuracy metrics</div>
+                    <div class="quiz-option" data-value="b">Code implementation</div>
+                    <div class="quiz-option" data-value="c">Intended use, training data, metrics, ethical considerations, and limitations</div>
+                    <div class="quiz-option" data-value="d">Nothing, documentation isn't needed</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="model-retraining-continuous-learning.html">← Previous: Model Retraining</a>
+                <a href="project-end-to-end-ml-pipeline.html">Next: Project 1 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

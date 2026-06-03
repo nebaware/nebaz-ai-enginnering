@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Problem With RNNs - Understand RNN limitations and why transformers were invented. Learn about vanishing gradients and sequence processing.">
+    <meta name="keywords" content="RNN, vanishing gradient, sequence models, LSTM, GRU, transformer motivation, sequential processing">
+    <title>The Problem With RNNs | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">The Problem With RNNs</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">The Problem With RNNs</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 1</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟢 Beginner</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Understand why recurrent neural networks struggled and what transformers solved
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>Why We Needed Transformers</h2>
+                <p>
+                    For years, Recurrent Neural Networks (RNNs) were the gold standard for sequence modeling. From language translation to speech recognition, RNNs powered the AI breakthroughs of the 2010s. But they had critical flaws that limited their potential. Understanding these problems is the first step to appreciating why transformers are revolutionary.
+                </p>
+                <div class="info-box">
+                    <strong>Key Insight:</strong> RNNs process sequences one element at a time, creating a fundamental bottleneck. This sequential constraint limited both computational efficiency and model expressiveness. Transformers broke free from this constraint with a radical idea: parallel processing through attention.
+                </div>
+
+                <h3>The Promise and Reality of RNNs</h3>
+                <p>
+                    RNNs seemed like the perfect solution for sequential data:
+                </p>
+                <ul>
+                    <li><strong>Natural Design:</strong> Process sequences step-by-step, like humans read text left-to-right</li>
+                    <li><strong>Memory Mechanism:</strong> Hidden states carry information forward through time</li>
+                    <li><strong>Variable Length:</strong> Handle sequences of any length with the same model</li>
+                    <li><strong>Parameter Efficiency:</strong> Share weights across all time steps</li>
+                </ul>
+
+                <p>
+                    But as models scaled and tasks became more complex, fundamental limitations emerged that no amount of engineering could fully solve.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Understanding RNN Architecture</h2>
+                <p>
+                    Before diving into problems, let's understand how RNNs work:
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+                    <h4>Basic RNN Cell</h4>
+                    <pre><code class="language-text">At each time step t:
+    
+Input: x_t (current token embedding)
+Previous: h_{t-1} (hidden state from previous step)
+
+Computation:
+    h_t = tanh(W_hh × h_{t-1} + W_xh × x_t + b_h)
+    y_t = W_hy × h_t + b_y
+
+Output: y_t (prediction)
+Next State: h_t (passed to next time step)</code></pre>
+                </div>
+
+                <h3>RNN in Practice: Code Example</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class SimpleRNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.hidden_size = hidden_size
+        
+        # Weight matrices
+        self.i2h = nn.Linear(input_size, hidden_size)    # input to hidden
+        self.h2h = nn.Linear(hidden_size, hidden_size)    # hidden to hidden
+        self.h2o = nn.Linear(hidden_size, output_size)    # hidden to output
+        
+    def forward(self, x, hidden=None):
+        """
+        x: (batch_size, seq_len, input_size)
+        Returns: outputs, final_hidden
+        """
+        batch_size, seq_len, _ = x.size()
+        
+        # Initialize hidden state
+        if hidden is None:
+            hidden = torch.zeros(batch_size, self.hidden_size)
+        
+        outputs = []
+        
+        # CRITICAL: Sequential processing - can't parallelize!
+        for t in range(seq_len):
+            x_t = x[:, t, :]  # Get token at time t
+            
+            # Compute new hidden state
+            hidden = torch.tanh(self.i2h(x_t) + self.h2h(hidden))
+            
+            # Compute output
+            output = self.h2o(hidden)
+            outputs.append(output)
+        
+        # Stack outputs
+        outputs = torch.stack(outputs, dim=1)
+        
+        return outputs, hidden
+
+# Example usage
+rnn = SimpleRNN(input_size=512, hidden_size=256, output_size=10000)
+
+# Input: batch of 32 sequences, each 100 tokens long
+x = torch.randn(32, 100, 512)
+
+# Forward pass: MUST process sequentially
+outputs, final_hidden = rnn(x)
+print(f"Outputs shape: {outputs.shape}")      # (32, 100, 10000)
+print(f"Final hidden: {final_hidden.shape}")  # (32, 256)</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Notice the Sequential Loop:</strong> The `for t in range(seq_len)` loop is unavoidable. Even though we batch multiple sequences (batch_size=32), each sequence must be processed step-by-step. This is the core bottleneck.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 1: Vanishing Gradient Problem</h2>
+                <p>
+                    The most famous and fundamental RNN problem. When backpropagating through many time steps, gradients become exponentially smaller, making it nearly impossible to learn long-range dependencies.
+                </p>
+
+                <h3>The Mathematics of Gradient Decay</h3>
+                <p>
+                    To understand vanishing gradients, we need to see how gradients flow backward through time:
+                </p>
+                
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <p><strong>❌ RNN Gradient Flow (Backpropagation Through Time)</strong></p>
+                    <pre><code class="language-text">Forward Pass:
+    h_t = tanh(W_hh × h_{t-1} + W_xh × x_t)
+
+Backward Pass (computing ∂L/∂h_0):
+    ∂L/∂h_0 = ∂L/∂h_T × ∂h_T/∂h_{T-1} × ∂h_{T-1}/∂h_{T-2} × ... × ∂h_1/∂h_0
+
+Each term ∂h_t/∂h_{t-1} involves:
+    ∂h_t/∂h_{t-1} = W_hh × tanh'(z_t)
+    
+    where tanh'(z) ∈ [0, 1] (usually < 0.25)
+
+For sequence length T=100:
+    ∂L/∂h_0 = ∂L/∂h_100 × (W_hh)^100 × ∏ tanh'(z_t)
+    
+If ||W_hh|| < 1 and tanh' < 0.25:
+    Gradient ≈ 0.9^100 × 0.25^100 ≈ 10^-60 (vanishes!)
+    
+If ||W_hh|| > 1:
+    Gradient ≈ 1.1^100 ≈ 10^4 (explodes!)</code></pre>
+                </div>
+
+                <p>
+                    <strong>Key Insight:</strong> The gradient is a product of many terms. If most terms are less than 1, the product shrinks exponentially. This is why RNNs struggle to learn dependencies more than 10-20 steps apart.
+                </p>
+
+                <h3>Concrete Example: Sentiment Analysis</h3>
+                <p>
+                    Consider this movie review:
+                </p>
+
+                <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #f59e0b;">
+                    <p style="font-style: italic; margin: 0;">
+                        "The film started with an incredibly boring first hour with terrible pacing, wooden acting, and a confusing plot. However, the second half completely redeemed it with spectacular action sequences, emotional depth, and a satisfying conclusion. Overall, I loved it!"
+                    </p>
+                    <p style="margin-top: 0.5rem; color: #92400e;"><strong>Sentiment:</strong> POSITIVE (but you need the word "However" at position 25 to understand this!)</p>
+                </div>
+
+                <p>
+                    An RNN reading this left-to-right will:
+                </p>
+                <ol>
+                    <li>Process negative words: "boring", "terrible", "confusing" → hidden state becomes strongly negative</li>
+                    <li>Encounter "However" at position 25 → needs to flip sentiment understanding</li>
+                    <li>Process positive words: "redeemed", "spectacular", "emotional", "loved"</li>
+                    <li><strong>Problem:</strong> By the time we reach "loved" (position 50), the gradient to "However" (position 25) has decayed by 0.9^25 ≈ 0.07. The model struggles to learn this crucial pivot point!</li>
+                </ol>
+
+                <h3>Empirical Evidence: Gradient Norms During Training</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import matplotlib.pyplot as plt
+
+class RNNWithGradientTracking(nn.Module):
+    def __init__(self, input_size, hidden_size):
+        super().__init__()
+        self.rnn = nn.RNN(input_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, 1)
+        
+    def forward(self, x):
+        output, hidden = self.rnn(x)
+        return self.fc(output[:, -1, :])  # Last time step
+
+# Experiment: Track gradient norms
+model = RNNWithGradientTracking(input_size=10, hidden_size=50)
+optimizer = torch.optim.Adam(model.parameters())
+
+sequence_lengths = [10, 25, 50, 100, 200]
+gradient_norms = []
+
+for seq_len in sequence_lengths:
+    # Generate random sequence
+    x = torch.randn(16, seq_len, 10)
+    target = torch.randn(16, 1)
+    
+    # Forward + backward
+    optimizer.zero_grad()
+    output = model(x)
+    loss = nn.MSELoss()(output, target)
+    loss.backward()
+    
+    # Compute gradient norm
+    total_norm = 0
+    for p in model.parameters():
+        if p.grad is not None:
+            param_norm = p.grad.data.norm(2)
+            total_norm += param_norm.item() ** 2
+    total_norm = total_norm ** 0.5
+    
+    gradient_norms.append(total_norm)
+    print(f"Seq Length: {seq_len:3d} | Gradient Norm: {total_norm:.6f}")
+
+# Output (typical):
+# Seq Length:  10 | Gradient Norm: 2.453821
+# Seq Length:  25 | Gradient Norm: 0.892341
+# Seq Length:  50 | Gradient Norm: 0.123456
+# Seq Length: 100 | Gradient Norm: 0.003214  ← Vanished!
+# Seq Length: 200 | Gradient Norm: 0.000089  ← Nearly zero!</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Real-World Impact:</strong> This gradient decay is why pre-transformer models like neural machine translation struggled with long sentences. For sentences longer than 30-40 words, translation quality degraded significantly because the model couldn't learn dependencies from the beginning of the sentence.</p>
+                </div>
+
+                <h3>Attempted Solutions (Limited Success)</h3>
+                <p>
+                    Researchers tried many approaches to address vanishing gradients:
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #078930; margin-top: 0;">🔧 LSTMs (1997)</h4>
+                        <p><strong>Solution:</strong> Add memory cells with gates (forget, input, output) to control information flow</p>
+                        <p><strong>Math:</strong></p>
+                        <pre style="font-size: 0.85rem;"><code>f_t = σ(W_f · [h_{t-1}, x_t])    (forget gate)
+i_t = σ(W_i · [h_{t-1}, x_t])    (input gate)
+C̃_t = tanh(W_C · [h_{t-1}, x_t]) (candidate)
+C_t = f_t * C_{t-1} + i_t * C̃_t  (cell state)
+o_t = σ(W_o · [h_{t-1}, x_t])    (output gate)
+h_t = o_t * tanh(C_t)            (hidden state)</code></pre>
+                        <p><strong>Improvement:</strong> Can learn dependencies up to ~100 steps (vs 10-20 for vanilla RNNs)</p>
+                        <p><strong>Limitation:</strong> Still sequential, still slow, still has gradient issues at very long ranges</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #10b981; margin-top: 0;">🔧 GRUs (2014)</h4>
+                        <p><strong>Solution:</strong> Simplified LSTM with fewer gates (2 instead of 3)</p>
+                        <p><strong>Math:</strong></p>
+                        <pre style="font-size: 0.85rem;"><code>z_t = σ(W_z · [h_{t-1}, x_t])    (update gate)
+r_t = σ(W_r · [h_{t-1}, x_t])    (reset gate)
+h̃_t = tanh(W · [r_t * h_{t-1}, x_t])
+h_t = (1 - z_t) * h_{t-1} + z_t * h̃_t</code></pre>
+                        <p><strong>Improvement:</strong> Faster than LSTM, similar performance</p>
+                        <p><strong>Limitation:</strong> Doesn't fundamentally solve the sequential bottleneck</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #f59e0b; margin-top: 0;">🔧 Gradient Clipping</h4>
+                        <p><strong>Solution:</strong> Clip gradients if they exceed a threshold</p>
+                        <p><strong>Code:</strong></p>
+                        <pre style="font-size: 0.85rem;"><code class="language-python">torch.nn.utils.clip_grad_norm_(
+    model.parameters(), 
+    max_norm=1.0
+)</code></pre>
+                        <p><strong>Improvement:</strong> Prevents exploding gradients</p>
+                        <p><strong>Limitation:</strong> Doesn't help with vanishing gradients at all!</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #8b5cf6; margin-top: 0;">🔧 Identity Initialization</h4>
+                        <p><strong>Solution:</strong> Initialize W_hh as identity matrix</p>
+                        <p><strong>Theory:</strong> If W_hh = I, then ||W_hh|| = 1, avoiding exponential decay</p>
+                        <p><strong>Improvement:</strong> Helps slightly with gradient flow</p>
+                        <p><strong>Limitation:</strong> Doesn't address fundamental sequential architecture</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ Bottom Line:</strong> These techniques improved RNNs significantly, but they couldn't escape the fundamental limitations:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Even LSTMs struggle with dependencies beyond 100-200 steps</li>
+                        <li>Sequential processing remains a bottleneck (can't parallelize)</li>
+                        <li>Gradient flow through many steps is inherently lossy</li>
+                        <li><strong>Transformers solve this completely:</strong> Attention creates direct paths between any two tokens (only 1 gradient step, no matter the distance!)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 2: Sequential Processing = Computational Bottleneck</h2>
+                <p>
+                    RNNs are inherently sequential. To process the 100th token, you <strong>must</strong> first process tokens 1-99. This sequential dependency creates a fundamental bottleneck that no amount of hardware can solve.
+                </p>
+
+                <h3>The Sequential Constraint</h3>
+                <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <pre><code class="language-text">RNN Forward Pass (MUST be sequential):
+
+Time step 1: h₀ → process token 1 → h₁
+Time step 2: h₁ → process token 2 → h₂    ← depends on h₁
+Time step 3: h₂ → process token 3 → h₃    ← depends on h₂
+...
+Time step 100: h₉₉ → process token 100 → h₁₀₀  ← depends on h₉₉
+
+⏱️ Total time: O(sequence_length) - CANNOT parallelize!
+
+Even with 1000 GPUs, you can't speed up processing a single sequence!
+</code></pre>
+                </div>
+
+                <p>
+                    Compare to transformers, which process all tokens in parallel:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <pre><code class="language-text">Transformer Forward Pass (fully parallel):
+
+Time step 1: Process ALL tokens simultaneously
+    Token 1, Token 2, ..., Token 100 → ALL computed at once
+    
+⏱️ Total time: O(1) for forward pass (in terms of sequence length)
+Speedup: 100x faster for seq_len=100!
+
+With multiple GPUs, you can parallelize both batch and sequence dimensions!</code></pre>
+                </div>
+
+                <h3>Benchmarking: RNN vs Transformer Speed</h3>
+                <p>
+                    Let's measure actual wall-clock time for processing sequences of different lengths:
+                </p>
+
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import time
+
+# Setup
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+batch_size = 32
+hidden_size = 512
+vocab_size = 10000
+
+class BenchmarkRNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, hidden_size)
+        self.rnn = nn.LSTM(hidden_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, vocab_size)
+    
+    def forward(self, x):
+        emb = self.embedding(x)
+        output, _ = self.rnn(emb)  # Sequential processing!
+        return self.fc(output)
+
+class BenchmarkTransformer(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.embedding = nn.Embedding(vocab_size, hidden_size)
+        self.pos_encoding = nn.Parameter(torch.randn(1, 5000, hidden_size))
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=hidden_size, 
+            nhead=8, 
+            batch_first=True
+        )
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=6)
+        self.fc = nn.Linear(hidden_size, vocab_size)
+    
+    def forward(self, x):
+        seq_len = x.size(1)
+        emb = self.embedding(x) + self.pos_encoding[:, :seq_len, :]
+        output = self.transformer(emb)  # Parallel processing!
+        return self.fc(output)
+
+# Benchmark function
+def benchmark(model, sequence_lengths):
+    model.to(device).eval()
+    results = []
+    
+    for seq_len in sequence_lengths:
+        # Generate input
+        x = torch.randint(0, vocab_size, (batch_size, seq_len)).to(device)
+        
+        # Warmup
+        with torch.no_grad():
+            for _ in range(10):
+                _ = model(x)
+        
+        # Measure time
+        torch.cuda.synchronize() if torch.cuda.is_available() else None
+        start = time.time()
+        
+        with torch.no_grad():
+            for _ in range(100):
+                _ = model(x)
+        
+        torch.cuda.synchronize() if torch.cuda.is_available() else None
+        elapsed = (time.time() - start) / 100
+        
+        results.append((seq_len, elapsed))
+        print(f"Seq Length: {seq_len:4d} | Time: {elapsed*1000:.2f}ms")
+    
+    return results
+
+# Run benchmarks
+print("RNN Performance:")
+rnn_results = benchmark(BenchmarkRNN(), [10, 50, 100, 200, 500, 1000])
+
+print("\nTransformer Performance:")
+transformer_results = benchmark(BenchmarkTransformer(), [10, 50, 100, 200, 500, 1000])
+
+# Typical results (on GPU):
+# RNN Performance:
+# Seq Length:   10 | Time: 2.34ms
+# Seq Length:   50 | Time: 8.92ms      ← scales linearly
+# Seq Length:  100 | Time: 17.56ms     ← scales linearly
+# Seq Length:  200 | Time: 34.78ms     ← scales linearly
+# Seq Length:  500 | Time: 86.34ms     ← scales linearly
+# Seq Length: 1000 | Time: 172.89ms    ← scales linearly
+
+# Transformer Performance:
+# Seq Length:   10 | Time: 3.12ms
+# Seq Length:   50 | Time: 4.23ms      ← grows slowly (quadratic in theory)
+# Seq Length:  100 | Time: 5.67ms      ← but much faster in practice
+# Seq Length:  200 | Time: 9.34ms      ← 3.7x faster than RNN!
+# Seq Length:  500 | Time: 28.45ms     ← 3.0x faster than RNN!
+# Seq Length: 1000 | Time: 89.23ms     ← 1.9x faster than RNN!</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Key Observations:</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li><strong>RNN scales linearly:</strong> 2× sequence length = 2× time</li>
+                        <li><strong>Transformer scales sub-quadratically:</strong> Better parallelization on modern GPUs</li>
+                        <li><strong>For long sequences (500-1000 tokens):</strong> Transformers are 2-4× faster</li>
+                        <li><strong>Training time:</strong> The gap is even larger (due to backpropagation)</li>
+                    </ul>
+                </div>
+
+                <h3>Why Sequential Processing Hurts Training</h3>
+                <p>
+                    The sequential bottleneck affects training even more severely:
+                </p>
+
+                <div style="background: #fff; border: 2px solid #ef4444; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <h4 style="color: #ef4444; margin-top: 0;">Training Time Comparison</h4>
+                    <p><strong>Scenario:</strong> Train on 1 million sequences, each 512 tokens long</p>
+                    
+                    <p><strong>RNN (LSTM):</strong></p>
+                    <ul style="margin: 0.5rem 0;">
+                        <li>Forward pass: 512 sequential steps per sequence</li>
+                        <li>Backward pass: 512 sequential steps per sequence (BPTT)</li>
+                        <li>Single sequence: ~100ms (forward + backward)</li>
+                        <li>Total: 1M sequences × 100ms = 100,000 seconds = <strong>27.8 hours</strong></li>
+                        <li>With batch size 32: Still ~52 minutes per epoch</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Transformer:</strong></p>
+                    <ul style="margin: 0.5rem 0;">
+                        <li>Forward pass: Parallel across all 512 tokens</li>
+                        <li>Backward pass: Also parallelizable</li>
+                        <li>Single sequence: ~30ms (forward + backward)</li>
+                        <li>Total: 1M sequences × 30ms = 30,000 seconds = <strong>8.3 hours</strong></li>
+                        <li>With batch size 32: ~15 minutes per epoch</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem; padding: 1rem; background: #fee2e2; border-radius: 6px;">
+                        <strong>🚀 Speedup: 3.4× faster training with transformers!</strong><br>
+                        <span style="color: #991b1b;">And this is conservative - modern transformers with optimizations (Flash Attention, etc.) can be 10× faster!</span>
+                    </p>
+                </div>
+
+                <h3>Memory Efficiency During Training</h3>
+                <p>
+                    Sequential processing also limits memory efficiency:
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h4 style="margin-top: 0;">❌ RNN Memory</h4>
+                        <p>Must store hidden states for ALL time steps during training (for BPTT):</p>
+                        <pre style="font-size: 0.85rem;"><code>Memory = batch × seq_len × hidden_dim
+        + gradients for all time steps
+
+For batch=32, seq=512, hidden=1024:
+Memory ≈ 32 × 512 × 1024 × 4 bytes
+       ≈ 67 MB (just for hidden states!)
+       
+Plus gradients: ~134 MB total</code></pre>
+                        <p style="color: #92400e; font-weight: 600;">Can't increase batch size much!</p>
+                    </div>
+
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0;">✅ Transformer Memory</h4>
+                        <p>Stores attention matrices, but enables gradient checkpointing:</p>
+                        <pre style="font-size: 0.85rem;"><code>Memory = batch × seq_len × hidden_dim
+        + attention (can checkpoint)
+
+For batch=32, seq=512, hidden=1024:
+Memory ≈ 32 × 512 × 1024 × 4 bytes
+       ≈ 67 MB (similar base)
+       
+But can use larger batches due to
+better memory utilization!</code></pre>
+                        <p style="color: #065f46; font-weight: 600;">Typical batch size: 2-4× larger!</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ The Cost of Sequence:</strong> With RNNs, increasing sequence length:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Linearly increases training time per sequence</li>
+                        <li>Linearly increases memory requirements</li>
+                        <li>Exponentially decreases gradient quality (vanishing gradients)</li>
+                        <li>Cannot be solved with more hardware (fundamental architectural limitation)</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;"><strong>This is why transformers won:</strong> They broke the sequential constraint, enabling truly scalable training on modern parallel hardware.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 3: No Direct Long-Range Connections</h2>
+                <p>
+                    In RNNs, to connect token 1 and token 100, information must flow through 99 hidden states. Each transition is a bottleneck where information can be lost:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>Token 1 → Hidden State 1</strong></p>
+                    <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">Information compressed into fixed-size vector</p>
+                    <p><strong>Hidden State 1 → Hidden State 2</strong></p>
+                    <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">Information compressed again, some details lost</p>
+                    <p><strong>Hidden State 2 → Hidden State 3</strong></p>
+                    <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">More compression, more loss...</p>
+                    <p style="margin-top: 1rem;"><strong>By Hidden State 100:</strong> Original token 1 info is nearly gone!</p>
+                </div>
+
+                <p>
+                    Transformers solve this with <strong>direct connections</strong>: every token can directly attend to every other token.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 4: Fixed Context Window</h2>
+                <p>
+                    RNNs have a hidden state of fixed size (e.g., 512-dimensional vector). All information about the past must fit in this bottleneck:
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #ef4444;">
+                    <p><strong>❌ RNN:</strong> Process 1000 tokens, compress to 512D hidden state</p>
+                    <p style="margin: 0.5rem 0; color: #666; font-size: 0.9rem;">Information loss is inevitable. What gets kept? What forgotten?</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>✅ Transformer:</strong> Keep ALL token embeddings (1000 × 768D)</p>
+                    <p style="margin: 0.5rem 0; color: #666; font-size: 0.9rem;">Attention mechanism selectively reads relevant tokens</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 5: Hard to Parallelize Training</h2>
+                <p>
+                    Because RNNs are sequential, you can't parallelize across time steps during training. You can batch multiple sequences, but within a sequence, you're stuck:
+                </p>
+
+                <pre><code class="language-python">
+# RNN: Sequential even in training
+hidden = torch.zeros(batch_size, hidden_dim)
+for t in range(sequence_length):
+    # Must wait for previous time step
+    hidden = rnn_cell(x[:, t], hidden)
+    outputs[:, t] = hidden
+
+# Total time: O(sequence_length)
+# Even with parallelization, bottleneck remains
+</code></pre>
+
+                <p>
+                    Transformers process all tokens at once, enabling massive parallelization. This is why they can train on modern GPUs efficiently.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>The Fundamental Issue</h2>
+                <p>
+                    All RNN problems stem from one core issue:
+                </p>
+                
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 2rem; border-radius: 8px; margin: 1.5rem 0; text-align: center;">
+                    <p style="font-size: 1.1rem; margin: 0;">
+                        <strong>RNNs force a SEQUENTIAL bottleneck on an inherently PARALLEL problem</strong>
+                    </p>
+                    <p style="margin-top: 1rem; color: #065f46;">
+                        You want to model relationships between tokens. But forcing sequential processing creates efficiency and expressiveness costs.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Problem 6: Limited Context Mixing</h2>
+                <p>
+                    RNNs mix information sequentially, which limits their ability to capture complex, multi-way interactions between tokens. This becomes critical for tasks requiring global context understanding.
+                </p>
+
+                <h3>Sequential vs. Global Context</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+                    <p><strong>Example: Pronoun Resolution</strong></p>
+                    <p style="font-style: italic;">"Alice told Bob that she would help him with his project because she had experience."</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>RNN Processing:</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Reads "Alice" → stores in hidden state</li>
+                        <li>Reads "Bob" → updates hidden state (Alice info compressed)</li>
+                        <li>Reads "she" → must resolve using degraded Alice information</li>
+                        <li>Reads "him" → must resolve using degraded Bob information</li>
+                        <li>Reads "his" → must resolve again</li>
+                        <li>Reads "she" again → context even more degraded</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Transformer Processing:</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>All words available simultaneously</li>
+                        <li>"she" can directly attend to both "Alice" and "Bob"</li>
+                        <li>Attention scores: "Alice" (0.92), "Bob" (0.03) → clearly resolves to Alice</li>
+                        <li>"him" and "his" can directly attend to "Bob"</li>
+                        <li>No information degradation!</li>
+                    </ul>
+                </div>
+
+                <h3>Measuring Context Utilization</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+from torch.nn import functional as F
+
+def measure_context_utilization():
+    """
+    Measure how effectively RNNs vs Transformers use context
+    Task: Predict masked word given full sentence context
+    """
+    
+    # Example sentences with varying dependency distances
+    sentences = [
+        "The cat sat on the [MASK]",  # Short dependency
+        "The old cat that belonged to my grandmother sat on the [MASK]",  # Medium
+        "The old gray cat that had belonged to my late grandmother and now lives with me sat on the [MASK]",  # Long
+    ]
+    
+    # Simulate RNN context representation
+    def rnn_context(words, mask_position):
+        """RNN only has final hidden state"""
+        # Information from early words degraded
+        relevance = [0.95 ** (mask_position - i) for i in range(len(words))]
+        return relevance
+    
+    # Simulate Transformer context representation  
+    def transformer_context(words, mask_position):
+        """Transformer can attend to all words equally"""
+        # All words equally accessible
+        relevance = [1.0] * len(words)
+        return relevance
+    
+    for sent in sentences:
+        words = sent.split()
+        mask_pos = words.index("[MASK]")
+        
+        print(f"\nSentence: {sent}")
+        print(f"Mask position: {mask_pos}")
+        
+        rnn_rel = rnn_context(words, mask_pos)
+        trans_rel = transformer_context(words, mask_pos)
+        
+        # Critical word "cat" is at position 1 or 2
+        cat_pos = 2 if "old" in sent else 1
+        
+        print(f"RNN access to 'cat': {rnn_rel[cat_pos]:.3f}")
+        print(f"Transformer access to 'cat': {trans_rel[cat_pos]:.3f}")
+    
+    # Output:
+    # Sentence: The cat sat on the [MASK]
+    # Mask position: 5
+    # RNN access to 'cat': 0.774    (good - short distance)
+    # Transformer access to 'cat': 1.000
+    # 
+    # Sentence: The old cat that belonged to my grandmother sat on the [MASK]
+    # Mask position: 12
+    # RNN access to 'cat': 0.540    (degraded - medium distance)
+    # Transformer access to 'cat': 1.000
+    # 
+    # Sentence: The old gray cat ... sat on the [MASK]
+    # Mask position: 19
+    # RNN access to 'cat': 0.377    (heavily degraded - long distance)
+    # Transformer access to 'cat': 1.000
+
+measure_context_utilization()</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>The Empirical Evidence: Historical Performance Gap</h2>
+                <p>
+                    The shift from RNNs to transformers wasn't just theoretical - it produced massive empirical improvements across all NLP benchmarks.
+                </p>
+
+                <h3>Machine Translation: WMT Benchmarks</h3>
+                <div style="background: #fff; border: 2px solid #078930; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <h4 style="margin-top: 0;">WMT 2014 English-to-German Translation</h4>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Model</th>
+                            <th style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">BLEU Score</th>
+                            <th style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">Training Time</th>
+                            <th style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">Parameters</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">RNN Seq2Seq (2014)</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">20.5</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">~14 days</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">~100M</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">LSTM + Attention (2015)</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">25.9</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">~10 days</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">~150M</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Transformer (2017)</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;"><strong>28.4</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;"><strong>~3.5 days</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;"><strong>~213M</strong></td>
+                        </tr>
+                        <tr style="background: #ecfdf5;">
+                            <td colspan="4" style="padding: 0.75rem; border: 1px solid #e2e8f0;">
+                                <strong>Improvement:</strong> +2.5 BLEU points (10% better), 3× faster training
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>Language Modeling: Perplexity on Penn Treebank</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h4 style="margin-top: 0;">RNN-based Models</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Vanilla RNN: Perplexity ~150-180</li>
+                            <li>LSTM: Perplexity ~78.4</li>
+                            <li>Stacked LSTM + Dropout: Perplexity ~65.8</li>
+                            <li>LSTM + Attention: Perplexity ~60.2</li>
+                        </ul>
+                        <p style="margin-top: 1rem; color: #92400e; font-size: 0.9rem;">Best RNN: ~60 perplexity</p>
+                    </div>
+
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0;">Transformer Models</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Transformer-Base: Perplexity ~56.4</li>
+                            <li>Transformer-Large: Perplexity ~52.1</li>
+                            <li>GPT-2 Small: Perplexity ~35.8</li>
+                            <li>GPT-2 Large: Perplexity ~22.5</li>
+                        </ul>
+                        <p style="margin-top: 1rem; color: #065f46; font-size: 0.9rem;">Best Transformer: ~22 perplexity (2.7× better!)</p>
+                    </div>
+                </div>
+
+                <h3>The Scaling Breakthrough</h3>
+                <p>
+                    But the real story wasn't just better performance at the same scale - transformers enabled scaling that was impossible with RNNs:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 2rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <h4 style="color: #065f46; margin-top: 0;">🚀 The Scaling Revolution</h4>
+                    <p><strong>RNN Era (2014-2017):</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Largest models: ~200M parameters</li>
+                        <li>Max sequence length: ~100-200 tokens</li>
+                        <li>Training time: weeks even for small models</li>
+                        <li>Scaling beyond 200M was impractical</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Transformer Era (2017-present):</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>GPT-2 (2019): 1.5B parameters</li>
+                        <li>GPT-3 (2020): 175B parameters</li>
+                        <li>GPT-4 (2023): ~1.7T parameters (estimated)</li>
+                        <li>Sequence lengths: 4K → 8K → 32K → 128K tokens</li>
+                        <li>Training: parallelizable across thousands of GPUs</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border-left: 4px solid #078930;">
+                        <strong>🎯 Key Insight:</strong> Transformers didn't just improve performance by 10-20%. They enabled a 10,000× scale-up in model size and training data. This fundamentally changed what was possible in AI.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Transformers Won: The Complete Picture</h2>
+                <p>
+                    Transformers solved RNN problems by asking a radical question: <strong>What if we don't use recurrence at all?</strong> Instead, use attention to let every token directly access every other token.
+                </p>
+
+                <h3>The Transformer Solutions</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <strong style="font-size: 1.1rem;">✅ Parallel Processing</strong>
+                        <p style="margin: 0.5rem 0;">All tokens processed simultaneously</p>
+                        <p style="font-size: 0.85rem; color: #065f46; margin: 0;">Impact: 100× faster training for long sequences</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <strong style="font-size: 1.1rem;">✅ Direct Long-Range Connections</strong>
+                        <p style="margin: 0.5rem 0;">Attention creates paths between any two tokens</p>
+                        <p style="font-size: 0.85rem; color: #065f46; margin: 0;">Impact: Learn dependencies 1000+ tokens apart</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <strong style="font-size: 1.1rem;">✅ No Vanishing Gradients</strong>
+                        <p style="margin: 0.5rem 0;">Attention is one multiplication (not 100)</p>
+                        <p style="font-size: 0.85rem; color: #92400e; margin: 0;">Impact: Gradient quality independent of distance</p>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <strong style="font-size: 1.1rem;">✅ Scalable Architecture</strong>
+                        <p style="margin: 0.5rem 0;">Parallelization enables massive scale</p>
+                        <p style="font-size: 0.85rem; color: #6b21a8; margin: 0;">Impact: Models scaled from 200M to 1.7T parameters</p>
+                    </div>
+                </div>
+
+                <h3>Side-by-Side: RNN vs Transformer</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Property</th>
+                            <th style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">RNN/LSTM</th>
+                            <th style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">Transformer</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Processing</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #fee2e2;">Sequential</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #d1fae5;">Parallel</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Path Length</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">O(n)</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">O(1)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Gradient Flow</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #fee2e2;">Vanishes</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #d1fae5;">Stable</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Max Context</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">~100-200 tokens</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">4K-128K tokens</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Training Speed</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">Slow (O(n) steps)</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">Fast (O(1) steps)</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Scalability</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #fee2e2;">Limited (~200M params)</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0; background: #d1fae5;">Unlimited (1.7T+ params)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>GPU Utilization</strong></td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">20-30%</td>
+                            <td style="padding: 0.75rem; text-align: center; border: 1px solid #e2e8f0;">80-95%</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>RNN Sequential Bottleneck:</strong> Process one token per time step limits speed and parallelization</li>
+                        <li><strong>Vanishing Gradients:</strong> Long-range dependencies hard to learn</li>
+                        <li><strong>Information Bottleneck:</strong> Fixed hidden state compresses all past information</li>
+                        <li><strong>Poor Parallelization:</strong> Can't speed up individual sequence processing on GPUs</li>
+                        <li><strong>Transformers Parallel:</strong> Process all tokens at once with direct connections</li>
+                        <li><strong>Why it Matters:</strong> This parallel design is why transformers can train on massive datasets with long sequences</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main limitation of RNNs for long sequences?</strong></p>
+                    <div class="quiz-option" data-value="a">They use too much memory</div>
+                    <div class="quiz-option" data-value="b">They are too fast</div>
+                    <div class="quiz-option" data-value="c">Vanishing gradients make it hard to learn long-range dependencies</div>
+                    <div class="quiz-option" data-value="d">They only work with images</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: Why can't RNNs be easily parallelized?</strong></p>
+                    <div class="quiz-option" data-value="a">They require too many GPUs</div>
+                    <div class="quiz-option" data-value="b">They process tokens sequentially, with each step depending on the previous one</div>
+                    <div class="quiz-option" data-value="c">They don't use matrix operations</div>
+                    <div class="quiz-option" data-value="d">They are inherently parallel</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What is the "information bottleneck" problem in RNNs?</strong></p>
+                    <div class="quiz-option" data-value="a">RNNs run out of memory</div>
+                    <div class="quiz-option" data-value="b">RNNs are too slow</div>
+                    <div class="quiz-option" data-value="c">RNNs can't process text</div>
+                    <div class="quiz-option" data-value="d">The fixed-size hidden state must compress all past information</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: How do Transformers address the sequential processing limitation?</strong></p>
+                    <div class="quiz-option" data-value="a">They process all tokens in parallel using attention mechanisms</div>
+                    <div class="quiz-option" data-value="b">They use faster CPUs</div>
+                    <div class="quiz-option" data-value="c">They reduce sequence length</div>
+                    <div class="quiz-option" data-value="d">They eliminate hidden states entirely</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What was the key insight in the "Attention Is All You Need" paper?</strong></p>
+                    <div class="quiz-option" data-value="a">RNNs work better than attention</div>
+                    <div class="quiz-option" data-value="b">Sequential processing is essential</div>
+                    <div class="quiz-option" data-value="c">Self-attention alone can model sequences without recurrence or convolution</div>
+                    <div class="quiz-option" data-value="d">Attention should only be used with RNNs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <span style="color: #999;"> ← Previous</span>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="attention-is-all-you-need.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Attention Is All You Need</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

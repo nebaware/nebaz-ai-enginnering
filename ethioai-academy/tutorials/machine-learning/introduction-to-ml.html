@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn the fundamentals of Machine Learning - what it is, how it works, types of ML, and real-world applications. Perfect for beginners starting their ML journey.">
+    <meta name="keywords" content="machine learning introduction, what is machine learning, ML basics, learn machine learning, ML for beginners">
+    <title>Introduction to Machine Learning - Complete Beginner Guide | Nebaz AI Academy</title>
+    <link rel="canonical" href="introduction-to-ml.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+        }
+        
+        .tutorial-breadcrumb {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-top: 1rem;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #065f46;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .example-box {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .example-box p {
+            margin: 0;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            border-color: #078930;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .info-card p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .ml-types-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .ml-type-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            border-left: 4px solid;
+        }
+        
+        .ml-type-card.supervised {
+            border-left-color: #078930;
+        }
+        
+        .ml-type-card.unsupervised {
+            border-left-color: #8b5cf6;
+        }
+        
+        .ml-type-card.reinforcement {
+            border-left-color: #f59e0b;
+        }
+        
+        .ml-type-card h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .workflow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            margin: 0 0 0.25rem 0;
+            color: var(--text-dark);
+        }
+        
+        .step-content p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .quiz-container {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .quiz-title {
+            margin-top: 0;
+            color: #065f46;
+        }
+        
+        .quiz-question {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-question-text {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .quiz-option {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            border-color: #078930;
+            background: #f8fafc;
+        }
+        
+        .quiz-feedback {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-meta-info {
+                justify-content: center;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+            }
+            
+            .tutorial-navigation a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Introduction to ML</span>
+            </div>
+            <h1>Introduction to Machine Learning</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>Experiment tracking</li><li>Data leakage checklist</li></ul>
+  
+</div>
+            <p class="tutorial-intro">Discover how machines learn from data to make predictions and decisions without being explicitly programmed</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Certificate Motivation Banner -->
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section">
+                <h2>🤖 Welcome to Machine Learning!</h2>
+                <p>
+                    Imagine a computer that can recognize your face in photos, predict tomorrow's weather, recommend your next favorite song, or even detect diseases from medical scans. What if I told you that these systems weren't explicitly programmed with millions of rules, but instead <strong>learned</strong> how to do these tasks by studying examples?
+                </p>
+                <p>
+                    That's the magic of <strong>Machine Learning (ML)</strong> — one of the most transformative technologies of our time. In this tutorial, you'll understand what ML really is, how it differs from traditional programming, and why it's revolutionizing every industry.
+                </p>
+            </section>
+
+            <!-- What is Machine Learning? -->
+            <section class="content-section">
+                <h2>📖 What is Machine Learning?</h2>
+                
+                <div class="info-box">
+                    <h3>Definition</h3>
+                    <p>
+                        <strong>Machine Learning</strong> is a subset of Artificial Intelligence that enables computers to learn patterns from data and make decisions or predictions without being explicitly programmed for each specific task.
+                    </p>
+                </div>
+
+                <p>
+                    The term was coined by <strong>Arthur Samuel in 1959</strong>, who defined it as:
+                </p>
+                
+                <blockquote style="border-left: 4px solid #078930; padding-left: 1.5rem; margin: 1.5rem 0; font-style: italic; color: var(--text-medium);">
+                    "The field of study that gives computers the ability to learn without being explicitly programmed."
+                </blockquote>
+
+                <h3>Traditional Programming vs. Machine Learning</h3>
+                <p>
+                    Understanding the difference between traditional programming and machine learning is crucial:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Traditional Programming</th>
+                            <th>Machine Learning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Data + Rules</td>
+                            <td>Data + Expected Output</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Answers</td>
+                            <td>Rules (Model)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approach</strong></td>
+                            <td>Human writes explicit rules</td>
+                            <td>Computer discovers patterns</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adaptability</strong></td>
+                            <td>Requires manual updates</td>
+                            <td>Improves with more data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Example</strong></td>
+                            <td>IF email contains "lottery" THEN spam</td>
+                            <td>Learn from 10,000 spam/not-spam examples</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <p>
+                        <strong>🔍 Real-World Example:</strong> Imagine building a system to identify cats in photos.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Traditional approach:</strong> Write rules like "if it has pointed ears, whiskers, fur, and a tail, it's a cat." But what about cats with folded ears? Cats without visible whiskers? This quickly becomes impossible.
+                    </p>
+                    <p style="margin-top: 1rem;">
+                        <strong>ML approach:</strong> Show the computer 100,000 photos labeled "cat" or "not cat." The algorithm finds its own patterns (edges, textures, shapes) and learns to recognize cats — even in poses and lighting it's never seen before!
+                    </p>
+                </div>
+            </section>
+
+            <!-- How Does ML Work? -->
+            <section class="content-section">
+                <h2>⚙️ How Does Machine Learning Work?</h2>
+                
+                <p>
+                    At its core, machine learning follows a simple process: learn from examples, find patterns, and apply those patterns to new situations. Here's the typical workflow:
+                </p>
+
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Collect Data</h4>
+                            <p>Gather relevant examples. More quality data = better learning. For spam detection, this means thousands of emails labeled as spam or not spam.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Prepare & Clean Data</h4>
+                            <p>Handle missing values, remove duplicates, normalize formats. Data preparation often takes 60-80% of an ML project's time!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Choose an Algorithm</h4>
+                            <p>Select the right algorithm based on your problem type (classification, regression, clustering, etc.) and data characteristics.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Train the Model</h4>
+                            <p>Feed the data to the algorithm. The model adjusts its internal parameters to minimize errors and find patterns.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Evaluate Performance</h4>
+                            <p>Test the model on data it hasn't seen before. Measure accuracy, precision, recall, or other relevant metrics.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Deploy & Monitor</h4>
+                            <p>Put the model into production. Continuously monitor its performance and retrain as needed with new data.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p>💡 <strong>Key Insight:</strong> ML models don't "understand" data the way humans do. They find mathematical relationships and patterns. A spam detector doesn't know what "lottery" means — it just knows emails with that word have a high probability of being spam based on training examples.</p>
+                </div>
+            </section>
+
+            <!-- Types of Machine Learning -->
+            <section class="content-section">
+                <h2>🧩 Types of Machine Learning</h2>
+                
+                <p>
+                    Machine Learning is broadly categorized into three main types based on how the algorithm learns:
+                </p>
+
+                <div class="ml-types-grid">
+                    <div class="ml-type-card supervised">
+                        <h3>📚 Supervised Learning</h3>
+                        <p><strong>What it is:</strong> Learning from labeled examples where we know the correct answer.</p>
+                        <p><strong>How it works:</strong> The algorithm learns the relationship between inputs and outputs, then predicts outputs for new inputs.</p>
+                        <p><strong>Real-world examples:</strong></p>
+                        <ul>
+                            <li>Email spam detection (spam/not spam labels)</li>
+                            <li>House price prediction (price labels)</li>
+                            <li>Medical diagnosis (disease/healthy labels)</li>
+                            <li>Credit scoring (approve/deny labels)</li>
+                        </ul>
+                        <p><strong>Common algorithms:</strong> Linear Regression, Logistic Regression, Decision Trees, Random Forest, Neural Networks</p>
+                    </div>
+
+                    <div class="ml-type-card unsupervised">
+                        <h3>🔍 Unsupervised Learning</h3>
+                        <p><strong>What it is:</strong> Finding hidden patterns in data without labeled examples.</p>
+                        <p><strong>How it works:</strong> The algorithm explores the data structure and groups similar items together or reduces dimensionality.</p>
+                        <p><strong>Real-world examples:</strong></p>
+                        <ul>
+                            <li>Customer segmentation (group similar customers)</li>
+                            <li>Anomaly detection (find unusual transactions)</li>
+                            <li>Recommendation systems (find similar products)</li>
+                            <li>Topic modeling (group similar documents)</li>
+                        </ul>
+                        <p><strong>Common algorithms:</strong> K-Means Clustering, Hierarchical Clustering, PCA, t-SNE</p>
+                    </div>
+
+                    <div class="ml-type-card reinforcement">
+                        <h3>🎮 Reinforcement Learning</h3>
+                        <p><strong>What it is:</strong> Learning through trial and error by interacting with an environment.</p>
+                        <p><strong>How it works:</strong> An agent takes actions, receives rewards or penalties, and learns to maximize cumulative rewards over time.</p>
+                        <p><strong>Real-world examples:</strong></p>
+                        <ul>
+                            <li>Game playing (AlphaGo, chess engines)</li>
+                            <li>Self-driving cars (navigation decisions)</li>
+                            <li>Robotics (learning to walk, grasp objects)</li>
+                            <li>Trading systems (portfolio optimization)</li>
+                        </ul>
+                        <p><strong>Common algorithms:</strong> Q-Learning, Deep Q-Networks (DQN), Policy Gradient, Actor-Critic</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p>✅ <strong>Quick Decision Guide:</strong> Use <strong>Supervised Learning</strong> when you have labeled data, <strong>Unsupervised Learning</strong> when you want to discover patterns, and <strong>Reinforcement Learning</strong> when an agent must learn through interaction.</p>
+                </div>
+            </section>
+
+            <!-- Real-World Applications -->
+            <section class="content-section">
+                <h2>🌍 Real-World Applications of ML</h2>
+                
+                <p>
+                    Machine Learning is everywhere, often working behind the scenes. Here are some applications you probably interact with daily:
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎵</div>
+                        <h3>Music & Video Recommendations</h3>
+                        <p>Spotify, Netflix, and YouTube use ML to analyze your preferences and suggest content you'll love.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📧</div>
+                        <h3>Email Filtering</h3>
+                        <p>Gmail's spam filter uses ML to block 99.9% of spam, learning from billions of examples.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🗣️</div>
+                        <h3>Voice Assistants</h3>
+                        <p>Siri, Alexa, and Google Assistant use ML for speech recognition and natural language understanding.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📷</div>
+                        <h3>Photo Organization</h3>
+                        <p>Google Photos and Apple Photos use ML to recognize faces, objects, and scenes in your images.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🏥</div>
+                        <h3>Medical Diagnosis</h3>
+                        <p>ML models can detect cancer, diabetic retinopathy, and other conditions from medical images with expert-level accuracy.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚗</div>
+                        <h3>Autonomous Vehicles</h3>
+                        <p>Tesla, Waymo, and others use ML for object detection, lane keeping, and decision-making on the road.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💳</div>
+                        <h3>Fraud Detection</h3>
+                        <p>Banks use ML to analyze transaction patterns and flag suspicious activity in real-time.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>Language Translation</h3>
+                        <p>Google Translate uses neural networks to translate between 100+ languages with remarkable accuracy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Terminology -->
+            <section class="content-section">
+                <h2>📝 Essential ML Terminology</h2>
+                
+                <p>
+                    Before diving deeper, let's understand the key terms you'll encounter throughout this course:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Definition</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Model</strong></td>
+                            <td>The mathematical representation learned from data</td>
+                            <td>A trained spam classifier</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Features</strong></td>
+                            <td>Input variables used to make predictions</td>
+                            <td>House size, bedrooms, location</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Label / Target</strong></td>
+                            <td>The output we're trying to predict</td>
+                            <td>House price, spam/not spam</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training Data</strong></td>
+                            <td>Examples used to teach the model</td>
+                            <td>1000 emails with spam labels</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Test Data</strong></td>
+                            <td>Examples used to evaluate model performance</td>
+                            <td>200 unseen emails</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Algorithm</strong></td>
+                            <td>The method used to learn patterns</td>
+                            <td>Random Forest, Neural Network</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training</strong></td>
+                            <td>The process of learning from data</td>
+                            <td>Fitting a model to examples</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prediction / Inference</strong></td>
+                            <td>Using the trained model on new data</td>
+                            <td>Classifying a new email</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>Percentage of correct predictions</td>
+                            <td>95% of emails correctly classified</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overfitting</strong></td>
+                            <td>Model memorizes training data but fails on new data</td>
+                            <td>100% training accuracy, 60% test accuracy</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Your First ML Concept -->
+            <section class="content-section">
+                <h2>💻 A Simple ML Example in Python</h2>
+                
+                <p>
+                    Let's see a simple example of what ML code looks like. Don't worry if you don't understand everything — we'll cover each concept in detail in future tutorials.
+                </p>
+
+                <pre><code class="language-python"># A simple ML example: Predicting house prices
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Training data: [size in sq ft] -> price in $1000s
+X_train = np.array([[1000], [1500], [2000], [2500], [3000]])
+y_train = np.array([200, 280, 350, 420, 500])
+
+# Create and train the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict price for a 1800 sq ft house
+new_house = np.array([[1800]])
+predicted_price = model.predict(new_house)
+
+print(f"Predicted price for 1800 sq ft: ${predicted_price[0]:.0f},000")
+# Output: Predicted price for 1800 sq ft: $322,000</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>What just happened?</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1rem; color: #065f46;">
+                        <li>We gave the model 5 examples of house sizes and their prices</li>
+                        <li>The model learned the relationship (larger houses = higher prices)</li>
+                        <li>It can now predict prices for houses it's never seen before!</li>
+                    </ul>
+                </div>
+
+                <p>
+                    This is the essence of machine learning: <strong>learn from examples, apply to new situations</strong>. In the coming tutorials, we'll dive deep into how algorithms like Linear Regression actually work.
+                </p>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <div class="quiz-container">
+                    <h2 class="quiz-title">🎯 Test Your Knowledge</h2>
+                    <p>Check your understanding of Machine Learning basics!</p>
+
+                    <div class="quiz-question">
+                        <p class="quiz-question-text">1. What is the key difference between traditional programming and machine learning?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-correct="false">ML requires more memory</div>
+                            <div class="quiz-option" data-correct="true">In ML, the computer learns rules from data instead of being explicitly programmed</div>
+                            <div class="quiz-option" data-correct="false">Traditional programming is faster</div>
+                            <div class="quiz-option" data-correct="false">ML only works with images</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p class="quiz-question-text">2. Which type of ML would you use to group customers into segments without predefined labels?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-correct="false">Supervised Learning</div>
+                            <div class="quiz-option" data-correct="true">Unsupervised Learning</div>
+                            <div class="quiz-option" data-correct="false">Reinforcement Learning</div>
+                            <div class="quiz-option" data-correct="false">Deep Learning</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p class="quiz-question-text">3. What are "features" in machine learning?</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-correct="false">The predictions made by a model</div>
+                            <div class="quiz-option" data-correct="false">The algorithms used for training</div>
+                            <div class="quiz-option" data-correct="true">Input variables used to make predictions</div>
+                            <div class="quiz-option" data-correct="false">The accuracy of a model</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question">
+                        <p class="quiz-question-text">4. A model performs very well on training data but poorly on new data. This is called:</p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-correct="false">Underfitting</div>
+                            <div class="quiz-option" data-correct="true">Overfitting</div>
+                            <div class="quiz-option" data-correct="false">Regularization</div>
+                            <div class="quiz-option" data-correct="false">Normalization</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-results"></div>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li><strong>Machine Learning</strong> enables computers to learn from data instead of following explicit rules</li>
+                    <li>Unlike traditional programming, ML discovers patterns from examples to make predictions</li>
+                    <li>There are three main types: <strong>Supervised</strong> (labeled data), <strong>Unsupervised</strong> (finding patterns), and <strong>Reinforcement</strong> (learning through rewards)</li>
+                    <li>ML powers everyday applications: recommendations, spam filters, voice assistants, medical diagnosis, and more</li>
+                    <li>Key terms to remember: model, features, labels, training, testing, overfitting</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the next tutorial, we'll dive into <strong>Linear Regression</strong> — the foundational algorithm that teaches us how machines learn mathematical relationships from data. You'll understand the math, implement it from scratch, and use it with real datasets!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've completed the first step in your Machine Learning journey. You now understand what ML is and why it's transforming the world. Keep going — the best is yet to come!</p>
+                </div>
+            </section>
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="../../courses/machine-learning.html" class="btn btn-secondary">← Back to ML Course</a>
+                <a href="linear-regression.html" class="btn btn-primary">Next: Linear Regression →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script></body>
+
+</html>

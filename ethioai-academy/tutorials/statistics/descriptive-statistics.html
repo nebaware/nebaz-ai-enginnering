@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn descriptive statistics for AI: measures of central tendency (mean, median, mode), variability (variance, standard deviation), and data visualization techniques for machine learning.">
+    <meta name="keywords" content="descriptive statistics, mean median mode, variance, standard deviation, data summarization, statistics for AI, machine learning statistics">
+    <title>Descriptive Statistics & Data Summarization - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="descriptive-statistics.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+        
+        .tutorial-breadcrumb span {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .tutorial-intro {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-top: 0.75rem;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            color: #065f46;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            color: #065f46;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .tutorial-content p {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 1rem;
+        }
+        
+        .tutorial-content ul, .tutorial-content ol {
+            line-height: 1.8;
+            color: #475569;
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre[class*="language-"] {
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation .nav-button {
+            background: #078930;
+            color: white;
+        }
+        
+        .tutorial-navigation .nav-button:hover {
+            background: #065f46;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .tutorial-navigation .nav-button-secondary {
+            background: #e2e8f0;
+            color: #065f46;
+        }
+        
+        .tutorial-navigation .nav-button-secondary:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header {
+                padding: 2rem 0 1.5rem 0;
+            }
+            
+            .tutorial-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .tutorial-content h3 {
+                font-size: 1.25rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+            }
+            
+            .meta-item {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+    
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Descriptive Statistics</span>
+            </div>
+            <h1>Descriptive Statistics & Data Summarization</h1>
+            <p class="tutorial-intro">
+                Master the essential tools for understanding and summarizing data in AI and machine learning
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 1</span>
+                <span class="meta-item">📊 Beginner</span>
+                <span class="meta-item">⏱️ 60 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 6 tutorials to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+                
+                <!-- Introduction -->
+                <section class="content-section">
+                    <p><strong>Did you know?</strong> 80% of data science work involves understanding and cleaning data before any model building begins. Descriptive statistics is your first and most powerful tool for exploring datasets.</p>
+                    
+                    <p>Statistics is the language of data science and AI. Before we can build intelligent models, we need to understand our data - and that starts with descriptive statistics. In this tutorial, you'll learn how to summarize datasets using measures of central tendency, understand data spread with measures of variability, and create visualizations that reveal insights hidden in numbers.</p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Why This Matters for AI:</strong>
+                        <p>Before training any machine learning model, you must understand your data. Descriptive statistics reveal data quality issues, help identify features for modeling, and guide preprocessing decisions. Companies like Ethiopian tech teams use descriptive statistics to understand user behavior, while healthcare AI systems use it to detect anomalies in patient data.</p>
+                    </div>
+                </section>
+                
+                <!-- What is Descriptive Statistics -->
+                <section class="content-section" id="what-is">
+                    <h2>📊 What is Descriptive Statistics?</h2>
+                    <p><strong>Descriptive statistics</strong> are numerical and graphical methods for summarizing and describing data. They help us answer critical questions:</p>
+                    <ul>
+                        <li>📍 What's a typical value in my dataset?</li>
+                        <li>📏 How spread out are the values?</li>
+                        <li>🎯 Are there any outliers or unusual patterns?</li>
+                        <li>📈 What does the distribution of data look like?</li>
+                    </ul>
+                    
+                    <p>Think of descriptive statistics as the "executive summary" of your data - they distill thousands or millions of data points into a few key numbers that tell the story.</p>
+                </section>
+                
+                <!-- Measures of Central Tendency -->
+                <section class="content-section" id="central-tendency">
+                    <h2>📍 Measures of Central Tendency</h2>
+                    <p>Central tendency describes the "center" or "typical" value of a dataset. The three main measures are mean, median, and mode.</p>
+                    
+                    <h3>1. Mean (Average)</h3>
+                    <p>The <strong>mean</strong> is the sum of all values divided by the number of values. It's the most commonly used measure of center.</p>
+                    
+<pre><code class="language-python"># Calculate mean
+import numpy as np
+
+data = [23, 25, 27, 29, 31, 33, 35, 37]
+mean = np.mean(data)
+print(f"Mean: {mean}")  # Output: 30.0
+
+# Manual calculation
+manual_mean = sum(data) / len(data)
+print(f"Manual Mean: {manual_mean}")  # Output: 30.0
+</code></pre>
+                    
+                    <p><strong>✅ When to use:</strong> Ideal for symmetric distributions without outliers (normal distributions).</p>
+                    <p><strong>⚠️ Limitation:</strong> Sensitive to extreme values (outliers). A single very large or small value can dramatically change the mean.</p>
+                    
+                    <h3>2. Median (Middle Value)</h3>
+                    <p>The <strong>median</strong> is the middle value when data is sorted. If there's an even number of values, it's the average of the two middle values.</p>
+                    
+<pre><code class="language-python"># Calculate median - more robust to outliers
+data = [23, 25, 27, 29, 31, 33, 35, 37, 100]  # Added outlier
+median = np.median(data)
+mean = np.mean(data)
+
+print(f"Median: {median}")  # Output: 31.0 (not affected by outlier)
+print(f"Mean: {mean:.2f}")      # Output: 37.78 (affected by outlier)
+
+# The median stays stable while mean gets pulled by the outlier
+</code></pre>
+                    
+                    <p><strong>✅ When to use:</strong> Robust to outliers and better for skewed distributions.</p>
+                    <p><strong>🏠 Real-world example:</strong> House prices - where a few mansions shouldn't inflate the "typical" price. The median home price gives a better sense of the market.</p>
+                    
+                    <h3>3. Mode (Most Frequent)</h3>
+                    <p>The <strong>mode</strong> is the value that appears most frequently in the dataset.</p>
+                    
+<pre><code class="language-python">from scipy import stats
+
+data = [1, 2, 2, 3, 4, 4, 4, 5, 6]
+mode_result = stats.mode(data, keepdims=True)
+print(f"Mode: {mode_result.mode[0]}")  # Output: 4
+print(f"Count: {mode_result.count[0]}")  # Output: 3 (appears 3 times)
+
+# For categorical data
+colors = ['red', 'blue', 'red', 'green', 'red', 'blue']
+mode_color = max(set(colors), key=colors.count)
+print(f"Most common color: {mode_color}")  # Output: red
+</code></pre>
+                    
+                    <p><strong>✅ When to use:</strong> Best for categorical data or discrete values (e.g., most common product purchased, most frequent customer segment, shoe size).</p>
+                    
+                    <div class="warning-box">
+                        <strong>💼 Industry Example: Salary Analysis</strong>
+                        <p>You're analyzing salaries at a tech company. A few executives earn $500K+ while most employees earn $50K-$80K. Which measure tells the real story?</p>
+                        <ul>
+                            <li><strong>Mean:</strong> $120K (inflated by executives)</li>
+                            <li><strong>Median:</strong> $65K (typical employee salary) ✅</li>
+                            <li><strong>Mode:</strong> $60K (most common salary)</li>
+                        </ul>
+                        <p>The median best represents the "typical" employee experience here!</p>
+                    </div>
+                </section>
+                
+                <!-- Measures of Variability -->
+                <section class="content-section" id="variability">
+                    <h2>📏 Measures of Variability (Spread)</h2>
+                    <p>Variability measures tell us how spread out the data is from the center. Two datasets can have the same mean but vastly different spreads!</p>
+                    
+                    <h3>1. Range</h3>
+                    <p>The <strong>range</strong> is the difference between maximum and minimum values - the simplest measure of spread.</p>
+                    
+<pre><code class="language-python">data = [23, 25, 27, 29, 31, 33, 35, 37]
+data_range = np.max(data) - np.min(data)
+print(f"Range: {data_range}")  # Output: 14
+
+# Also using built-in functions
+print(f"Min: {np.min(data)}, Max: {np.max(data)}")  # Output: Min: 23, Max: 37
+</code></pre>
+                    
+                    <p><strong>⚠️ Limitation:</strong> Only uses two values, ignores everything in between, very sensitive to outliers.</p>
+                    
+                    <h3>2. Variance</h3>
+                    <p>The <strong>variance</strong> measures the average squared deviation from the mean. It tells us how far data points spread from the average.</p>
+                    
+<pre><code class="language-python">data = [23, 25, 27, 29, 31, 33, 35, 37]
+
+# Variance - uses ddof=1 for sample variance (Bessel's correction)
+variance = np.var(data, ddof=1)
+print(f"Variance: {variance:.2f}")  # Output: 26.57
+
+# Manual calculation to understand the concept
+mean = np.mean(data)
+squared_diffs = [(x - mean)**2 for x in data]
+manual_variance = sum(squared_diffs) / (len(data) - 1)
+print(f"Manual Variance: {manual_variance:.2f}")
+
+# Show the squared differences
+print(f"Mean: {mean}")
+for x in data:
+    print(f"{x}: deviation = {x - mean:.2f}, squared = {(x - mean)**2:.2f}")
+</code></pre>
+                    
+                    <p><strong>📐 Formula:</strong> σ² = Σ(xᵢ - μ)² / (n-1)</p>
+                    <p><strong>Note:</strong> We use (n-1) for sample variance (Bessel's correction) to get an unbiased estimate of the population variance.</p>
+                    
+                    <h3>3. Standard Deviation</h3>
+                    <p>The <strong>standard deviation</strong> is the square root of variance, expressed in the same units as the original data - making it much more interpretable!</p>
+                    
+<pre><code class="language-python">std_dev = np.std(data, ddof=1)
+print(f"Standard Deviation: {std_dev:.2f}")  # Output: 5.15
+
+# Relationship with variance
+print(f"Square root of variance: {np.sqrt(variance):.2f}")  # Same as std_dev
+
+# Interpretation
+print(f"Mean: {mean:.2f}")
+print(f"Std Dev: {std_dev:.2f}")
+print(f"Range: [{mean - std_dev:.2f}, {mean + std_dev:.2f}]")
+# Output: On average, data points deviate from the mean by about 5.15 units
+</code></pre>
+                    
+                    <div class="info-box">
+                        <strong>📊 The 68-95-99.7 Rule (Empirical Rule)</strong>
+                        <p>For normally distributed data:</p>
+                        <ul>
+                            <li>~<strong>68%</strong> of data falls within <strong>1 standard deviation</strong> of the mean</li>
+                            <li>~<strong>95%</strong> falls within <strong>2 standard deviations</strong></li>
+                            <li>~<strong>99.7%</strong> falls within <strong>3 standard deviations</strong></li>
+                        </ul>
+                        <p>This rule helps identify outliers: values beyond 3 standard deviations are extremely rare!</p>
+                    </div>
+                    
+                    <h3>4. Interquartile Range (IQR)</h3>
+                    <p>The <strong>IQR</strong> is the range of the middle 50% of the data - the most robust measure of spread.</p>
+                    
+<pre><code class="language-python">data = [23, 25, 27, 29, 31, 33, 35, 37, 100]  # With outlier
+
+q1 = np.percentile(data, 25)  # First quartile (25th percentile)
+q3 = np.percentile(data, 75)  # Third quartile (75th percentile)
+iqr = q3 - q1
+
+print(f"Q1 (25th percentile): {q1}")  # Output: 27.0
+print(f"Q3 (75th percentile): {q3}")  # Output: 36.0
+print(f"IQR: {iqr}")  # Output: 9.0
+
+# IQR is not affected by the outlier (100)
+# Standard deviation would be much higher due to the outlier
+
+# Outlier detection using IQR method
+lower_bound = q1 - 1.5 * iqr
+upper_bound = q3 + 1.5 * iqr
+outliers = [x for x in data if x < lower_bound or x > upper_bound]
+print(f"Outliers: {outliers}")  # Output: [100]
+</code></pre>
+                    
+                    <p><strong>✅ Advantage:</strong> Robust to outliers - the extreme values don't affect IQR much.</p>
+                    <p><strong>🎯 Use Case:</strong> Outlier detection - values beyond Q1 - 1.5×IQR or Q3 + 1.5×IQR are potential outliers (used in box plots).</p>
+                </section>
+                
+                <!-- Data Visualization -->
+                <section class="content-section" id="visualization">
+                    <h2>📊 Data Visualization</h2>
+                    <p>Visualizations reveal patterns that numbers alone cannot show. Always visualize your data!</p>
+                    
+                    <h3>1. Histograms</h3>
+                    <p>Histograms show the distribution of data by dividing it into bins and counting frequencies.</p>
+                    
+<pre><code class="language-python">import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate sample data (normally distributed)
+data = np.random.normal(loc=100, scale=15, size=1000)
+
+# Create histogram
+plt.figure(figsize=(10, 6))
+plt.hist(data, bins=30, edgecolor='black', alpha=0.7, color='#078930')
+
+# Add mean and median lines
+plt.axvline(np.mean(data), color='red', linestyle='--', 
+           linewidth=2, label=f'Mean: {np.mean(data):.1f}')
+plt.axvline(np.median(data), color='green', linestyle='--', 
+           linewidth=2, label=f'Median: {np.median(data):.1f}')
+
+plt.xlabel('Value', fontsize=12)
+plt.ylabel('Frequency', fontsize=12)
+plt.title('Distribution of Data', fontsize=14, fontweight='bold')
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
+
+# For normal distributions, mean ≈ median
+</code></pre>
+                    
+                    <h3>2. Box Plots</h3>
+                    <p>Box plots visualize quartiles, median, and outliers in a compact format.</p>
+                    
+<pre><code class="language-python"># Box plot showing quartiles and outliers
+data_with_outliers = np.concatenate([
+    np.random.normal(100, 15, 100),  # Normal data
+    [150, 160, 45, 35]  # Outliers
+])
+
+plt.figure(figsize=(10, 6))
+plt.boxplot(data_with_outliers, vert=False)
+plt.xlabel('Value', fontsize=12)
+plt.title('Box Plot: Quartiles and Outliers', fontsize=14, fontweight='bold')
+plt.grid(alpha=0.3)
+plt.show()
+
+# What a box plot shows:
+# • Box edges: Q1 (25th) and Q3 (75th percentiles) - this is the IQR
+# • Line in box: Median (Q2, 50th percentile)
+# • Whiskers: Extend to min/max within 1.5×IQR from quartiles
+# • Dots/circles: Outliers beyond whiskers
+</code></pre>
+                    
+                    <h3>3. Summary Statistics with Pandas</h3>
+                    <p>Pandas provides a comprehensive summary of all statistics at once.</p>
+                    
+<pre><code class="language-python">import pandas as pd
+
+# Create DataFrame with multiple features
+df = pd.DataFrame({
+    'feature_a': np.random.normal(100, 15, 1000),      # Normal distribution
+    'feature_b': np.random.exponential(50, 1000),      # Exponential (right-skewed)
+    'feature_c': np.random.uniform(0, 100, 1000)       # Uniform distribution
+})
+
+# Get comprehensive summary - ONE LINE!
+summary = df.describe()
+print(summary)
+
+# Output shows:
+# • count: Number of non-null values
+# • mean: Average
+# • std: Standard deviation
+# • min: Minimum value
+# • 25%: First quartile (Q1)
+# • 50%: Median (Q2)
+# • 75%: Third quartile (Q3)
+# • max: Maximum value
+
+# Additional statistics
+print(f"\nVariance:\n{df.var()}")
+print(f"\nSkewness (asymmetry):\n{df.skew()}")
+print(f"\nKurtosis (tail heaviness):\n{df.kurt()}")
+</code></pre>
+                </section>
+                
+                <!-- Real-World Application -->
+                <section class="content-section" id="real-world">
+                    <h2>🎯 Real-World Application: Analyzing ML Features</h2>
+                    <p>Let's apply descriptive statistics to the famous Iris dataset used in machine learning.</p>
+                    
+<pre><code class="language-python">from sklearn.datasets import load_iris
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import skew
+
+# Load Iris dataset
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['species'] = iris.target_names[iris.target]
+
+# 1. Summary statistics
+print("=" * 50)
+print("SUMMARY STATISTICS")
+print("=" * 50)
+print(df.describe())
+
+# 2. Check for skewness (asymmetry in distribution)
+print("\n" + "=" * 50)
+print("SKEWNESS ANALYSIS")
+print("=" * 50)
+for col in iris.feature_names:
+    skewness = skew(df[col])
+    print(f"{col}: skewness = {skewness:.3f}")
+    if abs(skewness) < 0.5:
+        print("  → Nearly symmetric (normal)")
+    elif skewness > 0:
+        print("  → Right-skewed (tail extends right)")
+    else:
+        print("  → Left-skewed (tail extends left)")
+
+# 3. Visualize distributions
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+for idx, col in enumerate(iris.feature_names):
+    ax = axes[idx // 2, idx % 2]
+    
+    # Histogram with mean and median
+    ax.hist(df[col], bins=20, edgecolor='black', alpha=0.7, color='#078930')
+    ax.axvline(df[col].mean(), color='red', linestyle='--', 
+              linewidth=2, label='Mean')
+    ax.axvline(df[col].median(), color='green', linestyle='--', 
+              linewidth=2, label='Median')
+    
+    ax.set_xlabel(col, fontsize=11)
+    ax.set_ylabel('Frequency', fontsize=11)
+    ax.set_title(f'Distribution of {col}', fontsize=12, fontweight='bold')
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# 4. Check for outliers using IQR method
+def find_outliers(data):
+    q1 = data.quantile(0.25)
+    q3 = data.quantile(0.75)
+    iqr = q3 - q1
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    outliers = data[(data < lower_bound) | (data > upper_bound)]
+    return outliers, lower_bound, upper_bound
+
+print("\n" + "=" * 50)
+print("OUTLIER DETECTION")
+print("=" * 50)
+for col in iris.feature_names:
+    outliers, lower, upper = find_outliers(df[col])
+    print(f"\n{col}:")
+    print(f"  Bounds: [{lower:.2f}, {upper:.2f}]")
+    if len(outliers) > 0:
+        print(f"  Found {len(outliers)} outliers: {outliers.values}")
+    else:
+        print(f"  No outliers detected ✓")
+</code></pre>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Insights from Iris Dataset Analysis:</strong>
+                        <ul>
+                            <li><strong>Sepal width</strong> has nearly symmetric distribution (mean ≈ median)</li>
+                            <li><strong>Petal length</strong> shows bimodal distribution (two peaks) - indicating two distinct groups</li>
+                            <li>Some features have outliers - important to handle before ML modeling</li>
+                            <li>Different features have different scales - normalization may be needed</li>
+                        </ul>
+                        <p><strong>🚀 Next Steps:</strong> These insights guide feature engineering and preprocessing decisions!</p>
+                    </div>
+                </section>
+                
+                <!-- Practice Exercises -->
+                <section class="content-section" id="exercises">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <div class="warning-box">
+                        <strong>📝 Exercise 1: Dataset Analysis</strong>
+                        <p>Load any dataset of your choice (try the Boston Housing dataset or Titanic dataset from Kaggle). Calculate mean, median, mode, variance, and standard deviation for all numerical features. Which features have the highest variability? Why might this matter for ML?</p>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>📝 Exercise 2: Build a Statistics Function</strong>
+                        <p>Create a Python function <code>analyze_data(df)</code> that takes a DataFrame and returns a dictionary with: mean, median, std, min, max, Q1, Q3, IQR, and a list of outliers for each numerical column. Test it on the Iris dataset.</p>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>📝 Exercise 3: Distribution Comparison</strong>
+                        <p>Generate two datasets: one normally distributed (<code>np.random.normal</code>) and one exponentially distributed (<code>np.random.exponential</code>). Plot histograms for both and calculate all measures of central tendency. Explain why mean vs median differ more in one than the other.</p>
+                    </div>
+                    
+                    <div class="warning-box">
+                        <strong>📝 Exercise 4: Real-World Scenario</strong>
+                        <p>You're analyzing customer purchase amounts at an e-commerce site. Most customers spend $20-$50, but a few spend $500+. Should you use mean or median to report "average" purchase? Create synthetic data and demonstrate your answer with visualizations.</p>
+                    </div>
+                </section>
+                
+                <!-- Summary -->
+                <section class="content-section" id="summary">
+                    <h2>📋 Key Takeaways</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #078930;">
+                            <strong style="color: #065f46; font-size: 1.1rem;">📍 Central Tendency</strong>
+                            <p style="margin-top: 0.5rem; color: #475569;">Mean is sensitive to outliers; use median for skewed data. Mode is best for categorical data.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                            <strong style="color: #92400e; font-size: 1.1rem;">📏 Variability</strong>
+                            <p style="margin-top: 0.5rem; color: #475569;">Standard deviation is more interpretable than variance (same units as data). IQR is robust to outliers.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #10b981;">
+                            <strong style="color: #065f46; font-size: 1.1rem;">📊 Visualization</strong>
+                            <p style="margin-top: 0.5rem; color: #475569;">Always visualize your data! Numbers miss important patterns that graphs reveal instantly.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #8b5cf6;">
+                            <strong style="color: #6b21a8; font-size: 1.1rem;">🎯 Outliers</strong>
+                            <p style="margin-top: 0.5rem; color: #475569;">Use IQR method or 3-sigma rule to detect outliers. Decide whether to remove, transform, or keep them.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); padding: 1.5rem; border-radius: 12px; border-left: 4px solid #ec4899;">
+                            <strong style="color: #9f1239; font-size: 1.1rem;">🤖 ML Application</strong>
+                            <p style="margin-top: 0.5rem; color: #475569;">Descriptive statistics guide feature engineering, preprocessing, and help detect data quality issues early.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 2rem;">
+                        <strong>🚀 What's Next?</strong>
+                        <p>In Tutorial 2, we'll dive into <strong>Probability Foundations</strong> - learning how to quantify uncertainty and make predictions with probability rules, conditional probability, and Bayes' theorem. You'll discover how probability powers every ML algorithm!</p>
+                    </div>
+                </section>
+                
+                <!-- Knowledge Check Quiz -->
+                <section id="quiz" class="quiz-section content-section">
+                    <h2>🎯 Knowledge Check</h2>
+                    <p class="quiz-intro">Test your understanding of descriptive statistics concepts. Select the best answer for each question.</p>
+                    
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="median">
+                            <h3>Question 1: Central Tendency with Outliers</h3>
+                            <p>You're analyzing salaries at a company. A few executives earn $500K+ while most employees earn $50K-$80K. Which measure of central tendency best represents the "typical" salary?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="mean">Mean - average of all salaries</div>
+                                <div class="quiz-option" data-value="median">Median - middle salary when sorted</div>
+                                <div class="quiz-option" data-value="mode">Mode - most common salary</div>
+                                <div class="quiz-option" data-value="range">Range - difference between highest and lowest</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                        
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="c">
+                            <h3>Question 2: Standard Deviation Interpretation</h3>
+                            <p>A dataset has mean = 100 and standard deviation = 15. Assuming normal distribution, approximately what percentage of data falls between 85 and 115?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="a">a) 50%</div>
+                                <div class="quiz-option" data-value="b">b) 95%</div>
+                                <div class="quiz-option" data-value="c">c) 68%</div>
+                                <div class="quiz-option" data-value="d">d) 99.7%</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                        
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="b">
+                            <h3>Question 3: Variance vs Standard Deviation</h3>
+                            <p>Why is standard deviation more commonly reported than variance?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="a">a) Standard deviation is always smaller</div>
+                                <div class="quiz-option" data-value="b">b) Standard deviation is in the same units as the original data</div>
+                                <div class="quiz-option" data-value="c">c) Variance is harder to calculate</div>
+                                <div class="quiz-option" data-value="d">d) Standard deviation is more accurate</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                        
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="d">
+                            <h3>Question 4: IQR and Outliers</h3>
+                            <p>For a dataset with Q1 = 25 and Q3 = 75, which value would be considered an outlier using the 1.5×IQR rule?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="a">a) 30</div>
+                                <div class="quiz-option" data-value="b">b) 80</div>
+                                <div class="quiz-option" data-value="c">c) 100</div>
+                                <div class="quiz-option" data-value="d">d) 160</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                        
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="skewed">
+                            <h3>Question 5: Mean vs Median Comparison</h3>
+                            <p>If mean > median significantly, what does this tell you about the data distribution?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="normal">The data is normally distributed</div>
+                                <div class="quiz-option" data-value="skewed">The data is right-skewed (has high outliers)</div>
+                                <div class="quiz-option" data-value="uniform">The data is uniformly distributed</div>
+                                <div class="quiz-option" data-value="bimodal">The data has two peaks</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                        
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="c">
+                            <h3>Question 6: Choosing the Right Measure</h3>
+                            <p>Which measure of central tendency is most appropriate for categorical data like "favorite color"?</p>
+                            <div class="quiz-options">
+                                <div class="quiz-option" data-value="a">a) Mean</div>
+                                <div class="quiz-option" data-value="b">b) Median</div>
+                                <div class="quiz-option" data-value="c">c) Mode</div>
+                                <div class="quiz-option" data-value="d">d) Standard deviation</div>
+                            </div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Tutorial Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button-secondary">← Back to Course</a>
+                    <a href="#" onclick="alert('Tutorial 2: Probability Foundations coming soon!'); return false;" class="nav-button">Next: Probability Foundations →</a>
+                </div>
+                
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

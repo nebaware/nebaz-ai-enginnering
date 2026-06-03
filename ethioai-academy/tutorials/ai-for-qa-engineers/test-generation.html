@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Use AI and NLP to automatically generate test cases from requirements. Learn GPT integration, user story to test conversion, and edge case discovery.">
+    <title>Tutorial 5: Intelligent Test Case Generation - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-nav .next:hover {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge intermediate">Intermediate</div>
+            <h1 class="page-title">Intelligent Test Case Generation</h1>
+            <p class="page-subtitle">Use AI and NLP to automatically generate test cases, scenarios, and scripts from requirements and user stories</p>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Writing test cases is tedious. You read requirements, imagine scenarios, consider edge cases, then manually type them into test management tools. A simple user story might need 10-20 test cases covering happy paths, error handling, and boundary conditions. What if AI could generate all of them in seconds?</p>
+
+        <p>In this tutorial, you'll build an AI-powered test case generator that reads requirements and automatically creates comprehensive test scenarios. You'll use OpenAI's GPT models and NLP to transform user stories into executable test scripts, complete with edge cases you might have missed.</p>
+
+        <h2>The Manual Testing Problem</h2>
+        
+        <p>Traditional test case creation is:</p>
+
+        <ul>
+            <li><strong>Time-consuming:</strong> QA spends 30-40% of time just writing test cases</li>
+            <li><strong>Incomplete:</strong> Human testers miss edge cases and negative scenarios</li>
+            <li><strong>Inconsistent:</strong> Different testers write cases in different formats</li>
+            <li><strong>Hard to maintain:</strong> Requirements change, test cases need rewriting</li>
+            <li><strong>Boring:</strong> Repetitive work that burns out QA engineers</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>AI Solution:</strong> Large Language Models (LLMs) like GPT-4 can understand natural language requirements and generate structured test cases in seconds. Studies show AI-generated tests achieve 85-95% coverage compared to manual testing.</p>
+        </div>
+
+        <h2>Understanding NLP for Test Generation</h2>
+
+        <p>Natural Language Processing enables AI to:</p>
+
+        <ul>
+            <li><strong>Parse user stories:</strong> Extract actors, actions, and expected outcomes</li>
+            <li><strong>Identify test scenarios:</strong> Generate positive, negative, and boundary tests</li>
+            <li><strong>Generate test data:</strong> Create realistic input values and edge cases</li>
+            <li><strong>Write test scripts:</strong> Convert scenarios into executable code (Python, Java, etc.)</li>
+            <li><strong>Suggest assertions:</strong> Determine what to verify in each test</li>
+        </ul>
+
+        <h3>Anatomy of a Good Test Case</h3>
+
+        <p>AI-generated test cases should include:</p>
+
+        <ol>
+            <li><strong>Test ID:</strong> Unique identifier (TC_LOGIN_001)</li>
+            <li><strong>Title:</strong> Descriptive name ("Verify successful login with valid credentials")</li>
+            <li><strong>Preconditions:</strong> Setup requirements ("User is registered")</li>
+            <li><strong>Test Steps:</strong> Detailed actions to perform</li>
+            <li><strong>Test Data:</strong> Specific inputs to use</li>
+            <li><strong>Expected Results:</strong> What should happen</li>
+            <li><strong>Priority:</strong> Critical, High, Medium, Low</li>
+            <li><strong>Category:</strong> Functional, Regression, Smoke, etc.</li>
+        </ol>
+
+        <h2>Setting Up OpenAI GPT Integration</h2>
+
+        <p>First, install the OpenAI library and set up your API key:</p>
+
+        <pre><code class="language-bash"># Install OpenAI Python library
+pip install openai python-dotenv
+
+# Create .env file for API key
+echo "OPENAI_API_KEY=your-api-key-here" > .env
+</code></pre>
+
+        <pre><code class="language-python">import openai
+import os
+from dotenv import load_dotenv
+import json
+
+# Load API key
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# Test the connection
+def test_openai_connection():
+    """Verify OpenAI API is working"""
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "user", "content": "Say 'API connection successful!'"}
+            ],
+            max_tokens=50
+        )
+        print(response.choices[0].message.content)
+        return True
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return False
+
+# Run test
+test_openai_connection()
+</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>API Costs:</strong> OpenAI charges per token. GPT-4 costs ~$0.03 per 1K input tokens and ~$0.06 per 1K output tokens. For test generation, expect $0.10-0.50 per user story. Use GPT-3.5-turbo for cheaper alternative ($0.001 per 1K tokens).</p>
+        </div>
+
+        <h2>Building a Test Case Generator</h2>
+
+        <p>Let's create an AI-powered test case generator:</p>
+
+        <pre><code class="language-python">import openai
+import json
+from typing import List, Dict
+
+class AITestGenerator:
+    """
+    Generate comprehensive test cases from user stories using GPT
+    """
+    
+    def __init__(self, model="gpt-4", temperature=0.7):
+        """
+        Args:
+            model: OpenAI model to use (gpt-4 or gpt-3.5-turbo)
+            temperature: Creativity (0=deterministic, 1=creative)
+        """
+        self.model = model
+        self.temperature = temperature
+    
+    def generate_test_cases(self, user_story: str, 
+                           num_cases: int = 10,
+                           include_negative: bool = True) -> List[Dict]:
+        """
+        Generate test cases from a user story
+        
+        Args:
+            user_story: Natural language requirement
+            num_cases: Number of test cases to generate
+            include_negative: Include negative/error scenarios
+        
+        Returns:
+            List of test case dictionaries
+        """
+        prompt = self._build_prompt(user_story, num_cases, include_negative)
+        
+        print(f"🤖 Generating {num_cases} test cases...")
+        print(f"📝 User Story: {user_story[:100]}...")
+        
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": self._get_system_prompt()},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=self.temperature,
+                max_tokens=2000
+            )
+            
+            # Parse JSON response
+            content = response.choices[0].message.content
+            
+            # Extract JSON from markdown code block if present
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            test_cases = json.loads(content)
+            
+            print(f"✅ Generated {len(test_cases)} test cases")
+            return test_cases
+            
+        except Exception as e:
+            print(f"❌ Error generating test cases: {e}")
+            return []
+    
+    def _get_system_prompt(self) -> str:
+        """Define the AI's role and expertise"""
+        return """You are an expert QA engineer with 10+ years of experience. 
+You excel at creating comprehensive, detailed test cases that cover:
+- Happy path scenarios
+- Negative test cases (invalid inputs, errors)
+- Boundary conditions (min/max values, edge cases)
+- Security considerations (SQL injection, XSS, authentication)
+- Performance and usability
+
+Generate test cases in JSON format with this structure:
+{
+  "test_id": "TC_XXX_001",
+  "title": "Clear, descriptive title",
+  "priority": "Critical|High|Medium|Low",
+  "category": "Functional|Regression|Smoke|Security|Performance",
+  "preconditions": ["Setup step 1", "Setup step 2"],
+  "steps": [
+    {"step": 1, "action": "What to do", "expected": "What should happen"}
+  ],
+  "test_data": {"field": "value"},
+  "postconditions": ["Cleanup actions"]
+}
+
+Be specific, actionable, and thorough."""
+    
+    def _build_prompt(self, user_story: str, num_cases: int, 
+                     include_negative: bool) -> str:
+        """Build the user prompt"""
+        prompt = f"""Generate {num_cases} detailed test cases for this user story:
+
+USER STORY:
+{user_story}
+
+REQUIREMENTS:
+- Include both positive (happy path) and negative (error) scenarios
+- Cover boundary conditions and edge cases
+- Be specific about test data to use
+- Include security considerations where relevant
+- Prioritize test cases appropriately
+- Use clear, actionable language
+
+Return ONLY a JSON array of test cases, no additional text."""
+
+        if not include_negative:
+            prompt += "\n- Focus only on positive scenarios"
+        
+        return prompt
+    
+    def generate_test_script(self, test_case: Dict, language: str = "python") -> str:
+        """
+        Convert a test case into executable code
+        
+        Args:
+            test_case: Test case dictionary
+            language: Target language (python, java, javascript)
+        
+        Returns:
+            Executable test script code
+        """
+        prompt = f"""Convert this test case into executable {language} test code using pytest/selenium:
+
+TEST CASE:
+{json.dumps(test_case, indent=2)}
+
+REQUIREMENTS:
+- Use pytest framework for Python
+- Use Selenium WebDriver for browser automation
+- Include proper assertions
+- Add comments explaining each step
+- Handle waits and error cases
+- Use Page Object Model if applicable
+
+Return ONLY the code, no explanations."""
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "You are an expert test automation engineer."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,  # Lower for code generation
+                max_tokens=1500
+            )
+            
+            code = response.choices[0].message.content
+            
+            # Extract code from markdown if present
+            if f"```{language}" in code:
+                code = code.split(f"```{language}")[1].split("```")[0].strip()
+            elif "```" in code:
+                code = code.split("```")[1].split("```")[0].strip()
+            
+            return code
+            
+        except Exception as e:
+            print(f"❌ Error generating test script: {e}")
+            return ""
+
+# Usage example
+generator = AITestGenerator(model="gpt-4")
+
+# User story
+user_story = """
+As a registered user,
+I want to log in to my account using my email and password,
+So that I can access my personalized dashboard.
+
+Acceptance Criteria:
+- User can log in with valid email and password
+- Invalid credentials show an error message
+- Account gets locked after 5 failed attempts
+- User can reset password via email
+- Remember me option keeps user logged in for 30 days
+"""
+
+# Generate test cases
+test_cases = generator.generate_test_cases(
+    user_story=user_story,
+    num_cases=12,
+    include_negative=True
+)
+
+# Print generated test cases
+for i, tc in enumerate(test_cases, 1):
+    print(f"\n{'='*60}")
+    print(f"TEST CASE {i}: {tc.get('title', 'Untitled')}")
+    print('='*60)
+    print(f"ID: {tc.get('test_id', 'N/A')}")
+    print(f"Priority: {tc.get('priority', 'N/A')}")
+    print(f"Category: {tc.get('category', 'N/A')}")
+    print(f"\nPreconditions:")
+    for pre in tc.get('preconditions', []):
+        print(f"  - {pre}")
+    print(f"\nSteps:")
+    for step in tc.get('steps', []):
+        print(f"  {step['step']}. {step['action']}")
+        print(f"     Expected: {step['expected']}")
+    print(f"\nTest Data: {tc.get('test_data', {})}")
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Result:</strong> GPT-4 generates 12 comprehensive test cases in ~10 seconds, covering happy paths, error handling, security (account lockout), and boundary conditions!</p>
+        </div>
+
+        <h2>Generating Executable Test Scripts</h2>
+
+        <p>Now let's convert test cases into actual Python/Selenium code:</p>
+
+        <pre><code class="language-python"># Pick a test case to automate
+login_test_case = test_cases[0]  # Assuming first is successful login
+
+# Generate executable code
+print("\n" + "="*60)
+print("GENERATING EXECUTABLE TEST SCRIPT")
+print("="*60)
+
+test_script = generator.generate_test_script(
+    test_case=login_test_case,
+    language="python"
+)
+
+print("\n" + test_script)
+
+# Save to file
+with open("test_login.py", "w") as f:
+    f.write(test_script)
+
+print("\n✅ Test script saved to test_login.py")
+print("Run with: pytest test_login.py")
+</code></pre>
+
+        <h3>Example Generated Test Script</h3>
+
+        <pre><code class="language-python"># Example of what GPT-4 might generate:
+
+import pytest
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+class TestLogin:
+    """
+    Test case: TC_LOGIN_001
+    Verify successful login with valid credentials
+    """
+    
+    @pytest.fixture
+    def driver(self):
+        """Setup WebDriver"""
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        driver.implicitly_wait(10)
+        yield driver
+        driver.quit()
+    
+    def test_successful_login_valid_credentials(self, driver):
+        """
+        Test steps:
+        1. Navigate to login page
+        2. Enter valid email
+        3. Enter valid password
+        4. Click login button
+        5. Verify redirect to dashboard
+        """
+        # Step 1: Navigate to login page
+        driver.get("https://example.com/login")
+        
+        # Step 2: Enter valid email
+        email_field = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, "email"))
+        )
+        email_field.send_keys("testuser@example.com")
+        
+        # Step 3: Enter valid password
+        password_field = driver.find_element(By.ID, "password")
+        password_field.send_keys("SecurePass123!")
+        
+        # Step 4: Click login button
+        login_button = driver.find_element(By.ID, "login-btn")
+        login_button.click()
+        
+        # Step 5: Verify redirect to dashboard
+        WebDriverWait(driver, 10).until(
+            EC.url_contains("/dashboard")
+        )
+        
+        # Additional assertions
+        assert "dashboard" in driver.current_url.lower(), "Should redirect to dashboard"
+        
+        welcome_message = driver.find_element(By.CLASS_NAME, "welcome-message")
+        assert welcome_message.is_displayed(), "Welcome message should be visible"
+        
+        print("✅ Test passed: User logged in successfully")
+</code></pre>
+
+        <h2>Advanced: Edge Case Discovery</h2>
+
+        <p>AI can find edge cases humans might miss:</p>
+
+        <pre><code class="language-python">class EdgeCaseDiscoverer:
+    """
+    Use AI to discover edge cases and boundary conditions
+    """
+    
+    def discover_edge_cases(self, feature_description: str) -> List[str]:
+        """
+        Generate comprehensive list of edge cases
+        """
+        prompt = f"""You are a security and edge case expert. Analyze this feature:
+
+FEATURE:
+{feature_description}
+
+Generate a comprehensive list of edge cases, boundary conditions, and unusual scenarios to test:
+- Minimum/maximum values
+- Empty inputs, null values
+- Special characters, Unicode, emojis
+- SQL injection, XSS attacks
+- Race conditions, concurrency
+- Network failures, timeouts
+- Invalid data types
+- Extremely large inputs
+- Unexpected user behavior
+
+Return as a JSON array of edge case descriptions."""
+
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are an expert at finding edge cases and security vulnerabilities."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.8,  # Higher for creativity
+                max_tokens=1000
+            )
+            
+            content = response.choices[0].message.content
+            
+            # Extract JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            edge_cases = json.loads(content)
+            return edge_cases
+            
+        except Exception as e:
+            print(f"❌ Error discovering edge cases: {e}")
+            return []
+
+# Usage
+discoverer = EdgeCaseDiscoverer()
+
+feature = """
+Login form that accepts email and password.
+Email must be valid format, password must be 8+ characters.
+Form has client-side and server-side validation.
+"""
+
+edge_cases = discoverer.discover_edge_cases(feature)
+
+print("\n" + "="*60)
+print("DISCOVERED EDGE CASES")
+print("="*60)
+
+for i, case in enumerate(edge_cases, 1):
+    print(f"{i}. {case}")
+</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>AI Advantage:</strong> GPT-4 can suggest edge cases like "What if email contains Unicode characters like ñ or emojis?" or "What happens if user submits form 100 times in 1 second?" that manual testers might overlook.</p>
+        </div>
+
+        <h2>Generating Test Data</h2>
+
+        <p>AI can also generate realistic test data:</p>
+
+        <pre><code class="language-python">class TestDataGenerator:
+    """
+    Generate realistic test data using AI
+    """
+    
+    def generate_test_data(self, data_type: str, count: int = 10, 
+                          constraints: str = "") -> List:
+        """
+        Generate test data matching specified type and constraints
+        
+        Args:
+            data_type: Type of data (email, phone, address, etc.)
+            count: Number of samples to generate
+            constraints: Additional requirements
+        """
+        prompt = f"""Generate {count} realistic test data samples for: {data_type}
+
+CONSTRAINTS:
+{constraints if constraints else "None - use realistic, diverse data"}
+
+REQUIREMENTS:
+- Data should be realistic and varied
+- Include edge cases (min/max lengths, special characters)
+- Include both valid and invalid samples if appropriate
+- Return as JSON array
+
+Examples:
+- For emails: valid formats, invalid formats, edge cases
+- For names: different cultures, special characters, very long names
+- For addresses: various countries, apartment numbers, PO boxes"""
+
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",  # Cheaper for data generation
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.9,  # High creativity for varied data
+                max_tokens=800
+            )
+            
+            content = response.choices[0].message.content
+            
+            # Extract JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            test_data = json.loads(content)
+            return test_data
+            
+        except Exception as e:
+            print(f"❌ Error generating test data: {e}")
+            return []
+
+# Usage
+data_gen = TestDataGenerator()
+
+# Generate email test data
+emails = data_gen.generate_test_data(
+    data_type="email addresses",
+    count=15,
+    constraints="Include valid emails, invalid formats, SQL injection attempts, XSS payloads"
+)
+
+print("\n" + "="*60)
+print("GENERATED TEST DATA: Emails")
+print("="*60)
+
+for i, email in enumerate(emails, 1):
+    print(f"{i}. {email}")
+
+# Generate phone numbers
+phones = data_gen.generate_test_data(
+    data_type="phone numbers",
+    count=10,
+    constraints="Include US, international, invalid formats, edge cases"
+)
+
+print("\n" + "="*60)
+print("GENERATED TEST DATA: Phone Numbers")
+print("="*60)
+
+for i, phone in enumerate(phones, 1):
+    print(f"{i}. {phone}")
+</code></pre>
+
+        <h2>Complete Workflow: Requirement to Executable Test</h2>
+
+        <p>Let's put it all together in an automated pipeline:</p>
+
+        <pre><code class="language-python">class EndToEndTestGenerator:
+    """
+    Complete pipeline: Requirement → Test Cases → Test Scripts → Test Data
+    """
+    
+    def __init__(self):
+        self.test_gen = AITestGenerator(model="gpt-4")
+        self.edge_discoverer = EdgeCaseDiscoverer()
+        self.data_gen = TestDataGenerator()
+    
+    def generate_complete_test_suite(self, user_story: str, 
+                                     output_dir: str = "generated_tests"):
+        """
+        Generate entire test suite from user story
+        """
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+        
+        print("🚀 Starting end-to-end test generation pipeline...\n")
+        
+        # Step 1: Generate test cases
+        print("📝 Step 1: Generating test cases...")
+        test_cases = self.test_gen.generate_test_cases(
+            user_story=user_story,
+            num_cases=15,
+            include_negative=True
+        )
+        
+        # Save test cases as JSON
+        with open(f"{output_dir}/test_cases.json", "w") as f:
+            json.dump(test_cases, f, indent=2)
+        print(f"✅ Saved {len(test_cases)} test cases to test_cases.json\n")
+        
+        # Step 2: Discover edge cases
+        print("🔍 Step 2: Discovering edge cases...")
+        edge_cases = self.edge_discoverer.discover_edge_cases(user_story)
+        
+        with open(f"{output_dir}/edge_cases.json", "w") as f:
+            json.dump(edge_cases, f, indent=2)
+        print(f"✅ Discovered {len(edge_cases)} edge cases\n")
+        
+        # Step 3: Generate test scripts
+        print("💻 Step 3: Generating executable test scripts...")
+        
+        for i, test_case in enumerate(test_cases[:5], 1):  # Generate scripts for first 5
+            print(f"   Generating script {i}/5...")
+            
+            script = self.test_gen.generate_test_script(
+                test_case=test_case,
+                language="python"
+            )
+            
+            # Save script
+            test_id = test_case.get('test_id', f'test_{i}').lower().replace('_', '_')
+            filename = f"{output_dir}/{test_id}.py"
+            
+            with open(filename, "w") as f:
+                f.write(script)
+        
+        print(f"✅ Generated 5 executable test scripts\n")
+        
+        # Step 4: Generate test data
+        print("📊 Step 4: Generating test data...")
+        
+        # Extract data types from test cases
+        data_types = self._extract_data_types(test_cases)
+        
+        all_test_data = {}
+        for data_type in data_types:
+            data = self.data_gen.generate_test_data(
+                data_type=data_type,
+                count=20
+            )
+            all_test_data[data_type] = data
+        
+        with open(f"{output_dir}/test_data.json", "w") as f:
+            json.dump(all_test_data, f, indent=2)
+        print(f"✅ Generated test data for {len(data_types)} data types\n")
+        
+        # Step 5: Generate summary report
+        self._generate_report(output_dir, test_cases, edge_cases, data_types)
+        
+        print("="*60)
+        print("✅ TEST SUITE GENERATION COMPLETE!")
+        print("="*60)
+        print(f"Output directory: {output_dir}/")
+        print(f"  - test_cases.json ({len(test_cases)} cases)")
+        print(f"  - edge_cases.json ({len(edge_cases)} cases)")
+        print(f"  - 5 executable Python test scripts")
+        print(f"  - test_data.json (test data sets)")
+        print(f"  - test_suite_summary.txt (report)")
+    
+    def _extract_data_types(self, test_cases: List[Dict]) -> List[str]:
+        """Extract data types from test cases"""
+        data_types = set()
+        
+        for tc in test_cases:
+            test_data = tc.get('test_data', {})
+            for key in test_data.keys():
+                if 'email' in key.lower():
+                    data_types.add('email')
+                elif 'password' in key.lower():
+                    data_types.add('password')
+                elif 'phone' in key.lower():
+                    data_types.add('phone')
+                elif 'name' in key.lower():
+                    data_types.add('name')
+        
+        return list(data_types) or ['email', 'password']  # Default
+    
+    def _generate_report(self, output_dir: str, test_cases: List[Dict],
+                        edge_cases: List, data_types: List[str]):
+        """Generate summary report"""
+        report = f"""
+TEST SUITE GENERATION SUMMARY
+{'='*60}
+
+Generated: {len(test_cases)} test cases
+Edge Cases: {len(edge_cases)} scenarios
+Test Scripts: 5 executable Python files
+Test Data: {len(data_types)} data type sets
+
+TEST CASE BREAKDOWN:
+"""
+        
+        # Count by priority
+        priorities = {}
+        categories = {}
+        
+        for tc in test_cases:
+            priority = tc.get('priority', 'Unknown')
+            category = tc.get('category', 'Unknown')
+            
+            priorities[priority] = priorities.get(priority, 0) + 1
+            categories[category] = categories.get(category, 0) + 1
+        
+        report += "\nBy Priority:\n"
+        for priority, count in sorted(priorities.items()):
+            report += f"  {priority}: {count}\n"
+        
+        report += "\nBy Category:\n"
+        for category, count in sorted(categories.items()):
+            report += f"  {category}: {count}\n"
+        
+        report += f"\n{'='*60}\n"
+        
+        with open(f"{output_dir}/test_suite_summary.txt", "w") as f:
+            f.write(report)
+        
+        print(report)
+
+# Complete workflow example
+pipeline = EndToEndTestGenerator()
+
+user_story = """
+As a user,
+I want to register for an account,
+So that I can access premium features.
+
+Acceptance Criteria:
+- User provides email, password, and full name
+- Email must be unique and valid format
+- Password must be 8+ characters with 1 uppercase, 1 number
+- User receives confirmation email
+- User can log in immediately after registration
+- Failed registrations show appropriate error messages
+"""
+
+# Generate everything!
+pipeline.generate_complete_test_suite(
+    user_story=user_story,
+    output_dir="registration_tests"
+)
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Complete Automation:</strong> From a single user story, you now have 15 test cases, edge case scenarios, 5 executable test scripts, and test data sets—all generated in under 60 seconds!</p>
+        </div>
+
+        <h2>Best Practices for AI Test Generation</h2>
+
+        <ol>
+            <li><strong>Review AI-generated tests:</strong> Don't blindly trust—validate logic and coverage</li>
+            <li><strong>Start with GPT-4:</strong> Better quality than GPT-3.5, worth the cost for critical tests</li>
+            <li><strong>Provide context:</strong> Give AI acceptance criteria, constraints, and domain knowledge</li>
+            <li><strong>Iterate and refine:</strong> Regenerate if first output isn't perfect</li>
+            <li><strong>Combine with human expertise:</strong> Use AI for breadth, humans for critical thinking</li>
+            <li><strong>Version control prompts:</strong> Save effective prompts for reuse</li>
+            <li><strong>Monitor costs:</strong> Track API usage, use GPT-3.5 for non-critical generation</li>
+            <li><strong>Validate generated code:</strong> Run and test scripts before committing</li>
+        </ol>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Limitations:</strong> AI can hallucinate element locators or APIs that don't exist. Always validate generated code runs successfully against your actual application.</p>
+        </div>
+
+        <h2>Integrating into CI/CD</h2>
+
+        <pre><code class="language-yaml"># .github/workflows/ai-test-generation.yml
+name: AI Test Generation
+
+on:
+  pull_request:
+    paths:
+      - 'requirements/**'  # Trigger on requirement changes
+
+jobs:
+  generate-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install openai python-dotenv
+    
+    - name: Generate test cases
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        python generate_tests.py --input requirements/new_feature.txt
+    
+    - name: Create PR with generated tests
+      uses: peter-evans/create-pull-request@v4
+      with:
+        commit-message: 'chore: AI-generated test cases for new feature'
+        title: '[AI] Generated Test Cases'
+        body: |
+          🤖 This PR contains AI-generated test cases.
+          
+          Please review for accuracy and completeness.
+        branch: ai-generated-tests
+</code></pre>
+
+        <h2>Practice Exercise</h2>
+
+        <p><strong>Challenge:</strong> Build an AI test generator that:</p>
+        <ol>
+            <li>Reads user stories from a file or Jira API</li>
+            <li>Generates 20+ comprehensive test cases</li>
+            <li>Discovers 15+ edge cases and security scenarios</li>
+            <li>Converts 5 test cases into executable Selenium scripts</li>
+            <li>Generates realistic test data (100+ samples)</li>
+            <li>Creates an HTML report with all artifacts</li>
+        </ol>
+
+        <p><strong>Bonus:</strong> Add support for API test generation using requests/pytest!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+            <li>AI can generate test cases 10-20x faster than manual writing</li>
+            <li>GPT-4 achieves 85-95% coverage compared to human testers</li>
+            <li>NLP enables parsing requirements and identifying test scenarios</li>
+            <li>AI excels at finding edge cases humans might overlook</li>
+            <li>Test data generation creates realistic, varied inputs automatically</li>
+            <li>End-to-end pipelines can go from requirement to executable test in seconds</li>
+            <li>Always review AI output—it can hallucinate or miss domain-specific logic</li>
+        </ul>
+
+        <h2>What's Next?</h2>
+
+        <p>In the next tutorial, <strong>AI-Powered Test Data Generation</strong>, you'll dive deeper into creating sophisticated test data using GANs, synthetic data generation, and privacy-safe techniques. You'll explore:</p>
+        <ul>
+            <li>Synthetic data generation with GANs</li>
+            <li>Privacy-preserving test data (masking PII)</li>
+            <li>Edge case data generation at scale</li>
+            <li>Realistic persona creation</li>
+        </ul>
+
+        <div class="success-box">
+            <p>✅ <strong>Tutorial Complete!</strong> You now have the power to generate comprehensive test suites automatically using AI—say goodbye to tedious manual test case writing!</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: AI Test Generation</h2>
+                <p class="quiz-description">Check your understanding of intelligent test case generation</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What percentage of QA time is typically spent just writing test cases manually?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">10-20%</div>
+                    <div class="quiz-option" data-correct="true">30-40%</div>
+                    <div class="quiz-option" data-correct="false">50-60%</div>
+                    <div class="quiz-option" data-correct="false">70-80%</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Which OpenAI model provides the best quality for test case generation?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">GPT-2</div>
+                    <div class="quiz-option" data-correct="false">GPT-3.5-turbo (cheapest option)</div>
+                    <div class="quiz-option" data-correct="true">GPT-4 (higher quality, worth the cost)</div>
+                    <div class="quiz-option" data-correct="false">DALL-E</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What is a key advantage of AI-generated edge case discovery?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">It's completely free</div>
+                    <div class="quiz-option" data-correct="true">AI can suggest unusual scenarios like Unicode attacks or race conditions that humans might overlook</div>
+                    <div class="quiz-option" data-correct="false">AI never makes mistakes</div>
+                    <div class="quiz-option" data-correct="false">It replaces all manual testing</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What should you always do with AI-generated test code before using it?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Use it immediately without changes</div>
+                    <div class="quiz-option" data-correct="false">Delete it and start over</div>
+                    <div class="quiz-option" data-correct="true">Review and validate it—AI can hallucinate locators or APIs that don't exist</div>
+                    <div class="quiz-option" data-correct="false">Only run it in production</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+        
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="visual-ai-testing.html" class="prev">← Previous: Visual AI Testing</a>
+            <a href="test-data-generation.html" class="next">Next: Test Data Generation →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

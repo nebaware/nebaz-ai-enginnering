@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master AI workflows - chain prompts, create custom GPTs, build automation systems, and integrate ChatGPT into your daily processes.">
+    <title>Tutorial 8: Building AI Workflows - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .workflow-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            margin: 2.5rem 0;
+            border-top: 6px solid #078930;
+        }
+        
+        .workflow-title {
+            color: #1e293b;
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .workflow-step {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid #10b981;
+            position: relative;
+        }
+        
+        .step-num {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            font-weight: 800;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            margin-right: 1rem;
+        }
+        
+        .prompt-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+        
+        .arrow-down {
+            text-align: center;
+            font-size: 2rem;
+            color: #078930;
+            margin: 1rem 0;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .completion-badge {
+            background: linear-gradient(135deg, #10b981 0%, #078930 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 3rem 0;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 8 (Final)</span>
+            </div>
+            <h1>Tutorial 8: Building AI Workflows</h1>
+            <p class="tutorial-intro">Chain prompts, automate processes, and create systems that run on autopilot</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 3</span>
+                <span class="meta-item">📊 Advanced</span>
+                <span class="meta-item">🎓 Final Module</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p><strong>You know how to write a great prompt. But what if you need 10 prompts in sequence?</strong></p>
+                
+                <p>Single prompts solve tasks. <strong>Workflows solve jobs.</strong></p>
+                
+                <p>Example: "Write me a blog post" → One task.<br>
+                Workflow: Research topic → Outline → Draft → Edit → SEO optimize → Create social posts → Schedule → That's a complete content creation <em>system</em>.</p>
+                
+                <p>This module shows you how to build AI-powered workflows that transform hours of work into minutes — and run while you sleep.</p>
+                
+                <div class="success-box">
+                    <p><strong>💡 In this final module, you'll master:</strong></p>
+                    <ul>
+                        <li>Multi-step prompt chains (workflows that automate entire processes)</li>
+                        <li>Custom GPTs (personalized AI assistants for specific roles)</li>
+                        <li>ChatGPT API integration (connect to your apps/tools)</li>
+                        <li>Automation with Zapier/Make (trigger workflows automatically)</li>
+                        <li>Building your personal AI systems</li>
+                        <li>Scaling prompts across teams</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Prompt Chains -->
+            <section class="content-section">
+                <h2>🔗 Concept 1: Multi-Step Prompt Chains</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">What Are Prompt Chains?</div>
+                    <p><strong>Definition:</strong> A sequence of prompts where each output feeds into the next prompt as input. Like an assembly line for knowledge work.</p>
+                    
+                    <div class="info-box">
+                        <p><strong>Why chain prompts?</strong></p>
+                        <ul>
+                            <li><strong>Better quality:</strong> Breaking complex work into steps improves output</li>
+                            <li><strong>Control:</strong> Review/edit each step before proceeding</li>
+                            <li><strong>Specialization:</strong> Each prompt optimized for one task</li>
+                            <li><strong>Scalability:</strong> Repeat the chain for different inputs</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Real Workflow Example: Content Creation System</h3>
+                
+                <div class="workflow-card">
+                    <div class="workflow-step">
+                        <span class="step-num">1</span>
+                        <strong>Research & Brainstorm</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Act as content strategist.
+
+Topic: [YOUR TOPIC]
+Target audience: [AUDIENCE]
+
+Generate:
+1. 10 angles/perspectives on this topic
+2. 5 unique hooks that grab attention
+3. 3 counterintuitive takes
+4. Key questions readers want answered
+
+Select the most compelling angle for a blog post.
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">2</span>
+                        <strong>Create Detailed Outline</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Using this angle: [PASTE SELECTED ANGLE FROM STEP 1]
+
+Create detailed outline:
+- Hook/intro (with specific opening scenario)
+- 5-7 H2 sections (each with 2-3 H3 subpoints)
+- Examples to include for each section
+- Data points needed
+- Conclusion with CTA
+
+Make it logical flow, build momentum.
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">3</span>
+                        <strong>Draft Introduction</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Using this outline: [PASTE OUTLINE]
+
+Write the introduction section only.
+
+Requirements:
+- 150-200 words
+- Start with specific, relatable scenario
+- Include one surprising statistic
+- End with clear promise of what reader will learn
+- Tone: conversational but authoritative
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">4</span>
+                        <strong>Draft Body Sections</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Write section: [H2 TITLE FROM OUTLINE]
+
+Context: [PASTE PREVIOUS SECTIONS]
+
+Requirements:
+- 300-400 words
+- Include 2-3 concrete examples
+- Add one actionable tip
+- Transition smoothly from previous section
+- Lead naturally to next section
+
+Repeat this prompt for each H2 section.
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">5</span>
+                        <strong>Edit for Voice & Polish</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Here's complete draft: [PASTE FULL ARTICLE]
+
+Edit to:
+1. Remove generic phrases ("in today's world", "it's important")
+2. Strengthen weak verbs
+3. Add personality (conversational, not corporate)
+4. Improve transitions
+5. Ensure consistent tone
+
+Show key changes made.
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">6</span>
+                        <strong>SEO Optimization</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+Optimize for SEO:
+
+Article: [PASTE EDITED VERSION]
+
+Add:
+1. Title tag (60 chars, includes keyword)
+2. Meta description (155 chars)
+3. 5-8 strategic keywords
+4. Suggest H2 improvements for SEO
+5. Internal linking opportunities
+
+Don't sacrifice readability for SEO.
+                        </div>
+                    </div>
+                    
+                    <div class="arrow-down">⬇️</div>
+                    
+                    <div class="workflow-step">
+                        <span class="step-num">7</span>
+                        <strong>Repurpose for Social</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+From this article: [PASTE TITLE/KEY POINTS]
+
+Create:
+1. Twitter thread (10 tweets)
+2. LinkedIn post (200 words)
+3. 5 Instagram captions (quote-style)
+4. Email newsletter teaser (100 words)
+
+Maintain core message, adapt for each platform.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Result:</strong> You just automated a 5-hour content creation process into a 45-minute workflow with 7 focused prompts. Each step takes 5 minutes, produces better quality than one mega-prompt, and gives you control at every stage.</p>
+                </div>
+            </section>
+
+            <!-- Custom GPTs -->
+            <section class="content-section">
+                <h2>🤖 Concept 2: Custom GPTs</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">What Are Custom GPTs?</div>
+                    <p><strong>Definition:</strong> Personalized versions of ChatGPT trained on your specific instructions, knowledge, and style. Like hiring a specialized employee who knows exactly how you work.</p>
+                    
+                    <p><strong>Access:</strong> ChatGPT Plus/Team/Enterprise users (GPT Store)</p>
+                    
+                    <div class="info-box" style="margin-top: 1.5rem;">
+                        <h3>When to Build a Custom GPT</h3>
+                        <ul>
+                            <li><strong>Repetitive tasks:</strong> Same type of work daily (writing, analysis, coding)</li>
+                            <li><strong>Specialized knowledge:</strong> Domain expertise you use repeatedly</li>
+                            <li><strong>Team collaboration:</strong> Share AI assistant with consistent behavior</li>
+                            <li><strong>Brand voice:</strong> Maintain consistent tone across all content</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Example Custom GPT Blueprints</h3>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Custom GPT #1: Personal Writing Coach</h4>
+                    
+                    <div class="workflow-step">
+                        <strong>Instructions (System Prompt)</strong>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+You are my personal writing coach specializing in [YOUR NICHE - e.g., B2B SaaS content].
+
+<strong>Your role:</strong>
+- Help me brainstorm, outline, and refine articles
+- Maintain my writing voice: [DESCRIBE YOUR VOICE - conversational, data-driven, uses specific examples]
+- Push back on weak ideas or generic content
+- Suggest improvements with specific examples
+
+<strong>My style preferences:</strong>
+- Short sentences and paragraphs
+- Concrete examples over abstract concepts
+- Data to support claims
+- Avoid: jargon, clichés, buzzwords
+- Always end with clear action items
+
+<strong>When I share drafts:</strong>
+1. Point out what works well
+2. Identify 3-5 areas for improvement
+3. Suggest specific rewrites
+4. Rate overall quality (1-10) with reasoning
+
+<strong>Tone:</strong> Direct but encouraging. Be a tough coach who wants me to succeed.
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <strong>Knowledge Files (Optional)</strong>
+                        <p style="margin-top: 0.5rem;">Upload:</p>
+                        <ul>
+                            <li>Your best articles (so it learns your style)</li>
+                            <li>Brand guidelines</li>
+                            <li>Target audience personas</li>
+                            <li>Competitor content (what to differentiate from)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="workflow-step">
+                        <strong>Conversation Starters</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>"Help me brainstorm angles for [topic]"</li>
+                            <li>"Review this draft and give me honest feedback"</li>
+                            <li>"Turn this idea into a detailed outline"</li>
+                            <li>"Make this section punchier"</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Custom GPT #2: Code Review Assistant</h4>
+                    
+                    <div class="prompt-box">
+You are a senior developer specialized in [YOUR STACK - e.g., Python/Django].
+
+<strong>Your role:</strong> Review code for quality, performance, security, and best practices.
+
+<strong>When I share code:</strong>
+1. <strong>Security audit:</strong> Identify vulnerabilities (SQL injection, XSS, etc.)
+2. <strong>Performance:</strong> Suggest optimizations (time/space complexity)
+3. <strong>Readability:</strong> Flag confusing logic, suggest refactors
+4. <strong>Best practices:</strong> Check against [PEP 8 / Airbnb style guide / etc.]
+5. <strong>Testing:</strong> Suggest test cases for edge cases
+
+<strong>Format:</strong>
+- Severity: 🔴 Critical | 🟡 Important | 🟢 Nice-to-have
+- Before/after code examples
+- Explanation of why change matters
+
+<strong>Tone:</strong> Constructive, educational. Help me become better developer.
+                    </div>
+                </div>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Custom GPT #3: Marketing Strategist</h4>
+                    
+                    <div class="prompt-box">
+You are a growth marketing strategist for [YOUR INDUSTRY].
+
+<strong>My business context:</strong>
+- Product: [DESCRIPTION]
+- Target customer: [ICP - Ideal Customer Profile]
+- Current metrics: [MRR, CAC, LTV, etc.]
+- Stage: [Startup/Growth/Scale]
+
+<strong>Your expertise:</strong>
+- Customer acquisition strategies
+- Conversion rate optimization
+- Retention & growth loops
+- Channel testing frameworks
+
+<strong>When I ask for advice:</strong>
+1. Ask clarifying questions if needed
+2. Provide 3-5 specific strategies
+3. Prioritize by: Impact vs Effort
+4. Include success metrics to track
+5. Suggest first experiment to run
+
+<strong>Always think:</strong> What's the highest leverage action right now?
+
+<strong>Frameworks to use:</strong> ICE scoring, Jobs-to-be-Done, Hook Model, Growth Loops
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Integration -->
+            <section class="content-section">
+                <h2>🔌 Concept 3: ChatGPT API Integration</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">Connecting ChatGPT to Your Tools</div>
+                    
+                    <p><strong>What is the API?</strong> A way for your apps/scripts to communicate with ChatGPT programmatically. Instead of typing in the web interface, your code sends prompts and receives responses.</p>
+                    
+                    <div class="info-box">
+                        <h3>Use Cases for API Integration</h3>
+                        <ul>
+                            <li><strong>Automation:</strong> Process 100 customer emails with one script</li>
+                            <li><strong>Custom interfaces:</strong> Build ChatGPT into your own app</li>
+                            <li><strong>Batch processing:</strong> Run same workflow on multiple inputs</li>
+                            <li><strong>Integration:</strong> Connect ChatGPT to databases, CRMs, tools</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Simple API Example (Python)</h3>
+                
+                <div class="workflow-card">
+                    <div class="prompt-box">
+<span style="color: #10b981"># Install: pip install openai</span>
+
+<span style="color: #f59e0b">from</span> openai <span style="color: #f59e0b">import</span> OpenAI
+
+<span style="color: #10b981"># Initialize client</span>
+client = OpenAI(api_key=<span style="color: #078930">"your-api-key-here"</span>)
+
+<span style="color: #10b981"># Send prompt</span>
+response = client.chat.completions.create(
+    model=<span style="color: #078930">"gpt-4"</span>,
+    messages=[
+        {<span style="color: #078930">"role"</span>: <span style="color: #078930">"system"</span>, <span style="color: #078930">"content"</span>: <span style="color: #078930">"You are a helpful assistant."</span>},
+        {<span style="color: #078930">"role"</span>: <span style="color: #078930">"user"</span>, <span style="color: #078930">"content"</span>: <span style="color: #078930">"Write a professional email..."</span>}
+    ]
+)
+
+<span style="color: #10b981"># Get response</span>
+print(response.choices[0].message.content)
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 1.5rem;">
+                        <h3>Real Use Case: Automated Email Responses</h3>
+                        <div class="prompt-box" style="margin-top: 1rem;">
+<span style="color: #10b981"># Read 100 customer support emails from CSV</span>
+<span style="color: #10b981"># For each email:</span>
+<span style="color: #10b981">#   1. Classify: question/complaint/feedback</span>
+<span style="color: #10b981">#   2. Generate appropriate response</span>
+<span style="color: #10b981">#   3. Save to new CSV for review</span>
+<span style="color: #10b981"># Result: 100 emails processed in 5 minutes vs 8 hours manually</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Automation Tools -->
+            <section class="content-section">
+                <h2>⚡ Concept 4: No-Code Automation (Zapier/Make)</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">Trigger AI Workflows Automatically</div>
+                    
+                    <p><strong>Tools:</strong> Zapier, Make (formerly Integromat), n8n</p>
+                    <p><strong>Idea:</strong> Connect ChatGPT to your apps without coding. When X happens, run AI workflow Y.</p>
+                </div>
+                
+                <h3>Example Automation Workflows</h3>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Workflow 1: Auto-Summarize Long Emails</h4>
+                    
+                    <div class="workflow-step">
+                        <strong>Trigger:</strong> New email arrives in Gmail with >500 words
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 1:</strong> Send email to ChatGPT with prompt: "Summarize this email in 3 bullets"
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 2:</strong> Send summary to Slack channel #email-summaries
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Result:</strong> Never miss important details buried in long emails. Get instant summaries while you focus on deep work.</p>
+                </div>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Workflow 2: Content Repurposing Pipeline</h4>
+                    
+                    <div class="workflow-step">
+                        <strong>Trigger:</strong> New blog post published (RSS feed or webhook)
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 1:</strong> ChatGPT creates Twitter thread from blog post
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 2:</strong> ChatGPT creates LinkedIn post
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 3:</strong> ChatGPT creates email newsletter snippet
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 4:</strong> Save all to Google Doc for review
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Result:</strong> One blog post becomes 4 pieces of content automatically. Publish blog, get social content ready for distribution 10 minutes later.</p>
+                </div>
+                
+                <div class="workflow-card">
+                    <h4 style="color: #078930;">Workflow 3: Customer Feedback Analysis</h4>
+                    
+                    <div class="workflow-step">
+                        <strong>Trigger:</strong> New response in Typeform/Google Form
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 1:</strong> ChatGPT analyzes sentiment (positive/negative/neutral)
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 2:</strong> ChatGPT extracts key themes/issues mentioned
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 3:</strong> Add to Airtable with tags
+                    </div>
+                    <div class="arrow-down">⬇️</div>
+                    <div class="workflow-step">
+                        <strong>Action 4:</strong> If negative, alert team in Slack
+                    </div>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Result:</strong> Instant analysis of every feedback response. Catch issues immediately, spot trends automatically.</p>
+                </div>
+            </section>
+
+            <!-- Function Calling & Tool Use -->
+            <section class="content-section">
+                <h2>🔧 Concept 4B: Function Calling & Tool Use</h2>
+                
+                <p>The most powerful workflow pattern: Let ChatGPT decide when to use tools (APIs, databases, calculators) to accomplish tasks.</p>
+                
+                <h3>What is Function Calling?</h3>
+                
+                <div class="info-box">
+                    <p><strong>The Problem:</strong> ChatGPT can't access real-time data, make API calls, or do precise calculations.</p>
+                    <p><strong>The Solution:</strong> Define functions ChatGPT can call. It decides when to use them, you execute them, then it uses the results.</p>
+                </div>
+                
+                <div class="example-demo">
+                    <p><strong>Example Flow:</strong></p>
+                    <div class="workflow-step">
+                        <strong>User:</strong> "What's the weather in Tokyo and what should I pack?"
+                    </div>
+                    <div class="workflow-step">
+                        <strong>ChatGPT (internal):</strong> I need real-time weather data → Call get_weather("Tokyo")
+                    </div>
+                    <div class="workflow-step">
+                        <strong>Your Code:</strong> Executes function, returns {"temp": 22, "condition": "Rainy", "humidity": 85}
+                    </div>
+                    <div class="workflow-step">
+                        <strong>ChatGPT:</strong> "It's 22°C and rainy in Tokyo. Pack: light jacket, umbrella, breathable clothes due to high humidity"
+                    </div>
+                </div>
+                
+                <h3>How to Define Functions</h3>
+                
+                <p>You provide function schemas in JSON format:</p>
+                
+                <pre><code class="language-json">{
+  "name": "get_weather",
+  "description": "Get current weather for a city",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "location": {
+        "type": "string",
+        "description": "City name, e.g. 'Tokyo', 'London'"
+      },
+      "units": {
+        "type": "string",
+        "enum": ["celsius", "fahrenheit"],
+        "description": "Temperature units"
+      }
+    },
+    "required": ["location"]
+  }
+}</code></pre>
+                
+                <h3>Multi-Function Workflows</h3>
+                
+                <div class="prompt-example">
+Available functions:
+1. search_database(query: string) - Find customer records
+2. calculate(expression: string) - Do math calculations
+3. send_email(to: string, subject: string, body: string) - Send emails
+
+Task: "Find all customers who spent over $1000 last month and send them a thank you email"
+
+ChatGPT will:
+1. Call search_database("customers spend >$1000 last month")
+2. Calculate total amount for verification
+3. For each customer, call send_email with personalized message
+                </div>
+                
+                <h3>Real-World Use Cases</h3>
+                
+                <ul style="line-height: 2;">
+                    <li><strong>CRM Integration:</strong> "Update status for all deals closing this week"</li>
+                    <li><strong>Data Analysis:</strong> "Query the database and visualize Q3 trends"</li>
+                    <li><strong>E-commerce:</strong> "Check inventory and create restock orders"</li>
+                    <li><strong>Customer Support:</strong> "Look up order #12345 and process a refund"</li>
+                    <li><strong>Financial:</strong> "Calculate portfolio returns and email summary"</li>
+                </ul>
+                
+                <div class="success-box">
+                    <h3>Building Your First Function Call</h3>
+                    
+                    <p><strong>Starter Template (Python):</strong></p>
+                    <pre><code class="language-python">functions = [
+    {
+        "name": "calculate_roi",
+        "description": "Calculate return on investment",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "initial_investment": {"type": "number"},
+                "final_value": {"type": "number"}
+            },
+            "required": ["initial_investment", "final_value"]
+        }
+    }
+]
+
+# ChatGPT decides when to call this
+# You execute: (final_value - initial) / initial * 100
+# Return result back to ChatGPT</code></pre>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Important Considerations:</strong></p>
+                    <ul>
+                        <li><strong>Security:</strong> Validate all function parameters before execution</li>
+                        <li><strong>Costs:</strong> Each function call uses tokens (input + output)</li>
+                        <li><strong>Error handling:</strong> What if function fails? Return clear error messages</li>
+                        <li><strong>Rate limits:</strong> Don't let ChatGPT spam APIs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RAG & Context Grounding -->
+            <section class="content-section">
+                <h2>📚 Concept 4C: RAG & Context Grounding</h2>
+                
+                <p><strong>RAG (Retrieval-Augmented Generation):</strong> Give ChatGPT source documents to reference, preventing hallucinations and ensuring accuracy.</p>
+                
+                <h3>Why Context Grounding Matters</h3>
+                
+                <div class="comparison-grid">
+                    <div class="technique-comparison">
+                        <div class="comparison-title" style="background: #ef4444;">❌ Without Grounding</div>
+                        <p><strong>You:</strong> "What's our refund policy?"</p>
+                        <p><strong>ChatGPT:</strong> Makes up a generic policy that might be wrong</p>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title" style="background: #10b981;">✅ With Grounding</div>
+                        <p><strong>You:</strong> [Paste policy doc] "What's our refund policy?"</p>
+                        <p><strong>ChatGPT:</strong> Quotes exact policy with section references</p>
+                    </div>
+                </div>
+                
+                <h3>Basic Grounding Pattern</h3>
+                
+                <div class="prompt-example">
+Context: [Paste your company's Q3 earnings report]
+
+Based ONLY on the context above, answer:
+1. What was Q3 revenue?
+2. Which product line grew fastest?
+3. What risks were mentioned?
+
+If information isn't in the context, respond: "Not mentioned in the provided document."
+                </div>
+                
+                <h3>Citation Pattern: Source Everything</h3>
+                
+                <div class="prompt-example">
+You are analyzing a company policy document.
+
+Rules:
+- For EVERY claim, quote the exact sentence
+- Include section numbers
+- If you're inferring (not directly stated), say so
+
+Context: [Policy document text]
+
+Question: What's the remote work policy for international employees?
+
+Format:
+**Policy:** [Your interpretation]
+**Source:** "[Exact quote]" (Section 4.2)
+**Confidence:** [Direct quote / Inference / Not found]
+                </div>
+                
+                <h3>Custom GPTs with Knowledge Files</h3>
+                
+                <div class="workflow-card">
+                    <p><strong>Automatic RAG:</strong> Upload documents to a Custom GPT. It will search and cite sources automatically.</p>
+                    
+                    <ol style="margin-top: 1rem;">
+                        <li>Create Custom GPT in ChatGPT</li>
+                        <li>Upload knowledge files (PDFs, docs, data)</li>
+                        <li>Set instructions: "Always cite sources from uploaded files"</li>
+                        <li>Ask questions—GPT searches files automatically</li>
+                    </ol>
+                </div>
+                
+                <h3>Advanced: Multi-Document RAG</h3>
+                
+                <div class="prompt-example">
+I'm uploading 3 documents:
+- Doc A: 2023 Annual Report
+- Doc B: 2024 Q1 Earnings
+- Doc C: Competitor Analysis
+
+Compare revenue growth across all 3 documents. For each insight:
+- State the claim
+- Cite which document and page number
+- Note any contradictions between sources
+                </div>
+                
+                <div class="success-box">
+                    <h3>When to Use RAG</h3>
+                    <ul>
+                        <li>✅ Company-specific information (policies, data, procedures)</li>
+                        <li>✅ Recent information (after ChatGPT's training cutoff)</li>
+                        <li>✅ Technical documentation (code, APIs, specs)</li>
+                        <li>✅ When accuracy is critical (legal, medical, financial)</li>
+                        <li>✅ When you need citations/sources</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Cost Optimization -->
+            <section class="content-section">
+                <h2>💰 Concept 4D: Cost Optimization & Reliability</h2>
+                
+                <h3>Understanding Token Economics</h3>
+                
+                <div class="info-box">
+                    <p><strong>API Pricing (November 2025):</strong></p>
+                    <table style="width: 100%; margin-top: 1rem;">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Input (per 1M tokens)</th>
+                                <th>Output (per 1M tokens)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>GPT-4o</td>
+                                <td>$5.00</td>
+                                <td>$15.00</td>
+                            </tr>
+                            <tr>
+                                <td>GPT-4o-mini</td>
+                                <td>$0.15</td>
+                                <td>$0.60</td>
+                            </tr>
+                            <tr>
+                                <td>o1</td>
+                                <td>$15.00</td>
+                                <td>$60.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 1rem;"><strong>Rule of thumb:</strong> 1 token ≈ 0.75 words (English)</p>
+                </div>
+                
+                <h3>Cost Reduction Strategies</h3>
+                
+                <div class="strategies-list">
+                    <h4>1. Use the Right Model</h4>
+                    <div class="prompt-example">
+# ❌ Expensive ($0.50 per call)
+Use GPT-4o for: "Summarize this email"
+
+# ✅ Smart ($0.005 per call - 100x cheaper!)
+Use GPT-4o-mini for: "Summarize this email"
+
+Rule: GPT-4o for complex reasoning. Mini for everything else.
+                    </div>
+                    
+                    <h4>2. Shorten Context</h4>
+                    <div class="prompt-example">
+# ❌ Expensive
+[Paste entire 50-page handbook]
+"What's the remote work policy?"
+
+# ✅ Efficient
+[Extract only Section 4: Remote Work - 2 pages]
+"What's the remote work policy?"
+
+Saves: 96% on tokens
+                    </div>
+                    
+                    <h4>3. Cache Common Instructions</h4>
+                    <div class="prompt-example">
+System message (reusable, cached):
+"You are a customer support agent. Be friendly, concise, always include 
+ticket number, escalate if customer mentions 'cancel subscription'."
+
+User message (changes each time):
+"Customer says: [their message]"
+
+Benefit: System message doesn't count against tokens repeatedly
+                    </div>
+                    
+                    <h4>4. Streaming for UX</h4>
+                    <p>Stream responses token-by-token instead of waiting for completion. Feels faster, no extra cost.</p>
+                </div>
+                
+                <h3>Reliability Patterns</h3>
+                
+                <h4>Retry Logic with Exponential Backoff</h4>
+                <pre><code class="language-python">def call_chatgpt_with_retry(prompt, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            response = openai.chat.completions.create(...)
+            return response
+        except openai.RateLimitError:
+            wait_time = 2 ** attempt  # 1s, 2s, 4s
+            time.sleep(wait_time)
+        except openai.APIError as e:
+            if attempt == max_retries - 1:
+                raise  # Final attempt failed
+    return None</code></pre>
+                
+                <h4>Validation & Error Recovery</h4>
+                <div class="prompt-example">
+Generate JSON for customer profile. 
+
+If you encounter missing information:
+1. Use null for that field
+2. Add "confidence": "low" / "medium" / "high" for each field
+3. Include "missing_fields": [list] at the end
+
+This allows graceful degradation instead of failure.
+                </div>
+                
+                <h3>Prompt Versioning</h3>
+                
+                <div class="workflow-card">
+                    <p><strong>Track prompt iterations like code:</strong></p>
+                    <pre><code># v1.0 - Initial (accuracy: 78%)
+"Summarize customer feedback"
+
+# v2.0 - Added structure (accuracy: 85%)
+"Summarize customer feedback. Include: sentiment, key themes, urgency"
+
+# v3.0 - Added examples (accuracy: 92%)
+"Summarize customer feedback. Include: sentiment, key themes, urgency
+
+Example:
+Input: "Love the product but shipping took forever!"
+Output: Sentiment: Mixed, Themes: [product quality, shipping], Urgency: Low"</code></pre>
+                </div>
+                
+                <div class="success-box">
+                    <h3>Production Checklist</h3>
+                    <ul>
+                        <li>✅ Right model for the task (don't overpay)</li>
+                        <li>✅ Retry logic with backoff</li>
+                        <li>✅ Timeout limits (don't wait forever)</li>
+                        <li>✅ Error handling (graceful degradation)</li>
+                        <li>✅ Logging (track costs, errors, performance)</li>
+                        <li>✅ Rate limiting (respect OpenAI's limits)</li>
+                        <li>✅ Validation (check output format)</li>
+                        <li>✅ Monitoring (alerts when things break)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Building Systems -->
+            <section class="content-section">
+                <h2>🏗️ Concept 5: Building Your Personal AI Systems</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">The System Mindset</div>
+                    
+                    <p>Stop thinking in tasks. Start thinking in systems.</p>
+                    
+                    <div class="success-box">
+                        <h3>🎯 Framework: Jobs You Do Repeatedly</h3>
+                        
+                        <p><strong>Step 1: Audit your week</strong></p>
+                        <p>What do you do every day/week that follows a pattern?</p>
+                        <ul>
+                            <li>Write weekly newsletter → <em>System: Content creation workflow</em></li>
+                            <li>Respond to customer questions → <em>System: Customer support triage</em></li>
+                            <li>Analyze weekly metrics → <em>System: Data reporting workflow</em></li>
+                            <li>Schedule social media → <em>System: Content distribution pipeline</em></li>
+                        </ul>
+                        
+                        <p style="margin-top: 1.5rem;"><strong>Step 2: Break job into steps</strong></p>
+                        <p>Example: Newsletter workflow</p>
+                        <ol>
+                            <li>Brainstorm topics (10 min) → <em>Prompt 1</em></li>
+                            <li>Research/gather links (20 min) → <em>Prompt 2</em></li>
+                            <li>Draft email (30 min) → <em>Prompt 3</em></li>
+                            <li>Edit for tone (10 min) → <em>Prompt 4</em></li>
+                            <li>Create subject lines (5 min) → <em>Prompt 5</em></li>
+                            <li>Schedule (5 min) → <em>Manual</em></li>
+                        </ol>
+                        
+                        <p style="margin-top: 1.5rem;"><strong>Step 3: Create prompt chain</strong></p>
+                        <p>Turn each step into a specific, reusable prompt. Save to doc/tool.</p>
+                        
+                        <p style="margin-top: 1.5rem;"><strong>Step 4: Run weekly</strong></p>
+                        <p>80 minutes → 20 minutes. That's 60 minutes saved weekly = 52 hours/year.</p>
+                    </div>
+                </div>
+                
+                <h3>Your Personal AI Stack Template</h3>
+                
+                <div class="workflow-card">
+                    <div class="prompt-box">
+<strong>📝 Content Creation</strong>
+- Custom GPT: Writing Coach (maintains voice)
+- Workflow: Research → Outline → Draft → Edit → Repurpose
+- Automation: Auto-post to social when blog published
+
+<strong>💻 Coding</strong>
+- Custom GPT: Code Reviewer (your stack/style)
+- Workflow: Generate → Test → Debug → Document
+- Integration: API for batch script generation
+
+<strong>📊 Business Analysis</strong>
+- Prompt library: SWOT, Porter's, market research templates
+- Workflow: Data → Insights → Recommendations → Report
+- Automation: Weekly metrics summary → Slack
+
+<strong>📧 Communication</strong>
+- Custom GPT: Email Assistant (your tone)
+- Templates: Cold outreach, customer support, internal
+- Automation: Draft responses for common questions
+
+<strong>📚 Learning</strong>
+- Custom GPT: Personal Tutor (your learning style)
+- Workflow: Explain → Examples → Practice → Test
+- System: Daily 15-min learning session prompts
+                    </div>
+                </div>
+            </section>
+
+            <!-- Scaling Teams -->
+            <section class="content-section">
+                <h2>👥 Concept 6: Scaling Prompts Across Teams</h2>
+                
+                <div class="workflow-card">
+                    <div class="workflow-title">Making AI a Team Superpower</div>
+                    
+                    <div class="info-box">
+                        <h3>Challenges When Teams Use AI</h3>
+                        <ul>
+                            <li>❌ Everyone invents their own prompts (inconsistent quality)</li>
+                            <li>❌ Knowledge stays siloed (great prompts aren't shared)</li>
+                            <li>❌ No standards (outputs vary wildly)</li>
+                            <li>❌ Wasted time (everyone googles "how to write good prompt")</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 2rem;">
+                        <h3>✅ Solution: Team Prompt Library</h3>
+                        
+                        <p><strong>What to build:</strong> Centralized repository of tested, high-quality prompts for common tasks.</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>Structure:</strong></p>
+                        <ul>
+                            <li><strong>Category:</strong> Writing, Coding, Analysis, etc.</li>
+                            <li><strong>Use case:</strong> What job this solves</li>
+                            <li><strong>Prompt template:</strong> Copy-paste ready with [VARIABLES]</li>
+                            <li><strong>Examples:</strong> Before/after showing quality</li>
+                            <li><strong>Owner:</strong> Who to ask for help</li>
+                        </ul>
+                        
+                        <p style="margin-top: 1rem;"><strong>Tools:</strong> Notion, Confluence, Google Doc, or dedicated tools like PromptBase, Promptbox</p>
+                    </div>
+                </div>
+                
+                <h3>Example Team Library Entry</h3>
+                
+                <div class="workflow-card">
+                    <div class="prompt-box">
+<strong>📝 USE CASE:</strong> Customer Support - First Response Email
+
+<strong>🎯 WHEN TO USE:</strong> Customer submits support ticket, we need professional first response
+
+<strong>✨ PROMPT TEMPLATE:</strong>
+
+Act as customer support representative at [COMPANY].
+
+Customer issue: [PASTE TICKET DESCRIPTION]
+
+Write response email:
+- Acknowledge their issue specifically
+- Show empathy
+- Provide initial troubleshooting steps OR timeline for resolution
+- Set expectations for next steps
+- Tone: Professional but warm, solution-focused
+
+<strong>📊 QUALITY METRICS:</strong>
+- Response time: Use within 30 min of ticket
+- Customer satisfaction: 4.5+ star rating on responses using this
+
+<strong>👤 OWNER:</strong> Sarah (Customer Success Lead)
+<strong>📅 LAST UPDATED:</strong> Oct 2024
+                    </div>
+                </div>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section">
+                <h2>⚡ Workflow Building: Best Practices</h2>
+                
+                <div class="success-box">
+                    <h3>✅ DO</h3>
+                    <ul>
+                        <li><strong>Start small:</strong> One workflow, test thoroughly, then scale</li>
+                        <li><strong>Document everything:</strong> Future you will forget how it works</li>
+                        <li><strong>Version control:</strong> Save prompt iterations (v1, v2, v3) to track improvements</li>
+                        <li><strong>Measure impact:</strong> Track time saved, quality improvement, error rates</li>
+                        <li><strong>Build escape hatches:</strong> Human review before critical actions</li>
+                        <li><strong>Share successes:</strong> Show team what's possible, build momentum</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>❌ DON'T</h3>
+                    <ul>
+                        <li><strong>Automate broken processes:</strong> Fix workflow first, then automate</li>
+                        <li><strong>Set and forget:</strong> Workflows degrade, review quarterly</li>
+                        <li><strong>Over-engineer:</strong> Simple beats complex. Start manual, automate when repeated 5+ times</li>
+                        <li><strong>Skip testing:</strong> Run workflow 10 times before trusting it</li>
+                        <li><strong>Ignore security:</strong> Don't expose sensitive data in prompts/logs</li>
+                        <li><strong>Assume perfection:</strong> AI makes mistakes, build verification steps</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Final Exercise -->
+            <section class="content-section">
+                <h2>🎯 Final Challenge: Build Your First Workflow</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Capstone Project: Create Your Personal AI System</h3>
+                    
+                    <p><strong>Your Mission:</strong> Build one complete workflow that saves you 5+ hours per week.</p>
+                    
+                    <p><strong>Steps:</strong></p>
+                    <ol style="line-height: 2.5;">
+                        <li><strong>Choose a repetitive job</strong> you do weekly (content creation, reporting, research, communication)</li>
+                        
+                        <li><strong>Map current process</strong> (list every step, time each)</li>
+                        
+                        <li><strong>Design prompt chain</strong> (3-7 prompts, each handles one step)</li>
+                        
+                        <li><strong>Test workflow</strong> (run it 5 times, refine prompts)</li>
+                        
+                        <li><strong>Document it</strong> (write instructions someone else could follow)</li>
+                        
+                        <li><strong>Measure results</strong> (time saved, quality maintained?)</li>
+                        
+                        <li><strong>Optional: Automate</strong> (Zapier/Make or Custom GPT)</li>
+                    </ol>
+                    
+                    <p style="margin-top: 2rem;"><strong>Success Criteria:</strong></p>
+                    <ul>
+                        <li>✅ Reduces time by 50%+ vs manual process</li>
+                        <li>✅ Maintains quality (outputs are usable)</li>
+                        <li>✅ Reproducible (works consistently)</li>
+                        <li>✅ Documented (you can run it 6 months from now)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Your Workflow Toolkit</h2>
+                
+                <ul>
+                    <li>✅ <strong>Prompt chains:</strong> Sequence of prompts where each output feeds next input</li>
+                    <li>✅ <strong>Custom GPTs:</strong> Personalized AI assistants with your instructions/knowledge</li>
+                    <li>✅ <strong>API integration:</strong> Connect ChatGPT to apps, batch processing, custom interfaces</li>
+                    <li>✅ <strong>No-code automation:</strong> Zapier/Make to trigger workflows automatically</li>
+                    <li>✅ <strong>Systems thinking:</strong> Audit repetitive jobs → build workflows → measure impact</li>
+                    <li>✅ <strong>Team scaling:</strong> Prompt libraries, standards, shared knowledge</li>
+                </ul>
+                
+                <div class="completion-badge">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🎓 Course Complete!</h2>
+                    <p style="font-size: 1.25rem; margin-bottom: 1rem;"><strong>You've mastered ChatGPT & Prompt Engineering</strong></p>
+                    <p style="font-size: 1rem; opacity: 0.95;">From zero to prompt engineer: You've learned what 99% of users never will.</p>
+                </div>
+            </section>
+
+            <!-- Continue Learning Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- What's Next -->
+            <section class="content-section">
+                <h2>🚀 What's Next: Your AI-Powered Future</h2>
+                
+                <div class="success-box">
+                    <h3>📈 Level Up Your Skills</h3>
+                    <ul>
+                        <li><strong>Practice daily:</strong> 30 days of using these techniques = mastery</li>
+                        <li><strong>Build 3 workflows:</strong> Content, analysis, communication</li>
+                        <li><strong>Create custom GPT:</strong> Your personal AI assistant</li>
+                        <li><strong>Share knowledge:</strong> Teach colleagues, build team library</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <h3>🎯 Career Opportunities</h3>
+                    <p>Skills you've learned are in massive demand:</p>
+                    <ul>
+                        <li><strong>Prompt Engineer:</strong> $100K-$350K (OpenAI, Google, startups)</li>
+                        <li><strong>AI Product Manager:</strong> Design products using LLMs</li>
+                        <li><strong>Content Strategist:</strong> 10x productivity vs traditional writers</li>
+                        <li><strong>Business Analyst:</strong> AI-powered insights consultant</li>
+                        <li><strong>Developer:</strong> Build AI features into products</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>⚠️ The Reality Check</h3>
+                    <p>ChatGPT is a tool, not magic:</p>
+                    <ul>
+                        <li>It accelerates work 10x, but <strong>you</strong> provide direction</li>
+                        <li>It generates drafts, <strong>you</strong> add expertise and polish</li>
+                        <li>It structures thinking, <strong>you</strong> make decisions</li>
+                        <li>It's as good as your prompts — <strong>garbage in, garbage out</strong></li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>The future belongs to people who can combine human creativity + judgment with AI speed + scale.</strong> You're now in that group.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Final Test: Are You a Prompt Engineer?</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What's the main benefit of prompt chains over single prompts?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">They're faster</div>
+                            <div class="quiz-option" data-value="b">Better quality through specialized steps, with control at each stage</div>
+                            <div class="quiz-option" data-value="c">They use less tokens</div>
+                            <div class="quiz-option" data-value="d">They're easier to write</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: When should you build a Custom GPT?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">For one-time tasks</div>
+                            <div class="quiz-option" data-value="b">Never - regular ChatGPT is always better</div>
+                            <div class="quiz-option" data-value="c">For repetitive tasks with specialized knowledge or consistent style needed</div>
+                            <div class="quiz-option" data-value="d">Only for coding tasks</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What's the purpose of ChatGPT API integration?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Automate workflows, batch processing, connect to other apps/tools</div>
+                            <div class="quiz-option" data-value="b">It's the same as the web interface</div>
+                            <div class="quiz-option" data-value="c">Only for programmers</div>
+                            <div class="quiz-option" data-value="d">To make ChatGPT slower</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What's the systems thinking approach?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Use ChatGPT for everything</div>
+                            <div class="quiz-option" data-value="b">Audit repetitive jobs → build workflows → automate → measure impact</div>
+                            <div class="quiz-option" data-value="c">Never automate, always do manually</div>
+                            <div class="quiz-option" data-value="d">Only think about individual tasks</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the reality of AI tools like ChatGPT?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">They replace human work completely</div>
+                            <div class="quiz-option" data-value="b">They're just hype with no real value</div>
+                            <div class="quiz-option" data-value="c">They accelerate work 10x, but you provide direction, expertise, and judgment</div>
+                            <div class="quiz-option" data-value="d">They only work for technical people</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <section class="content-section">
+                <div class="tutorial-nav">
+                    <a href="chatgpt-for-business.html" class="prev">← Tutorial 7: Business</a>
+                    <a href="production-best-practices.html" class="next">Module 9: Production Best Practices →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

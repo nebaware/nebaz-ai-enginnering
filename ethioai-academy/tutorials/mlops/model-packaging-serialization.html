@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master model packaging and serialization for MLOps. Learn Pickle, Joblib, ONNX, SavedModel, TorchScript formats, creating artifacts, and dependency management for production ML.">
+    <meta name="keywords" content="model serialization, Pickle, Joblib, ONNX, SavedModel, TorchScript, model packaging, ML artifacts, dependency management, model formats">
+    <title>Model Packaging & Serialization - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="model-packaging-serialization.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Model Packaging & Serialization</span>
+            </div>
+            <h1>Model Packaging & Serialization</h1>
+            <p class="tutorial-intro">Master model formats including Pickle, Joblib, ONNX, SavedModel, and TorchScript. Learn to create production-ready artifacts with proper dependency management</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🎯 The Serialization Challenge</h2>
+                <p>
+                    You've trained an amazing model. It works perfectly in your Jupyter notebook. But how do you get it from development to production? How do you ensure that the model you trained last month still works today? How do you share it with teammates or deploy it across different servers?
+                </p>
+                <p>
+                    The answer is <strong>model serialization</strong> - the process of converting your trained model into a format that can be saved, loaded, shared, and deployed. But choosing the wrong format can lead to:
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Common Problems Without Proper Serialization:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Models break when Python versions change</li>
+                        <li>Can't deploy sklearn models in production Java services</li>
+                        <li>Model file is 2GB because you saved training data accidentally</li>
+                        <li>Model works on your laptop but fails on the server</li>
+                        <li>"ModuleNotFoundError" when loading a model from 6 months ago</li>
+                    </ul>
+                </div>
+
+                <p>
+                    In this tutorial, we'll cover every major serialization format, when to use each one, and best practices for creating production-ready model packages.
+                </p>
+            </section>
+
+            <!-- What is Model Serialization -->
+            <section class="content-section" id="what-is-serialization">
+                <h2>📦 What is Model Serialization?</h2>
+                
+                <div class="info-box">
+                    <p><strong>Definition:</strong> Model serialization is the process of converting a trained machine learning model (which exists in memory) into a format that can be saved to disk, transmitted over a network, and reconstructed later.</p>
+                </div>
+
+                <h3>What Gets Serialized?</h3>
+                <p>When you serialize a model, you're typically saving:</p>
+                <ul>
+                    <li><strong>Model Architecture:</strong> The structure of your model (layers, neurons, connections)</li>
+                    <li><strong>Learned Parameters:</strong> Weights, biases, embeddings learned during training</li>
+                    <li><strong>Model Configuration:</strong> Hyperparameters, preprocessing settings</li>
+                    <li><strong>Metadata:</strong> Training date, framework version, performance metrics</li>
+                </ul>
+
+                <h3>Why Serialization Matters for MLOps</h3>
+                <ol>
+                    <li><strong>Reproducibility:</strong> Load exact same model months later</li>
+                    <li><strong>Deployment:</strong> Move models from training to production environments</li>
+                    <li><strong>Versioning:</strong> Track and roll back model versions</li>
+                    <li><strong>Sharing:</strong> Collaborate with team members</li>
+                    <li><strong>Portability:</strong> Run models across different platforms/languages</li>
+                    <li><strong>Efficiency:</strong> Skip expensive retraining</li>
+                </ol>
+            </section>
+
+            <!-- Pickle and Joblib -->
+            <section class="content-section" id="pickle-joblib">
+                <h2>🥒 Pickle & Joblib: Python's Native Options</h2>
+                
+                <h3>Pickle: Python's Built-in Serialization</h3>
+                <p>
+                    <strong>Pickle</strong> is Python's standard serialization library. It can serialize almost any Python object, including ML models.
+                </p>
+
+                <h4>Basic Pickle Usage</h4>
+                <pre><code class="language-python">import pickle
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+
+# Train a model
+X, y = load_iris(return_X_y=True)
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X, y)
+
+# Save model with pickle
+with open('model.pkl', 'wb') as f:
+    pickle.dump(model, f)
+
+# Load model
+with open('model.pkl', 'rb') as f:
+    loaded_model = pickle.load(f)
+
+# Test loaded model
+predictions = loaded_model.predict(X[:5])
+print(f"Predictions: {predictions}")
+print(f"Accuracy: {loaded_model.score(X, y)}")</code></pre>
+
+                <h3>Joblib: Better for Large NumPy Arrays</h3>
+                <p>
+                    <strong>Joblib</strong> is built on top of Pickle but optimized for large NumPy arrays (common in ML). It's the recommended choice for scikit-learn models.
+                </p>
+
+                <pre><code class="language-python">import joblib
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Train model
+model = GradientBoostingClassifier(n_estimators=200)
+model.fit(X, y)
+
+# Save with joblib (more efficient than pickle for sklearn)
+joblib.dump(model, 'model.joblib')
+
+# Load model
+loaded_model = joblib.load('model.joblib')
+
+# Compression for smaller files
+joblib.dump(model, 'model_compressed.joblib', compress=3)  # compression level 0-9
+print(f"Model saved and loaded successfully!")</code></pre>
+
+                <h3>Pickle vs Joblib Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Pickle</th>
+                            <th>Joblib</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Speed for Large Arrays</strong></td>
+                            <td>Slower</td>
+                            <td>✅ Faster (10x+)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>File Size</strong></td>
+                            <td>Larger</td>
+                            <td>✅ Smaller (with compression)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scikit-learn Official</strong></td>
+                            <td>Supported</td>
+                            <td>✅ Recommended</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Standard Library</strong></td>
+                            <td>✅ Built-in</td>
+                            <td>External package</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>Small models, general objects</td>
+                            <td>✅ Large sklearn/NumPy models</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Critical Security Warning:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #92400e;">
+                        Never unpickle data from untrusted sources! Pickle can execute arbitrary code during deserialization. Only load pickle/joblib files you created or from trusted sources. For production APIs, use ONNX or model-serving frameworks instead.
+                    </p>
+                </div>
+
+                <h3>Limitations of Pickle/Joblib</h3>
+                <ul>
+                    <li>❌ <strong>Python-only:</strong> Can't load in Java, C++, JavaScript</li>
+                    <li>❌ <strong>Version dependent:</strong> Python/library version changes can break models</li>
+                    <li>❌ <strong>Security risks:</strong> Arbitrary code execution vulnerability</li>
+                    <li>❌ <strong>Not optimized:</strong> Slower inference than compiled formats</li>
+                    <li>❌ <strong>Hard to inspect:</strong> Binary format, can't view model structure easily</li>
+                </ul>
+            </section>
+
+            <!-- ONNX -->
+            <section class="content-section" id="onnx">
+                <h2>🌐 ONNX: Cross-Framework Interoperability</h2>
+                
+                <p>
+                    <strong>ONNX (Open Neural Network Exchange)</strong> is an open format to represent ML models. It enables models to be transferred between different frameworks (PyTorch → TensorFlow, sklearn → ONNX Runtime).
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 Key Advantage:</strong> Train in PyTorch, deploy with ONNX Runtime (10x faster inference!). Use in Python, C++, Java, JavaScript, C#, and more.</p>
+                </div>
+
+                <h3>Converting Scikit-learn to ONNX</h3>
+                <pre><code class="language-python">import onnx
+import onnxruntime as ort
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+import numpy as np
+
+# Train model
+X, y = load_iris(return_X_y=True)
+model = RandomForestClassifier(n_estimators=10, random_state=42)
+model.fit(X, y)
+
+# Define input type (4 features)
+initial_type = [('float_input', FloatTensorType([None, 4]))]
+
+# Convert to ONNX
+onnx_model = convert_sklearn(model, initial_types=initial_type)
+
+# Save ONNX model
+with open("rf_model.onnx", "wb") as f:
+    f.write(onnx_model.SerializeToString())
+
+print("✅ Model converted to ONNX!")
+
+# Load and run with ONNX Runtime
+session = ort.InferenceSession("rf_model.onnx")
+
+# Prepare input
+input_name = session.get_inputs()[0].name
+X_test = X[:5].astype(np.float32)
+
+# Run inference
+result = session.run(None, {input_name: X_test})
+predictions = result[0]
+probabilities = result[1]
+
+print(f"Predictions: {predictions}")
+print(f"Probabilities:\n{probabilities}")</code></pre>
+
+                <h3>Converting PyTorch to ONNX</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.onnx
+
+# Define a simple PyTorch model
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(10, 50)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(50, 3)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return x
+
+# Create and train model (simplified)
+model = SimpleNN()
+model.eval()
+
+# Create dummy input for export
+dummy_input = torch.randn(1, 10)
+
+# Export to ONNX
+torch.onnx.export(
+    model,                      # model being run
+    dummy_input,                # model input (or a tuple for multiple inputs)
+    "pytorch_model.onnx",       # where to save the model
+    export_params=True,         # store the trained parameter weights
+    opset_version=14,           # ONNX version
+    do_constant_folding=True,   # optimization
+    input_names=['input'],      # model's input names
+    output_names=['output'],    # model's output names
+    dynamic_axes={              # variable length axes
+        'input': {0: 'batch_size'},
+        'output': {0: 'batch_size'}
+    }
+)
+
+print("✅ PyTorch model exported to ONNX!")
+
+# Verify the model
+import onnx
+onnx_model = onnx.load("pytorch_model.onnx")
+onnx.checker.check_model(onnx_model)
+print("✅ ONNX model is valid!")</code></pre>
+
+                <h3>ONNX Advantages</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Performance</h3>
+                        <p>ONNX Runtime provides 2-10x faster inference than native frameworks</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🌍</div>
+                        <h3>Cross-Platform</h3>
+                        <p>Run on Windows, Linux, macOS, mobile, browsers, edge devices</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Interoperability</h3>
+                        <p>Train in one framework, deploy in another without retraining</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Production-Ready</h3>
+                        <p>Used by Microsoft, AWS, Facebook in production systems</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TensorFlow SavedModel -->
+            <section class="content-section" id="savedmodel">
+                <h2>🧠 TensorFlow SavedModel Format</h2>
+                
+                <p>
+                    <strong>SavedModel</strong> is TensorFlow's recommended serialization format. It's a complete, self-contained package including the model architecture, weights, and computation graph.
+                </p>
+
+                <h3>Saving a Keras Model</h3>
+                <pre><code class="language-python">import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+
+# Create a simple Keras model
+model = keras.Sequential([
+    keras.layers.Dense(64, activation='relu', input_shape=(20,)),
+    keras.layers.Dropout(0.3),
+    keras.layers.Dense(32, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train model (simplified)
+X_train = np.random.randn(1000, 20)
+y_train = np.random.randint(0, 10, 1000)
+model.fit(X_train, y_train, epochs=5, verbose=0)
+
+# Save as SavedModel (directory-based format)
+model.save('my_model')  # Creates my_model/ directory
+
+print("✅ Model saved in SavedModel format!")
+
+# Load model
+loaded_model = keras.models.load_model('my_model')
+
+# Make predictions
+X_test = np.random.randn(5, 20)
+predictions = loaded_model.predict(X_test)
+print(f"Predictions shape: {predictions.shape}")
+
+# Save in HDF5 format (older, single file)
+model.save('my_model.h5')  # Single .h5 file
+loaded_h5 = keras.models.load_model('my_model.h5')</code></pre>
+
+                <h3>SavedModel vs HDF5</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>SavedModel</th>
+                            <th>HDF5 (.h5)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>TensorFlow Serving</strong></td>
+                            <td>✅ Fully supported</td>
+                            <td>Not directly supported</td>
+                        </tr>
+                        <tr>
+                            <td><strong>File Structure</strong></td>
+                            <td>Directory with assets</td>
+                            <td>Single file</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom Objects</strong></td>
+                            <td>✅ Better handling</td>
+                            <td>Requires custom_objects dict</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TensorFlow.js</strong></td>
+                            <td>✅ Can convert</td>
+                            <td>Limited support</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TFLite Conversion</strong></td>
+                            <td>✅ Recommended</td>
+                            <td>Possible but not preferred</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recommendation</strong></td>
+                            <td>✅ Use for production</td>
+                            <td>Legacy, use for compatibility</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>SavedModel Structure</h3>
+                <pre><code class="language-bash">my_model/
+├── assets/              # Additional files (vocabulary, etc.)
+├── variables/           # Model weights
+│   ├── variables.data-00000-of-00001
+│   └── variables.index
+└── saved_model.pb       # Model architecture and metadata</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Best Practice:</strong> Always use SavedModel format for TensorFlow/Keras production deployments. It's the only format fully supported by TensorFlow Serving, TFLite, and TensorFlow.js.</p>
+                </div>
+            </section>
+
+            <!-- TorchScript -->
+            <section class="content-section" id="torchscript">
+                <h2>🔥 PyTorch TorchScript</h2>
+                
+                <p>
+                    <strong>TorchScript</strong> is PyTorch's way to create serializable, optimizable models that can run in production environments without Python.
+                </p>
+
+                <h3>Two Ways to Create TorchScript</h3>
+
+                <h4>1. Tracing (Easier)</h4>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Define model
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(10, 20)
+        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(20, 5)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.relu(x)
+        x = self.fc2(x)
+        return x
+
+model = SimpleModel()
+model.eval()
+
+# Create example input
+example_input = torch.randn(1, 10)
+
+# Trace the model
+traced_model = torch.jit.trace(model, example_input)
+
+# Save traced model
+traced_model.save('traced_model.pt')
+
+# Load and use
+loaded_model = torch.jit.load('traced_model.pt')
+output = loaded_model(example_input)
+print(f"Output shape: {output.shape}")</code></pre>
+
+                <h4>2. Scripting (More Flexible)</h4>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class ModelWithControlFlow(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(10, 20)
+        self.fc2 = nn.Linear(20, 5)
+    
+    def forward(self, x):
+        x = self.fc1(x)
+        # Control flow: tracing would fail here!
+        if x.sum() > 0:
+            x = torch.relu(x)
+        else:
+            x = torch.sigmoid(x)
+        x = self.fc2(x)
+        return x
+
+model = ModelWithControlFlow()
+
+# Script the model (captures control flow)
+scripted_model = torch.jit.script(model)
+
+# Save scripted model
+scripted_model.save('scripted_model.pt')
+
+# Load in C++ (no Python needed!)
+# Can also load in Python
+loaded_model = torch.jit.load('scripted_model.pt')
+test_input = torch.randn(1, 10)
+output = loaded_model(test_input)
+print(f"Output: {output}")</code></pre>
+
+                <h3>Tracing vs Scripting</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Tracing</th>
+                            <th>Scripting</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Usage</strong></td>
+                            <td><code>torch.jit.trace()</code></td>
+                            <td><code>torch.jit.script()</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>How It Works</strong></td>
+                            <td>Records operations on example input</td>
+                            <td>Analyzes Python code directly</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Control Flow</strong></td>
+                            <td>❌ Doesn't capture if/for/while</td>
+                            <td>✅ Captures control flow</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ease of Use</strong></td>
+                            <td>✅ Simpler</td>
+                            <td>Requires compatible Python</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>Feedforward networks</td>
+                            <td>RNNs, complex logic</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p><strong>💡 When to Use TorchScript:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Deploying PyTorch models in C++ environments</li>
+                        <li>Mobile deployment (Android/iOS)</li>
+                        <li>Edge devices without Python</li>
+                        <li>Optimizing inference performance</li>
+                        <li>Protecting model IP (harder to reverse engineer)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Model Artifacts & Metadata -->
+            <section class="content-section" id="artifacts-metadata">
+                <h2>📋 Creating Complete Model Artifacts</h2>
+                
+                <p>
+                    A production model isn't just a serialized file. It's a complete package with everything needed to use the model correctly.
+                </p>
+
+                <h3>Essential Components of a Model Artifact</h3>
+                <ol>
+                    <li><strong>Model File:</strong> Serialized weights and architecture</li>
+                    <li><strong>Preprocessing Code:</strong> How to transform inputs</li>
+                    <li><strong>Metadata:</strong> Version, training date, metrics, hyperparameters</li>
+                    <li><strong>Dependencies:</strong> Python packages and versions required</li>
+                    <li><strong>Schema:</strong> Expected input/output format</li>
+                    <li><strong>Example Usage:</strong> Code snippets showing how to use it</li>
+                    <li><strong>Model Card:</strong> Documentation about the model</li>
+                </ol>
+
+                <h3>Complete Packaging Example</h3>
+                <pre><code class="language-python">"""
+Complete Model Packaging for Production
+"""
+import joblib
+import json
+import yaml
+from datetime import datetime
+from pathlib import Path
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_iris
+
+class ModelPackager:
+    """Package ML models with all necessary artifacts"""
+    
+    def __init__(self, model_dir='model_package'):
+        self.model_dir = Path(model_dir)
+        self.model_dir.mkdir(exist_ok=True)
+    
+    def save_model(self, model, model_name='model'):
+        """Save the trained model"""
+        model_path = self.model_dir / f'{model_name}.joblib'
+        joblib.dump(model, model_path, compress=3)
+        return str(model_path)
+    
+    def save_preprocessor(self, preprocessor, name='preprocessor'):
+        """Save preprocessing pipeline"""
+        prep_path = self.model_dir / f'{name}.joblib'
+        joblib.dump(preprocessor, prep_path)
+        return str(prep_path)
+    
+    def save_metadata(self, metadata):
+        """Save model metadata as JSON"""
+        meta_path = self.model_dir / 'metadata.json'
+        with open(meta_path, 'w') as f:
+            json.dump(metadata, f, indent=2, default=str)
+        return str(meta_path)
+    
+    def save_schema(self, input_schema, output_schema):
+        """Save input/output schema"""
+        schema = {
+            'input': input_schema,
+            'output': output_schema
+        }
+        schema_path = self.model_dir / 'schema.yaml'
+        with open(schema_path, 'w') as f:
+            yaml.dump(schema, f)
+        return str(schema_path)
+    
+    def save_example(self, example_input, example_output):
+        """Save example input/output"""
+        example = {
+            'input': example_input.tolist() if hasattr(example_input, 'tolist') else example_input,
+            'output': example_output.tolist() if hasattr(example_output, 'tolist') else example_output
+        }
+        example_path = self.model_dir / 'example.json'
+        with open(example_path, 'w') as f:
+            json.dump(example, f, indent=2)
+        return str(example_path)
+    
+    def create_requirements(self):
+        """Generate requirements.txt"""
+        # In practice, use pipreqs or similar
+        requirements = [
+            'scikit-learn>=1.0.0',
+            'numpy>=1.21.0',
+            'joblib>=1.1.0'
+        ]
+        req_path = self.model_dir / 'requirements.txt'
+        with open(req_path, 'w') as f:
+            f.write('\n'.join(requirements))
+        return str(req_path)
+    
+    def create_model_card(self, card_info):
+        """Create model card documentation"""
+        card_path = self.model_dir / 'MODEL_CARD.md'
+        with open(card_path, 'w') as f:
+            f.write(f"# Model Card: {card_info['name']}\n\n")
+            f.write(f"**Version:** {card_info['version']}\n")
+            f.write(f"**Created:** {card_info['created_date']}\n\n")
+            f.write(f"## Description\n{card_info['description']}\n\n")
+            f.write(f"## Performance\n")
+            for metric, value in card_info['metrics'].items():
+                f.write(f"- {metric}: {value}\n")
+            f.write(f"\n## Usage\n```python\n{card_info['usage_example']}\n```\n")
+        return str(card_path)
+
+# ===== USE THE PACKAGER =====
+
+# 1. Train model and preprocessor
+X, y = load_iris(return_X_y=True)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_scaled, y)
+
+# 2. Create packager
+packager = ModelPackager('iris_classifier_v1')
+
+# 3. Save model and preprocessor
+packager.save_model(model, 'iris_classifier')
+packager.save_preprocessor(scaler, 'scaler')
+
+# 4. Create metadata
+metadata = {
+    'model_name': 'iris_classifier',
+    'version': '1.0.0',
+    'framework': 'scikit-learn',
+    'algorithm': 'RandomForestClassifier',
+    'training_date': datetime.now().isoformat(),
+    'hyperparameters': {
+        'n_estimators': 100,
+        'random_state': 42
+    },
+    'metrics': {
+        'train_accuracy': float(model.score(X_scaled, y)),
+        'n_features': X.shape[1],
+        'n_classes': len(np.unique(y))
+    },
+    'feature_names': ['sepal_length', 'sepal_width', 'petal_length', 'petal_width'],
+    'target_names': ['setosa', 'versicolor', 'virginica']
+}
+packager.save_metadata(metadata)
+
+# 5. Save schema
+input_schema = {
+    'type': 'array',
+    'shape': [4],
+    'features': ['sepal_length', 'sepal_width', 'petal_length', 'petal_width'],
+    'dtype': 'float32'
+}
+output_schema = {
+    'type': 'integer',
+    'range': [0, 2],
+    'labels': ['setosa', 'versicolor', 'virginica']
+}
+packager.save_schema(input_schema, output_schema)
+
+# 6. Save example
+example_input = X[:1]
+example_output = model.predict(scaler.transform(example_input))
+packager.save_example(example_input, example_output)
+
+# 7. Create requirements.txt
+packager.create_requirements()
+
+# 8. Create model card
+card_info = {
+    'name': 'Iris Species Classifier',
+    'version': '1.0.0',
+    'created_date': datetime.now().strftime('%Y-%m-%d'),
+    'description': 'Random Forest classifier for predicting iris species from flower measurements.',
+    'metrics': {
+        'Training Accuracy': '100%',
+        'Features': 4,
+        'Classes': 3
+    },
+    'usage_example': '''
+import joblib
+model = joblib.load('iris_classifier.joblib')
+scaler = joblib.load('scaler.joblib')
+prediction = model.predict(scaler.transform([[5.1, 3.5, 1.4, 0.2]]))
+'''
+}
+packager.create_model_card(card_info)
+
+print("✅ Complete model package created!")
+print(f"📦 Package location: {packager.model_dir}")</code></pre>
+
+                <h3>Final Package Structure</h3>
+                <pre><code class="language-bash">iris_classifier_v1/
+├── iris_classifier.joblib    # Trained model
+├── scaler.joblib              # Preprocessing pipeline
+├── metadata.json              # Training metadata
+├── schema.yaml                # Input/output schema
+├── example.json               # Example inference
+├── requirements.txt           # Dependencies
+└── MODEL_CARD.md             # Documentation</code></pre>
+            </section>
+
+            <!-- Dependency Management -->
+            <section class="content-section" id="dependency-management">
+                <h2>📦 Dependency Management</h2>
+                
+                <p>
+                    One of the biggest causes of "it worked on my machine" problems is dependency mismatch. Proper dependency management is critical for reproducibility.
+                </p>
+
+                <h3>Capturing Exact Dependencies</h3>
+                <pre><code class="language-bash"># Don't just use pip freeze (captures everything)
+pip freeze > requirements.txt  # ❌ Includes all packages
+
+# Better: Use pipreqs to detect actual imports
+pip install pipreqs
+pipreqs /path/to/project --force  # ✅ Only used packages
+
+# Best: Use poetry or pipenv for proper dependency resolution
+pip install poetry
+poetry init
+poetry add scikit-learn numpy pandas
+poetry export -f requirements.txt --output requirements.txt</code></pre>
+
+                <h3>Version Pinning Strategy</h3>
+                <pre><code class="language-text"># ❌ Too loose - can break with updates
+scikit-learn
+numpy
+
+# ❌ Too strict - prevents security updates
+scikit-learn==1.0.2
+numpy==1.21.4
+
+# ✅ Just right - compatible range
+scikit-learn>=1.0.0,<2.0.0
+numpy>=1.21.0,<2.0.0
+python-dateutil>=2.8.0,<3.0.0</code></pre>
+
+                <h3>Using MLflow for Dependency Tracking</h3>
+                <pre><code class="language-python">import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+
+mlflow.set_experiment("iris-classifier")
+
+with mlflow.start_run():
+    # Train model
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+    
+    # MLflow automatically logs:
+    # - Python version
+    # - Library versions (sklearn, numpy, etc.)
+    # - Conda environment
+    # - pip requirements
+    mlflow.sklearn.log_model(
+        model,
+        "model",
+        conda_env={
+            'dependencies': [
+                'python=3.9',
+                'pip',
+                {
+                    'pip': [
+                        'scikit-learn==1.0.2',
+                        'numpy==1.21.4'
+                    ]
+                }
+            ]
+        }
+    )
+
+# Later, reload with exact same environment
+model_uri = "runs:/<run_id>/model"
+loaded_model = mlflow.sklearn.load_model(model_uri)</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Version Compatibility Issues to Watch:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Scikit-learn 0.24 → 1.0: Major API changes</li>
+                        <li>Python 3.7 → 3.10: Pickle protocol differences</li>
+                        <li>NumPy 1.19 → 1.20: Type system changes</li>
+                        <li>TensorFlow 1.x → 2.x: Complete rewrite</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section" id="best-practices">
+                <h2>✅ Serialization Best Practices</h2>
+                
+                <h3>1. Choose the Right Format</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Use Case</th>
+                            <th>Recommended Format</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Scikit-learn in Python production</td>
+                            <td><strong>Joblib</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Cross-framework/language deployment</td>
+                            <td><strong>ONNX</strong></td>
+                        </tr>
+                        <tr>
+                            <td>TensorFlow Serving</td>
+                            <td><strong>SavedModel</strong></td>
+                        </tr>
+                        <tr>
+                            <td>PyTorch in C++/mobile</td>
+                            <td><strong>TorchScript</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Quick prototyping</td>
+                            <td><strong>Pickle</strong></td>
+                        </tr>
+                        <tr>
+                            <td>High-performance inference</td>
+                            <td><strong>ONNX + ONNX Runtime</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Always Test Deserialization</h3>
+                <pre><code class="language-python">def test_model_serialization(model, X_test):
+    """Verify model works after save/load"""
+    import tempfile
+    import joblib
+    
+    # Get predictions before saving
+    predictions_before = model.predict(X_test)
+    
+    # Save and load
+    with tempfile.NamedTemporaryFile(suffix='.joblib', delete=False) as f:
+        joblib.dump(model, f.name)
+        loaded_model = joblib.load(f.name)
+    
+    # Get predictions after loading
+    predictions_after = loaded_model.predict(X_test)
+    
+    # Verify they match
+    assert np.allclose(predictions_before, predictions_after), \
+        "Predictions changed after serialization!"
+    
+    print("✅ Serialization test passed!")
+
+# Run test
+test_model_serialization(model, X_test)</code></pre>
+
+                <h3>3. Version Everything</h3>
+                <pre><code class="language-python">import joblib
+import json
+from datetime import datetime
+import sys
+import sklearn
+
+def save_model_with_metadata(model, filepath):
+    """Save model with complete metadata"""
+    metadata = {
+        'timestamp': datetime.now().isoformat(),
+        'python_version': sys.version,
+        'sklearn_version': sklearn.__version__,
+        'model_type': type(model).__name__,
+        'model_params': model.get_params()
+    }
+    
+    # Save model
+    joblib.dump(model, filepath)
+    
+    # Save metadata alongside
+    meta_path = filepath.replace('.joblib', '_metadata.json')
+    with open(meta_path, 'w') as f:
+        json.dump(metadata, f, indent=2)
+    
+    print(f"✅ Model and metadata saved to {filepath}")</code></pre>
+
+                <h3>4. Use Model Registries</h3>
+                <p>
+                    For production environments, use a model registry like MLflow, DVC, or cloud-native solutions:
+                </p>
+                <ul>
+                    <li><strong>MLflow Model Registry:</strong> Track versions, stage transitions, lineage</li>
+                    <li><strong>DVC:</strong> Version control for large model files with Git</li>
+                    <li><strong>AWS SageMaker Model Registry:</strong> Integrated with SageMaker deployment</li>
+                    <li><strong>Azure ML Model Registry:</strong> Enterprise model management</li>
+                </ul>
+
+                <h3>5. Security Checklist</h3>
+                <div class="warning-box">
+                    <ul style="margin: 0; color: #92400e;">
+                        <li>✅ Never load pickle/joblib files from untrusted sources</li>
+                        <li>✅ Verify file integrity with checksums (SHA256)</li>
+                        <li>✅ Use ONNX for serving to external users (no code execution)</li>
+                        <li>✅ Scan model files for malware in CI/CD pipelines</li>
+                        <li>✅ Implement access controls on model storage</li>
+                        <li>✅ Log all model downloads/loads for audit trails</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've learned how to package and serialize ML models for production:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🥒</div>
+                        <h3>Pickle/Joblib</h3>
+                        <p>Python-only, easy to use, best for scikit-learn models in Python environments</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>ONNX</h3>
+                        <p>Cross-framework and cross-language, optimized inference, production-grade</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>SavedModel</h3>
+                        <p>TensorFlow's standard, works with TF Serving, TFLite, and TF.js</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔥</div>
+                        <h3>TorchScript</h3>
+                        <p>PyTorch production format, C++ deployment, mobile-ready</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Choose serialization format based on deployment target</li>
+                    <li>Always package models with metadata, schema, and dependencies</li>
+                    <li>Test deserialization before deploying to production</li>
+                    <li>Use model registries for version control and lineage</li>
+                    <li>Never load untrusted pickle files (security risk)</li>
+                    <li>Pin dependency versions for reproducibility</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Now that you can package models, the next tutorial will teach you how to build production-ready APIs around them using FastAPI. You'll learn request validation, async predictions, health checks, and rate limiting.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q1: What is the main advantage of Joblib over Pickle for scikit-learn models?</strong></p>
+                    <div class="quiz-option" data-value="a">It's more secure</div>
+                    <div class="quiz-option" data-value="b">It's much faster for large NumPy arrays and can compress files</div>
+                    <div class="quiz-option" data-value="c">It works in multiple languages</div>
+                    <div class="quiz-option" data-value="d">It doesn't require external libraries</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q2: Why is ONNX particularly useful for production ML systems?</strong></p>
+                    <div class="quiz-option" data-value="a">It's the easiest format to use</div>
+                    <div class="quiz-option" data-value="b">It's the smallest file size</div>
+                    <div class="quiz-option" data-value="c">It enables cross-framework deployment and provides optimized inference across multiple languages</div>
+                    <div class="quiz-option" data-value="d">It's only for Python applications</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What's the recommended TensorFlow format for production deployments?</strong></p>
+                    <div class="quiz-option" data-value="a">Pickle</div>
+                    <div class="quiz-option" data-value="b">Checkpoint files</div>
+                    <div class="quiz-option" data-value="c">HDF5 (.h5)</div>
+                    <div class="quiz-option" data-value="d">SavedModel format</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q4: When should you use torch.jit.script() instead of torch.jit.trace()?</strong></p>
+                    <div class="quiz-option" data-value="a">For all models</div>
+                    <div class="quiz-option" data-value="b">When your model has control flow (if/for/while statements)</div>
+                    <div class="quiz-option" data-value="c">When you want faster performance</div>
+                    <div class="quiz-option" data-value="d">For mobile deployment only</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q5: What's a critical security concern with Pickle/Joblib serialization?</strong></p>
+                    <div class="quiz-option" data-value="a">It can execute arbitrary code during deserialization, so never load files from untrusted sources</div>
+                    <div class="quiz-option" data-value="b">The files are too large</div>
+                    <div class="quiz-option" data-value="c">It doesn't work with encryption</div>
+                    <div class="quiz-option" data-value="d">It's slower than other formats</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="ml-development-workflow.html">← Previous: ML Development Workflow</a>
+                <a href="api-development-ml-models.html">Next: API Development for ML Models →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

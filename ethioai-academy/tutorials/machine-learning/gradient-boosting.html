@@ -1,0 +1,1627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Gradient Boosting - the award-winning algorithm dominating Kaggle competitions through iterative error correction.">
+    <meta name="keywords" content="gradient boosting tutorial, XGBoost, LightGBM, machine learning, boosting ensemble">
+    <title>Gradient Boosting - XGBoost ML Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="gradient-boosting.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .formula-box { background: white; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; text-align: center; font-family: serif; }
+        .formula-box code { color: #1e293b; background: transparent; }
+        .step-process { background: white; border-left: 5px solid #078930; padding: 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-process strong { color: #078930; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Gradient Boosting</span>
+            </div>
+            <h1>Gradient Boosting</h1>
+            <p class="tutorial-intro">Master the algorithm that wins Kaggle competitions through iterative error correction and sequential improvement</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 7</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🏆 Welcome to Gradient Boosting</h2>
+                <p>
+                    If there's one algorithm you need to know for competitive machine learning, it's Gradient Boosting. This is the final boss of supervised learning.
+                </p>
+                <p>
+                    Gradient Boosting powers XGBoost, LightGBM, and CatBoost — the algorithms that have won countless Kaggle competitions. When data scientists need maximum accuracy, they reach for Gradient Boosting.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 What is Gradient Boosting?</h2>
+                
+                <div class="info-box">
+                    <h3>Gradient Boosting Definition</h3>
+                    <p>
+                        Gradient Boosting sequentially builds decision trees where each new tree corrects the errors made by previous trees. Unlike Random Forest (which trains trees in parallel), boosting trains them one after another, each learning from the previous mistakes.
+                    </p>
+                </div>
+
+                <h3>Key Insight: Learning from Mistakes</h3>
+                <p>
+                    Imagine a student taking a test:
+                </p>
+                <ul>
+                    <li><strong>Random Forest approach:</strong> Have 100 students take the test independently, then vote on the answer</li>
+                    <li><strong>Gradient Boosting approach:</strong> One student takes the test, learns which questions they got wrong, improves, takes another test, learns again, and repeats</li>
+                </ul>
+
+                <p>
+                    Gradient Boosting's sequential learning often produces better results than independent voters.
+                </p>
+
+                <div class="example-box">
+                    <strong>Simple Example:</strong>
+                    <p style="margin-top: 0.75rem;">
+                        Predicting house prices with 3 sequential trees:
+                    </p>
+                    <ul style="margin-top: 0.75rem; padding-left: 1.5rem;">
+                        <li>Tree 1 predicts: $350,000 (but actual price is $400,000, error = -$50,000)</li>
+                        <li>Tree 2 learns to correct this error, predicts: +$30,000</li>
+                        <li>Tree 3 further corrects remaining error, predicts: +$20,000</li>
+                        <li><strong>Final prediction:</strong> $350,000 + $30,000 + $20,000 = $400,000 ✓</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ How Gradient Boosting Works</h2>
+                
+                <h3>📐 Mathematical Foundation</h3>
+                <p>
+                    Gradient Boosting is a functional gradient descent algorithm. The goal is to minimize a loss function L(y, F(x)) by iteratively adding functions (trees) to the model:
+                </p>
+
+                <div class="formula-box">
+                    <strong>Final Model:</strong><br>
+                    <code>F(x) = F₀(x) + η·h₁(x) + η·h₂(x) + ... + η·hₘ(x)</code><br>
+                    <p style="margin-top: 1rem; font-size: 0.95rem;">
+                        Where F₀ is initial guess, h₁...hₘ are decision trees, and η is learning rate
+                    </p>
+                </div>
+
+                <p>
+                    Each new tree hₘ is trained to predict the <strong>negative gradient</strong> of the loss function. This is why it's called "gradient" boosting—we're descending the gradient of prediction errors!
+                </p>
+
+                <h3>📝 The Algorithm Step-by-Step</h3>
+                
+                <div class="step-process">
+                    <p><strong>Step 1: Initialize with Simple Prediction</strong></p>
+                    <p style="margin: 0.5rem 0 1rem;">
+                        For regression: F₀(x) = mean(y)<br>
+                        For classification: F₀(x) = log(odds) of positive class
+                    </p>
+                </div>
+
+                <div class="step-process">
+                    <p><strong>Step 2: For each iteration m = 1 to M:</strong></p>
+                    <ol style="margin-left: 1.5rem;">
+                        <li><strong>Compute Pseudo-Residuals:</strong> rᵢ = yᵢ - F_{m-1}(xᵢ) for all training samples</li>
+                        <li><strong>Fit Decision Tree:</strong> Train tree hₘ to predict residuals r</li>
+                        <li><strong>Update Model:</strong> F_m(x) = F_{m-1}(x) + η · hₘ(x)</li>
+                    </ol>
+                </div>
+
+                <div class="step-process">
+                    <p><strong>Step 3: Final Prediction</strong></p>
+                    <p style="margin: 0.5rem 0;">
+                        F(x) = F₀(x) + η·(h₁(x) + h₂(x) + ... + hₘ(x))
+                    </p>
+                </div>
+
+                <h3>🔢 Numerical Example: Predicting House Prices</h3>
+                <div class="example-box">
+                    <p><strong>Training Data (4 houses):</strong></p>
+                    <table style="width: 100%; margin-top: 0.5rem;">
+                        <tr>
+                            <td><strong>Size (sqft)</strong></td>
+                            <td>1500</td>
+                            <td>2000</td>
+                            <td>2500</td>
+                            <td>3000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Actual Price ($)</strong></td>
+                            <td>200k</td>
+                            <td>250k</td>
+                            <td>300k</td>
+                            <td>350k</td>
+                        </tr>
+                    </table>
+
+                    <p style="margin-top: 1.5rem;"><strong>Iteration 0 (Initialize):</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>F₀(x) = mean(200k, 250k, 300k, 350k) = 275k (for all houses)</li>
+                        <li>Residuals: [-75k, -25k, +25k, +75k]</li>
+                        <li>Mean Squared Error: 3,125 million</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>Iteration 1 (First Tree):</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Train tree h₁ to predict residuals [-75k, -25k, +25k, +75k]</li>
+                        <li>Tree learns: "If size < 2250 sqft → predict -50k, else → predict +50k"</li>
+                        <li>With learning rate η=0.1: Update = 275k + 0.1×(-50k or +50k)</li>
+                        <li>New predictions: [270k, 270k, 280k, 280k]</li>
+                        <li>New residuals: [-70k, -20k, +20k, +70k]</li>
+                        <li>MSE reduced to 2,500 million ✓</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>Iteration 2 (Second Tree):</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Train h₂ to predict [-70k, -20k, +20k, +70k]</li>
+                        <li>Tree splits more finely based on exact sizes</li>
+                        <li>Predictions: [265k, 248k, 302k, 352k]</li>
+                        <li>MSE continues to decrease...</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>After 100 iterations:</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Model learns complex relationship between size and price</li>
+                        <li>Each tree corrects previous errors</li>
+                        <li>Final predictions very close to actual values!</li>
+                    </ul>
+                </div>
+
+                <h3>💡 Why Learning Rate Matters</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>High Learning Rate (η = 1.0)</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Each tree contributes fully to prediction</li>
+                            <li>• Faster training (fewer trees needed)</li>
+                            <li>• Risk: Overfitting and unstable model</li>
+                            <li>• Use: Quick prototyping only</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #d1fae5; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>Low Learning Rate (η = 0.01)</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Each tree contributes small increment</li>
+                            <li>• Requires many trees (1000+)</li>
+                            <li>• Benefit: More robust, generalizes better</li>
+                            <li>• Use: Production models</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p>✅ <strong>Golden Rule:</strong> learning_rate × n_estimators ≈ constant. If you halve the learning rate, double the number of trees!</p>
+                </div>
+
+                <h3>🎯 Gradient Descent Connection</h3>
+                <p>
+                    The "gradient" in Gradient Boosting refers to the <strong>gradient of the loss function</strong>:
+                </p>
+
+                <div class="formula-box">
+                    <strong>Negative Gradient (Residuals for MSE loss):</strong><br>
+                    <code>-∂L/∂F = yᵢ - F(xᵢ)</code><br>
+                    <p style="margin-top: 1rem; font-size: 0.95rem;">
+                        Each tree approximates the negative gradient, moving predictions toward lower loss
+                    </p>
+                </div>
+
+                <p>
+                    Different loss functions produce different gradients:
+                </p>
+                <ul>
+                    <li><strong>Squared Error (regression):</strong> Gradient = actual - predicted</li>
+                    <li><strong>Log Loss (classification):</strong> Gradient = probability error</li>
+                    <li><strong>Huber Loss (robust regression):</strong> Gradient = clipped residuals</li>
+                </ul>
+
+                <div class="info-box">
+                    <p>💡 <strong>Key Insight:</strong> Gradient Boosting is doing gradient descent in "function space" rather than parameter space. Each tree is a functional step toward minimizing loss!</p>
+                </div>
+
+                <h3>🌳 Shallow Trees vs Deep Trees</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Tree Depth</th>
+                            <th>Characteristics</th>
+                            <th>Best Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>max_depth = 1-3</strong><br>(Stumps)</td>
+                            <td>Very simple splits, high bias, fast training</td>
+                            <td>Large datasets, smooth relationships</td>
+                        </tr>
+                        <tr>
+                            <td><strong>max_depth = 4-6</strong><br>(Default)</td>
+                            <td>Moderate complexity, balanced bias-variance</td>
+                            <td>Most tabular data problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>max_depth = 7-10</strong><br>(Deep)</td>
+                            <td>Captures complex interactions, risk of overfitting</td>
+                            <td>Small datasets with complex patterns</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Common Mistake:</strong> Using deep trees (max_depth > 10) defeats the purpose of boosting! Boosting works best with many weak learners, not few strong ones.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💻 Gradient Boosting in Python</h2>
+                
+                <h3>📚 Example 1: Regression with Scikit-Learn</h3>
+                <pre><code class="language-python"># Complete Gradient Boosting Regression Example
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+from sklearn.datasets import fetch_california_housing
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load California housing dataset
+housing = fetch_california_housing()
+X, y = housing.data, housing.target
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Train Gradient Boosting model
+gb = GradientBoostingRegressor(
+    n_estimators=100,       # Number of boosting stages
+    learning_rate=0.1,      # Learning rate (shrinkage)
+    max_depth=4,           # Maximum depth of trees
+    min_samples_split=5,    # Min samples to split node
+    min_samples_leaf=3,     # Min samples in leaf
+    max_features='sqrt',    # Features per split
+    subsample=0.8,         # Fraction of samples per tree
+    random_state=42
+)
+gb.fit(X_train, y_train)
+
+# Predictions
+y_pred_train = gb.predict(X_train)
+y_pred_test = gb.predict(X_test)
+
+print(f"Training R²: {r2_score(y_train, y_pred_train):.4f}")
+print(f"Test R²: {r2_score(y_test, y_pred_test):.4f}")
+print(f"Test MAE: ${mean_absolute_error(y_test, y_pred_test)*100000:.0f}")
+print(f"Test RMSE: ${np.sqrt(mean_squared_error(y_test, y_pred_test))*100000:.0f}")
+
+# Cross-validation for robust evaluation
+cv_scores = cross_val_score(gb, X_train, y_train, cv=5, 
+                            scoring='neg_mean_squared_error')
+print(f"\nCross-val RMSE: ${np.sqrt(-cv_scores.mean())*100000:.0f} "
+      f"(±{np.sqrt(cv_scores.std())*100000:.0f})")
+
+# Feature importance analysis
+feature_names = housing.feature_names
+importance = gb.feature_importances_
+indices = np.argsort(importance)[::-1]
+
+print("\nTop 5 Most Important Features:")
+for i in range(5):
+    print(f"{i+1}. {feature_names[indices[i]]}: {importance[indices[i]]:.1%}")
+
+# Plot feature importance
+plt.figure(figsize=(10, 6))
+plt.bar(range(len(importance)), importance[indices])
+plt.xticks(range(len(importance)), [feature_names[i] for i in indices], rotation=45)
+plt.title('Feature Importance in Gradient Boosting')
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>📊 Example 2: Binary Classification with Early Stopping</h3>
+                <pre><code class="language-python"># Classification with validation monitoring
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.datasets import make_classification
+from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+
+# Generate imbalanced dataset
+X, y = make_classification(
+    n_samples=10000, n_features=20, n_informative=15,
+    n_redundant=5, n_classes=2, weights=[0.9, 0.1],
+    random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+# Create validation set for early stopping
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train, y_train, test_size=0.2, stratify=y_train, random_state=42
+)
+
+# Train with early stopping
+gb_clf = GradientBoostingClassifier(
+    n_estimators=500,
+    learning_rate=0.05,
+    max_depth=5,
+    min_samples_split=20,
+    min_samples_leaf=10,
+    subsample=0.8,
+    random_state=42,
+    validation_fraction=0.2,  # Use 20% for validation
+    n_iter_no_change=10,      # Stop if no improvement for 10 rounds
+    tol=0.0001               # Tolerance for improvement
+)
+
+gb_clf.fit(X_train, y_train)
+
+print(f"Optimal number of trees: {gb_clf.n_estimators_}")
+print(f"Training stopped at iteration: {gb_clf.n_estimators_}")
+
+# Evaluate
+y_pred = gb_clf.predict(X_test)
+y_proba = gb_clf.predict_proba(X_test)[:, 1]
+
+print(f"\nTest Accuracy: {gb_clf.score(X_test, y_test):.2%}")
+print(f"ROC-AUC Score: {roc_auc_score(y_test, y_proba):.4f}")
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print(f"\nConfusion Matrix:")
+print(f"TN: {cm[0,0]}, FP: {cm[0,1]}")
+print(f"FN: {cm[1,0]}, TP: {cm[1,1]}")
+
+# Plot training progress
+plt.figure(figsize=(12, 5))
+
+# Subplot 1: Training vs Validation Loss
+plt.subplot(1, 2, 1)
+train_scores = gb_clf.train_score_
+plt.plot(train_scores, label='Training Loss', linewidth=2)
+plt.xlabel('Number of Trees')
+plt.ylabel('Loss')
+plt.title('Training Loss vs Number of Trees')
+plt.legend()
+plt.grid(alpha=0.3)
+
+# Subplot 2: Feature Importance
+plt.subplot(1, 2, 2)
+importance = gb_clf.feature_importances_
+top_features = np.argsort(importance)[-10:]  # Top 10
+plt.barh(range(len(top_features)), importance[top_features])
+plt.yticks(range(len(top_features)), [f'Feature {i}' for i in top_features])
+plt.xlabel('Importance')
+plt.title('Top 10 Feature Importances')
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>🚀 Example 3: XGBoost with Hyperparameter Tuning</h3>
+                <pre><code class="language-python"># XGBoost with GridSearchCV
+import xgboost as xgb
+from sklearn.model_selection import GridSearchCV
+from sklearn.datasets import load_breast_cancer
+
+# Load dataset
+cancer = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    cancer.data, cancer.target, test_size=0.2, random_state=42
+)
+
+# Define parameter grid
+param_grid = {
+    'max_depth': [3, 5, 7],
+    'learning_rate': [0.01, 0.1, 0.3],
+    'n_estimators': [100, 200, 300],
+    'subsample': [0.8, 1.0],
+    'colsample_bytree': [0.8, 1.0]
+}
+
+# Create XGBoost model
+xgb_model = xgb.XGBClassifier(
+    objective='binary:logistic',
+    eval_metric='logloss',
+    random_state=42
+)
+
+# Grid search with cross-validation
+grid_search = GridSearchCV(
+    xgb_model,
+    param_grid,
+    cv=5,
+    scoring='roc_auc',
+    n_jobs=-1,
+    verbose=1
+)
+
+print("Starting Grid Search...")
+grid_search.fit(X_train, y_train)
+
+print(f"\nBest Parameters: {grid_search.best_params_}")
+print(f"Best Cross-Val ROC-AUC: {grid_search.best_score_:.4f}")
+
+# Evaluate best model
+best_model = grid_search.best_estimator_
+test_score = best_model.score(X_test, y_test)
+test_roc_auc = roc_auc_score(y_test, best_model.predict_proba(X_test)[:, 1])
+
+print(f"\nTest Accuracy: {test_score:.2%}")
+print(f"Test ROC-AUC: {test_roc_auc:.4f}")
+
+# Feature importance with XGBoost
+importance_df = pd.DataFrame({
+    'Feature': cancer.feature_names,
+    'Importance': best_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\nTop 10 Most Important Features:")
+print(importance_df.head(10))</code></pre>
+
+                <h3>⚡ Example 4: LightGBM for Large Datasets</h3>
+                <pre><code class="language-python"># LightGBM for fast training on large data
+import lightgbm as lgb
+from sklearn.datasets import make_classification
+
+# Generate large dataset (100k samples)
+X, y = make_classification(
+    n_samples=100000, n_features=50, n_informative=30,
+    n_redundant=10, random_state=42
+)
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# LightGBM dataset format (optimized)
+train_data = lgb.Dataset(X_train, label=y_train)
+val_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
+
+# LightGBM parameters
+params = {
+    'objective': 'binary',
+    'metric': 'auc',
+    'boosting_type': 'gbdt',
+    'num_leaves': 31,
+    'learning_rate': 0.05,
+    'feature_fraction': 0.8,
+    'bagging_fraction': 0.8,
+    'bagging_freq': 5,
+    'verbose': -1
+}
+
+# Train with early stopping
+print("Training LightGBM...")
+lgb_model = lgb.train(
+    params,
+    train_data,
+    num_boost_round=1000,
+    valid_sets=[train_data, val_data],
+    valid_names=['train', 'valid'],
+    callbacks=[
+        lgb.early_stopping(stopping_rounds=50),
+        lgb.log_evaluation(period=100)
+    ]
+)
+
+print(f"\nOptimal iterations: {lgb_model.best_iteration}")
+
+# Predictions
+y_pred = lgb_model.predict(X_test, num_iteration=lgb_model.best_iteration)
+y_pred_binary = (y_pred > 0.5).astype(int)
+
+# Evaluation
+from sklearn.metrics import accuracy_score, roc_auc_score
+print(f"Test Accuracy: {accuracy_score(y_test, y_pred_binary):.2%}")
+print(f"Test ROC-AUC: {roc_auc_score(y_test, y_pred):.4f}")
+
+# Feature importance
+importance = lgb_model.feature_importance(importance_type='gain')
+print(f"\nAverage feature importance: {importance.mean():.2f}")
+print(f"Top 5 features: {np.argsort(importance)[-5:][::-1]}")</code></pre>
+
+                <h3>📈 Visualization: Training Progress</h3>
+                <pre><code class="language-python"># Monitor training progress with deviance plot
+import matplotlib.pyplot as plt
+
+# Train model with staged predictions
+gb = GradientBoostingClassifier(
+    n_estimators=200, learning_rate=0.1, 
+    max_depth=5, random_state=42
+)
+gb.fit(X_train, y_train)
+
+# Compute test score at each stage
+test_scores = []
+for pred in gb.staged_predict_proba(X_test):
+    test_scores.append(roc_auc_score(y_test, pred[:, 1]))
+
+# Plot learning curve
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(test_scores) + 1), test_scores, 
+         linewidth=2, label='Test ROC-AUC')
+plt.xlabel('Number of Trees')
+plt.ylabel('ROC-AUC Score')
+plt.title('Gradient Boosting: Performance vs Number of Trees')
+plt.axhline(y=max(test_scores), color='r', linestyle='--', 
+            label=f'Best Score: {max(test_scores):.4f}')
+plt.axvline(x=test_scores.index(max(test_scores))+1, color='r', 
+            linestyle='--', alpha=0.5)
+plt.legend()
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+print(f"Optimal number of trees: {test_scores.index(max(test_scores))+1}")
+print(f"Best ROC-AUC: {max(test_scores):.4f}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ Hyperparameter Tuning Mastery</h2>
+                
+                <h3>📊 Complete Parameter Reference</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Parameter</th>
+                            <th style="width: 35%;">Effect on Model</th>
+                            <th style="width: 20%;">Default</th>
+                            <th style="width: 25%;">Typical Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>n_estimators</strong></td>
+                            <td>Number of boosting stages (trees)</td>
+                            <td>100</td>
+                            <td>100 - 1000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>learning_rate</strong></td>
+                            <td>Shrinkage factor for tree contributions</td>
+                            <td>0.1</td>
+                            <td>0.001 - 0.3</td>
+                        </tr>
+                        <tr>
+                            <td><strong>max_depth</strong></td>
+                            <td>Maximum depth of individual trees</td>
+                            <td>3</td>
+                            <td>3 - 10</td>
+                        </tr>
+                        <tr>
+                            <td><strong>min_samples_split</strong></td>
+                            <td>Min samples required to split node</td>
+                            <td>2</td>
+                            <td>2 - 20</td>
+                        </tr>
+                        <tr>
+                            <td><strong>min_samples_leaf</strong></td>
+                            <td>Min samples required in leaf node</td>
+                            <td>1</td>
+                            <td>1 - 10</td>
+                        </tr>
+                        <tr>
+                            <td><strong>subsample</strong></td>
+                            <td>Fraction of samples per tree (stochastic)</td>
+                            <td>1.0</td>
+                            <td>0.5 - 1.0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>max_features</strong></td>
+                            <td>Features considered per split</td>
+                            <td>None</td>
+                            <td>'sqrt', 'log2', 0.8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>lambda (reg_lambda)</strong></td>
+                            <td>L2 regularization on weights (XGBoost)</td>
+                            <td>1</td>
+                            <td>0 - 10</td>
+                        </tr>
+                        <tr>
+                            <td><strong>alpha (reg_alpha)</strong></td>
+                            <td>L1 regularization on weights (XGBoost)</td>
+                            <td>0</td>
+                            <td>0 - 1</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🎯 Hyperparameter Tuning Strategy</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>🏁 Step 1: Start Conservative</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• n_estimators = 100</li>
+                            <li>• learning_rate = 0.1</li>
+                            <li>• max_depth = 3-5</li>
+                            <li>• Get baseline performance</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #d1fae5; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>🔧 Step 2: Optimize Trees</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Fix learning_rate = 0.1</li>
+                            <li>• Tune max_depth (3, 5, 7, 10)</li>
+                            <li>• Tune min_samples_split (2, 5, 10, 20)</li>
+                            <li>• Use cross-validation</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>⚡ Step 3: Fine-tune Learning</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Lower learning_rate (0.05, 0.01)</li>
+                            <li>• Increase n_estimators proportionally</li>
+                            <li>• Rule: lr × n_trees ≈ constant</li>
+                            <li>• Monitor for overfitting</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fecaca; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <strong>🛡️ Step 4: Add Regularization</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• subsample = 0.8 (stochasticity)</li>
+                            <li>• max_features = 'sqrt' or 0.8</li>
+                            <li>• L2 regularization (lambda = 1-10)</li>
+                            <li>• Prevents overfitting</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>💡 Parameter Interactions & Trade-offs</h3>
+                <div class="example-box">
+                    <p><strong>Learning Rate ↔ Number of Trees</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>learning_rate=0.1, n_estimators=100:</strong> Fast training, moderate performance</li>
+                        <li><strong>learning_rate=0.01, n_estimators=1000:</strong> Slow training, best performance</li>
+                        <li><strong>Rule of thumb:</strong> Halve learning rate → double trees</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>Max Depth ↔ Number of Trees</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>max_depth=3, many trees:</strong> Weak learners, gradual improvement (better generalization)</li>
+                        <li><strong>max_depth=10, few trees:</strong> Strong learners, rapid improvement (risk overfitting)</li>
+                        <li><strong>Recommendation:</strong> Keep depth shallow (3-6) for boosting</li>
+                    </ul>
+
+                    <p style="margin-top: 1.5rem;"><strong>Subsample ↔ Training Speed</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li><strong>subsample=1.0:</strong> Use all data, slower, deterministic</li>
+                        <li><strong>subsample=0.8:</strong> 20% faster, adds stochasticity, reduces overfitting</li>
+                        <li><strong>Recommendation:</strong> Use 0.8 for large datasets</li>
+                    </ul>
+                </div>
+
+                <h3>🔬 Advanced Tuning with GridSearchCV</h3>
+                <pre><code class="language-python"># Systematic Hyperparameter Tuning
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
+from scipy.stats import randint, uniform
+
+# Stage 1: Coarse tuning with RandomizedSearchCV (faster)
+param_dist = {
+    'n_estimators': randint(100, 500),
+    'learning_rate': uniform(0.01, 0.29),  # 0.01 to 0.3
+    'max_depth': randint(3, 10),
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 10),
+    'subsample': uniform(0.6, 0.4),  # 0.6 to 1.0
+    'max_features': ['sqrt', 'log2', None]
+}
+
+random_search = RandomizedSearchCV(
+    GradientBoostingClassifier(random_state=42),
+    param_distributions=param_dist,
+    n_iter=50,
+    cv=5,
+    scoring='roc_auc',
+    n_jobs=-1,
+    random_state=42,
+    verbose=1
+)
+
+random_search.fit(X_train, y_train)
+print(f"Best Random Search Params: {random_search.best_params_}")
+print(f"Best CV Score: {random_search.best_score_:.4f}")
+
+# Stage 2: Fine-tuning with GridSearchCV around best params
+best_params = random_search.best_params_
+
+param_grid = {
+    'n_estimators': [best_params['n_estimators'] - 50, 
+                    best_params['n_estimators'], 
+                    best_params['n_estimators'] + 50],
+    'learning_rate': [best_params['learning_rate'] * 0.5,
+                     best_params['learning_rate'],
+                     best_params['learning_rate'] * 1.5],
+    'max_depth': [best_params['max_depth'] - 1,
+                 best_params['max_depth'],
+                 best_params['max_depth'] + 1]
+}
+
+grid_search = GridSearchCV(
+    GradientBoostingClassifier(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='roc_auc',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train, y_train)
+print(f"\nFinal Best Params: {grid_search.best_params_}")
+print(f"Final CV Score: {grid_search.best_score_:.4f}")
+
+# Evaluate on test set
+final_model = grid_search.best_estimator_
+test_score = final_model.score(X_test, y_test)
+print(f"Test Accuracy: {test_score:.2%}")</code></pre>
+
+                <h3>📈 Learning Rate Schedule Visualization</h3>
+                <pre><code class="language-python"># Compare different learning rates
+import matplotlib.pyplot as plt
+import numpy as np
+
+learning_rates = [0.001, 0.01, 0.1, 0.5]
+colors = ['blue', 'green', 'orange', 'red']
+
+plt.figure(figsize=(12, 6))
+
+for lr, color in zip(learning_rates, colors):
+    gb = GradientBoostingClassifier(
+        n_estimators=300,
+        learning_rate=lr,
+        max_depth=5,
+        random_state=42
+    )
+    gb.fit(X_train, y_train)
+    
+    # Compute test scores at each stage
+    test_scores = []
+    for pred in gb.staged_predict_proba(X_test):
+        test_scores.append(roc_auc_score(y_test, pred[:, 1]))
+    
+    plt.plot(range(1, len(test_scores) + 1), test_scores, 
+             label=f'LR={lr}', linewidth=2, color=color, alpha=0.7)
+
+plt.xlabel('Number of Trees', fontsize=12)
+plt.ylabel('Test ROC-AUC Score', fontsize=12)
+plt.title('Learning Rate Impact on Convergence', fontsize=14, fontweight='bold')
+plt.legend(fontsize=10)
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.show()
+
+# Key observations:
+# - LR=0.001: Slow convergence, needs 500+ trees
+# - LR=0.01: Good balance, converges around 200 trees
+# - LR=0.1: Fast convergence, may plateau early
+# - LR=0.5: Too aggressive, unstable performance</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Overfitting Warning:</strong> Monitor train vs validation score! If training score >> validation score, you're overfitting. Solutions: Lower max_depth, increase min_samples_leaf, add subsample < 1.0, increase regularization.</p>
+                </div>
+
+                <div class="success-box">
+                    <p>✅ <strong>Pro Tip:</strong> For production models, use early_stopping with a validation set. This automatically finds optimal n_estimators and prevents overfitting!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Best-in-Class Performance</h3>
+                        <p>Often achieves highest accuracy of any algorithm</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Handles Various Data Types</h3>
+                        <p>Works with numeric, categorical, and mixed features</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Feature Importance</h3>
+                        <p>Automatic ranking of feature relevance</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Hyperparameter Sensitive</h3>
+                        <p>Many parameters need careful tuning</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Training Time</h3>
+                        <p>Slower than Random Forests (sequential building)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Overfitting Risk</h3>
+                        <p>Can memorize training data if not carefully regularized</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏆 Gradient Boosting vs All Others</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Speed</th>
+                            <th>Accuracy</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Linear Regression</strong></td>
+                            <td>⚡⚡⚡ Very Fast</td>
+                            <td>⭐⭐ Low (if non-linear)</td>
+                            <td>Simple relationships, interpretability critical</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Decision Trees</strong></td>
+                            <td>⚡⚡⚡ Very Fast</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>Quick prototyping, interpretability matters</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Random Forest</strong></td>
+                            <td>⚡⚡ Fast</td>
+                            <td>⭐⭐⭐⭐ Very Good</td>
+                            <td>Default choice for most problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SVM</strong></td>
+                            <td>⚡ Slow on big data</td>
+                            <td>⭐⭐⭐⭐ Very Good (small data)</td>
+                            <td>High-dimensional or small datasets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gradient Boosting</strong></td>
+                            <td>🐢 Slowest</td>
+                            <td>⭐⭐⭐⭐⭐ Best</td>
+                            <td>Maximum accuracy needed, tuning time available</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Choosing the Right Boosting Library</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <div class="card-icon">🐍</div>
+                        <h3>Scikit-Learn</h3>
+                        <p><strong>GradientBoostingClassifier/Regressor</strong></p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            <strong>Pros:</strong> Easy to use, sklearn integration<br>
+                            <strong>Cons:</strong> Slower than alternatives<br>
+                            <strong>Use when:</strong> Learning, prototyping, small-medium data
+                        </p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #10b981;">
+                        <div class="card-icon">🚀</div>
+                        <h3>XGBoost</h3>
+                        <p><strong>Extreme Gradient Boosting</strong></p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            <strong>Pros:</strong> Industry standard, 80% of Kaggle wins, fast<br>
+                            <strong>Cons:</strong> More parameters to tune<br>
+                            <strong>Use when:</strong> Production, competitions, need max accuracy
+                        </p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <div class="card-icon">⚡</div>
+                        <h3>LightGBM</h3>
+                        <p><strong>Light Gradient Boosting Machine</strong></p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            <strong>Pros:</strong> Fastest, low memory, handles 100M+ rows<br>
+                            <strong>Cons:</strong> Can overfit small datasets<br>
+                            <strong>Use when:</strong> Large datasets (&gt;10k samples), speed critical
+                        </p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="card-icon">📊</div>
+                        <h3>CatBoost</h3>
+                        <p><strong>Category Boosting</strong></p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            <strong>Pros:</strong> Best for categorical data, less tuning needed<br>
+                            <strong>Cons:</strong> Slower than LightGBM<br>
+                            <strong>Use when:</strong> Many categorical features, less time for tuning
+                        </p>
+                    </div>
+                </div>
+
+                <h3>📊 Library Performance Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Library</th>
+                            <th>Training Speed</th>
+                            <th>Prediction Speed</th>
+                            <th>Memory Usage</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Scikit-Learn</strong></td>
+                            <td>🐢 Slow</td>
+                            <td>⚡⚡ Fast</td>
+                            <td>💾💾 Medium</td>
+                            <td>Learning, small data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>XGBoost</strong></td>
+                            <td>⚡⚡ Fast</td>
+                            <td>⚡⚡⚡ Very Fast</td>
+                            <td>💾💾 Medium</td>
+                            <td>Competitions, accuracy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LightGBM</strong></td>
+                            <td>⚡⚡⚡ Fastest</td>
+                            <td>⚡⚡⚡ Very Fast</td>
+                            <td>💾 Low</td>
+                            <td>Large datasets, speed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CatBoost</strong></td>
+                            <td>⚡ Moderate</td>
+                            <td>⚡⚡ Fast</td>
+                            <td>💾💾 Medium</td>
+                            <td>Categorical features</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>📝 Installation & Quick Start</h3>
+                <pre><code class="language-python"># Install libraries
+pip install xgboost lightgbm catboost
+
+# Quick comparison
+from sklearn.ensemble import GradientBoostingClassifier
+import xgboost as xgb
+import lightgbm as lgb
+import catboost as cb
+
+# All use similar API
+models = {
+    'Sklearn': GradientBoostingClassifier(n_estimators=100, learning_rate=0.1),
+    'XGBoost': xgb.XGBClassifier(n_estimators=100, learning_rate=0.1),
+    'LightGBM': lgb.LGBMClassifier(n_estimators=100, learning_rate=0.1),
+    'CatBoost': cb.CatBoostClassifier(iterations=100, learning_rate=0.1, verbose=0)
+}
+
+for name, model in models.items():
+    model.fit(X_train, y_train)
+    score = model.score(X_test, y_test)
+    print(f"{name}: {score:.2%}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Troubleshooting Guide</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Problem</th>
+                            <th style="width: 30%;">Symptoms</th>
+                            <th style="width: 45%;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Overfitting</strong></td>
+                            <td>Training 99%, Test 75%</td>
+                            <td>• Lower learning_rate (try 0.01)<br>• Reduce max_depth (try 3-4)<br>• Increase min_samples_leaf (try 5-10)<br>• Use subsample=0.8<br>• Add early_stopping</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slow Training</strong></td>
+                            <td>Hours of training on 100k rows</td>
+                            <td>• Use LightGBM instead of sklearn<br>• Lower n_estimators (try 100)<br>• Reduce max_depth<br>• Sample training data for tuning<br>• Use GPU acceleration (XGBoost/LightGBM)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Underfitting</strong></td>
+                            <td>Both train and test scores low</td>
+                            <td>• Increase max_depth (try 6-8)<br>• Increase n_estimators (try 500)<br>• Lower learning_rate + more trees<br>• Reduce min_samples_leaf<br>• Check feature engineering</td>
+                        </tr>
+                        <tr>
+                            <td><strong>High Memory Usage</strong></td>
+                            <td>Out of memory errors</td>
+                            <td>• Use LightGBM (most memory efficient)<br>• Reduce n_estimators<br>• Use subsample &lt; 1.0<br>• Convert features to float32<br>• Process data in chunks</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unstable Predictions</strong></td>
+                            <td>Predictions vary wildly with small data changes</td>
+                            <td>• Lower learning_rate<br>• Increase min_samples_split<br>• Use subsample=0.8 (add stochasticity)<br>• Increase n_estimators<br>• Ensemble multiple models</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Imbalanced Classes</strong></td>
+                            <td>Predicts only majority class</td>
+                            <td>• Use scale_pos_weight (XGBoost)<br>• Use class_weight='balanced' (sklearn)<br>• Adjust sample_weight in fit()<br>• Use focal loss or custom objective<br>• Oversample minority class (SMOTE)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NaN/Inf Predictions</strong></td>
+                            <td>Model outputs NaN or infinity</td>
+                            <td>• Check for NaN in training data<br>• Handle missing values properly<br>• Lower learning_rate<br>• Add regularization (lambda, alpha)<br>• Check for extreme outliers</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🐛 Common Code Mistakes</h3>
+                <pre><code class="language-python"># ❌ MISTAKE 1: Not using early stopping
+gb = GradientBoostingClassifier(n_estimators=1000)
+gb.fit(X_train, y_train)  # May overfit!
+
+# ✅ CORRECT: Use early stopping
+gb = GradientBoostingClassifier(
+    n_estimators=1000,
+    n_iter_no_change=10,
+    validation_fraction=0.2
+)
+gb.fit(X_train, y_train)  # Stops early if no improvement
+
+# ❌ MISTAKE 2: Too many deep trees
+gb = GradientBoostingClassifier(max_depth=15, n_estimators=50)  # Wrong!
+
+# ✅ CORRECT: Many shallow trees
+gb = GradientBoostingClassifier(max_depth=4, n_estimators=200)
+
+# ❌ MISTAKE 3: Not scaling learning rate with n_estimators
+gb = GradientBoostingClassifier(learning_rate=0.1, n_estimators=10)  # Too few trees!
+
+# ✅ CORRECT: Balance learning rate and trees
+gb = GradientBoostingClassifier(learning_rate=0.01, n_estimators=1000)
+
+# ❌ MISTAKE 4: Ignoring feature importance for feature selection
+gb.fit(X, y)
+predictions = gb.predict(X_new)  # Using all features
+
+# ✅ CORRECT: Remove low-importance features
+gb.fit(X_train, y_train)
+importance = gb.feature_importances_
+important_features = importance > 0.01  # Keep top features
+X_train_filtered = X_train[:, important_features]
+gb.fit(X_train_filtered, y_train)
+
+# ❌ MISTAKE 5: Using default parameters for production
+gb = GradientBoostingClassifier()  # Defaults may not be optimal
+
+# ✅ CORRECT: Tune hyperparameters
+from sklearn.model_selection import GridSearchCV
+param_grid = {
+    'learning_rate': [0.01, 0.05, 0.1],
+    'n_estimators': [100, 200, 500],
+    'max_depth': [3, 5, 7]
+}
+grid = GridSearchCV(GradientBoostingClassifier(), param_grid, cv=5)
+grid.fit(X_train, y_train)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Practice Projects</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>💳 Project 1: Credit Card Fraud Detection</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> Kaggle Credit Card Fraud</p>
+                        <p><strong>Goal:</strong> Detect fraudulent transactions (highly imbalanced)</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle 99.8% imbalanced classes</li>
+                            <li>• Use scale_pos_weight or SMOTE</li>
+                            <li>• Optimize for recall (catch all fraud)</li>
+                            <li>• Compare XGBoost vs LightGBM speed</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #0d9488;">
+                        <h3>🏠 Project 2: House Price Regression</h3>
+                        <p><strong>Difficulty:</strong> Beginner</p>
+                        <p><strong>Dataset:</strong> Boston Housing or Kaggle House Prices</p>
+                        <p><strong>Goal:</strong> Predict house prices with GBM regression</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Use GradientBoostingRegressor</li>
+                            <li>• Tune learning_rate vs n_estimators</li>
+                            <li>• Plot learning curves</li>
+                            <li>• Analyze feature importance</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>🎬 Project 3: Movie Rating Prediction</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> MovieLens or IMDB</p>
+                        <p><strong>Goal:</strong> Predict movie ratings from features</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle categorical features (genre, director)</li>
+                            <li>• Use CatBoost for categorical encoding</li>
+                            <li>• Compare with XGBoost + one-hot encoding</li>
+                            <li>• Grid search hyperparameters</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #8b5cf6;">
+                        <h3>🏆 Project 4: Kaggle Competition Simulation</h3>
+                        <p><strong>Difficulty:</strong> Advanced</p>
+                        <p><strong>Dataset:</strong> Any Kaggle structured data competition</p>
+                        <p><strong>Goal:</strong> Maximize leaderboard score</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Feature engineering (interaction features)</li>
+                            <li>• Ensemble XGBoost + LightGBM + CatBoost</li>
+                            <li>• Use stacking/blending</li>
+                            <li>• Optimize with Bayesian search (Optuna)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📝 Project Starter Template</h3>
+                <pre><code class="language-python"># Gradient Boosting Project Template
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import classification_report, roc_auc_score
+import numpy as np
+
+# 1. Load and prepare data
+# X, y = load_your_dataset()
+
+# 2. Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 3. Start with baseline model
+baseline = GradientBoostingClassifier(
+    n_estimators=100,
+    learning_rate=0.1,
+    max_depth=5,
+    random_state=42
+)
+baseline.fit(X_train, y_train)
+baseline_score = baseline.score(X_test, y_test)
+print(f"Baseline Test Accuracy: {baseline_score:.2%}")
+
+# 4. Hyperparameter tuning
+from sklearn.model_selection import RandomizedSearchCV
+
+param_dist = {
+    'n_estimators': [100, 200, 500],
+    'learning_rate': [0.01, 0.05, 0.1],
+    'max_depth': [3, 5, 7],
+    'min_samples_split': [2, 5, 10],
+    'subsample': [0.8, 1.0]
+}
+
+random_search = RandomizedSearchCV(
+    GradientBoostingClassifier(random_state=42),
+    param_dist,
+    n_iter=20,
+    cv=5,
+    random_state=42,
+    n_jobs=-1
+)
+random_search.fit(X_train, y_train)
+
+print(f"\nBest Parameters: {random_search.best_params_}")
+print(f"Best CV Score: {random_search.best_score_:.4f}")
+
+# 5. Evaluate best model
+best_model = random_search.best_estimator_
+y_pred = best_model.predict(X_test)
+y_proba = best_model.predict_proba(X_test)[:, 1]
+
+print(f"\nTest Accuracy: {best_model.score(X_test, y_test):.2%}")
+print(f"ROC-AUC: {roc_auc_score(y_test, y_proba):.4f}")
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# 6. Feature importance
+importance = best_model.feature_importances_
+for i, imp in enumerate(importance):
+    if imp > 0.01:  # Show features with >1% importance
+        print(f"Feature {i}: {imp:.1%}")
+
+# 7. Learning curve (optional)
+import matplotlib.pyplot as plt
+test_scores = []
+for pred in best_model.staged_predict_proba(X_test):
+    test_scores.append(roc_auc_score(y_test, pred[:, 1]))
+
+plt.plot(test_scores)
+plt.xlabel('Number of Trees')
+plt.ylabel('ROC-AUC')
+plt.title('Test Performance vs Number of Trees')
+plt.show()</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">🎯 Core Algorithm</h3>
+                        <ul style="margin: 0;">
+                            <li>• Sequential ensemble of weak learners</li>
+                            <li>• Each tree corrects previous errors</li>
+                            <li>• Gradient descent in function space</li>
+                            <li>• Optimize loss via negative gradients</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">⚙️ Key Parameters</h3>
+                        <ul style="margin: 0;">
+                            <li>• learning_rate: Controls step size (0.01-0.1)</li>
+                            <li>• n_estimators: Number of trees (100-1000)</li>
+                            <li>• max_depth: Tree complexity (3-6)</li>
+                            <li>• subsample: Stochastic sampling (0.8)</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">🏆 When to Use</h3>
+                        <ul style="margin: 0;">
+                            <li>• Need maximum predictive accuracy</li>
+                            <li>• Structured/tabular data problems</li>
+                            <li>• Kaggle competitions and challenges</li>
+                            <li>• Have time for hyperparameter tuning</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">💡 Best Practices</h3>
+                        <ul style="margin: 0;">
+                            <li>• Start with XGBoost or LightGBM</li>
+                            <li>• Use early stopping for efficiency</li>
+                            <li>• Keep trees shallow (max_depth 3-6)</li>
+                            <li>• Monitor train vs validation scores</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 12px; color: white; margin: 2rem 0;">
+                    <h3 style="color: white; margin-top: 0;">📚 Quick Reference: Boosting Algorithm</h3>
+                    <div style="font-family: monospace; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 6px; line-height: 1.8;">
+                        <strong>Step 1:</strong> Initialize F₀(x) = mean(y)<br>
+                        <strong>Step 2:</strong> For m = 1 to M:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Compute residuals: rᵢ = yᵢ - F_{m-1}(xᵢ)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Fit tree hₘ to predict residuals<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;• Update: F_m(x) = F_{m-1}(x) + η·hₘ(x)<br>
+                        <strong>Step 3:</strong> Final prediction: F(x) = F₀(x) + Σ(η·hₘ(x))
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.95rem;">
+                        Where η is learning rate, hₘ are decision trees, and residuals are negative gradients of loss
+                    </p>
+                </div>
+
+                <h3>🔑 Key Takeaways</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Sequential Learning:</strong> Unlike Random Forests (parallel), Gradient Boosting trains trees one-by-one, each correcting previous errors</li>
+                    <li>✅ <strong>Gradient Descent Analogy:</strong> Each tree is a functional gradient step toward minimizing the loss function</li>
+                    <li>✅ <strong>Learning Rate Trade-off:</strong> Lower rates (0.01) need more trees but generalize better; higher rates (0.3) train fast but risk overfitting</li>
+                    <li>✅ <strong>Weak Learners Strength:</strong> Shallow trees (depth 3-6) work best—boosting combines many simple models into one powerful ensemble</li>
+                    <li>✅ <strong>Library Ecosystem:</strong> Scikit-learn for learning, XGBoost for production, LightGBM for speed, CatBoost for categorical data</li>
+                    <li>✅ <strong>Regularization Techniques:</strong> Use subsample < 1.0, max_features < all, early stopping, and L1/L2 penalties to prevent overfitting</li>
+                    <li>✅ <strong>Feature Importance:</strong> Gradient Boosting naturally ranks features by their contribution to splits across all trees</li>
+                    <li>✅ <strong>Competition Dominance:</strong> Wins 80%+ of Kaggle competitions on structured data—the go-to algorithm for maximum accuracy</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🎓 You've Completed All 7 Core Modules!</h2>
+                
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 2rem; border-radius: 12px; color: white; text-align: center; margin: 2rem 0;">
+                    <h3 style="color: white; font-size: 1.8rem; margin-bottom: 1rem;">🏆 Congratulations, ML Graduate!</h3>
+                    <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">
+                        You've completed a comprehensive journey through machine learning fundamentals
+                    </p>
+                </div>
+
+                <h3>📚 Your Complete Learning Path</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>✅ Tutorial 1: Introduction to ML</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Supervised vs unsupervised, training/test splits, model evaluation metrics</p>
+                    </div>
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>✅ Tutorial 2: Linear Regression</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Gradient descent, MSE optimization, feature scaling, polynomial features</p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>✅ Tutorial 3: Logistic Regression</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Sigmoid function, log loss, binary classification, decision boundaries</p>
+                    </div>
+                    <div style="background: #fecaca; padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <strong>✅ Tutorial 4: Decision Trees</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">CART algorithm, Gini impurity, entropy, pruning strategies</p>
+                    </div>
+                    <div style="background: #e9d5ff; padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <strong>✅ Tutorial 5: Random Forests</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Bootstrap aggregating, feature randomness, OOB error, ensemble voting</p>
+                    </div>
+                    <div style="background: #ddd6fe; padding: 1rem; border-radius: 8px; border-left: 4px solid #7c3aed;">
+                        <strong>✅ Tutorial 6: Support Vector Machines</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Maximum margin, kernel trick, RBF/linear kernels, support vectors</p>
+                    </div>
+                    <div style="background: #fce7f3; padding: 1rem; border-radius: 8px; border-left: 4px solid #ec4899;">
+                        <strong>✅ Tutorial 7: Gradient Boosting</strong>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">Sequential ensembles, gradient descent, XGBoost/LightGBM, hyperparameter tuning</p>
+                    </div>
+                </div>
+
+                <div class="success-box" style="margin: 2rem 0;">
+                    <p style="font-size: 1.1rem;">🎉 <strong>Amazing Achievement!</strong> You've mastered regression, classification, tree-based methods, SVMs, and ensemble techniques. You now have the foundational knowledge to tackle real-world machine learning problems and compete on Kaggle!</p>
+                </div>
+
+                <h3>🚀 What You Can Build Now</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: white; border: 2px solid #078930; padding: 1rem; border-radius: 8px;">
+                        <strong>📊 Predictive Models</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>House price prediction</li>
+                            <li>Stock market forecasting</li>
+                            <li>Customer lifetime value</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; border: 2px solid #10b981; padding: 1rem; border-radius: 8px;">
+                        <strong>🎯 Classification Systems</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Spam detection</li>
+                            <li>Medical diagnosis</li>
+                            <li>Credit risk assessment</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; border: 2px solid #f59e0b; padding: 1rem; border-radius: 8px;">
+                        <strong>🤖 Intelligent Applications</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Recommendation engines</li>
+                            <li>Churn prediction</li>
+                            <li>Fraud detection</li>
+                        </ul>
+                    </div>
+                    <div style="background: white; border: 2px solid #8b5cf6; padding: 1rem; border-radius: 8px;">
+                        <strong>🏆 Kaggle Competitions</strong>
+                        <ul style="margin: 0.5rem 0 0 1.5rem; font-size: 0.9rem;">
+                            <li>Structured data challenges</li>
+                            <li>Feature engineering</li>
+                            <li>Ensemble stacking</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>🔮 Continue Your ML Journey</h3>
+                <p style="font-size: 1.1rem; line-height: 1.7;">
+                    With these 7 algorithms mastered, you're ready to explore advanced topics:
+                </p>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li><strong>🧠 Deep Learning:</strong> Neural networks, CNNs, transformers, computer vision, and NLP</li>
+                    <li><strong>📈 Advanced ML:</strong> Time series forecasting, anomaly detection, reinforcement learning</li>
+                    <li><strong>🚀 Production ML:</strong> Model deployment (Flask, FastAPI), Docker, AWS SageMaker, MLOps</li>
+                    <li><strong>🏗️ Feature Engineering:</strong> Domain expertise, interaction features, dimensionality reduction</li>
+                    <li><strong>🎯 Specialized Domains:</strong> Computer vision, natural language processing, recommendation systems</li>
+                </ul>
+
+                <div class="info-box">
+                    <h3 style="margin-top: 0;">💡 Next Steps Recommendation</h3>
+                    <ol style="margin: 0.5rem 0 0 1.5rem; line-height: 1.8;">
+                        <li><strong>Practice:</strong> Complete 3-5 Kaggle competitions using these algorithms</li>
+                        <li><strong>Build:</strong> Create a portfolio project showcasing ensemble methods</li>
+                        <li><strong>Learn:</strong> Explore our Deep Learning course for neural networks</li>
+                        <li><strong>Deploy:</strong> Put a model in production with Flask or FastAPI</li>
+                        <li><strong>Share:</strong> Write a blog post explaining your ML project journey</li>
+                    </ol>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); padding: 2rem; border-radius: 12px; color: white; text-align: center; margin: 2rem 0;">
+                    <p style="font-size: 1.3rem; margin: 0;">
+                        🎓 <strong>You're now a Machine Learning practitioner!</strong><br>
+                        <span style="font-size: 1rem; color: rgba(255,255,255,0.9);">Claim your certificate below and share your achievement with the world</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Gradient Boosting!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is the key idea behind gradient boosting?</h4>
+                        <div class="quiz-option" data-value="A">A) Train many trees in parallel</div>
+                        <div class="quiz-option" data-value="B">B) Sequentially train trees to correct previous errors</div>
+                        <div class="quiz-option" data-value="C">C) Use only one very deep tree</div>
+                        <div class="quiz-option" data-value="D">D) Average predictions from random trees</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What does each new tree in gradient boosting learn to predict?</h4>
+                        <div class="quiz-option" data-value="A">A) The original target values</div>
+                        <div class="quiz-option" data-value="B">B) Random noise</div>
+                        <div class="quiz-option" data-value="C">C) The residual errors (mistakes) of previous trees</div>
+                        <div class="quiz-option" data-value="D">D) The feature importances</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is the learning_rate hyperparameter?</h4>
+                        <div class="quiz-option" data-value="A">A) Controls how much each tree contributes to final prediction</div>
+                        <div class="quiz-option" data-value="B">B) Number of trees to build</div>
+                        <div class="quiz-option" data-value="C">C) Maximum depth of trees</div>
+                        <div class="quiz-option" data-value="D">D) Size of training batches</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What are two popular gradient boosting libraries?</h4>
+                        <div class="quiz-option" data-value="A">A) NumPy and Pandas</div>
+                        <div class="quiz-option" data-value="B">B) TensorFlow and PyTorch</div>
+                        <div class="quiz-option" data-value="C">C) Scikit-learn and Keras</div>
+                        <div class="quiz-option" data-value="D">D) XGBoost and LightGBM</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. How does gradient boosting differ from Random Forests?</h4>
+                        <div class="quiz-option" data-value="A">A) Uses different tree algorithms</div>
+                        <div class="quiz-option" data-value="B">B) Trains trees sequentially vs. independently</div>
+                        <div class="quiz-option" data-value="C">C) Cannot handle classification</div>
+                        <div class="quiz-option" data-value="D">D) Doesn't use decision trees</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Certificate Request Section -->
+            <link rel="stylesheet" href="../../certificates/certificate.css">
+            <section class="certificate-section">
+                <div class="certificate-icon">🎓</div>
+                <h2>Get Your Completion Certificate</h2>
+                <p class="subtitle">Showcase your Machine Learning expertise!</p>
+                
+                <div class="certificate-benefits">
+                    <h4>📜 Your certificate includes:</h4>
+                    <ul>
+                        <li>✅ Official completion verification</li>
+                        <li>✅ Unique certificate ID</li>
+                        <li>✅ Shareable on LinkedIn, Twitter, and resume</li>
+                        <li>✅ Public verification page</li>
+                        <li>✅ Professional PDF download</li>
+                    </ul>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="Machine Learning">
+                    <div class="form-group">
+                        <label for="cert-name-ml">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-ml"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-ml">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-ml"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="support-vector-machines.html" class="btn btn-secondary">← Previous: Support Vector Machines</a>
+                <a href="../../courses/machine-learning.html" class="btn btn-primary">Back to Machine Learning Course →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../certificates/certificate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a real-time prediction system with Kubernetes autoscaling, Redis caching, load balancing, and Grafana monitoring for high-performance ML inference.">
+    <meta name="keywords" content="real-time ML, Kubernetes, Redis cache, autoscaling, MLOps project, model serving, load balancing">
+    <title>Project: Real-Time Prediction System - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-real-time-prediction-system.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { padding-left: 2rem; position: relative; margin-bottom: 0.75rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.2rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: #8b5cf6; color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Project 2: Real-Time Prediction System</span>
+            </div>
+            <h1>⚡ Project: Real-Time Prediction System</h1>
+            <p class="tutorial-intro">Deploy high-performance ML inference with Kubernetes autoscaling, Redis caching, load balancing, and Grafana monitoring</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Project 2</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 2-3 hours</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Project Overview -->
+            <section class="content-section" id="overview">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Build a production-grade <strong>real-time prediction system</strong> that handles high traffic with low latency:
+                </p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>Kubernetes Deployment</h3>
+                        <p>Scalable container orchestration</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Horizontal Autoscaling</h3>
+                        <p>Auto-scale based on CPU and custom metrics</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Redis Caching</h3>
+                        <p>Cache predictions for repeated requests</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>Load Balancing</h3>
+                        <p>Distribute traffic across replicas</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Grafana Dashboard</h3>
+                        <p>Real-time latency and throughput monitoring</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Health Checks</h3>
+                        <p>Liveness and readiness probes</p>
+                    </div>
+                </div>
+
+                <h3>Architecture</h3>
+                <pre><code>User Request → Ingress/Load Balancer
+                ↓
+     K8s Service (ClusterIP)
+                ↓
+     ┌──────────┴──────────┐
+     ↓                     ↓
+API Pod 1            API Pod 2 (HPA managed)
+     ↓                     ↓
+   Redis Cache (check)
+     ↓
+   ML Model (predict if cache miss)
+     ↓
+   Prometheus (metrics)
+     ↓
+   Grafana (visualization)</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Prerequisites:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Kubernetes cluster (Minikube/Docker Desktop/Cloud)</li>
+                        <li>kubectl installed and configured</li>
+                        <li>Docker for building images</li>
+                        <li>Trained model from Project 1</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 1: Enhanced API with Redis -->
+            <section class="content-section" id="api-redis">
+                <h2>⚡ Step 1: API with Redis Caching</h2>
+                
+                <pre><code class="language-python"># app.py
+"""
+FastAPI app with Redis caching for real-time predictions
+"""
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from prometheus_client import Counter, Histogram, Gauge, generate_latest
+from fastapi.responses import Response
+import redis
+import joblib
+import numpy as np
+import json
+import time
+import hashlib
+
+app = FastAPI(title="Real-Time Prediction API")
+
+# Load model
+model = joblib.load('model.pkl')
+scaler = joblib.load('scaler.pkl')
+
+# Redis connection
+redis_client = redis.Redis(
+    host='redis-service',
+    port=6379,
+    decode_responses=True
+)
+
+# Prometheus metrics
+predictions_total = Counter('predictions_total', 'Total predictions', ['cache_status'])
+prediction_latency = Histogram('prediction_latency_seconds', 'Prediction latency')
+cache_hit_rate = Gauge('cache_hit_rate', 'Cache hit rate')
+active_requests = Gauge('active_requests', 'Active requests')
+
+# Cache stats
+cache_hits = 0
+cache_total = 0
+
+class Features(BaseModel):
+    MedInc: float
+    HouseAge: float
+    AveRooms: float
+    AveBedrms: float
+    Population: float
+    AveOccup: float
+    Latitude: float
+    Longitude: float
+
+def get_cache_key(features: Features):
+    """Generate cache key from features"""
+    feature_str = json.dumps(features.dict(), sort_keys=True)
+    return hashlib.md5(feature_str.encode()).hexdigest()
+
+@app.get("/health")
+async def health():
+    """Health check endpoint"""
+    try:
+        redis_client.ping()
+        return {"status": "healthy", "redis": "connected"}
+    except:
+        return {"status": "degraded", "redis": "disconnected"}
+
+@app.get("/ready")
+async def ready():
+    """Readiness probe"""
+    return {"status": "ready"}
+
+@app.post("/predict")
+async def predict(features: Features):
+    """Real-time prediction with caching"""
+    global cache_hits, cache_total
+    
+    start_time = time.time()
+    active_requests.inc()
+    cache_total += 1
+    
+    try:
+        # Check cache
+        cache_key = get_cache_key(features)
+        cached = redis_client.get(cache_key)
+        
+        if cached:
+            # Cache hit
+            cache_hits += 1
+            predictions_total.labels(cache_status='hit').inc()
+            cache_hit_rate.set(cache_hits / cache_total)
+            
+            result = json.loads(cached)
+            result['cached'] = True
+        else:
+            # Cache miss - make prediction
+            feature_array = np.array([[
+                features.MedInc, features.HouseAge, features.AveRooms,
+                features.AveBedrms, features.Population, features.AveOccup,
+                features.Latitude, features.Longitude
+            ]])
+            
+            features_scaled = scaler.transform(feature_array)
+            prediction = float(model.predict(features_scaled)[0])
+            
+            result = {"prediction": prediction, "cached": False}
+            
+            # Store in cache (expire after 1 hour)
+            redis_client.setex(
+                cache_key,
+                3600,
+                json.dumps({"prediction": prediction})
+            )
+            
+            predictions_total.labels(cache_status='miss').inc()
+            cache_hit_rate.set(cache_hits / cache_total)
+        
+        # Record latency
+        latency = time.time() - start_time
+        prediction_latency.observe(latency)
+        
+        return result
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        active_requests.dec()
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus metrics"""
+    return Response(content=generate_latest(), media_type="text/plain")
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)</code></pre>
+
+                <h3>Dockerfile</h3>
+                <pre><code class="language-dockerfile">FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN pip install fastapi uvicorn redis prometheus-client \
+    scikit-learn joblib numpy pydantic
+
+# Copy files
+COPY app.py model.pkl scaler.pkl ./
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD python -c "import requests; requests.get('http://localhost:8000/health')"
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+            </section>
+
+            <!-- Step 2: Kubernetes Deployment -->
+            <section class="content-section" id="k8s-deployment">
+                <h2>☸️ Step 2: Kubernetes Deployment</h2>
+                
+                <h3>Redis Deployment</h3>
+                <pre><code class="language-yaml"># k8s/redis-deployment.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"</code></pre>
+
+                <h3>API Deployment with HPA</h3>
+                <pre><code class="language-yaml"># k8s/api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-api
+spec:
+  replicas: 2  # Initial replicas
+  selector:
+    matchLabels:
+      app: ml-api
+  template:
+    metadata:
+      labels:
+        app: ml-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: api
+        image: ml-api:latest
+        imagePullPolicy: Never  # For local testing
+        ports:
+        - containerPort: 8000
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-api-service
+spec:
+  selector:
+    app: ml-api
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: LoadBalancer  # Use ClusterIP for production with Ingress
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60</code></pre>
+            </section>
+
+            <!-- Step 3: Monitoring Stack -->
+            <section class="content-section" id="monitoring">
+                <h2>📊 Step 3: Monitoring with Prometheus & Grafana</h2>
+                
+                <h3>Prometheus ConfigMap</h3>
+                <pre><code class="language-yaml"># k8s/prometheus-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    
+    scrape_configs:
+      - job_name: 'ml-api'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__</code></pre>
+
+                <h3>Deploy Monitoring Stack</h3>
+                <pre><code class="language-bash"># Deploy all components
+kubectl apply -f k8s/redis-deployment.yaml
+kubectl apply -f k8s/api-deployment.yaml
+kubectl apply -f k8s/prometheus-config.yaml
+
+# Install Prometheus using Helm
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/prometheus \
+  --set server.configMapOverrideName=prometheus-config
+
+# Install Grafana
+helm repo add grafana https://grafana.github.io/helm-charts
+helm install grafana grafana/grafana \
+  --set adminPassword=admin
+
+# Get Grafana password
+kubectl get secret grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+
+# Port forward to access services
+kubectl port-forward svc/ml-api-service 8000:80 &
+kubectl port-forward svc/prometheus-server 9090:80 &
+kubectl port-forward svc/grafana 3000:80 &</code></pre>
+            </section>
+
+            <!-- Step 4: Load Testing -->
+            <section class="content-section" id="load-testing">
+                <h2>🔥 Step 4: Load Testing & Autoscaling</h2>
+                
+                <pre><code class="language-python"># load_test.py
+"""
+Load testing script to trigger autoscaling
+"""
+import requests
+import concurrent.futures
+import time
+import random
+
+API_URL = "http://localhost:8000/predict"
+
+def make_prediction():
+    """Make single prediction"""
+    payload = {
+        "MedInc": random.uniform(1, 15),
+        "HouseAge": random.uniform(1, 50),
+        "AveRooms": random.uniform(3, 10),
+        "AveBedrms": random.uniform(1, 3),
+        "Population": random.uniform(100, 3000),
+        "AveOccup": random.uniform(1, 6),
+        "Latitude": random.uniform(32, 42),
+        "Longitude": random.uniform(-125, -114)
+    }
+    
+    start = time.time()
+    try:
+        response = requests.post(API_URL, json=payload, timeout=5)
+        latency = time.time() - start
+        return {'status': response.status_code, 'latency': latency}
+    except Exception as e:
+        return {'status': 'error', 'error': str(e)}
+
+def run_load_test(num_requests=1000, workers=50):
+    """Run load test"""
+    print(f"🔥 Starting load test: {num_requests} requests with {workers} workers\n")
+    
+    start_time = time.time()
+    results = []
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(make_prediction) for _ in range(num_requests)]
+        
+        for i, future in enumerate(concurrent.futures.as_completed(futures)):
+            result = future.result()
+            results.append(result)
+            
+            if (i + 1) % 100 == 0:
+                print(f"Progress: {i + 1}/{num_requests}")
+    
+    duration = time.time() - start_time
+    
+    # Calculate metrics
+    latencies = [r['latency'] for r in results if 'latency' in r]
+    successes = sum(1 for r in results if r.get('status') == 200)
+    
+    print(f"\n📊 Load Test Results:")
+    print(f"  Total requests: {num_requests}")
+    print(f"  Successful: {successes} ({successes/num_requests*100:.1f}%)")
+    print(f"  Duration: {duration:.2f}s")
+    print(f"  Throughput: {num_requests/duration:.2f} req/s")
+    print(f"  Avg latency: {sum(latencies)/len(latencies):.3f}s")
+    print(f"  P95 latency: {sorted(latencies)[int(len(latencies)*0.95)]:.3f}s")
+    print(f"  P99 latency: {sorted(latencies)[int(len(latencies)*0.99)]:.3f}s")
+
+if __name__ == '__main__':
+    # Run sustained load to trigger autoscaling
+    for round in range(3):
+        print(f"\n=== Round {round + 1} ===")
+        run_load_test(num_requests=500, workers=100)
+        time.sleep(10)
+    
+    # Check HPA status
+    print("\n📈 Check autoscaling:")
+    print("kubectl get hpa ml-api-hpa")
+    print("kubectl get pods -l app=ml-api")</code></pre>
+
+                <h3>Watch Autoscaling</h3>
+                <pre><code class="language-bash"># Terminal 1: Run load test
+python load_test.py
+
+# Terminal 2: Watch HPA
+kubectl get hpa ml-api-hpa --watch
+
+# Terminal 3: Watch pods
+kubectl get pods -l app=ml-api --watch
+
+# Check cache hit rate
+curl http://localhost:8000/metrics | grep cache_hit_rate</code></pre>
+            </section>
+
+            <!-- Step 5: Grafana Dashboard -->
+            <section class="content-section" id="dashboard">
+                <h2>📈 Step 5: Create Grafana Dashboard</h2>
+                
+                <h3>Dashboard JSON</h3>
+                <pre><code class="language-json">{
+  "dashboard": {
+    "title": "ML API Performance",
+    "panels": [
+      {
+        "title": "Requests Per Second",
+        "targets": [{
+          "expr": "rate(predictions_total[1m])"
+        }],
+        "type": "graph"
+      },
+      {
+        "title": "P95 Latency",
+        "targets": [{
+          "expr": "histogram_quantile(0.95, rate(prediction_latency_seconds_bucket[5m]))"
+        }],
+        "type": "graph"
+      },
+      {
+        "title": "Cache Hit Rate",
+        "targets": [{
+          "expr": "cache_hit_rate"
+        }],
+        "type": "gauge"
+      },
+      {
+        "title": "Active Pods",
+        "targets": [{
+          "expr": "count(up{job='ml-api'})"
+        }],
+        "type": "stat"
+      },
+      {
+        "title": "CPU Usage",
+        "targets": [{
+          "expr": "rate(container_cpu_usage_seconds_total{pod=~'ml-api.*'}[5m])"
+        }],
+        "type": "graph"
+      },
+      {
+        "title": "Memory Usage",
+        "targets": [{
+          "expr": "container_memory_usage_bytes{pod=~'ml-api.*'}"
+        }],
+        "type": "graph"
+      }
+    ]
+  }
+}</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Import Dashboard:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Access Grafana: http://localhost:3000</li>
+                        <li>Login: admin / (password from kubectl command)</li>
+                        <li>Add Prometheus data source: http://prometheus-server</li>
+                        <li>Import dashboard JSON or create panels manually</li>
+                        <li>Monitor latency, throughput, cache hit rate, autoscaling</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Project Completion Checklist</h2>
+                
+                <ul class="checklist">
+                    <li>✅ FastAPI with Redis caching implemented</li>
+                    <li>✅ Kubernetes deployment with multiple replicas</li>
+                    <li>✅ Horizontal Pod Autoscaler configured</li>
+                    <li>✅ Health checks (liveness & readiness probes)</li>
+                    <li>✅ Prometheus metrics exposed</li>
+                    <li>✅ Grafana dashboard created</li>
+                    <li>✅ Load testing demonstrates autoscaling</li>
+                    <li>✅ Cache hit rate monitored</li>
+                    <li>✅ P95/P99 latency under 100ms with cache</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations!</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've built a production-grade real-time prediction system! This demonstrates scalability, caching, monitoring, and autoscaling - critical for high-traffic ML services.
+                    </p>
+                </div>
+
+                <h3>Performance Targets Achieved</h3>
+                <ul>
+                    <li><strong>Latency:</strong> P95 < 100ms (with cache), P95 < 500ms (without cache)</li>
+                    <li><strong>Throughput:</strong> 1000+ req/s with autoscaling</li>
+                    <li><strong>Cache Hit Rate:</strong> 80%+ for repeated requests</li>
+                    <li><strong>Availability:</strong> 99.9% with health checks and autoscaling</li>
+                    <li><strong>Scalability:</strong> Auto-scale from 2 to 10 pods based on load</li>
+                </ul>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="project-end-to-end-ml-pipeline.html">← Previous: Project 1</a>
+                <a href="project-model-monitoring-drift-detection.html">Next: Project 3 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

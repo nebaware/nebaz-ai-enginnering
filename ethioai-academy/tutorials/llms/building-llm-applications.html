@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build production LLM applications. Learn to create chatbots, agents, pipelines, and integrate with APIs. Deploy systems at scale.">
+    <meta name="keywords" content="LLM applications, chatbots, agents, LangChain, production LLM, API integration">
+    <title>Building LLM Applications - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="building-llm-applications.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Building LLM Applications</span>
+            </div>
+            <h1>Building LLM Applications</h1>
+            <p class="tutorial-intro">Build production-ready LLM systems. Create chatbots, agents, and deploy to scale</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 7</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free LLMs & Transformers Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 From Model to Product</h2>
+                <p>
+                    You've learned how LLMs work, how to fine-tune them, and optimize inference. Now comes the hardest part: <strong>building production systems</strong> that real users rely on.
+                </p>
+                <p>
+                    A model in isolation isn't useful. You need to build systems around it: APIs, error handling, monitoring, user interfaces, cost management, and safety guardrails.
+                </p>
+
+                <div class="info-box">
+                    <h3>💡 The 10/90 Rule</h3>
+                    <p>
+                        Building the model is <strong>10% of the work</strong>. The other <strong>90% is engineering</strong>: integration, reliability, monitoring, user experience, cost optimization, and handling edge cases.
+                    </p>
+                </div>
+
+                <h3>📊 Production Reality Check</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Challenge</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Development</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Production</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Latency</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">3-5 seconds is fine</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #dc2626;">Users leave after 2s</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Cost</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">$0.01 per request</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #dc2626;">$1,000/day at 100k users</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Errors</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Restart script</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #dc2626;">Must handle gracefully</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Scale</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">1 request at a time</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #dc2626;">1,000 concurrent requests</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Safety</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Trusted input</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; color: #dc2626;">Adversarial attacks</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🏗️ Application Architecture Layers</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎨</div>
+                        <h3>1. User Interface</h3>
+                        <p>Web UI, mobile app, Slack bot, API client. How users interact with your LLM.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔌</div>
+                        <h3>2. API Layer</h3>
+                        <p>FastAPI/Flask server. Input validation, rate limiting, auth, request routing.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>3. LLM Logic</h3>
+                        <p>Prompt construction, RAG retrieval, agent tools, conversation management.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>4. Model Serving</h3>
+                        <p>vLLM/TensorRT-LLM. Efficient inference, batching, caching, quantization.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💾</div>
+                        <h3>5. Data Layer</h3>
+                        <p>PostgreSQL for conversations, Redis for caching, vector DB for RAG.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>6. Monitoring</h3>
+                        <p>Logging, metrics, alerts. Track latency, costs, quality, errors.</p>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Real Example: Customer Support Bot</h3>
+                    <p><strong>Frontend:</strong> React chat widget</p>
+                    <p><strong>API:</strong> FastAPI with auth + rate limiting</p>
+                    <p><strong>Logic:</strong> RAG (retrieve docs) + Agent (create tickets)</p>
+                    <p><strong>Model:</strong> GPT-4-turbo (for complex queries) + GPT-3.5 (for simple ones)</p>
+                    <p><strong>Storage:</strong> PostgreSQL (tickets) + Pinecone (docs)</p>
+                    <p><strong>Monitoring:</strong> Datadog for metrics, Sentry for errors</p>
+                    <p><strong>Cost:</strong> $0.015/conversation, handles 10k conversations/day = $150/day</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🤖 Types of LLM Applications</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">💬</div>
+                        <h3>Chatbots</h3>
+                        <p>Conversational interface. Remember context, handle multi-turn conversations.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🤝</div>
+                        <h3>Agents</h3>
+                        <p>Autonomous systems that use tools (APIs, databases) to solve tasks.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚙️</div>
+                        <h3>Pipelines</h3>
+                        <p>Chain multiple LLM calls and tools for complex tasks.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📱</div>
+                        <h3>Content Apps</h3>
+                        <p>Generate text: summarization, translation, writing assistance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💬 Building Production Chatbots</h2>
+                
+                <p>
+                    Chatbots are the most common LLM application. They seem simple but have hidden complexity: memory management, context windows, latency optimization, and safety.
+                </p>
+
+                <h3>🏗️ Chatbot Architecture</h3>
+                <ol>
+                    <li><strong>UI:</strong> Chat interface (web, mobile, Slack, Discord, Teams)</li>
+                    <li><strong>API:</strong> Backend endpoint for processing messages</li>
+                    <li><strong>Memory:</strong> Store and retrieve conversation history</li>
+                    <li><strong>LLM:</strong> Generate contextual responses</li>
+                    <li><strong>Tools/RAG:</strong> Retrieve data, call APIs, take actions</li>
+                    <li><strong>Safety:</strong> Content moderation, input validation</li>
+                </ol>
+
+                <h3>💾 Memory Strategies</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Buffer Memory</h3>
+                        <p><strong>Store:</strong> Last N messages<br>
+                        <strong>Use:</strong> Short conversations<br>
+                        <strong>Cost:</strong> Low</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Summary Memory</h3>
+                        <p><strong>Store:</strong> Summary + recent messages<br>
+                        <strong>Use:</strong> Long conversations<br>
+                        <strong>Cost:</strong> Medium (summarization)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Vector Memory</h3>
+                        <p><strong>Store:</strong> Embeddings of messages<br>
+                        <strong>Use:</strong> Retrieve relevant context<br>
+                        <strong>Cost:</strong> High (embeddings + search)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Entity Memory</h3>
+                        <p><strong>Store:</strong> Extract key facts<br>
+                        <strong>Use:</strong> Remember user preferences<br>
+                        <strong>Cost:</strong> Medium (extraction)</p>
+                    </div>
+                </div>
+
+                <h3>🚀 Production Chatbot Implementation</h3>
+                <pre><code class="language-python">from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationSummaryBufferMemory
+from langchain.chains import ConversationChain
+from langchain.callbacks import get_openai_callback
+import redis
+import json
+
+app = FastAPI()
+llm = ChatOpenAI(model="gpt-4-turbo-preview", temperature=0.7)
+
+# Redis for conversation storage
+redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+class Message(BaseModel):
+    text: str
+    conversation_id: str
+    user_id: str
+
+def get_conversation_memory(conversation_id: str):
+    """Retrieve or create conversation memory"""
+    history = redis_client.get(f"conversation:{conversation_id}")
+    
+    memory = ConversationSummaryBufferMemory(
+        llm=llm,
+        max_token_limit=2000,  # Keep recent context under 2k tokens
+        return_messages=True
+    )
+    
+    if history:
+        # Load previous messages
+        messages = json.loads(history)
+        for msg in messages:
+            if msg['role'] == 'user':
+                memory.chat_memory.add_user_message(msg['content'])
+            else:
+                memory.chat_memory.add_ai_message(msg['content'])
+    
+    return memory
+
+def save_conversation(conversation_id: str, user_msg: str, ai_msg: str):
+    """Save conversation to Redis with 24hr expiration"""
+    history = redis_client.get(f"conversation:{conversation_id}")
+    messages = json.loads(history) if history else []
+    
+    messages.append({"role": "user", "content": user_msg})
+    messages.append({"role": "assistant", "content": ai_msg})
+    
+    # Keep only last 50 messages to prevent memory explosion
+    messages = messages[-50:]
+    
+    redis_client.setex(
+        f"conversation:{conversation_id}",
+        86400,  # 24 hours
+        json.dumps(messages)
+    )
+
+@app.post("/chat")
+async def chat(message: Message):
+    """Main chat endpoint with error handling and monitoring"""
+    try:
+        # Get conversation memory
+        memory = get_conversation_memory(message.conversation_id)
+        
+        # Create conversation chain
+        conversation = ConversationChain(
+            llm=llm,
+            memory=memory,
+            verbose=True
+        )
+        
+        # Generate response with cost tracking
+        with get_openai_callback() as cb:
+            response = conversation.run(message.text)
+            
+            # Log metrics
+            print(f"Tokens used: {cb.total_tokens}, Cost: ${cb.total_cost:.4f}")
+        
+        # Save to database
+        save_conversation(message.conversation_id, message.text, response)
+        
+        return {
+            "response": response,
+            "conversation_id": message.conversation_id,
+            "tokens_used": cb.total_tokens,
+            "cost": cb.total_cost
+        }
+        
+    except Exception as e:
+        print(f"Error in chat endpoint: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate response")
+
+# Run: uvicorn app:app --host 0.0.0.0 --port 8000</code></pre>
+
+                <h3>⚡ Context Window Management</h3>
+                <pre><code class="language-python"># Handle long conversations that exceed context window
+from langchain.memory import ConversationSummaryBufferMemory
+
+# Strategy 1: Sliding window (keep last N messages)
+memory = ConversationBufferWindowMemory(k=10)  # Last 10 messages
+
+# Strategy 2: Summarization (summarize old messages)
+memory = ConversationSummaryBufferMemory(
+    llm=llm,
+    max_token_limit=2000  # When history exceeds 2k tokens, summarize oldest
+)
+
+# Strategy 3: Token counting (precise control)
+from langchain.memory import ConversationTokenBufferMemory
+
+memory = ConversationTokenBufferMemory(
+    llm=llm,
+    max_token_limit=4000  # Exactly 4k tokens max
+)
+
+# Strategy 4: Hybrid (summary + recent messages + vector search)
+from langchain.memory import VectorStoreRetrieverMemory
+from langchain.vectorstores import FAISS
+
+# Recent messages
+recent_memory = ConversationBufferWindowMemory(k=5)
+
+# Semantic search over full history
+vector_memory = VectorStoreRetrieverMemory(
+    retriever=FAISS.from_texts(conversation_history).as_retriever(k=3)
+)
+
+# Combine: recent context + semantically relevant past messages</code></pre>
+
+                <h3>🎯 Advanced Features</h3>
+                <pre><code class="language-python"># 1. User-specific system prompts
+user_context = get_user_profile(user_id)  # Get preferences, history, etc.
+
+system_prompt = f"""
+You are a helpful assistant for {user_context['name']}.
+User preferences: {user_context['preferences']}
+Conversation style: {user_context['style']}
+"""
+
+# 2. Streaming responses (for better UX)
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+
+llm = ChatOpenAI(
+    streaming=True,
+    callbacks=[StreamingStdOutCallbackHandler()]
+)
+
+# 3. Multi-turn planning (for complex tasks)
+from langchain.chains import LLMChain
+
+# First: understand intent
+intent_chain = LLMChain(llm=llm, prompt=intent_prompt)
+intent = intent_chain.run(user_message)
+
+# Second: route to appropriate handler
+if intent == "question":
+    response = rag_qa_chain.run(user_message)
+elif intent == "task":
+    response = agent.run(user_message)
+else:
+    response = general_conversation.run(user_message)</code></pre>
+
+                <h3>⚠️ Common Pitfalls</h3>
+                <div class="warning-box">
+                    <p><strong>1. Context Overflow:</strong> Don't concatenate unlimited messages. Use summarization or sliding windows.</p>
+                    <p><strong>2. Memory Leaks:</strong> Clean up old conversations. Set TTL (time-to-live) in Redis.</p>
+                    <p><strong>3. No Fallbacks:</strong> Always have error messages when LLM fails.</p>
+                    <p><strong>4. Ignoring Latency:</strong> Stream responses. Show "typing..." indicator.</p>
+                    <p><strong>5. Poor Safety:</strong> Filter harmful inputs. Moderate outputs.</p>
+                </div>
+
+                <h3>💰 Cost Optimization</h3>
+                <ul>
+                    <li><strong>Caching:</strong> Cache common responses ("What's your name?", "Hello")</li>
+                    <li><strong>Model routing:</strong> Use GPT-3.5 for simple, GPT-4 for complex</li>
+                    <li><strong>Token limits:</strong> Set max_tokens to prevent runaway costs</li>
+                    <li><strong>Rate limiting:</strong> Limit requests per user (10/minute)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🤝 Building Intelligent Agents</h2>
+                
+                <p>
+                    Agents are LLMs that can <strong>use tools autonomously</strong>. They reason about what actions to take, execute those actions using tools (APIs, databases, calculators), and iterate until the task is complete.
+                </p>
+                <p>
+                    Think of agents as LLMs with hands - they can interact with the world, not just generate text.
+                </p>
+
+                <h3>🔄 The ReAct Framework (Reasoning + Acting)</h3>
+                <ol style="line-height: 2;">
+                    <li><strong>Thought:</strong> "I need to find the current Tesla stock price"</li>
+                    <li><strong>Action:</strong> Use Search tool with query "Tesla stock price today"</li>
+                    <li><strong>Observation:</strong> "Tesla (TSLA) is trading at $242.50"</li>
+                    <li><strong>Thought:</strong> "Now I need to multiply by 1.1"</li>
+                    <li><strong>Action:</strong> Use Calculator tool with "242.50 * 1.1"</li>
+                    <li><strong>Observation:</strong> "266.75"</li>
+                    <li><strong>Thought:</strong> "I have the answer"</li>
+                    <li><strong>Answer:</strong> "If Tesla stock increases by 10%, it would be $266.75"</li>
+                </ol>
+
+                <div class="info-box">
+                    <h3>🧠 Why ReAct Works</h3>
+                    <p>
+                        By forcing the LLM to <strong>verbalize its reasoning</strong> before each action, we get better planning, easier debugging, and fewer hallucinations. The model "thinks out loud" like a human solving a problem.
+                    </p>
+                </div>
+
+                <h3>🛠️ Building Custom Tools</h3>
+                <pre><code class="language-python">from langchain.agents import Tool
+import requests
+import sqlite3
+
+# Tool 1: Web Search
+def web_search(query: str) -> str:
+    """Search the web using Tavily API"""
+    response = requests.post(
+        "https://api.tavily.com/search",
+        json={"query": query, "max_results": 3},
+        headers={"Authorization": f"Bearer {TAVILY_API_KEY}"}
+    )
+    results = response.json()["results"]
+    return "\n".join([f"{r['title']}: {r['snippet']}" for r in results])
+
+# Tool 2: Database Query
+def query_database(sql: str) -> str:
+    """Execute SQL query on customer database"""
+    conn = sqlite3.connect('customers.db')
+    cursor = conn.cursor()
+    
+    # Safety: only allow SELECT queries
+    if not sql.strip().upper().startswith('SELECT'):
+        return "Error: Only SELECT queries allowed"
+    
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        return str(results)
+    except Exception as e:
+        return f"Error: {e}"
+    finally:
+        conn.close()
+
+# Tool 3: Send Email
+def send_email(to: str, subject: str, body: str) -> str:
+    """Send email to customer"""
+    # Integrate with SendGrid, Mailgun, etc.
+    # For safety, require human approval for production
+    return f"Email queued for approval: To {to}, Subject: {subject}"
+
+# Tool 4: Calculator
+from math import *
+
+def calculator(expression: str) -> str:
+    """Evaluate mathematical expressions"""
+    try:
+        # Safety: use eval carefully, whitelist only math functions
+        result = eval(expression, {"__builtins__": {}}, {"sqrt": sqrt, "pow": pow})
+        return str(result)
+    except Exception as e:
+        return f"Error: {e}"
+
+# Define tools with clear descriptions (crucial for LLM to use correctly)
+tools = [
+    Tool(
+        name="Search",
+        func=web_search,
+        description="Search the web for current information. Use for facts, news, prices, etc. Input: search query as string"
+    ),
+    Tool(
+        name="DatabaseQuery",
+        func=query_database,
+        description="Query customer database using SQL. Use for customer info, orders, analytics. Input: SQL SELECT query"
+    ),
+    Tool(
+        name="SendEmail",
+        func=send_email,
+        description="Send email to customer. Requires to, subject, body. Input: 'to@email.com | Subject | Body text'"
+    ),
+    Tool(
+        name="Calculator",
+        func=calculator,
+        description="Evaluate math expressions. Use for calculations. Input: mathematical expression as string"
+    )
+]</code></pre>
+
+                <h3>🤖 Creating the Agent</h3>
+                <pre><code class="language-python">from langchain.agents import initialize_agent, AgentType
+from langchain.chat_models import ChatOpenAI
+from langchain.callbacks import get_openai_callback
+
+# Initialize LLM (GPT-4 works best for agents)
+llm = ChatOpenAI(model="gpt-4-turbo-preview", temperature=0)
+
+# Create agent with tools
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    verbose=True,  # See reasoning steps
+    max_iterations=10,  # Prevent infinite loops
+    max_execution_time=60,  # Timeout after 60 seconds
+    early_stopping_method="generate"  # Return partial answer on timeout
+)
+
+# Example 1: Multi-step query
+with get_openai_callback() as cb:
+    response = agent.run(
+        "Find the top 3 customers by order count and email them a thank you"
+    )
+    print(f"Cost: ${cb.total_cost:.4f}")
+
+# Agent reasoning:
+# Thought: Need to query database for top customers
+# Action: DatabaseQuery
+# Action Input: SELECT customer_email, COUNT(*) as orders FROM orders GROUP BY customer_email ORDER BY orders DESC LIMIT 3
+# Observation: [('alice@example.com', 45), ('bob@example.com', 38), ('charlie@example.com', 32)]
+# Thought: Now send thank you emails
+# Action: SendEmail (3 times)
+# Final Answer: Sent thank you emails to top 3 customers
+
+# Example 2: Real-time data + calculation
+response = agent.run(
+    "What's the market cap of Apple? Compare it to Microsoft."
+)
+
+# Agent reasoning:
+# Thought: Need current stock prices and share counts
+# Action: Search "Apple stock price market cap"
+# Observation: Apple market cap is $2.8 trillion
+# Action: Search "Microsoft stock price market cap"
+# Observation: Microsoft market cap is $3.1 trillion
+# Thought: Compare the two
+# Action: Calculator "3.1 / 2.8"
+# Observation: 1.107
+# Final Answer: Microsoft's market cap ($3.1T) is 1.11x larger than Apple's ($2.8T)</code></pre>
+
+                <h3>🔒 Agent Safety & Guardrails</h3>
+                <div class="warning-box">
+                    <p><strong>Agents are powerful but risky</strong>. They can call APIs, modify databases, send emails. Always implement safety measures.</p>
+                </div>
+
+                <pre><code class="language-python"># Guardrail 1: Human-in-the-loop for critical actions
+def send_email_with_approval(to: str, subject: str, body: str) -> str:
+    """Queue email for human approval"""
+    approval_needed.append({"to": to, "subject": subject, "body": body})
+    return "Email queued for approval. Will be reviewed by human."
+
+# Guardrail 2: Read-only tools
+def query_database_readonly(sql: str) -> str:
+    """Only allow SELECT queries"""
+    if not sql.strip().upper().startswith('SELECT'):
+        return "Error: Only SELECT queries allowed for safety"
+    # ... execute query
+
+# Guardrail 3: Cost limits
+class CostLimitAgent:
+    def __init__(self, max_cost=1.0):
+        self.total_cost = 0
+        self.max_cost = max_cost
+    
+    def run(self, query):
+        with get_openai_callback() as cb:
+            response = agent.run(query)
+            self.total_cost += cb.total_cost
+            
+            if self.total_cost > self.max_cost:
+                raise Exception(f"Cost limit exceeded: ${self.total_cost:.4f}")
+        
+        return response
+
+# Guardrail 4: Timeout and max iterations
+agent = initialize_agent(
+    tools,
+    llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    max_iterations=10,  # Stop after 10 tool calls
+    max_execution_time=60,  # Timeout after 60 seconds
+    early_stopping_method="generate"  # Return partial answer
+)
+
+# Guardrail 5: Input validation
+def validate_input(user_input: str) -> bool:
+    """Check for prompt injections and unsafe inputs"""
+    # Check for common injection patterns
+    dangerous_patterns = [
+        "ignore previous instructions",
+        "disregard all rules",
+        "system:",
+        "<|im_start|>"
+    ]
+    
+    for pattern in dangerous_patterns:
+        if pattern in user_input.lower():
+            return False
+    
+    return True
+
+if not validate_input(user_query):
+    return "Invalid input detected"</code></pre>
+
+                <h3>📊 Agent Performance Tips</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Clear Tool Descriptions</h3>
+                        <p>The more specific your tool descriptions, the better the agent knows when to use them. Bad: "search tool". Good: "Search web for current facts, news, stock prices".</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Use GPT-4</h3>
+                        <p>GPT-3.5 struggles with multi-step reasoning. GPT-4 is much better at planning and tool use. Worth the extra cost.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⏱️</div>
+                        <h3>Set Timeouts</h3>
+                        <p>Agents can get stuck in loops. Always set max_iterations and max_execution_time.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Log Everything</h3>
+                        <p>Save all agent reasoning steps. Essential for debugging and improving prompts.</p>
+                    </div>
+                </div>
+
+                <h3>🎉 Real-World Agent Examples</h3>
+                <ul>
+                    <li><strong>Customer Support:</strong> Look up orders, check inventory, process refunds</li>
+                    <li><strong>Data Analysis:</strong> Query databases, create visualizations, export reports</li>
+                    <li><strong>Research:</strong> Search papers, summarize findings, compare approaches</li>
+                    <li><strong>DevOps:</strong> Check server status, restart services, analyze logs</li>
+                    <li><strong>Sales:</strong> Look up leads, send emails, schedule meetings (CRM integration)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ Production Deployment & Scaling</h2>
+                
+                <p>
+                    Deploying an LLM application means making it <strong>fast, reliable, scalable, and cost-effective</strong>. This section covers Docker, Kubernetes, monitoring, and real-world deployment strategies.
+                </p>
+
+                <h3>🚀 Production-Ready FastAPI Server</h3>
+                <pre><code class="language-python">from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, validator
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+import logging
+import time
+from typing import Optional
+
+app = FastAPI(title="LLM Chat API", version="1.0.0")
+
+# Rate limiting (prevent abuse)
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://yourapp.com"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.on_event("startup")
+async def load_model():
+    global llm
+    logger.info("Loading LLM...")
+    llm = ChatOpenAI(model="gpt-4-turbo-preview")
+    logger.info("LLM loaded successfully")
+
+class ChatRequest(BaseModel):
+    text: str
+    conversation_id: Optional[str] = None
+    user_id: str
+    
+    @validator('text')
+    def validate_text(cls, v):
+        if len(v) > 5000:
+            raise ValueError('Message too long')
+        if not v.strip():
+            raise ValueError('Message cannot be empty')
+        return v
+
+# API key authentication
+async def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key not in valid_api_keys:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return x_api_key
+
+@app.post("/chat")
+@limiter.limit("10/minute")  # 10 requests per minute
+async def chat(
+    request: ChatRequest,
+    api_key: str = Depends(verify_api_key)
+):
+    start_time = time.time()
+    
+    try:
+        # Content moderation
+        if is_unsafe_content(request.text):
+            raise HTTPException(status_code=400, detail="Unsafe content")
+        
+        # Generate response
+        response = await generate_response(request.text)
+        
+        # Save to database
+        await save_message(request.conversation_id, request.text, response)
+        
+        latency = (time.time() - start_time) * 1000
+        
+        logger.info(f"Request completed: {latency:.2f}ms, {response['tokens']} tokens")
+        
+        return {
+            "response": response['text'],
+            "tokens_used": response['tokens'],
+            "latency_ms": latency
+        }
+        
+    except Exception as e:
+        logger.error(f"Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal error")
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "model_loaded": llm is not None}
+
+# Run: uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4</code></pre>
+
+                <h3>🐳 Docker Deployment</h3>
+                <pre><code class="language-dockerfile"># Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["gunicorn", "app:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]</code></pre>
+
+                <pre><code class="language-yaml"># docker-compose.yml
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - postgres
+  
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=llm_app
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+
+# Run: docker-compose up -d</code></pre>
+
+                <h3>☸️ Kubernetes (for scale)</h3>
+                <pre><code class="language-yaml"># kubernetes-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-api
+spec:
+  replicas: 3  # 3 instances
+  selector:
+    matchLabels:
+      app: llm-api
+  template:
+    metadata:
+      labels:
+        app: llm-api
+    spec:
+      containers:
+      - name: api
+        image: your-registry/llm-api:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+
+# Deploy: kubectl apply -f kubernetes-deployment.yaml</code></pre>
+
+                <h3>📊 Monitoring & Logging</h3>
+                <pre><code class="language-python"># Prometheus metrics
+from prometheus_client import Counter, Histogram
+
+request_count = Counter(
+    'llm_requests_total',
+    'Total LLM requests',
+    ['endpoint', 'status']
+)
+
+request_latency = Histogram(
+    'llm_request_duration_seconds',
+    'Request latency'
+)
+
+token_usage = Counter(
+    'llm_tokens_used_total',
+    'Total tokens consumed'
+)
+
+# In your endpoint:
+request_count.labels(endpoint='/chat', status='success').inc()
+request_latency.observe(latency_seconds)
+token_usage.inc(tokens_used)</code></pre>
+
+                <h3>💰 Cost Tracking</h3>
+                <pre><code class="language-python">class CostTracker:
+    def __init__(self):
+        self.costs = {}
+    
+    def track_request(self, user_id: str, tokens: int, model: str):
+        prices = {
+            'gpt-4-turbo': 0.03,  # per 1k tokens
+            'gpt-3.5-turbo': 0.0015
+        }
+        
+        cost = (tokens / 1000) * prices[model]
+        self.costs[user_id] = self.costs.get(user_id, 0) + cost
+        
+        if self.costs[user_id] > 10.0:  # $10 limit
+            send_alert(f"User {user_id} exceeded budget")
+        
+        return cost</code></pre>
+
+                <h3>⚡ Caching Strategy</h3>
+                <pre><code class="language-python">import redis
+import hashlib
+
+redis_client = redis.Redis()
+
+def get_cached_response(query: str):
+    cache_key = hashlib.md5(query.encode()).hexdigest()
+    return redis_client.get(cache_key)
+
+def cache_response(query: str, response: str):
+    cache_key = hashlib.md5(query.encode()).hexdigest()
+    redis_client.setex(cache_key, 3600, response)  # 1 hour TTL
+
+# In your endpoint:
+cached = get_cached_response(request.text)
+if cached:
+    return {"response": cached, "from_cache": True}</code></pre>
+
+                <h3>🎯 Deployment Comparison</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Approach</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Pros</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Cons</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>OpenAI API</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Zero setup, reliable</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Expensive at scale</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">MVPs, prototypes</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>vLLM</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">5-10x faster, cheaper</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Need GPU infrastructure</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">High traffic</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>llama.cpp</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">CPU, offline</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Slower</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Privacy, edge</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🔒 Security Checklist</h3>
+                <ul>
+                    <li>✅ API keys in environment variables (not hardcoded)</li>
+                    <li>✅ Rate limiting (10-100 req/min per user)</li>
+                    <li>✅ Input validation (length, content, format)</li>
+                    <li>✅ HTTPS only (TLS certificates)</li>
+                    <li>✅ Authentication (API keys or OAuth)</li>
+                    <li>✅ Content moderation (filter harmful inputs/outputs)</li>
+                    <li>✅ Logging (without sensitive data)</li>
+                    <li>✅ Firewall rules (restrict IPs if possible)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚠️ Safety, Quality & Monitoring</h2>
+                
+                <p>
+                    Production LLMs need <strong>safety guardrails</strong> to prevent harm, <strong>quality checks</strong> to ensure accuracy, and <strong>monitoring</strong> to track performance and costs.
+                </p>
+
+                <h3>🛡️ Input Validation & Moderation</h3>
+                <pre><code class="language-python"># 1. Content moderation (OpenAI built-in)
+from langchain.chains import OpenAIModerationChain
+
+moderation = OpenAIModerationChain()
+
+user_input = "How do I make explosives?"
+result = moderation.run(user_input)
+
+if result['flagged']:
+    # result['categories'] = {'violence': True, 'hate': False, ...}
+    return "I can't assist with that request."
+
+# 2. Prompt injection detection
+def detect_prompt_injection(text: str) -> bool:
+    """Detect attempts to hijack the system prompt"""
+    injection_patterns = [
+        "ignore previous instructions",
+        "disregard all above",
+        "you are now",
+        "system:",
+        "assistant:",
+        "<|im_start|>",
+        "<|im_end|>"
+    ]
+    
+    text_lower = text.lower()
+    for pattern in injection_patterns:
+        if pattern in text_lower:
+            return True
+    return False
+
+if detect_prompt_injection(user_input):
+    return "Invalid request format."
+
+# 3. Input length limits
+if len(user_input) > 5000:
+    return "Message too long. Please keep it under 5000 characters."
+
+# 4. PII detection (don't log sensitive data)
+import re
+
+def contains_pii(text: str) -> bool:
+    """Detect credit cards, SSNs, etc."""
+    patterns = {
+        'credit_card': r'\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b',
+        'ssn': r'\b\d{3}-\d{2}-\d{4}\b',
+        'email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    }
+    
+    for name, pattern in patterns.items():
+        if re.search(pattern, text):
+            logger.warning(f"PII detected: {name}")
+            return True
+    return False</code></pre>
+
+                <h3>✅ Output Quality Checks</h3>
+                <pre><code class="language-python"># 1. Fact-checking with RAG
+def verify_with_rag(response: str, query: str) -> dict:
+    """Check if response is grounded in retrieved documents"""
+    docs = retriever.get_relevant_documents(query)
+    
+    # Check if response contains facts from docs
+    doc_text = " ".join([d.page_content for d in docs])
+    
+    # Simple check: are response claims in the docs?
+    response_sentences = response.split('.')
+    grounded_count = 0
+    
+    for sentence in response_sentences:
+        if sentence.strip() in doc_text:
+            grounded_count += 1
+    
+    grounding_score = grounded_count / len(response_sentences)
+    
+    return {
+        'grounded': grounding_score > 0.5,
+        'score': grounding_score,
+        'sources': [d.metadata for d in docs]
+    }
+
+# 2. Confidence scoring
+def get_confidence_score(response: str, logprobs: list) -> float:
+    """Use log probabilities to estimate confidence"""
+    # Lower perplexity = higher confidence
+    avg_logprob = sum(logprobs) / len(logprobs)
+    confidence = math.exp(avg_logprob)  # Convert to probability
+    return confidence
+
+# 3. Hallucination detection
+def check_hallucination(response: str, context: str) -> bool:
+    """Check if response makes claims not in context"""
+    # Use a separate LLM to verify
+    verification_prompt = f"""
+    Context: {context}
+    Response: {response}
+    
+    Does the response make claims not supported by the context? Answer yes or no.
+    """
+    
+    result = verification_llm.generate(verification_prompt)
+    return "yes" in result.lower()
+
+# 4. Add uncertainty disclaimers
+def add_disclaimer(response: str, confidence: float) -> str:
+    """Add disclaimers for low-confidence responses"""
+    if confidence < 0.5:
+        return f"⚠️ Note: I'm not very confident about this answer. Please verify independently.\n\n{response}"
+    elif confidence < 0.7:
+        return f"💡 {response}\n\n(This is my best interpretation, but please double-check if accuracy is critical.)"
+    else:
+        return response</code></pre>
+
+                <h3>📊 Comprehensive Monitoring</h3>
+                <pre><code class="language-python"># Production monitoring setup
+import structlog
+from prometheus_client import Counter, Histogram, Gauge
+from datadog import statsd
+import sentry_sdk
+
+# Structured logging
+logger = structlog.get_logger()
+
+# Metrics
+REQUEST_COUNT = Counter('llm_requests_total', 'Total requests', ['endpoint', 'status', 'model'])
+REQUEST_LATENCY = Histogram('llm_latency_seconds', 'Request latency', ['endpoint'])
+TOKEN_USAGE = Counter('llm_tokens_total', 'Token usage', ['model', 'type'])
+COST = Counter('llm_cost_dollars', 'Total cost', ['model'])
+ACTIVE_USERS = Gauge('llm_active_users', 'Active users')
+ERROR_RATE = Counter('llm_errors_total', 'Total errors', ['error_type'])
+
+# Error tracking with Sentry
+sentry_sdk.init(dsn="YOUR_SENTRY_DSN")
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    log = logger.bind(
+        user_id=request.user_id,
+        conversation_id=request.conversation_id,
+        endpoint='/chat'
+    )
+    
+    start_time = time.time()
+    
+    try:
+        log.info("request_received", message_length=len(request.text))
+        
+        # Generate response
+        with get_openai_callback() as cb:
+            response = await generate_response(request.text)
+        
+        latency = time.time() - start_time
+        
+        # Update metrics
+        REQUEST_COUNT.labels(endpoint='/chat', status='success', model='gpt-4').inc()
+        REQUEST_LATENCY.labels(endpoint='/chat').observe(latency)
+        TOKEN_USAGE.labels(model='gpt-4', type='input').inc(cb.prompt_tokens)
+        TOKEN_USAGE.labels(model='gpt-4', type='output').inc(cb.completion_tokens)
+        COST.labels(model='gpt-4').inc(cb.total_cost)
+        
+        # Datadog custom metrics
+        statsd.increment('llm.requests')
+        statsd.histogram('llm.latency', latency * 1000)  # milliseconds
+        statsd.gauge('llm.tokens', cb.total_tokens)
+        
+        log.info(
+            "request_completed",
+            latency_ms=latency * 1000,
+            tokens=cb.total_tokens,
+            cost=cb.total_cost
+        )
+        
+        return response
+        
+    except Exception as e:
+        ERROR_RATE.labels(error_type=type(e).__name__).inc()
+        
+        log.error(
+            "request_failed",
+            error=str(e),
+            error_type=type(e).__name__
+        )
+        
+        # Send to Sentry
+        sentry_sdk.capture_exception(e)
+        
+        raise HTTPException(status_code=500, detail="Internal error")</code></pre>
+
+                <h3>📈 Quality Monitoring Dashboard</h3>
+                <pre><code class="language-python"># Track user satisfaction
+@app.post("/feedback")
+async def feedback(conversation_id: str, rating: int, comment: str = None):
+    """Collect user feedback"""
+    save_feedback(conversation_id, rating, comment)
+    
+    # Alert if ratings drop
+    recent_avg = get_average_rating(last_n=100)
+    if recent_avg < 3.5:
+        send_alert(f"Quality alert: Average rating dropped to {recent_avg}")
+    
+    return {"status": "ok"}
+
+# A/B testing framework
+def select_model(user_id: str) -> str:
+    """Route 10% of users to GPT-4, 90% to GPT-3.5"""
+    if hash(user_id) % 10 == 0:
+        return "gpt-4-turbo-preview"
+    else:
+        return "gpt-3.5-turbo"
+
+# Cost alerts
+async def check_cost_limits():
+    """Run hourly to check if costs are too high"""
+    hourly_cost = get_costs_last_hour()
+    daily_cost = get_costs_today()
+    
+    if hourly_cost > 50:  # $50/hour
+        send_urgent_alert(f"High cost: ${hourly_cost}/hour")
+    
+    if daily_cost > 500:  # $500/day budget
+        # Automatically switch to cheaper model
+        app.state.default_model = "gpt-3.5-turbo"
+        send_alert("Switched to GPT-3.5 due to budget limits")</code></pre>
+
+                <h3>🔍 Logging Best Practices</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>DO Log</h3>
+                        <p>Timestamps, user IDs, request IDs, latency, tokens, costs, errors, model versions</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>DON'T Log</h3>
+                        <p>Passwords, credit cards, SSNs, private medical info, API keys, sensitive user messages</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Analyze</h3>
+                        <p>Response times by endpoint, error rates by error type, costs by user/model, user satisfaction trends</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚨</div>
+                        <h3>Alert On</h3>
+                        <p>Error rate >1%, P95 latency >5s, hourly cost >$50, average rating <3.5</p>
+                    </div>
+                </div>
+
+                <h3>🎯 Production Checklist</h3>
+                <ul>
+                    <li>✅ Rate limiting (prevent abuse)</li>
+                    <li>✅ Content moderation (filter harmful content)</li>
+                    <li>✅ Input validation (length, format, PII)</li>
+                    <li>✅ Output quality checks (fact-checking, confidence)</li>
+                    <li>✅ Error handling (graceful failures, retries)</li>
+                    <li>✅ Monitoring (logs, metrics, alerts)</li>
+                    <li>✅ Cost tracking (budgets, alerts)</li>
+                    <li>✅ User feedback (ratings, comments)</li>
+                    <li>✅ A/B testing (compare models/prompts)</li>
+                    <li>✅ Security (HTTPS, auth, API keys)</li>
+                    <li>✅ Compliance (GDPR, data retention)</li>
+                    <li>✅ Documentation (API docs, deployment guide)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 LLM Development Checklist</h2>
+                
+                <ul>
+                    <li>☑️ Choose model (GPT-4, open-source, fine-tuned?)</li>
+                    <li>☑️ Implement core LLM logic</li>
+                    <li>☑️ Add RAG/tools if needed</li>
+                    <li>☑️ Build conversation management</li>
+                    <li>☑️ Implement error handling</li>
+                    <li>☑️ Add input/output safety checks</li>
+                    <li>☑️ Create API server</li>
+                    <li>☑️ Add monitoring/logging</li>
+                    <li>☑️ Performance optimization (quantization, caching)</li>
+                    <li>☑️ Cost tracking and limits</li>
+                    <li>☑️ User feedback mechanism</li>
+                    <li>☑️ Deploy to production</li>
+                    <li>☑️ Continuous monitoring and improvement</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Congratulations!</h2>
+                
+                <h3>What You've Learned in This Course:</h3>
+                <ul>
+                    <li>✅ What LLMs are and how they work</li>
+                    <li>✅ Tokenization and embeddings</li>
+                    <li>✅ Prompt engineering techniques</li>
+                    <li>✅ In-context learning and RAG</li>
+                    <li>✅ Fine-tuning strategies (full, LoRA, QLoRA)</li>
+                    <li>✅ Inference optimization (quantization, distillation)</li>
+                    <li>✅ Building production applications (chatbots, agents)</li>
+                </ul>
+
+                <h3>Your Next Steps</h3>
+                <p>
+                    <strong>Build something!</strong> Start with a simple chatbot or RAG system. Iterate based on user feedback. The best way to learn is by doing.
+                </p>
+                <ul>
+                    <li>Try a small LLM locally with llama.cpp</li>
+                    <li>Build a RAG chatbot over your documents</li>
+                    <li>Fine-tune a model on your data (QLoRA)</li>
+                    <li>Deploy to production</li>
+                    <li>Share your project on GitHub</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've completed the LLMs & Transformers course. You now have the skills to build cutting-edge LLM applications. The future of AI is in your hands!</p>
+                </div>
+
+            </section>
+
+            <!-- Certificate Request Section -->
+            <link rel="stylesheet" href="../../certificates/certificate.css">
+            <section class="certificate-section">
+                <div class="certificate-icon">🎓</div>
+                <h2>Get Your Completion Certificate</h2>
+                <p class="subtitle">Showcase your LLMs & Transformers expertise!</p>
+                
+                <div class="certificate-benefits">
+                    <h4>📜 Your certificate includes:</h4>
+                    <ul>
+                        <li>✅ Official completion verification</li>
+                        <li>✅ Unique certificate ID</li>
+                        <li>✅ Shareable on LinkedIn, Twitter, and resume</li>
+                        <li>✅ Public verification page</li>
+                        <li>✅ Professional PDF download</li>
+                    </ul>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="LLMs & Transformers">
+                    <div class="form-group">
+                        <label for="cert-name-llms">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-llms"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-llms">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-llms"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main purpose of a system prompt in an LLM application?</strong></p>
+                    <div class="quiz-option" data-value="a">To increase model size</div>
+                    <div class="quiz-option" data-value="b">To reduce API costs</div>
+                    <div class="quiz-option" data-value="c">To define the AI assistant's behavior, role, and constraints</div>
+                    <div class="quiz-option" data-value="d">To train the model</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is the benefit of streaming responses in LLM applications?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes responses more accurate</div>
+                    <div class="quiz-option" data-value="b">It provides a better user experience by showing progressive output instead of waiting for complete response</div>
+                    <div class="quiz-option" data-value="c">It reduces costs</div>
+                    <div class="quiz-option" data-value="d">It eliminates errors</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Why is error handling critical in production LLM applications?</strong></p>
+                    <div class="quiz-option" data-value="a">It's not important</div>
+                    <div class="quiz-option" data-value="b">Only for debugging</div>
+                    <div class="quiz-option" data-value="c">It increases response speed</div>
+                    <div class="quiz-option" data-value="d">API calls can fail due to rate limits, timeouts, or service issues; graceful handling prevents crashes</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What should you implement to prevent excessive API costs?</strong></p>
+                    <div class="quiz-option" data-value="a">Rate limiting, token limits, and usage monitoring</div>
+                    <div class="quiz-option" data-value="b">Nothing, costs don't matter</div>
+                    <div class="quiz-option" data-value="c">Use the largest model available</div>
+                    <div class="quiz-option" data-value="d">Never cache responses</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is the purpose of conversation memory in chatbot applications?</strong></p>
+                    <div class="quiz-option" data-value="a">To increase costs</div>
+                    <div class="quiz-option" data-value="b">To slow down responses</div>
+                    <div class="quiz-option" data-value="c">To maintain context across multiple turns and provide coherent multi-turn conversations</div>
+                    <div class="quiz-option" data-value="d">It serves no purpose</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="inference-optimization.html" class="btn btn-secondary">← Previous: Inference Optimization</a>
+                <a href="../../courses/llms-and-transformers.html" class="btn btn-primary">Back to Course</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../certificates/certificate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master hypothesis testing and A/B testing for AI. Learn t-tests, chi-square tests, p-values, statistical significance with Python examples for data-driven decisions.">
+    <meta name="keywords" content="hypothesis testing, A/B testing, t-test, chi-square test, p-value, statistical significance, null hypothesis, Type I error, Type II error, statistics for AI">
+    <title>Hypothesis Testing & A/B Testing - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="hypothesis-testing.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .content-section h3 {
+            color: #078930;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #078930;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #065f46;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Hypothesis Testing & A/B Testing</span>
+            </div>
+            <h1>Hypothesis Testing & A/B Testing</h1>
+            <p class="tutorial-intro">
+                Learn to make data-driven decisions using statistical tests and run rigorous A/B experiments
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 5</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 80 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 6 tutorials to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Hypothesis Testing Matters</h2>
+                    <p>
+                        Should you launch the new website design? Does the drug actually work? Is your ML model truly better than the baseline? These aren't questions of opinion—they're questions that demand statistical evidence. Hypothesis testing provides a rigorous framework for making decisions under uncertainty.
+                    </p>
+                    <p>
+                        Every day, tech companies run thousands of A/B tests to optimize products. Netflix tests thumbnails, Amazon tests checkout flows, Google tests search algorithms. These tests all use hypothesis testing to separate real improvements from random noise. Master this, and you'll make better decisions backed by data, not hunches.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Google famously tested 41 shades of blue for ad links and found the optimal shade generated $200M additional revenue. Microsoft's Bing ran an A/B test that increased revenue by $100M annually from a simple UI change. Facebook runs over 10,000 A/B tests per year. Understanding hypothesis testing isn't optional—it's how modern tech companies make billion-dollar decisions.</p>
+                    </div>
+                </section>
+
+                <!-- What is Hypothesis Testing -->
+                <section class="content-section">
+                    <h2>🔬 What is Hypothesis Testing?</h2>
+                    <p>
+                        Hypothesis testing is a statistical method for making decisions about population parameters based on sample data. It's a formalized way of saying "Is this effect real, or could it just be random chance?"
+                    </p>
+                    
+                    <h3>The Process</h3>
+                    <ol>
+                        <li><strong>State hypotheses:</strong> Null hypothesis (H₀) and alternative hypothesis (H₁)</li>
+                        <li><strong>Choose significance level:</strong> Usually α = 0.05 (5% chance of false positive)</li>
+                        <li><strong>Collect data:</strong> Gather sample(s) from population(s)</li>
+                        <li><strong>Calculate test statistic:</strong> Convert data to a single number (t, z, χ², etc.)</li>
+                        <li><strong>Find p-value:</strong> Probability of seeing your result if H₀ is true</li>
+                        <li><strong>Make decision:</strong> If p-value < α, reject H₀; otherwise, fail to reject H₀</li>
+                    </ol>
+                    
+                    <h3>Null vs Alternative Hypothesis</h3>
+                    <ul>
+                        <li><strong>Null Hypothesis (H₀):</strong> The status quo, "no effect", "no difference". What we assume is true until proven otherwise.</li>
+                        <li><strong>Alternative Hypothesis (H₁ or Hₐ):</strong> What we're trying to prove, the "interesting" result, the claim.</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+
+# Example: Is a coin fair?
+# H₀: p = 0.5 (coin is fair)
+# H₁: p ≠ 0.5 (coin is biased)
+
+np.random.seed(42)
+
+# Flip coin 100 times
+flips = np.random.choice(['H', 'T'], size=100, p=[0.5, 0.5])
+heads = (flips == 'H').sum()
+p_observed = heads / len(flips)
+
+print("Coin Fairness Test:")
+print(f"Flips: {len(flips)}")
+print(f"Heads: {heads}")
+print(f"Observed proportion: {p_observed:.3f}")
+print(f"\nH₀: p = 0.5 (fair coin)")
+print(f"H₁: p ≠ 0.5 (biased coin)")
+
+# Binomial test
+p_value = stats.binom_test(heads, len(flips), p=0.5, alternative='two-sided')
+print(f"\np-value: {p_value:.4f}")
+
+# Decision
+alpha = 0.05
+if p_value < alpha:
+    print(f"Decision: Reject H₀ (p < {alpha})")
+    print("Conclusion: Coin appears to be biased")
+else:
+    print(f"Decision: Fail to reject H₀ (p ≥ {alpha})")
+    print("Conclusion: No evidence coin is biased")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ "Fail to Reject" ≠ "Accept"</strong>
+                        <p>We never "accept" the null hypothesis. We either reject it (have evidence against it) or fail to reject it (don't have enough evidence). Absence of evidence is not evidence of absence!</p>
+                    </div>
+                </section>
+
+                <!-- P-values -->
+                <section class="content-section">
+                    <h2>📊 Understanding P-values</h2>
+                    <p>
+                        The p-value is the probability of observing your data (or something more extreme) if the null hypothesis is true. It's NOT the probability that H₀ is true!
+                    </p>
+                    
+                    <h3>Correct Interpretation</h3>
+                    <ul>
+                        <li><strong>p = 0.03:</strong> "If there's really no effect, we'd see results this extreme 3% of the time"</li>
+                        <li><strong>NOT:</strong> "3% chance the null hypothesis is true"</li>
+                        <li><strong>NOT:</strong> "97% chance the alternative is true"</li>
+                        <li><strong>NOT:</strong> "The effect size is 3%"</li>
+                    </ul>
+                    
+                    <h3>What P-values Tell Us</h3>
+                    <ul>
+                        <li><strong>Small p-value (< 0.05):</strong> Data is unusual under H₀, evidence against null</li>
+                        <li><strong>Large p-value (≥ 0.05):</strong> Data is compatible with H₀, no strong evidence</li>
+                        <li><strong>p-value is continuous:</strong> p=0.049 and p=0.051 are essentially the same, don't be dogmatic about 0.05 threshold</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Visualize p-value concept
+np.random.seed(42)
+
+# Scenario: Testing if a new teaching method improves test scores
+# H₀: μ = 70 (no improvement)
+# H₁: μ > 70 (improvement)
+
+population_mean_h0 = 70
+population_std = 10
+sample_size = 30
+
+# Sample data (actual class with new method)
+sample = np.random.normal(73, 10, sample_size)  # True mean is 73
+sample_mean = sample.mean()
+se = population_std / np.sqrt(sample_size)
+
+# Calculate test statistic (z-score)
+z_statistic = (sample_mean - population_mean_h0) / se
+
+# Calculate p-value (one-tailed: testing if > 70)
+p_value = 1 - stats.norm.cdf(z_statistic)
+
+print("Teaching Method Experiment:")
+print(f"H₀: μ = {population_mean_h0} (no improvement)")
+print(f"H₁: μ > {population_mean_h0} (improvement)")
+print(f"\nSample size: {sample_size}")
+print(f"Sample mean: {sample_mean:.2f}")
+print(f"Standard error: {se:.2f}")
+print(f"Z-statistic: {z_statistic:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+# Visualize
+x = np.linspace(60, 80, 1000)
+y = stats.norm.pdf(x, population_mean_h0, se)
+
+plt.figure(figsize=(10, 5))
+plt.plot(x, y, linewidth=2, color='steelblue', label='Null distribution')
+plt.axvline(population_mean_h0, color='red', linestyle='--', linewidth=2, label=f'H₀: μ={population_mean_h0}')
+plt.axvline(sample_mean, color='green', linestyle='--', linewidth=2, label=f'Observed: {sample_mean:.1f}')
+
+# Shade p-value region
+x_fill = x[x >= sample_mean]
+y_fill = stats.norm.pdf(x_fill, population_mean_h0, se)
+plt.fill_between(x_fill, y_fill, alpha=0.3, color='coral', label=f'p-value={p_value:.4f}')
+
+plt.xlabel('Test Score Mean')
+plt.ylabel('Probability Density')
+plt.title('P-value: Probability of Observing This Result (or More Extreme) if H₀ is True')
+plt.legend()
+plt.grid(True, alpha=0.3)
+# plt.show()  # Uncomment to display
+
+if p_value < 0.05:
+    print(f"\nDecision: Reject H₀ (p={p_value:.4f} < 0.05)")
+    print("Conclusion: New teaching method significantly improves scores")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value:.4f} ≥ 0.05)")
+    print("Conclusion: No significant evidence of improvement")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ P-value Best Practices</strong>
+                        <p>1. <strong>Set α before collecting data:</strong> Don't p-hack by trying different tests. 2. <strong>Report exact p-value:</strong> Say p=0.032, not just "p < 0.05". 3. <strong>Report effect size too:</strong> Statistical significance ≠ practical importance. 4. <strong>Consider confidence intervals:</strong> They provide more information than p-values alone.</p>
+                    </div>
+                </section>
+
+                <!-- Type I and Type II Errors -->
+                <section class="content-section">
+                    <h2>⚠️ Type I and Type II Errors</h2>
+                    <p>
+                        Hypothesis testing isn't perfect—we can make two types of mistakes. Understanding these errors is crucial for designing experiments correctly.
+                    </p>
+                    
+                    <div style="overflow-x: auto; margin: 2rem 0;">
+                        <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <thead>
+                                <tr style="background: #078930; color: white;">
+                                    <th style="padding: 1rem; border: 1px solid #ddd;"></th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">H₀ is Actually True</th>
+                                    <th style="padding: 1rem; border: 1px solid #ddd;">H₀ is Actually False</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold; background: #f8fafc;">Reject H₀</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; background: #fef3c7;">
+                                        <strong style="color: #d97706;">Type I Error</strong><br>
+                                        False Positive<br>
+                                        Probability = α (usually 0.05)
+                                    </td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; background: #d1fae5;">
+                                        <strong style="color: #059669;">Correct Decision</strong><br>
+                                        True Positive<br>
+                                        Power = 1-β
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; font-weight: bold; background: #f8fafc;">Fail to Reject H₀</td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; background: #d1fae5;">
+                                        <strong style="color: #059669;">Correct Decision</strong><br>
+                                        True Negative<br>
+                                        Probability = 1-α
+                                    </td>
+                                    <td style="padding: 1rem; border: 1px solid #ddd; background: #fef3c7;">
+                                        <strong style="color: #d97706;">Type II Error</strong><br>
+                                        False Negative<br>
+                                        Probability = β
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3>Understanding the Errors</h3>
+                    <ul>
+                        <li><strong>Type I Error (α):</strong> Rejecting H₀ when it's actually true. "False alarm". We control this with significance level α.</li>
+                        <li><strong>Type II Error (β):</strong> Failing to reject H₀ when it's actually false. "Missed detection". Related to statistical power.</li>
+                        <li><strong>Statistical Power (1-β):</strong> Probability of correctly rejecting false H₀. Higher power = better at detecting real effects.</li>
+                    </ul>
+                    
+                    <h3>Real-World Examples</h3>
+                    <pre><code class="language-python"># Medical test analogy
+print("Medical Test Interpretation:")
+print("H₀: Patient is healthy")
+print("H₁: Patient has disease\n")
+
+print("Type I Error (α = False Positive):")
+print("  → Diagnose disease when patient is healthy")
+print("  → Patient undergoes unnecessary treatment")
+print("  → Anxiety, cost, side effects\n")
+
+print("Type II Error (β = False Negative):")
+print("  → Miss disease when patient is sick")
+print("  → Disease goes untreated")
+print("  → Potentially fatal consequences\n")
+
+print("Which is worse? Depends on context!")
+print("  → Serious disease: Type II worse (missing it is dangerous)")
+print("  → Benign condition: Type I worse (false alarm causes harm)")
+
+print("\n" + "="*60)
+print("A/B Test Analogy:")
+print("H₀: New design has same conversion as old")
+print("H₁: New design has higher conversion\n")
+
+print("Type I Error:")
+print("  → Launch 'better' design that's actually worse")
+print("  → Lose revenue, waste engineering time\n")
+
+print("Type II Error:")
+print("  → Miss actually better design")
+print("  → Opportunity cost of not improving")</code></pre>
+
+                    <h3>Power Analysis</h3>
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+def calculate_power(effect_size, sample_size, alpha=0.05):
+    """Calculate statistical power for detecting an effect"""
+    
+    # For two-sample t-test
+    # effect_size = (mean1 - mean2) / pooled_std
+    
+    # Non-centrality parameter
+    ncp = effect_size * np.sqrt(sample_size / 2)
+    
+    # Critical value for alpha
+    critical_value = stats.t.ppf(1 - alpha/2, df=2*sample_size-2)
+    
+    # Power = P(reject H0 | H1 is true)
+    power = 1 - stats.t.cdf(critical_value, df=2*sample_size-2, loc=ncp)
+    
+    return power
+
+# Example: How does power change with sample size and effect size?
+print("Statistical Power Analysis:")
+print("="*60)
+
+effect_sizes = [0.2, 0.5, 0.8]  # Small, medium, large (Cohen's d)
+sample_sizes = [30, 50, 100, 200, 500]
+
+print(f"{'Sample Size':<15} {'Small (d=0.2)':<20} {'Medium (d=0.5)':<20} {'Large (d=0.8)'}")
+print("-"*75)
+
+for n in sample_sizes:
+    powers = [calculate_power(d, n) for d in effect_sizes]
+    print(f"{n:<15} {powers[0]:<20.3f} {powers[1]:<20.3f} {powers[2]:.3f}")
+
+print("\nKey Insights:")
+print("  → Larger effects easier to detect (higher power)")
+print("  → Larger samples give higher power")
+print("  → Power ≥ 0.80 is typically desired")
+print("  → Detecting small effects requires large samples")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ The Trade-off</strong>
+                        <p>Decreasing α (Type I error rate) increases β (Type II error rate) for fixed sample size. You can't minimize both simultaneously! Solution: increase sample size or accept the trade-off based on consequences of each error type.</p>
+                    </div>
+                </section>
+
+                <!-- T-tests -->
+                <section class="content-section">
+                    <h2>📈 T-Tests</h2>
+                    <p>
+                        T-tests are used to compare means when dealing with small to moderate sample sizes or when population variance is unknown. They're the workhorse of hypothesis testing.
+                    </p>
+                    
+                    <h3>1. One-Sample T-Test</h3>
+                    <p>Compare sample mean to a known value.</p>
+                    
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+# Example: Is average user session time different from 5 minutes?
+np.random.seed(42)
+
+# Sample data (in minutes)
+session_times = np.random.normal(5.5, 1.2, 40)
+
+# Hypothesis
+mu_0 = 5.0  # Historical average
+print("One-Sample T-Test:")
+print(f"H₀: μ = {mu_0} minutes")
+print(f"H₁: μ ≠ {mu_0} minutes")
+print(f"\nSample size: {len(session_times)}")
+print(f"Sample mean: {session_times.mean():.3f} minutes")
+print(f"Sample std: {session_times.std(ddof=1):.3f}")
+
+# Perform t-test
+t_statistic, p_value = stats.ttest_1samp(session_times, mu_0)
+
+print(f"\nT-statistic: {t_statistic:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+# Decision
+alpha = 0.05
+if p_value < alpha:
+    print(f"\nDecision: Reject H₀ (p={p_value:.4f} < {alpha})")
+    print("Conclusion: Average session time is significantly different from 5 minutes")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value:.4f} ≥ {alpha})")
+    print("Conclusion: No significant difference from 5 minutes")
+
+# Confidence interval
+ci = stats.t.interval(0.95, len(session_times)-1, 
+                      loc=session_times.mean(),
+                      scale=stats.sem(session_times))
+print(f"\n95% CI: [{ci[0]:.3f}, {ci[1]:.3f}] minutes")</code></pre>
+
+                    <h3>2. Independent Two-Sample T-Test</h3>
+                    <p>Compare means of two independent groups.</p>
+                    
+                    <pre><code class="language-python"># Example: Does new UI improve engagement time?
+np.random.seed(42)
+
+# Control group (old UI)
+control = np.random.normal(5.0, 1.5, 50)
+
+# Treatment group (new UI)
+treatment = np.random.normal(5.8, 1.5, 50)
+
+print("Independent Two-Sample T-Test:")
+print("H₀: μ_treatment = μ_control (no difference)")
+print("H₁: μ_treatment ≠ μ_control (there is a difference)")
+
+print(f"\nControl group (n={len(control)}):")
+print(f"  Mean: {control.mean():.3f}, Std: {control.std(ddof=1):.3f}")
+
+print(f"\nTreatment group (n={len(treatment)}):")
+print(f"  Mean: {treatment.mean():.3f}, Std: {treatment.std(ddof=1):.3f}")
+
+print(f"\nObserved difference: {treatment.mean() - control.mean():.3f}")
+
+# Perform t-test (assuming equal variances)
+t_statistic, p_value = stats.ttest_ind(treatment, control)
+
+print(f"\nT-statistic: {t_statistic:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+alpha = 0.05
+if p_value < alpha:
+    print(f"\nDecision: Reject H₀ (p={p_value:.4f} < {alpha})")
+    print("Conclusion: New UI significantly affects engagement time")
+    
+    # Effect size (Cohen's d)
+    pooled_std = np.sqrt((control.var(ddof=1) + treatment.var(ddof=1)) / 2)
+    cohens_d = (treatment.mean() - control.mean()) / pooled_std
+    print(f"Effect size (Cohen's d): {cohens_d:.3f}")
+    
+    if abs(cohens_d) < 0.2:
+        print("Effect size: Small")
+    elif abs(cohens_d) < 0.5:
+        print("Effect size: Small to Medium")
+    elif abs(cohens_d) < 0.8:
+        print("Effect size: Medium to Large")
+    else:
+        print("Effect size: Large")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value:.4f} ≥ {alpha})")
+    print("Conclusion: No significant difference")</code></pre>
+
+                    <h3>3. Paired T-Test</h3>
+                    <p>Compare means when samples are related (before/after, matched pairs).</p>
+                    
+                    <pre><code class="language-python"># Example: Before/after training program
+np.random.seed(42)
+
+# 30 employees measured before and after training
+before_training = np.random.normal(70, 10, 30)
+improvement = np.random.normal(5, 8, 30)  # Average 5 point improvement
+after_training = before_training + improvement
+
+print("Paired T-Test (Before/After Training):")
+print("H₀: μ_difference = 0 (no improvement)")
+print("H₁: μ_difference > 0 (improvement)")
+
+print(f"\nSample size: {len(before_training)} employees")
+print(f"Before training: Mean={before_training.mean():.2f}, Std={before_training.std(ddof=1):.2f}")
+print(f"After training:  Mean={after_training.mean():.2f}, Std={after_training.std(ddof=1):.2f}")
+
+differences = after_training - before_training
+print(f"\nDifferences: Mean={differences.mean():.2f}, Std={differences.std(ddof=1):.2f}")
+
+# Perform paired t-test
+t_statistic, p_value = stats.ttest_rel(after_training, before_training)
+
+# One-tailed test (testing if improvement > 0)
+p_value_one_tailed = p_value / 2 if t_statistic > 0 else 1 - p_value/2
+
+print(f"\nT-statistic: {t_statistic:.3f}")
+print(f"P-value (one-tailed): {p_value_one_tailed:.4f}")
+
+alpha = 0.05
+if p_value_one_tailed < alpha:
+    print(f"\nDecision: Reject H₀ (p={p_value_one_tailed:.4f} < {alpha})")
+    print("Conclusion: Training significantly improves performance")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value_one_tailed:.4f} ≥ {alpha})")
+    print("Conclusion: No significant improvement from training")</code></pre>
+                </section>
+
+                <!-- Chi-Square Test -->
+                <section class="content-section">
+                    <h2>🎲 Chi-Square Test</h2>
+                    <p>
+                        Chi-square tests are used for categorical data. They test whether observed frequencies differ from expected frequencies or whether two categorical variables are independent.
+                    </p>
+                    
+                    <h3>Chi-Square Test of Independence</h3>
+                    <p>Test if two categorical variables are related.</p>
+                    
+                    <pre><code class="language-python">from scipy.stats import chi2_contingency
+import numpy as np
+import pandas as pd
+
+# Example: Does device type affect purchase behavior?
+# Contingency table: Device x Purchase Decision
+
+data = {
+    'Device': ['Mobile']*300 + ['Desktop']*200 + ['Tablet']*100,
+    'Purchased': (['Yes']*45 + ['No']*255 +  # Mobile
+                  ['Yes']*50 + ['No']*150 +  # Desktop
+                  ['Yes']*15 + ['No']*85)    # Tablet
+}
+
+df = pd.DataFrame(data)
+
+# Create contingency table
+contingency_table = pd.crosstab(df['Device'], df['Purchased'])
+print("Chi-Square Test of Independence:")
+print("H₀: Device type and purchase behavior are independent")
+print("H₁: Device type and purchase behavior are related\n")
+
+print("Observed Frequencies:")
+print(contingency_table)
+print()
+
+# Calculate percentages
+print("Purchase Rates by Device:")
+for device in contingency_table.index:
+    total = contingency_table.loc[device].sum()
+    yes = contingency_table.loc[device, 'Yes']
+    rate = yes / total * 100
+    print(f"  {device}: {yes}/{total} = {rate:.1f}%")
+
+# Perform chi-square test
+chi2_stat, p_value, dof, expected = chi2_contingency(contingency_table)
+
+print(f"\nChi-square statistic: {chi2_stat:.3f}")
+print(f"Degrees of freedom: {dof}")
+print(f"P-value: {p_value:.4f}")
+
+print("\nExpected Frequencies (if independent):")
+print(pd.DataFrame(expected, 
+                   index=contingency_table.index, 
+                   columns=contingency_table.columns))
+
+alpha = 0.05
+if p_value < alpha:
+    print(f"\nDecision: Reject H₀ (p={p_value:.4f} < {alpha})")
+    print("Conclusion: Device type and purchase behavior are significantly related")
+    print("Recommendation: Optimize conversion funnels differently per device")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value:.4f} ≥ {alpha})")
+    print("Conclusion: No significant relationship between device and purchases")</code></pre>
+
+                    <h3>Chi-Square Goodness-of-Fit Test</h3>
+                    <p>Test if observed distribution matches expected distribution.</p>
+                    
+                    <pre><code class="language-python">from scipy.stats import chisquare
+
+# Example: Are website visitors evenly distributed across days of week?
+observed = np.array([152, 145, 148, 142, 156, 180, 177])  # Mon-Sun
+days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+
+print("Chi-Square Goodness-of-Fit Test:")
+print("H₀: Visitors are evenly distributed across days")
+print("H₁: Visitors are not evenly distributed\n")
+
+print("Observed visitors:")
+for day, count in zip(days, observed):
+    print(f"  {day}: {count}")
+
+total = observed.sum()
+expected = np.array([total/7] * 7)  # Equal distribution
+
+print(f"\nExpected per day (if equal): {expected[0]:.1f}")
+
+# Perform test
+chi2_stat, p_value = chisquare(observed, expected)
+
+print(f"\nChi-square statistic: {chi2_stat:.3f}")
+print(f"P-value: {p_value:.4f}")
+
+alpha = 0.05
+if p_value < alpha:
+    print(f"\nDecision: Reject H₀ (p={p_value:.4f} < {alpha})")
+    print("Conclusion: Traffic is not evenly distributed")
+    print("Weekend (Sat-Sun) appears to have higher traffic")
+else:
+    print(f"\nDecision: Fail to reject H₀ (p={p_value:.4f} ≥ {alpha})")
+    print("Conclusion: Traffic is relatively evenly distributed")</code></pre>
+                </section>
+
+                <!-- A/B Testing -->
+                <section class="content-section">
+                    <h2>🧪 A/B Testing Framework</h2>
+                    <p>
+                        A/B testing is hypothesis testing applied to product decisions. It's how tech companies make data-driven improvements by showing different versions to different users and measuring which performs better.
+                    </p>
+                    
+                    <h3>Complete A/B Test Workflow</h3>
+                    
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+import pandas as pd
+
+class ABTest:
+    """Complete A/B testing framework"""
+    
+    def __init__(self, name, metric='conversion'):
+        self.name = name
+        self.metric = metric
+        self.data = {'control': [], 'treatment': []}
+        
+    def add_observation(self, variant, value):
+        """Add a data point (0 or 1 for conversion, numeric for continuous)"""
+        if variant in ['control', 'treatment']:
+            self.data[variant].append(value)
+    
+    def calculate_sample_size(self, baseline_rate, min_detectable_effect, 
+                             alpha=0.05, power=0.80):
+        """Calculate required sample size per variant"""
+        
+        # For proportion test (conversion rate)
+        p1 = baseline_rate
+        p2 = baseline_rate * (1 + min_detectable_effect)
+        
+        z_alpha = stats.norm.ppf(1 - alpha/2)
+        z_beta = stats.norm.ppf(power)
+        
+        p_pooled = (p1 + p2) / 2
+        
+        n = ((z_alpha * np.sqrt(2 * p_pooled * (1-p_pooled)) + 
+              z_beta * np.sqrt(p1*(1-p1) + p2*(1-p2))) / (p2 - p1)) ** 2
+        
+        return int(np.ceil(n))
+    
+    def analyze_conversion(self, alpha=0.05):
+        """Analyze A/B test for conversion rate (binary metric)"""
+        
+        control = np.array(self.data['control'])
+        treatment = np.array(self.data['treatment'])
+        
+        n_control = len(control)
+        n_treatment = len(treatment)
+        conversions_control = control.sum()
+        conversions_treatment = treatment.sum()
+        
+        rate_control = conversions_control / n_control
+        rate_treatment = conversions_treatment / n_treatment
+        
+        # Pooled proportion
+        p_pooled = (conversions_control + conversions_treatment) / (n_control + n_treatment)
+        
+        # Standard error
+        se = np.sqrt(p_pooled * (1 - p_pooled) * (1/n_control + 1/n_treatment))
+        
+        # Z-test
+        z_stat = (rate_treatment - rate_control) / se
+        p_value = 2 * (1 - stats.norm.cdf(abs(z_stat)))  # Two-tailed
+        
+        # Confidence interval for difference
+        se_diff = np.sqrt(rate_control*(1-rate_control)/n_control + 
+                         rate_treatment*(1-rate_treatment)/n_treatment)
+        ci_diff = stats.norm.interval(0.95, loc=rate_treatment - rate_control, 
+                                      scale=se_diff)
+        
+        # Relative improvement
+        relative_improvement = (rate_treatment - rate_control) / rate_control * 100
+        
+        results = {
+            'control_n': n_control,
+            'treatment_n': n_treatment,
+            'control_rate': rate_control,
+            'treatment_rate': rate_treatment,
+            'absolute_diff': rate_treatment - rate_control,
+            'relative_improvement': relative_improvement,
+            'z_statistic': z_stat,
+            'p_value': p_value,
+            'ci_lower': ci_diff[0],
+            'ci_upper': ci_diff[1],
+            'significant': p_value < alpha
+        }
+        
+        return results
+    
+    def print_results(self, results):
+        """Pretty print A/B test results"""
+        
+        print(f"\n{'='*70}")
+        print(f"A/B Test Results: {self.name}")
+        print(f"{'='*70}")
+        
+        print(f"\nSample Sizes:")
+        print(f"  Control:   {results['control_n']:,}")
+        print(f"  Treatment: {results['treatment_n']:,}")
+        
+        print(f"\nConversion Rates:")
+        print(f"  Control:   {results['control_rate']:.4f} ({results['control_rate']*100:.2f}%)")
+        print(f"  Treatment: {results['treatment_rate']:.4f} ({results['treatment_rate']*100:.2f}%)")
+        
+        print(f"\nDifference:")
+        print(f"  Absolute:  {results['absolute_diff']:+.4f} ({results['absolute_diff']*100:+.2f}pp)")
+        print(f"  Relative:  {results['relative_improvement']:+.2f}%")
+        
+        print(f"\nStatistical Test:")
+        print(f"  Z-statistic: {results['z_statistic']:.3f}")
+        print(f"  P-value:     {results['p_value']:.4f}")
+        print(f"  95% CI:      [{results['ci_lower']:.4f}, {results['ci_upper']:.4f}]")
+        
+        print(f"\nDecision:")
+        if results['significant']:
+            print(f"  ✅ SIGNIFICANT (p={results['p_value']:.4f} < 0.05)")
+            if results['relative_improvement'] > 0:
+                print(f"  Treatment is better! Launch it.")
+            else:
+                print(f"  Control is better! Don't launch treatment.")
+        else:
+            print(f"  ❌ NOT SIGNIFICANT (p={results['p_value']:.4f} ≥ 0.05)")
+            print(f"  No clear winner. Consider:")
+            print(f"    - Running test longer for more data")
+            print(f"    - Test may be underpowered for this effect size")
+
+# Example: Email campaign A/B test
+np.random.seed(42)
+
+test = ABTest("Email Subject Line Test")
+
+# Simulate test data
+# Control: 10% conversion rate
+# Treatment: 12% conversion rate (20% relative improvement)
+
+n_per_variant = 1000
+
+control_conversions = np.random.binomial(1, 0.10, n_per_variant)
+treatment_conversions = np.random.binomial(1, 0.12, n_per_variant)
+
+for conv in control_conversions:
+    test.add_observation('control', conv)
+    
+for conv in treatment_conversions:
+    test.add_observation('treatment', conv)
+
+# Required sample size calculation
+print("Sample Size Planning:")
+required_n = test.calculate_sample_size(
+    baseline_rate=0.10,
+    min_detectable_effect=0.20,  # 20% relative improvement
+    alpha=0.05,
+    power=0.80
+)
+print(f"Required sample size per variant: {required_n:,}")
+print(f"Total samples needed: {2*required_n:,}")
+print(f"Actual samples collected: {2*n_per_variant:,}")
+
+# Analyze results
+results = test.analyze_conversion()
+test.print_results(results)</code></pre>
+
+                    <h3>Common A/B Testing Mistakes</h3>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Avoid These Pitfalls</strong>
+                        <p><strong>1. Peeking:</strong> Checking results before planned sample size. Inflates Type I error rate.<br>
+                        <strong>2. Multiple comparisons:</strong> Testing 20 variations without correction → expect 1 false positive!<br>
+                        <strong>3. Ignoring practical significance:</strong> p < 0.05 but 0.01% improvement → not worth launching.<br>
+                        <strong>4. Running too short:</strong> Need full week to account for day-of-week effects.<br>
+                        <strong>5. Sample ratio mismatch:</strong> If 50/50 split, check you got ~50/50 before trusting results.<br>
+                        <strong>6. Not testing holdout:</strong> Launch to 10% first to catch any issues.</p>
+                    </div>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <h3>Exercise 1: One-Sample T-Test</h3>
+                    <p><strong>Scenario:</strong> Historical average response time is 2.5 seconds. After optimization, you measure 50 requests: mean=2.3s, std=0.6s.</p>
+                    <ol>
+                        <li>Set up null and alternative hypotheses</li>
+                        <li>Calculate t-statistic and p-value</li>
+                        <li>At α=0.05, did optimization significantly improve response time?</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Independent T-Test</h3>
+                    <p><strong>Scenario:</strong> Testing new algorithm vs old:
+                        <ul>
+                            <li>Old: n=40, mean=85, std=12</li>
+                            <li>New: n=40, mean=91, std=13</li>
+                        </ul>
+                    </p>
+                    <ol>
+                        <li>Is the new algorithm significantly better?</li>
+                        <li>Calculate effect size (Cohen's d)</li>
+                        <li>What would happen with larger sample sizes?</li>
+                    </ol>
+                    
+                    <h3>Exercise 3: Chi-Square Test</h3>
+                    <p><strong>Scenario:</strong> Testing if ad click-through rate differs by age group:
+                        <ul>
+                            <li>18-25: 45 clicks / 500 views</li>
+                            <li>26-40: 62 clicks / 600 views</li>
+                            <li>41+: 38 clicks / 400 views</li>
+                        </ul>
+                    </p>
+                    <ol>
+                        <li>Create contingency table</li>
+                        <li>Perform chi-square test</li>
+                        <li>Are click rates significantly different across age groups?</li>
+                    </ol>
+                    
+                    <h3>Exercise 4: A/B Test Design</h3>
+                    <p><strong>Scenario:</strong> Current checkout flow has 15% completion rate. You want to detect 10% relative improvement (15% → 16.5%) with 80% power at α=0.05.</p>
+                    <ol>
+                        <li>Calculate required sample size per variant</li>
+                        <li>If 500 users/day, how long will test take?</li>
+                        <li>What if you want to detect 5% improvement instead?</li>
+                    </ol>
+                    
+                    <h3>Exercise 5: Power Analysis</h3>
+                    <p><strong>Challenge:</strong> You ran an A/B test with n=200 per variant. Control: 12% conversion, Treatment: 14% conversion. p-value = 0.15 (not significant). Was the test underpowered? Calculate what sample size you'd need to detect this 2pp difference with 80% power.</p>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>You've mastered hypothesis testing and A/B testing—the foundation of data-driven decision making:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🔬 Hypothesis Testing</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Formal framework for testing claims. Null vs alternative, p-values, significance levels. Never "accept" null, only reject or fail to reject.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📊 P-values</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Probability of data if H₀ true. Small p-value = evidence against null. Not probability H₀ is true! Report exact value and effect size.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">⚠️ Error Types</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Type I (α): False positive. Type II (β): False negative. Power = 1-β. Trade-off requires careful consideration of consequences.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📈 T-Tests</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Compare means. One-sample, independent, paired. Use when n is small or σ unknown. Report confidence intervals and effect sizes.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🎲 Chi-Square</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">For categorical data. Test independence or goodness-of-fit. Essential for conversion rate analysis and categorical relationships.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🧪 A/B Testing</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Rigorous experimentation framework. Calculate sample size, avoid peeking, test practical significance. How billion-dollar decisions are made.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Takeaway</strong>
+                        <p>Hypothesis testing transforms intuition into evidence-based decisions. Every A/B test at Google, Facebook, Netflix uses these exact methods. Master this, and you can: design rigorous experiments, avoid costly mistakes, prove your ML improvements are real, and make data-driven decisions with confidence. Statistical significance ≠ practical importance—always report effect sizes and confidence intervals!</p>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 1:</strong> A p-value of 0.03 means:</p>
+                            <div class="quiz-option" data-value="a">a) 3% chance the null hypothesis is true</div>
+                            <div class="quiz-option" data-value="b">b) 97% chance the alternative is true</div>
+                            <div class="quiz-option" data-value="c">c) If H₀ is true, we'd see results this extreme 3% of the time</div>
+                            <div class="quiz-option" data-value="d">d) The effect size is 3%</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 2:</strong> Type I error is:</p>
+                            <div class="quiz-option" data-value="a">a) Rejecting H₀ when it's actually true (false positive)</div>
+                            <div class="quiz-option" data-value="b">b) Failing to reject H₀ when it's false (false negative)</div>
+                            <div class="quiz-option" data-value="c">c) Accepting H₀ when it's true</div>
+                            <div class="quiz-option" data-value="d">d) Using the wrong statistical test</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 3:</strong> Statistical power is:</p>
+                            <div class="quiz-option" data-value="a">a) The probability of Type I error</div>
+                            <div class="quiz-option" data-value="b">b) The probability of correctly rejecting a false H₀</div>
+                            <div class="quiz-option" data-value="c">c) Always equal to 1 - α</div>
+                            <div class="quiz-option" data-value="d">d) The effect size of the test</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 4:</strong> Which test should you use to compare means of two independent groups?</p>
+                            <div class="quiz-option" data-value="a">a) One-sample t-test</div>
+                            <div class="quiz-option" data-value="b">b) Paired t-test</div>
+                            <div class="quiz-option" data-value="c">c) Independent two-sample t-test</div>
+                            <div class="quiz-option" data-value="d">d) Chi-square test</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 5:</strong> In A/B testing, "peeking" refers to:</p>
+                            <div class="quiz-option" data-value="a">a) Looking at competitor tests</div>
+                            <div class="quiz-option" data-value="b">b) Checking user feedback</div>
+                            <div class="quiz-option" data-value="c">c) Reviewing the experimental design</div>
+                            <div class="quiz-option" data-value="d">d) Checking results before reaching planned sample size</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 6:</strong> If you increase sample size, what happens to statistical power?</p>
+                            <div class="quiz-option" data-value="a">a) Decreases</div>
+                            <div class="quiz-option" data-value="b">b) Increases</div>
+                            <div class="quiz-option" data-value="c">c) Stays the same</div>
+                            <div class="quiz-option" data-value="d">d) Depends on the effect size</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 7:</strong> Chi-square test is appropriate for:</p>
+                            <div class="quiz-option" data-value="a">a) Comparing means of continuous variables</div>
+                            <div class="quiz-option" data-value="b">b) Testing correlation between continuous variables</div>
+                            <div class="quiz-option" data-value="c">c) Testing independence of categorical variables</div>
+                            <div class="quiz-option" data-value="d">d) Calculating confidence intervals</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 8:</strong> When conducting hypothesis tests, we:</p>
+                            <div class="quiz-option" data-value="a">a) Either reject H₀ or fail to reject H₀</div>
+                            <div class="quiz-option" data-value="b">b) Either reject H₀ or accept H₀</div>
+                            <div class="quiz-option" data-value="c">c) Either accept H₁ or reject H₁</div>
+                            <div class="quiz-option" data-value="d">d) Prove that H₀ is true</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="sampling-clt.html" class="nav-button">← Previous: Sampling & CLT</a>
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button">Back to Course</a>
+                    <a href="bayesian-statistics.html" class="nav-button">Next: Bayesian Statistics →</a>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

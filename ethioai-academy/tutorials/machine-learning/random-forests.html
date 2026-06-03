@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Random Forests - the ensemble learning algorithm that combines multiple Decision Trees for superior predictions and stability.">
+    <meta name="keywords" content="random forests tutorial, ensemble learning, machine learning, bagging, tree ensemble">
+    <title>Random Forests - Ensemble ML Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="random-forests.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Random Forests</span>
+            </div>
+            <h1>Random Forests</h1>
+            <p class="tutorial-intro">Master the ensemble learning algorithm that combines multiple Decision Trees for powerful, stable predictions</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 5</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🌲 Welcome to Random Forests</h2>
+                <p>
+                    Random Forests are one of the most popular and powerful algorithms in machine learning. They solve Decision Trees' biggest problem (overfitting) by combining the predictions of multiple trees — hence the name "forest"!
+                </p>
+                <p>
+                    The key insight: <strong>A group of imperfect predictions often beats a single perfect one.</strong> This phenomenon, called "wisdom of crowds," is the foundation of ensemble learning.
+                </p>
+
+                <div class="example-box">
+                    <p><strong>🤔 Why Trees Alone Fail:</strong></p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Single Decision Tree Problems:</strong><br>
+                        • High variance - small data changes cause big tree changes<br>
+                        • Overfits training data (100% training accuracy, 70% test)<br>
+                        • Greedy splitting - makes locally optimal choices<br>
+                        • Unstable predictions - different runs produce different trees<br><br>
+
+                        <strong>Random Forest Solution:</strong><br>
+                        ✅ Train 100 diverse trees and average their predictions<br>
+                        ✅ Each tree sees different data (bootstrap sampling)<br>
+                        ✅ Each split considers random features<br>
+                        ✅ Result: Lower variance, better generalization, stable predictions
+                    </p>
+                </div>
+
+                <h3>📊 Ensemble Learning: The Big Picture</h3>
+                <p>
+                    Random Forests belong to the <strong>ensemble learning</strong> family, where multiple models combine to make better predictions than any single model.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>🌳 Bagging (Bootstrap Aggregating)</h3>
+                        <p><strong>Strategy:</strong> Train models on random data subsets, average predictions</p>
+                        <p><strong>Examples:</strong> Random Forests</p>
+                        <p><strong>Reduces:</strong> Variance (overfitting)</p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #0d9488;">
+                        <h3>🎯 Boosting</h3>
+                        <p><strong>Strategy:</strong> Train models sequentially, each fixing previous errors</p>
+                        <p><strong>Examples:</strong> Gradient Boosting, XGBoost</p>
+                        <p><strong>Reduces:</strong> Bias (underfitting)</p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>🗳️ Voting/Stacking</h3>
+                        <p><strong>Strategy:</strong> Train different model types, combine via voting</p>
+                        <p><strong>Examples:</strong> VotingClassifier</p>
+                        <p><strong>Reduces:</strong> Both variance and bias</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 What is a Random Forest?</h2>
+                
+                <div class="info-box">
+                    <h3>📖 Formal Definition</h3>
+                    <p>
+                        A <strong>Random Forest</strong> is an ensemble learning algorithm that:
+                        <br>1️⃣ Trains <strong>B</strong> Decision Trees on bootstrap samples (random subsets with replacement)
+                        <br>2️⃣ At each split, considers only <strong>m</strong> random features (out of total <strong>p</strong> features)
+                        <br>3️⃣ Combines predictions via <strong>majority voting</strong> (classification) or <strong>averaging</strong> (regression)
+                        <br><br><strong>Key Innovation:</strong> Double randomness (bootstrap + feature selection) decorrelates trees
+                    </p>
+                </div>
+
+                <h3>🎲 The Wisdom of Crowds</h3>
+                <p>
+                    Imagine asking 100 independent judges to vote on a criminal case. Even if each judge is only 60% accurate, the majority vote is likely to be correct!
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Mathematical Intuition:</strong><br><br>
+                    
+                    <strong>Scenario:</strong> 100 judges, each 60% accurate (independent)<br><br>
+                    
+                    <strong>Single Judge:</strong> 60% chance of correct decision<br><br>
+
+                    <strong>Majority Vote (51+ agree):</strong><br>
+                    • Probability of majority being correct: <strong>~97%!</strong><br>
+                    • Why? Law of large numbers - random errors cancel out<br>
+                    • Systematic errors (bias) remain, but variance drops dramatically<br><br>
+
+                    <strong>Key Condition:</strong> Judges must be <em>independent</em> (not correlated)<br>
+                    ⚠️ If all judges make the same mistakes, voting doesn't help<br>
+                    ✅ Random Forests ensure independence via bootstrap + feature randomness
+                </div>
+
+                <h3>🌲 Forest Analogy</h3>
+                <p>
+                    Think of a forest ecosystem:
+                </p>
+                <ul>
+                    <li>🌳 <strong>Individual Trees:</strong> Each tree is different (different data, different features)</li>
+                    <li>🌲 <strong>Diversity:</strong> Different trees thrive under different conditions</li>
+                    <li>🍃 <strong>Resilience:</strong> If one tree fails, the forest survives</li>
+                    <li>🌍 <strong>Ecosystem Strength:</strong> The whole is greater than the sum of parts</li>
+                </ul>
+
+                <p>
+                    Random Forests work because of three key mechanisms:
+                </p>
+                <ul>
+                    <li><strong>Randomness:</strong> Each tree sees different data and features, reducing correlation</li>
+                    <li><strong>Diversity:</strong> Different trees learn different patterns (low correlation between trees)</li>
+                    <li><strong>Aggregation:</strong> Combining diverse predictions reduces errors (variance reduction)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ How Does Random Forest Work?</h2>
+                
+                <h3>📋 The Algorithm (Step-by-Step)</h3>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <strong>Random Forest Training Algorithm:</strong><br><br>
+                    
+                    <strong>Input:</strong> Dataset D with n samples, p features<br>
+                    <strong>Output:</strong> Ensemble of B decision trees<br><br>\n\n                    <strong>For b = 1 to B:</strong> (repeat for each tree)<br>\n                    \u00a0\u00a0\u00a0\u00a01. <strong>Bootstrap Sample:</strong> Draw n samples from D <em>with replacement</em><br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0→ Creates dataset D_b (some samples repeat, ~37% left out)<br><br>\n\n                    \u00a0\u00a0\u00a0\u00a02. <strong>Train Decision Tree:</strong> On bootstrap sample D_b<br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0<strong>At each node split:</strong><br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0• Randomly select m features (m = √p for classification)<br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0• Find best split among these m features only<br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0• Grow tree fully (no pruning) or until min_samples_leaf<br><br>\n\n                    \u00a0\u00a0\u00a0\u00a03. <strong>Store Tree:</strong> Save tree T_b in ensemble<br><br>\n\n                    <strong>Prediction (New sample x):</strong><br>\n                    \u00a0\u00a0\u00a0\u00a0• <strong>Classification:</strong> Each tree votes, pick majority class<br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0y_pred = mode(T_1(x), T_2(x), ..., T_B(x))<br><br>\n\n                    \u00a0\u00a0\u00a0\u00a0• <strong>Regression:</strong> Average all tree predictions<br>\n                    \u00a0\u00a0\u00a0\u00a0\u00a0\u00a0y_pred = (T_1(x) + T_2(x) + ... + T_B(x)) / B\n                </div>\n\n                <h3>🎲 Bootstrap Sampling Explained</h3>\n                <p>\n                    <strong>Bootstrap sampling</strong> is sampling <em>with replacement</em>. This creates diverse training sets for each tree.\n                </p>\n\n                <div style=\"background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;\">\n                    <strong>Example: Original Dataset has 10 samples</strong><br>\n                    Original: [A, B, C, D, E, F, G, H, I, J]<br><br>\n\n                    <strong>Bootstrap Sample 1 (n=10 samples with replacement):</strong><br>\n                    [A, A, C, E, E, E, F, H, J, J]<br>\n                    \u2022 Sample A appears 2 times<br>\n                    \u2022 Sample E appears 3 times<br>\n                    \u2022 Samples B, D, G, I never selected (these become <strong>OOB samples</strong>)<br><br>\n\n                    <strong>Bootstrap Sample 2 (different random draw):</strong><br>\n                    [B, B, C, D, D, F, G, H, I, I]<br>\n                    \u2022 Different samples, different repetitions<br>\n                    \u2022 Samples A, E, J left out (OOB for tree 2)<br><br>\n\n                    <strong>Key Statistics:</strong><br>\n                    \u2022 Probability a sample is <em>never</em> selected: (1 - 1/n)^n ≈ 36.8%<br>\n                    \u2022 Each tree sees ~63.2% unique samples<br>\n                    \u2022 ~37% of data becomes Out-of-Bag (OOB) set for that tree\n                </div>\n\n                <h3>🎯 Feature Randomness</h3>\n                <p>\n                    At each node split, Random Forests don't consider all features - only a <strong>random subset</strong>.\n                </p>\n\n                <table style=\"width: 100%; border-collapse: collapse; margin: 1.5rem 0;\">\n                    <thead style=\"background: #f1f5f9;\">\n                        <tr>\n                            <th style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">Task Type</th>\n                            <th style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">Default max_features</th>\n                            <th style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">Why?</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\"><strong>Classification</strong></td>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">√p (square root of features)</td>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">Balances diversity and performance</td>\n                        </tr>\n                        <tr>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\"><strong>Regression</strong></td>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">p/3 (one-third of features)</td>\n                            <td style=\"padding: 0.75rem; border: 1px solid #e2e8f0;\">More features needed for continuous predictions</td>\n                        </tr>\n                    </tbody>\n                </table>\n\n                <div class=\"example-box\">\n                    <p><strong>📊 Example: 16 Features</strong></p>\n                    <p style=\"margin-top: 1rem;\">\n                        <strong>Classification (max_features=√16=4):</strong><br>\n                        \u2022 At each split, randomly pick 4 out of 16 features<br>\n                        \u2022 Find best split among these 4<br>\n                        \u2022 Different nodes see different feature subsets<br>\n                        \u2022 Result: Trees are decorrelated (learn different patterns)<br><br>\n\n                        <strong>Without feature randomness (max_features=16):</strong><br>\n                        \u2022 All trees would pick the same strongest features first<br>\n                        \u2022 Trees would be highly correlated<br>\n                        \u2022 Ensemble wouldn't help much (just averaging similar predictions)\n                    </p>\n                </div>\n\n                <h3>🗳️ Prediction Aggregation</h3>\n                <div class=\"example-box\">\n                    <p><strong>Classification Example:</strong> Email spam detection with 5 trees</p>\n                    <p style=\"margin-top: 1rem;\">\n                        <strong>New email arrives...</strong><br><br>\n                        Tree 1: Spam (confidence: 0.8)<br>\n                        Tree 2: Spam (confidence: 0.7)<br>\n                        Tree 3: Not Spam (confidence: 0.6)<br>\n                        Tree 4: Spam (confidence: 0.9)<br>\n                        Tree 5: Not Spam (confidence: 0.5)<br><br>\n\n                        <strong>Hard Voting (Majority):</strong><br>\n                        Spam: 3 votes | Not Spam: 2 votes<br>\n                        <strong>Final Prediction: Spam ✉️</strong><br><br>\n\n                        <strong>Soft Voting (Average Probabilities):</strong><br>\n                        P(Spam) = (0.8 + 0.7 + 0.4 + 0.9 + 0.5) / 5 = 0.66<br>\n                        <strong>Final Prediction: Spam (66% confidence)</strong>\n                    </p>\n                </div>\n\n                <div class=\"example-box\">\n                    <p><strong>Regression Example:</strong> House price prediction with 3 trees</p>\n                    <p style=\"margin-top: 1rem;\">\n                        Tree 1 predicts: $320,000<br>\n                        Tree 2 predicts: $340,000<br>\n                        Tree 3 predicts: $330,000<br><br>\n\n                        <strong>Average:</strong> ($320k + $340k + $330k) / 3 = <strong>$330,000</strong>\n                    </p>\n                </div>\n\n                <h3>📦 Out-of-Bag (OOB) Error</h3>\n                <p>\n                    One of Random Forest's most clever features: <strong>built-in validation</strong> without a separate test set!\n                </p>\n\n                <div style=\"background: #ecfdf5; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;\">\n                    <strong>How OOB Error Works:</strong><br><br>\n                    \n                    1\ufe0f\u20e3 For each sample in training data:<br>\n                    \u00a0\u00a0\u00a0• Find all trees that did NOT use that sample (OOB trees)<br>\n                    \u00a0\u00a0\u00a0• Average ~37 trees per sample (if 100 total trees)<br><br>\n\n                    2\ufe0f\u20e3 Make prediction using only OOB trees<br>\n                    \u00a0\u00a0\u00a0• This is like a validation set prediction!<br><br>\n\n                    3\ufe0f\u20e3 Compare OOB predictions to true labels<br>\n                    \u00a0\u00a0\u00a0• Calculate OOB error (misclassification rate)<br><br>\n\n                    <strong>Result:</strong> Unbiased estimate of test error, no separate validation needed!<br>\n                    <strong>Saves time:</strong> No need to split data into train/validation/test\n                </div>\n\n                <div class=\"success-box\">\n                    <p>✅ <strong>Pro Tip:</strong> OOB error is approximately equal to test error from cross-validation, but much faster to compute! Use <code>oob_score=True</code> in sklearn.</p>\n                </div>\n            </section>
+
+            <section class="content-section">
+                <h2>💻 Random Forest in Python</h2>
+                
+                <h3>🎯 Complete Classification Example</h3>
+                <pre><code class="language-python"># Complete Random Forest Classification: Iris Dataset
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training samples: {len(X_train)}")
+print(f"Test samples: {len(X_test)}")
+
+# Create Random Forest
+forest = RandomForestClassifier(
+    n_estimators=100,        # Number of trees
+    criterion='gini',        # or 'entropy'
+    max_depth=None,          # Grow trees fully
+    min_samples_split=2,
+    min_samples_leaf=1,
+    max_features='sqrt',     # √p features per split
+    bootstrap=True,          # Use bootstrap samples
+    oob_score=True,          # Calculate OOB error
+    n_jobs=-1,               # Use all CPU cores
+    random_state=42
+)
+
+# Train
+forest.fit(X_train, y_train)
+
+# Evaluate
+train_acc = forest.score(X_train, y_train)
+test_acc = forest.score(X_test, y_test)
+oob_acc = forest.oob_score_
+
+print(f"\\nTraining Accuracy: {train_acc:.2%}")
+print(f"OOB Accuracy: {oob_acc:.2%}")  # Validation estimate
+print(f"Test Accuracy: {test_acc:.2%}")
+
+# Cross-validation
+cv_scores = cross_val_score(forest, X_train, y_train, cv=5)
+print(f"\\n5-Fold CV: {cv_scores.mean():.2%} (+/- {cv_scores.std() * 2:.2%})")
+
+# Predictions
+y_pred = forest.predict(X_test)
+y_proba = forest.predict_proba(X_test)
+
+print(f"\\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=iris.target_names))
+
+# Feature importance
+print("\\n🌟 Feature Importance:")
+importances = forest.feature_importances_
+indices = np.argsort(importances)[::-1]
+for i in indices:
+    print(f"  {iris.feature_names[i]}: {importances[i]:.1%}")</code></pre>
+
+                <h3>📊 Regression Example: House Prices</h3>
+                <pre><code class="language-python"># Random Forest Regression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+import numpy as np
+
+# Sample data: [size_sqft, bedrooms, age_years, distance_to_city_km]
+X_train = np.array([
+    [1500, 3, 10, 5],
+    [2000, 4, 5, 3],
+    [1200, 2, 20, 8],
+    [2500, 4, 2, 2],
+    [1800, 3, 8, 6],
+    [2200, 4, 3, 4],
+    [1600, 3, 12, 7],
+    [1900, 3, 6, 5]
+])
+y_train = np.array([250000, 350000, 180000, 420000, 300000, 380000, 240000, 320000])
+
+# Train Random Forest Regressor
+forest_reg = RandomForestRegressor(
+    n_estimators=100,
+    max_depth=10,
+    min_samples_split=2,
+    oob_score=True,
+    random_state=42
+)
+forest_reg.fit(X_train, y_train)
+
+# Predictions
+new_houses = np.array([
+    [1700, 3, 12, 6],
+    [2300, 4, 1, 2]
+])
+predictions = forest_reg.predict(new_houses)
+
+print("House Price Predictions:")
+for i, pred in enumerate(predictions, 1):
+    print(f"  House {i}: ${pred:,.0f}")
+
+# Model performance
+train_pred = forest_reg.predict(X_train)
+mse = mean_squared_error(y_train, train_pred)
+rmse = np.sqrt(mse)
+mae = mean_absolute_error(y_train, train_pred)
+r2 = r2_score(y_train, train_pred)
+
+print(f"\\nModel Performance:")
+print(f"  RMSE: ${rmse:,.0f}")
+print(f"  MAE: ${mae:,.0f}")
+print(f"  R² Score: {r2:.2%}")
+print(f"  OOB Score: {forest_reg.oob_score_:.2%}")
+
+# Feature importance
+features = ['Size (sqft)', 'Bedrooms', 'Age (years)', 'Distance (km)']
+print("\\n🏠 Feature Importance:")
+for feat, imp in zip(features, forest_reg.feature_importances_):
+    print(f"  {feat}: {imp:.1%}")</code></pre>
+
+                <h3>📈 Visualizing Random Forests</h3>
+                <pre><code class="language-python"># Visualization 1: Feature Importance Bar Chart
+import matplotlib.pyplot as plt
+
+importances = forest.feature_importances_
+indices = np.argsort(importances)[::-1]
+
+plt.figure(figsize=(10, 6))
+plt.title("Feature Importance in Random Forest")
+plt.bar(range(X.shape[1]), importances[indices])
+plt.xticks(range(X.shape[1]), [iris.feature_names[i] for i in indices], rotation=45)
+plt.ylabel('Importance')
+plt.xlabel('Feature')
+plt.tight_layout()
+plt.show()
+
+# Visualization 2: Number of Trees vs Performance
+train_scores = []
+oob_scores = []
+tree_counts = range(1, 201, 10)
+
+for n_trees in tree_counts:
+    rf = RandomForestClassifier(n_estimators=n_trees, oob_score=True, random_state=42)
+    rf.fit(X_train, y_train)
+    train_scores.append(rf.score(X_train, y_train))
+    oob_scores.append(rf.oob_score_)
+
+plt.figure(figsize=(10, 6))
+plt.plot(tree_counts, train_scores, label='Training Accuracy', marker='o')
+plt.plot(tree_counts, oob_scores, label='OOB Accuracy', marker='s')
+plt.xlabel('Number of Trees')
+plt.ylabel('Accuracy')
+plt.title('Random Forest: Performance vs Number of Trees')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Visualization 3: Decision Boundaries (2D)
+from matplotlib.colors import ListedColormap
+
+# Use only 2 features for 2D visualization
+X_2d = X[:, [2, 3]]  # petal length, petal width
+y_binary = (y == 2).astype(int)  # Virginica vs others
+
+X_train_2d, X_test_2d, y_train_bin, y_test_bin = train_test_split(
+    X_2d, y_binary, test_size=0.2, random_state=42
+)
+
+forest_2d = RandomForestClassifier(n_estimators=100, random_state=42)
+forest_2d.fit(X_train_2d, y_train_bin)
+
+# Create mesh
+x_min, x_max = X_2d[:, 0].min() - 0.5, X_2d[:, 0].max() + 0.5
+y_min, y_max = X_2d[:, 1].min() - 0.5, X_2d[:, 1].max() + 0.5
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                     np.arange(y_min, y_max, 0.02))
+
+Z = forest_2d.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+plt.figure(figsize=(10, 6))
+plt.contourf(xx, yy, Z, alpha=0.4, cmap=ListedColormap(['#FFAAAA', '#AAAAFF']))
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=y_binary, cmap=ListedColormap(['#FF0000', '#0000FF']),
+            edgecolor='black', s=50)
+plt.xlabel('Petal Length (cm)')
+plt.ylabel('Petal Width (cm)')
+plt.title('Random Forest Decision Boundaries')
+plt.colorbar()
+plt.show()
+
+# Visualization 4: Individual Tree Inspection
+from sklearn.tree import plot_tree
+
+# Visualize one tree from the forest
+plt.figure(figsize=(20, 10))
+plot_tree(
+    forest.estimators_[0],  # First tree
+    feature_names=iris.feature_names,
+    class_names=iris.target_names,
+    filled=True,
+    max_depth=3  # Only show first 3 levels
+)
+plt.title("Single Tree from Random Forest (Depth 3)")
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>🔧 Comparing Random Forest vs Decision Tree</h3>
+                <pre><code class="language-python"># Head-to-Head Comparison
+from sklearn.tree import DecisionTreeClassifier
+
+# Decision Tree (single)
+tree = DecisionTreeClassifier(max_depth=5, random_state=42)
+tree.fit(X_train, y_train)
+
+# Random Forest
+forest = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42, oob_score=True)
+forest.fit(X_train, y_train)
+
+# Comparison
+print("Performance Comparison:")
+print(f"\\nDecision Tree:")
+print(f"  Training: {tree.score(X_train, y_train):.2%}")
+print(f"  Test: {tree.score(X_test, y_test):.2%}")
+print(f"  Difference: {tree.score(X_train, y_train) - tree.score(X_test, y_test):.2%} (overfitting)")
+
+print(f"\\nRandom Forest:")
+print(f"  Training: {forest.score(X_train, y_train):.2%}")
+print(f"  OOB: {forest.oob_score_:.2%}")
+print(f"  Test: {forest.score(X_test, y_test):.2%}")
+print(f"  Difference: {forest.score(X_train, y_train) - forest.score(X_test, y_test):.2%} (less overfitting)")
+
+# Stability test: Train multiple times with different random states
+tree_scores = []
+forest_scores = []
+
+for seed in range(10):
+    X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=seed)
+    
+    tree = DecisionTreeClassifier(max_depth=5, random_state=42)
+    tree.fit(X_tr, y_tr)
+    tree_scores.append(tree.score(X_te, y_te))
+    
+    forest = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+    forest.fit(X_tr, y_tr)
+    forest_scores.append(forest.score(X_te, y_te))
+
+print(f"\\nStability Across 10 Different Train/Test Splits:")
+print(f"Decision Tree: {np.mean(tree_scores):.2%} (+/- {np.std(tree_scores):.2%})")
+print(f"Random Forest: {np.mean(forest_scores):.2%} (+/- {np.std(forest_scores):.2%})")
+print(f"\\nRandom Forest is {np.std(tree_scores)/np.std(forest_scores):.1f}x more stable!")</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Key Insight:</strong> Random Forests consistently outperform single Decision Trees with similar hyperparameters. They have lower variance (more stable), better test accuracy, and require less tuning!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎨 Hyperparameter Tuning Guide</h2>
+                
+                <h3>📊 Key Hyperparameters Explained</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Parameter</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">What It Does</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Default</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Typical Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>n_estimators</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Number of trees in forest</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100-1000</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>max_depth</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Maximum depth of each tree</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">None (unlimited)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">10-50 or None</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>max_features</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Features to consider per split</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">'sqrt' (classification)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">'sqrt', 'log2', None</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>min_samples_split</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Min samples to split node</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">2</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">2-20</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>min_samples_leaf</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">Min samples in leaf nodes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">1</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">1-10</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>bootstrap</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">Use bootstrap sampling</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">True</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">True (almost always)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>oob_score</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">Calculate OOB error</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">False</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">True (for validation)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>n_jobs</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">Parallel processing cores</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">None (1 core)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;\">-1 (all cores)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🎯 Hyperparameter Tuning Strategy</h3>
+                <pre><code class="language-python"># Method 1: Manual Tuning (Start Here)
+from sklearn.ensemble import RandomForestClassifier
+
+# Good starting point for most problems
+forest = RandomForestClassifier(
+    n_estimators=100,        # Usually enough
+    max_depth=None,          # Let trees grow fully
+    max_features='sqrt',     # Default for classification
+    min_samples_split=2,     # Default
+    min_samples_leaf=1,      # Default
+    bootstrap=True,
+    oob_score=True,          # Get free validation score
+    n_jobs=-1,               # Use all CPU cores
+    random_state=42
+)
+forest.fit(X_train, y_train)
+
+print(f"OOB Score: {forest.oob_score_:.2%}")
+print(f"Test Score: {forest.score(X_test, y_test):.2%}")
+
+# Method 2: GridSearchCV (Exhaustive Search)
+from sklearn.model_selection import GridSearchCV
+
+param_grid = {
+    'n_estimators': [100, 200, 500],
+    'max_depth': [10, 20, None],
+    'max_features': ['sqrt', 'log2'],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+grid_search = GridSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    verbose=1
+)
+grid_search.fit(X_train, y_train)
+
+print(f"\\nBest parameters: {grid_search.best_params_}")
+print(f"Best CV score: {grid_search.best_score_:.2%}")
+print(f"Test score: {grid_search.score(X_test, y_test):.2%}")
+
+# Method 3: RandomizedSearchCV (Faster Alternative)
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import randint
+
+param_dist = {
+    'n_estimators': randint(100, 1000),
+    'max_depth': [10, 20, 30, None],
+    'max_features': ['sqrt', 'log2', None],
+    'min_samples_split': randint(2, 20),
+    'min_samples_leaf': randint(1, 10)
+}
+
+random_search = RandomizedSearchCV(
+    RandomForestClassifier(random_state=42),
+    param_distributions=param_dist,
+    n_iter=50,  # Try 50 random combinations
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    random_state=42
+)
+random_search.fit(X_train, y_train)
+
+print(f"\\nBest parameters: {random_search.best_params_}")
+print(f"Best CV score: {random_search.best_score_:.2%}")</code></pre>
+
+                <h3>💡 Tuning Guidelines</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>n_estimators (Number of Trees)</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• More is better (up to a point)</li>
+                            <li>• Returns diminish after ~200-500</li>
+                            <li>• Increases training time linearly</li>
+                            <li>• <strong>Advice:</strong> Start with 100, increase if time allows</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>max_depth</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• None = unlimited (default)</li>
+                            <li>• Lower depth = less overfitting</li>
+                            <li>• Deeper trees capture more patterns</li>
+                            <li>• <strong>Advice:</strong> Use None, only limit if overfitting</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>max_features</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• 'sqrt' = √p (classification default)</li>
+                            <li>• Lower = more diversity, less correlation</li>
+                            <li>• Higher = stronger individual trees</li>
+                            <li>• <strong>Advice:</strong> Keep default 'sqrt'</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fce7f3; padding: 1rem; border-radius: 8px; border-left: 4px solid #ec4899;">
+                        <strong>min_samples_split / min_samples_leaf</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Higher = simpler trees, less overfitting</li>
+                            <li>• Lower = more complex trees</li>
+                            <li>• Useful for noisy data</li>
+                            <li>• <strong>Advice:</strong> Increase if overfitting (2→10)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p>💡 <strong>Pro Tip:</strong> Random Forests have excellent defaults! Start with default parameters and only tune if needed. The biggest performance gain comes from <code>n_estimators</code> (100 → 500) and ensuring you have enough data.</p>
+                </div>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Common Mistake:</strong> Don't overfit to validation set! If you tune extensively on the same validation set, you'll leak information. Use nested cross-validation or hold out a final test set.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Handles Overfitting</h3>
+                        <p>Much more robust than single Decision Trees</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Great Performance</h3>
+                        <p>Competitive with state-of-the-art algorithms</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Feature Importance</h3>
+                        <p>Automatic feature ranking and selection</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Less Interpretable</h3>
+                        <p>100 trees are hard to visualize/explain</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Computationally Expensive</h3>
+                        <p>Training many trees takes time and memory</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Bias Toward Majority Class</h3>
+                        <p>Can struggle with imbalanced datasets</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Troubleshooting Guide</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Problem</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Symptoms</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Slow Training</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Takes 10+ minutes to train</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Set n_jobs=-1 (use all cores)<br>• Reduce n_estimators (500→100)<br>• Limit max_depth<br>• Sample training data for prototyping</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>High Memory Usage</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Out of memory errors</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Reduce n_estimators<br>• Set max_depth limit<br>• Use max_leaf_nodes<br>• Process in batches</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Imbalanced Classes</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Predicts majority class always</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Use class_weight='balanced'<br>• Set class_weight={0:1, 1:10}<br>• Oversample minority (SMOTE)<br>• Use stratified sampling</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Overfitting</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Training 98%, Test 82%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Increase min_samples_split (2→10)<br>• Increase min_samples_leaf (1→5)<br>• Set max_depth limit<br>• Reduce max_features</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Poor Performance</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Accuracy below baseline</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Increase n_estimators (100→500)<br>• Check for data leakage<br>• Scale features (though RF is robust)<br>• Try feature engineering</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Feature Importance = 0</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">All features show 0% importance</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Check for constant features<br>• Remove duplicate features<br>• Ensure features have variance<br>• Check data preprocessing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🐛 Common Code Issues</h3>
+                <pre><code class="language-python"># ❌ WRONG: Not using all CPU cores
+forest = RandomForestClassifier(n_estimators=1000)  # Will take forever!
+
+# ✅ RIGHT: Parallelize training
+forest = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
+
+# ❌ WRONG: Ignoring OOB score
+forest = RandomForestClassifier(n_estimators=100)
+forest.fit(X_train, y_train)
+# Missing free validation!
+
+# ✅ RIGHT: Use OOB for validation
+forest = RandomForestClassifier(n_estimators=100, oob_score=True)
+forest.fit(X_train, y_train)
+print(f"OOB Score: {forest.oob_score_:.2%}")
+
+# ❌ WRONG: Extensive hyperparameter tuning
+# Spending hours tuning when defaults work fine
+
+# ✅ RIGHT: Start with defaults, tune only if needed
+forest = RandomForestClassifier()  # Defaults are excellent!
+
+# ❌ WRONG: Setting bootstrap=False
+forest = RandomForestClassifier(bootstrap=False)
+# This breaks the bagging mechanism!
+
+# ✅ RIGHT: Always use bootstrap (default)
+forest = RandomForestClassifier(bootstrap=True)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Practice Projects</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>📧 Project 1: Email Spam Detection</h3>
+                        <p><strong>Difficulty:</strong> Beginner</p>
+                        <p><strong>Dataset:</strong> SMS Spam Collection</p>
+                        <p><strong>Goal:</strong> Build spam filter with Random Forest</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Use TfidfVectorizer for text features</li>
+                            <li>• Train Random Forest classifier</li>
+                            <li>• Compare with single Decision Tree</li>
+                            <li>• Analyze feature importance (spam words)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #0d9488;">
+                        <h3>💳 Project 2: Credit Card Fraud</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> Kaggle Credit Card Fraud</p>
+                        <p><strong>Goal:</strong> Detect fraudulent transactions</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle severe class imbalance (0.17% fraud)</li>
+                            <li>• Use class_weight='balanced'</li>
+                            <li>• Calculate precision, recall, F1</li>
+                            <li>• Plot ROC curve and AUC</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>🏠 Project 3: House Price Prediction</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> Ames Housing Dataset</p>
+                        <p><strong>Goal:</strong> Predict house prices with RandomForestRegressor</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle mixed numeric/categorical features</li>
+                            <li>• Compare with Linear Regression</li>
+                            <li>• Identify most important price factors</li>
+                            <li>• Tune n_estimators (100, 200, 500)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #8b5cf6;">
+                        <h3>🌍 Project 4: Customer Churn Prediction</h3>
+                        <p><strong>Difficulty:</strong> Advanced</p>
+                        <p><strong>Dataset:</strong> Telco Customer Churn</p>
+                        <p><strong>Goal:</strong> Predict which customers will leave</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Feature engineering (tenure buckets, etc.)</li>
+                            <li>• Compare RF with Logistic Regression</li>
+                            <li>• Calculate customer lifetime value impact</li>
+                            <li>• Create actionable insights for business</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📝 Project Starter Template</h3>
+                <pre><code class="language-python"># Random Forest Project Template
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import pandas as pd
+import numpy as np
+
+# 1. Load and explore data
+# df = pd.read_csv('your_dataset.csv')
+# X = df.drop('target', axis=1)
+# y = df['target']
+
+# 2. Data preprocessing
+# - Handle missing values
+# - Encode categorical features
+# - Feature engineering
+
+# 3. Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 4. Train Random Forest (start with defaults!)
+forest = RandomForestClassifier(
+    n_estimators=100,
+    oob_score=True,
+    n_jobs=-1,
+    random_state=42
+)
+forest.fit(X_train, y_train)
+
+# 5. Evaluate
+print(f"Training Accuracy: {forest.score(X_train, y_train):.2%}")
+print(f"OOB Accuracy: {forest.oob_score_:.2%}")
+print(f"Test Accuracy: {forest.score(X_test, y_test):.2%}")
+
+# 6. Cross-validation
+cv_scores = cross_val_score(forest, X_train, y_train, cv=5)
+print(f"\\nCV Accuracy: {cv_scores.mean():.2%} (+/- {cv_scores.std()*2:.2%})")
+
+# 7. Feature importance
+importances = pd.DataFrame({
+    'feature': X.columns,
+    'importance': forest.feature_importances_
+}).sort_values('importance', ascending=False)
+print(f"\\n🌟 Top 10 Features:")
+print(importances.head(10))
+
+# 8. Detailed metrics
+y_pred = forest.predict(X_test)
+print(f"\\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# 9. (Optional) Hyperparameter tuning
+# from sklearn.model_selection import GridSearchCV
+# param_grid = {'n_estimators': [100, 200, 500]}
+# grid = GridSearchCV(forest, param_grid, cv=5)
+# grid.fit(X_train, y_train)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>✅ What You've Learned:</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>Core Concepts</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Ensemble learning fundamentals</li>
+                            <li>• Bagging (Bootstrap AGGregatING)</li>
+                            <li>• Majority voting and averaging</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0d9488;">
+                        <strong>Algorithm Details</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Bootstrap sampling (with replacement)</li>
+                            <li>• Feature randomness at each split</li>
+                            <li>• Out-of-Bag (OOB) error estimation</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>Practical Skills</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• sklearn RandomForestClassifier/Regressor</li>
+                            <li>• Hyperparameter tuning strategies</li>
+                            <li>• Feature importance analysis</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <strong>Key Advantages</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Reduces overfitting vs single trees</li>
+                            <li>• Excellent default parameters</li>
+                            <li>• Robust to noise and outliers</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>🎓 Key Takeaways</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; width: 30%; background: #f1f5f9;"><strong>Best Feature</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Excellent performance with minimal tuning - great defaults!</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>Main Innovation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Double randomness (bootstrap + feature selection) decorrelates trees</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>When to Use</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Default choice for tabular data, when you need reliability + interpretability</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>Limitation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Less interpretable than single tree, memory/compute intensive</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>vs Decision Trees</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Lower variance, better accuracy, more stable, but slower and less interpretable</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🔑 Quick Reference Card</h3>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <pre style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; overflow-x: auto;"><code class="language-python"># Random Forest Essentials Cheat Sheet
+
+# Classification
+from sklearn.ensemble import RandomForestClassifier
+forest = RandomForestClassifier(
+    n_estimators=100,      # Number of trees
+    max_depth=None,        # Unlimited depth
+    max_features='sqrt',   # √p features per split
+    min_samples_split=2,   # Default
+    min_samples_leaf=1,    # Default
+    bootstrap=True,        # Use bagging
+    oob_score=True,        # Get OOB error
+    n_jobs=-1,             # Parallel processing
+    random_state=42
+)
+forest.fit(X_train, y_train)
+
+# Regression
+from sklearn.ensemble import RandomForestRegressor
+forest_reg = RandomForestRegressor(
+    n_estimators=100,
+    max_features='auto'    # p/3 for regression
+)
+
+# Key Methods
+forest.predict(X_test)              # Predictions
+forest.predict_proba(X_test)        # Probabilities
+forest.feature_importances_         # Importance
+forest.oob_score_                   # OOB validation
+forest.estimators_                  # Access individual trees
+
+# Quick Evaluation
+print(f"OOB: {forest.oob_score_:.2%}")
+print(f"Test: {forest.score(X_test, y_test):.2%}")
+
+# Hyperparameter Tuning (if needed)
+from sklearn.model_selection import RandomizedSearchCV
+params = {
+    'n_estimators': [100, 200, 500],
+    'max_depth': [10, 20, None]
+}
+search = RandomizedSearchCV(forest, params, n_iter=10, cv=5)
+search.fit(X_train, y_train)</code></pre>
+                </div>
+
+                <h3>🚀 What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Support Vector Machines</strong>, we'll learn a completely different approach: finding optimal boundaries that maximize the margin between classes. Different philosophy, often superior results on smaller datasets!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've mastered Random Forests - one of the most reliable and widely-used machine learning algorithms. You now understand ensemble learning, bagging, bootstrap sampling, feature randomness, and OOB error. Random Forests are production-ready and used by top companies worldwide for critical applications!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Random Forests!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is a Random Forest?</h4>
+                        <div class="quiz-option" data-value="A">A) A single decision tree</div>
+                        <div class="quiz-option" data-value="B">B) An ensemble of many decision trees</div>
+                        <div class="quiz-option" data-value="C">C) A type of neural network</div>
+                        <div class="quiz-option" data-value="D">D) A clustering algorithm</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. How does a Random Forest make predictions?</h4>
+                        <div class="quiz-option" data-value="A">A) Uses only the best tree</div>
+                        <div class="quiz-option" data-value="B">B) Uses the deepest tree</div>
+                        <div class="quiz-option" data-value="C">C) Averages predictions from all trees (regression) or votes (classification)</div>
+                        <div class="quiz-option" data-value="D">D) Picks a random tree each time</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is bootstrap sampling in Random Forests?</h4>
+                        <div class="quiz-option" data-value="A">A) Randomly sampling data with replacement to train each tree</div>
+                        <div class="quiz-option" data-value="B">B) Removing outliers from data</div>
+                        <div class="quiz-option" data-value="C">C) Normalizing feature values</div>
+                        <div class="quiz-option" data-value="D">D) Splitting data into train/test sets</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What hyperparameter controls the number of trees in a Random Forest?</h4>
+                        <div class="quiz-option" data-value="A">A) max_depth</div>
+                        <div class="quiz-option" data-value="B">B) min_samples_split</div>
+                        <div class="quiz-option" data-value="C">C) learning_rate</div>
+                        <div class="quiz-option" data-value="D">D) n_estimators</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What is Out-of-Bag (OOB) error?</h4>
+                        <div class="quiz-option" data-value="A">A) Error on the test set</div>
+                        <div class="quiz-option" data-value="B">B) Validation error computed using samples not used in training each tree</div>
+                        <div class="quiz-option" data-value="C">C) Training error</div>
+                        <div class="quiz-option" data-value="D">D) Error due to missing values</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="decision-trees.html" class="btn btn-secondary">← Previous: Decision Trees</a>
+                <a href="support-vector-machines.html" class="btn btn-primary">Next: Support Vector Machines →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

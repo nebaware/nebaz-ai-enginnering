@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Python fundamentals including variables, data types, and basic syntax">
+    <title>Python Basics - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../ai-tutor/frontend/aitutor-widget.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Python Basics</h1>
+            <p class="page-subtitle">Get started with Python programming fundamentals</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <h2>Introduction</h2>
+        <p>Welcome to Python programming! Python is one of the most popular and versatile programming languages in the world. It's used for web development, data science, artificial intelligence, automation, and much more. In this tutorial, you'll learn the fundamental building blocks of Python programming.</p>
+        
+        <h3>What You'll Learn</h3>
+        <ul>
+            <li>How to write and run Python programs</li>
+            <li>Working with variables and data types</li>
+            <li>Basic operators and expressions</li>
+            <li>Input and output operations</li>
+            <li>Comments and code documentation</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Tip:</strong> Python is known for its simple, readable syntax. It's perfect for beginners and powerful enough for experts!</p>
+        </div>
+        
+        <h2>Your First Python Program</h2>
+        <p>Let's start with the classic "Hello, World!" program. This simple program displays text on the screen.</p>
+        
+        <pre><code># This is your first Python program
+print("Hello, World!")</code></pre>
+        
+        <p>To run this program:</p>
+        <ol>
+            <li>Open your text editor or Python IDE</li>
+            <li>Type the code above</li>
+            <li>Save the file as <code>hello.py</code></li>
+            <li>Run it using <code>python hello.py</code> in your terminal</li>
+        </ol>
+
+        <h2>Variables and Data Types</h2>
+        <p>Variables are containers for storing data values. In Python, you don't need to declare variable types explicitly - Python figures it out automatically!</p>
+
+        <h3>Creating Variables</h3>
+        <pre><code># String variable
+name = "Alice"
+
+# Integer variable
+age = 25
+
+# Float variable
+height = 5.6
+
+# Boolean variable
+is_student = True
+
+# Print variables
+print(name)
+print(age)
+print(height)
+print(is_student)</code></pre>
+
+        <h3>Common Data Types</h3>
+        <ul>
+            <li><strong>String (str)</strong> - Text data: <code>"Hello"</code></li>
+            <li><strong>Integer (int)</strong> - Whole numbers: <code>42</code></li>
+            <li><strong>Float (float)</strong> - Decimal numbers: <code>3.14</code></li>
+            <li><strong>Boolean (bool)</strong> - True or False values: <code>True</code></li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Tip:</strong> You can check a variable's type using the <code>type()</code> function: <code>type(name)</code></p>
+        </div>
+
+        <h2>Basic Operators</h2>
+        <p>Python supports various operators for performing calculations and comparisons.</p>
+
+        <h3>Arithmetic Operators</h3>
+        <pre><code># Addition
+result = 10 + 5      # 15
+
+# Subtraction
+result = 10 - 5      # 5
+
+# Multiplication
+result = 10 * 5      # 50
+
+# Division
+result = 10 / 5      # 2.0
+
+# Floor Division
+result = 10 // 3     # 3
+
+# Modulus (remainder)
+result = 10 % 3      # 1
+
+# Exponentiation
+result = 2 ** 3      # 8</code></pre>
+
+        <h3>Comparison Operators</h3>
+        <pre><code>x = 10
+y = 5
+
+print(x > y)    # True (greater than)
+print(x < y)    # False (less than)
+print(x == y)   # False (equal to)
+print(x != y)   # True (not equal to)
+print(x >= y)   # True (greater than or equal)
+print(x <= y)   # False (less than or equal)</code></pre>
+
+        <h2>User Input and Output</h2>
+        <p>Python makes it easy to get input from users and display output.</p>
+
+        <h3>Getting User Input</h3>
+        <pre><code># Ask user for their name
+name = input("What is your name? ")
+print("Hello, " + name + "!")
+
+# Ask for age (convert to integer)
+age = int(input("How old are you? "))
+print("You are " + str(age) + " years old.")</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Note:</strong> The <code>input()</code> function always returns a string. Use <code>int()</code> or <code>float()</code> to convert to numbers.</p>
+        </div>
+
+        <h3>String Formatting</h3>
+        <p>Python offers multiple ways to format strings:</p>
+        
+        <pre><code>name = "Alice"
+age = 25
+
+# Method 1: Concatenation
+print("My name is " + name + " and I am " + str(age))
+
+# Method 2: f-strings (recommended)
+print(f"My name is {name} and I am {age}")
+
+# Method 3: format() method
+print("My name is {} and I am {}".format(name, age))</code></pre>
+
+        <h2>Comments</h2>
+        <p>Comments are notes in your code that Python ignores. They help you and others understand your code.</p>
+
+        <pre><code># This is a single-line comment
+
+"""
+This is a multi-line comment.
+It can span multiple lines.
+Use it for longer explanations.
+"""
+
+x = 5  # You can also add comments after code</code></pre>
+
+        <h2>Practice Exercise</h2>
+        <p>Now it's your turn! Try creating a simple program that:</p>
+        <ol>
+            <li>Asks the user for their name</li>
+            <li>Asks for their favorite number</li>
+            <li>Calculates their number multiplied by 2</li>
+            <li>Prints a message with all this information</li>
+        </ol>
+
+        <div class="info-box">
+            <p>💡 <strong>Challenge:</strong> Try to use f-strings for formatting your output!</p>
+        </div>
+
+        <h3>Example Solution</h3>
+        <pre><code># Get user input
+name = input("What is your name? ")
+fav_number = int(input("What is your favorite number? "))
+
+# Calculate
+doubled = fav_number * 2
+
+# Display result
+print(f"Hello {name}! Your favorite number is {fav_number}.")
+print(f"When doubled, it becomes {doubled}!")</code></pre>
+
+        <h2>Summary</h2>
+        <p>Congratulations! You've learned the basics of Python programming. Here's what we covered:</p>
+        <ul>
+            <li>Writing your first Python program with <code>print()</code></li>
+            <li>Creating and using variables</li>
+            <li>Understanding different data types (string, int, float, bool)</li>
+            <li>Working with arithmetic and comparison operators</li>
+            <li>Getting user input with <code>input()</code></li>
+            <li>Formatting output with f-strings</li>
+            <li>Adding comments to document your code</li>
+        </ul>
+
+        <h3>What's Next?</h3>
+        <p>Now that you understand Python basics, you're ready to learn about:</p>
+        <ul>
+            <li>Control flow (if statements, loops)</li>
+            <li>Functions and code organization</li>
+            <li>Data structures (lists, dictionaries)</li>
+            <li>File operations</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Keep Practicing:</strong> The best way to learn programming is by writing code. Try modifying the examples and creating your own programs!</p>
+        </div>
+
+        <h2>🚀 Ready to Build Something?</h2>
+        <p>Now that you understand Python basics, let's create your first real project! This hands-on exercise will help you practice everything you've learned.</p>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Python basics!</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: Which function is used to display output in Python?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) display()</div>
+                            <div class="quiz-option" data-value="b">B) print()</div>
+                            <div class="quiz-option" data-value="c">C) output()</div>
+                            <div class="quiz-option" data-value="d">D) show()</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: What data type is the value True?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) String</div>
+                            <div class="quiz-option" data-value="b">B) Integer</div>
+                            <div class="quiz-option" data-value="c">C) Boolean</div>
+                            <div class="quiz-option" data-value="d">D) Float</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: How do you get user input in Python?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) input()</div>
+                            <div class="quiz-option" data-value="b">B) get()</div>
+                            <div class="quiz-option" data-value="c">C) read()</div>
+                            <div class="quiz-option" data-value="d">D) scan()</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <h3>Question 4: What symbol starts a comment in Python?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) //</div>
+                            <div class="quiz-option" data-value="b">B) /*</div>
+                            <div class="quiz-option" data-value="c">C) --</div>
+                            <div class="quiz-option" data-value="d">D) #</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: What does the ** operator do?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) Multiplication</div>
+                            <div class="quiz-option" data-value="b">B) Exponentiation (power)</div>
+                            <div class="quiz-option" data-value="c">C) Division</div>
+                            <div class="quiz-option" data-value="d">D) Addition</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="variables.html" class="btn btn-secondary">← Previous: Variables</a>
+                <a href="../../courses/python.html" class="btn btn-primary">Back to Python Course →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../ai-tutor/frontend/aitutor-widget.js"></script>
+    
+    <!-- Inject mini-project -->
+    <script>
+    window.addEventListener('load', () => {
+        // Add password generator project after tutorial content
+        if (window.MonetizationManager) {
+            MonetizationManager.injectMiniProject('python-password-generator');
+        }
+    });
+    </script>
+</body>
+
+</html>

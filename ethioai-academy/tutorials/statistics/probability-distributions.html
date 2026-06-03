@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master probability distributions for AI: understand normal, binomial, Poisson, and exponential distributions with Python examples. Learn when to use each distribution in ML.">
+    <meta name="keywords" content="probability distributions, normal distribution, binomial distribution, Poisson distribution, exponential distribution, Gaussian distribution, statistics for AI, machine learning distributions">
+    <title>Probability Distributions - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="probability-distributions.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .content-section h3 {
+            color: #078930;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #078930;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #065f46;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Probability Distributions</span>
+            </div>
+            <h1>Probability Distributions</h1>
+            <p class="tutorial-intro">
+                Master the probability distributions that power machine learning algorithms and statistical inference
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 3</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 75 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 6 tutorials to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Probability Distributions Matter</h2>
+                    <p>
+                        If you've ever wondered how Netflix predicts your ratings, how spam filters work, or how self-driving cars estimate distances, the answer lies in probability distributions. These mathematical functions describe how random variables behave, and they're the foundation of virtually every ML algorithm.
+                    </p>
+                    <p>
+                        Linear regression assumes errors follow a normal distribution. Naive Bayes uses distributions to model feature probabilities. Neural networks use distributions for weight initialization and dropout. Understanding distributions isn't optional—it's essential for building and debugging ML systems.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Google's search ranking uses the exponential distribution to model click-through rates. Financial institutions use the normal distribution for risk assessment. Amazon uses the Poisson distribution to predict customer arrivals at warehouses. Master these distributions, and you'll understand how AI systems model uncertainty.</p>
+                    </div>
+                </section>
+
+                <!-- What is a Probability Distribution -->
+                <section class="content-section">
+                    <h2>📊 What is a Probability Distribution?</h2>
+                    <p>
+                        A probability distribution describes all possible values a random variable can take and how likely each value is. Think of it as a complete map of uncertainty—it tells you not just what might happen, but how probable each outcome is.
+                    </p>
+                    
+                    <h3>Two Types of Distributions</h3>
+                    <ul>
+                        <li><strong>Discrete Distributions:</strong> For countable outcomes (coin flips, dice rolls, number of emails). Use probability mass functions (PMF).</li>
+                        <li><strong>Continuous Distributions:</strong> For measurable quantities (height, temperature, time). Use probability density functions (PDF).</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Example: Visualize discrete vs continuous distributions
+
+# Discrete: Rolling a die (uniform discrete distribution)
+die_outcomes = np.arange(1, 7)
+die_probabilities = np.ones(6) / 6  # Each outcome has 1/6 probability
+
+plt.figure(figsize=(12, 4))
+
+# Plot discrete distribution
+plt.subplot(1, 2, 1)
+plt.bar(die_outcomes, die_probabilities, color='steelblue', alpha=0.7)
+plt.xlabel('Die Outcome')
+plt.ylabel('Probability')
+plt.title('Discrete Distribution: Fair Die')
+plt.ylim(0, 0.3)
+for i, prob in enumerate(die_probabilities, 1):
+    plt.text(i, prob + 0.01, f'{prob:.3f}', ha='center')
+
+# Continuous: Heights (normal distribution)
+plt.subplot(1, 2, 2)
+x = np.linspace(150, 190, 1000)
+mean_height = 170  # cm
+std_height = 10
+pdf = stats.norm.pdf(x, mean_height, std_height)
+plt.plot(x, pdf, color='coral', linewidth=2)
+plt.fill_between(x, pdf, alpha=0.3, color='coral')
+plt.xlabel('Height (cm)')
+plt.ylabel('Probability Density')
+plt.title('Continuous Distribution: Human Height')
+
+plt.tight_layout()
+# plt.show()  # Uncomment to display
+
+print("Discrete: P(rolling a 4) =", die_probabilities[3])
+print("Continuous: P(height = exactly 170cm) = 0 (use ranges instead)")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Key Difference</strong>
+                        <p>For discrete distributions, you can ask "What's P(X = 4)?" For continuous distributions, the probability of any exact value is 0! Instead, ask "What's P(169 < X < 171)?" and integrate over the range.</p>
+                    </div>
+                </section>
+
+                <!-- Normal Distribution -->
+                <section class="content-section">
+                    <h2>📈 Normal Distribution (Gaussian)</h2>
+                    <p>
+                        The normal distribution is the most important distribution in statistics and ML. Its bell-shaped curve appears everywhere in nature and data science: human heights, test scores, measurement errors, and more. It's defined by two parameters: mean (μ) and standard deviation (σ).
+                    </p>
+                    
+                    <h3>Properties of the Normal Distribution</h3>
+                    <ul>
+                        <li><strong>Symmetrical around the mean</strong> - Half the data below μ, half above</li>
+                        <li><strong>68-95-99.7 rule:</strong> 68% within 1σ, 95% within 2σ, 99.7% within 3σ</li>
+                        <li><strong>Mean = Median = Mode</strong> - All central measures coincide</li>
+                        <li><strong>Asymptotes to zero</strong> - Tails extend to infinity but never touch x-axis</li>
+                        <li><strong>Uniquely determined by μ and σ</strong> - These two parameters tell you everything</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
+
+# Generate normal distribution data
+mu, sigma = 100, 15  # Mean IQ = 100, Std Dev = 15
+x = np.linspace(mu - 4*sigma, mu + 4*sigma, 1000)
+pdf = stats.norm.pdf(x, mu, sigma)
+
+# Calculate probabilities for different ranges
+prob_within_1sd = stats.norm.cdf(mu + sigma, mu, sigma) - stats.norm.cdf(mu - sigma, mu, sigma)
+prob_within_2sd = stats.norm.cdf(mu + 2*sigma, mu, sigma) - stats.norm.cdf(mu - 2*sigma, mu, sigma)
+prob_within_3sd = stats.norm.cdf(mu + 3*sigma, mu, sigma) - stats.norm.cdf(mu - 3*sigma, mu, sigma)
+
+print("Normal Distribution: IQ Scores (μ=100, σ=15)")
+print(f"P(85 < IQ < 115) = {prob_within_1sd:.4f} or {prob_within_1sd*100:.2f}%")
+print(f"P(70 < IQ < 130) = {prob_within_2sd:.4f} or {prob_within_2sd*100:.2f}%")
+print(f"P(55 < IQ < 145) = {prob_within_3sd:.4f} or {prob_within_3sd*100:.2f}%")
+
+# What IQ is in the top 10%?
+top_10_percent = stats.norm.ppf(0.90, mu, sigma)
+print(f"\nTop 10% have IQ above: {top_10_percent:.1f}")
+
+# What's the probability of IQ > 130?
+prob_above_130 = 1 - stats.norm.cdf(130, mu, sigma)
+print(f"P(IQ > 130) = {prob_above_130:.4f} or {prob_above_130*100:.2f}%")</code></pre>
+
+                    <h3>Normal Distribution in Machine Learning</h3>
+                    <pre><code class="language-python"># Application 1: Linear Regression assumes normally distributed errors
+# y = mx + b + ε, where ε ~ N(0, σ²)
+
+# Generate synthetic data with normal noise
+np.random.seed(42)
+X = np.linspace(0, 10, 100)
+true_slope = 2.5
+true_intercept = 5
+noise = np.random.normal(0, 2, 100)  # Normal noise with σ=2
+y = true_slope * X + true_intercept + noise
+
+print("Linear Regression with Normal Errors:")
+print(f"True model: y = {true_slope}x + {true_intercept} + ε")
+print(f"Error distribution: ε ~ N(0, {2})")
+print(f"Mean of errors: {noise.mean():.4f} (should be near 0)")
+print(f"Std of errors: {noise.std():.4f} (should be near 2)")
+
+# Application 2: Weight initialization in neural networks
+# Use normal distribution to initialize weights
+layer_size = 100
+# Xavier initialization: N(0, 1/sqrt(n))
+weights = np.random.normal(0, 1/np.sqrt(layer_size), (layer_size, layer_size))
+print(f"\nNeural Network Weight Initialization:")
+print(f"Shape: {weights.shape}")
+print(f"Mean: {weights.mean():.6f}")
+print(f"Std: {weights.std():.6f}")
+
+# Application 3: Anomaly detection using 3-sigma rule
+# Values beyond 3 standard deviations are anomalies (99.7% rule)
+data = np.random.normal(50, 10, 1000)
+mean, std = data.mean(), data.std()
+anomalies = data[(data < mean - 3*std) | (data > mean + 3*std)]
+print(f"\nAnomaly Detection:")
+print(f"Dataset: {len(data)} points, μ={mean:.2f}, σ={std:.2f}")
+print(f"Anomalies (beyond 3σ): {len(anomalies)} points ({len(anomalies)/len(data)*100:.1f}%)")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ Standard Normal Distribution (Z-scores)</strong>
+                        <p>The standard normal has μ=0 and σ=1. Convert any normal distribution to standard normal using z-scores: z = (x - μ) / σ. This standardization is crucial for comparing different datasets and is used in feature scaling for ML.</p>
+                    </div>
+                </section>
+
+                <!-- Binomial Distribution -->
+                <section class="content-section">
+                    <h2>🎲 Binomial Distribution</h2>
+                    <p>
+                        The binomial distribution models the number of successes in a fixed number of independent trials, each with the same probability of success. Think of it as counting how many times something happens when you repeat an experiment multiple times.
+                    </p>
+                    
+                    <h3>When to Use Binomial Distribution</h3>
+                    <ul>
+                        <li><strong>Fixed number of trials (n):</strong> You flip a coin 10 times, not "until you get heads"</li>
+                        <li><strong>Only two outcomes:</strong> Success/failure, yes/no, heads/tails</li>
+                        <li><strong>Constant probability (p):</strong> Each trial has same success probability</li>
+                        <li><strong>Independent trials:</strong> One trial doesn't affect others</li>
+                    </ul>
+                    
+                    <p><strong>Parameters:</strong> n (number of trials), p (probability of success)</p>
+                    <p><strong>Formula:</strong> P(X = k) = C(n,k) × p^k × (1-p)^(n-k)</p>
+                    
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+# Example 1: Email click-through rate
+# You send 100 emails, each has 10% chance of being clicked
+n_emails = 100
+p_click = 0.10
+
+# Create binomial distribution
+binomial_dist = stats.binom(n_emails, p_click)
+
+# Calculate probabilities
+print("Email Campaign Analysis:")
+print(f"Sending {n_emails} emails, P(click) = {p_click}")
+print(f"\nExpected clicks: {binomial_dist.mean():.1f}")
+print(f"Standard deviation: {binomial_dist.std():.2f}")
+
+# What's the probability of getting exactly 10 clicks?
+prob_exactly_10 = binomial_dist.pmf(10)
+print(f"\nP(exactly 10 clicks) = {prob_exactly_10:.4f}")
+
+# What's the probability of getting at least 15 clicks?
+prob_at_least_15 = 1 - binomial_dist.cdf(14)  # P(X >= 15) = 1 - P(X <= 14)
+print(f"P(at least 15 clicks) = {prob_at_least_15:.4f}")
+
+# What's the probability of getting between 8 and 12 clicks?
+prob_8_to_12 = binomial_dist.cdf(12) - binomial_dist.cdf(7)
+print(f"P(8 ≤ clicks ≤ 12) = {prob_8_to_12:.4f}")
+
+# Simulate actual campaign results
+simulated_clicks = binomial_dist.rvs(size=1000)  # 1000 simulated campaigns
+print(f"\nSimulation of 1000 campaigns:")
+print(f"Average clicks: {simulated_clicks.mean():.2f}")
+print(f"Min clicks: {simulated_clicks.min()}")
+print(f"Max clicks: {simulated_clicks.max()}")</code></pre>
+
+                    <h3>ML Application: A/B Testing</h3>
+                    <pre><code class="language-python"># A/B test: Compare two website designs
+# Version A: 100 visitors, 12 conversions (12% conversion rate)
+# Version B: 100 visitors, 18 conversions (18% conversion rate)
+# Is Version B significantly better?
+
+n_visitors = 100
+
+# Version A
+conversions_a = 12
+p_a = conversions_a / n_visitors
+dist_a = stats.binom(n_visitors, p_a)
+
+# Version B
+conversions_b = 18
+p_b = conversions_b / n_visitors
+dist_b = stats.binom(n_visitors, p_b)
+
+print("A/B Test Analysis:")
+print(f"Version A: {conversions_a}/{n_visitors} = {p_a:.1%} conversion")
+print(f"Version B: {conversions_b}/{n_visitors} = {p_b:.1%} conversion")
+print(f"Improvement: {(p_b - p_a)/p_a * 100:.1f}%")
+
+# Under null hypothesis (no difference), what's probability of seeing 18+ conversions
+# if true rate is 12%?
+prob_18_or_more_under_null = 1 - dist_a.cdf(17)
+print(f"\nP(18+ conversions | true rate = 12%) = {prob_18_or_more_under_null:.4f}")
+
+if prob_18_or_more_under_null < 0.05:
+    print("Result: Statistically significant! Choose Version B.")
+else:
+    print("Result: Not significant. Need more data.")
+
+# Calculate confidence intervals
+from scipy.stats import binom_test
+p_value = binom_test(conversions_b, n_visitors, p_a, alternative='greater')
+print(f"Exact binomial p-value: {p_value:.4f}")</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 When Binomial Approximates Normal</strong>
+                        <p>When n is large and p is not too extreme (np > 5 and n(1-p) > 5), the binomial distribution approximates a normal distribution with μ = np and σ = √(np(1-p)). This is useful for quick calculations!</p>
+                    </div>
+                </section>
+
+                <!-- Poisson Distribution -->
+                <section class="content-section">
+                    <h2>⏰ Poisson Distribution</h2>
+                    <p>
+                        The Poisson distribution models the number of events occurring in a fixed time interval or region when events happen at a constant average rate and independently of each other. It's perfect for counting rare events.
+                    </p>
+                    
+                    <h3>Common Applications</h3>
+                    <ul>
+                        <li><strong>Customer arrivals:</strong> Number of customers entering a store per hour</li>
+                        <li><strong>Server requests:</strong> HTTP requests to a website per second</li>
+                        <li><strong>Equipment failures:</strong> Machine breakdowns per month</li>
+                        <li><strong>Natural phenomena:</strong> Earthquakes per year, meteor sightings per night</li>
+                        <li><strong>Rare events in ML:</strong> Fraudulent transactions, system errors, click events</li>
+                    </ul>
+                    
+                    <p><strong>Parameter:</strong> λ (lambda) - average rate of events per interval</p>
+                    <p><strong>Formula:</strong> P(X = k) = (λ^k × e^(-λ)) / k!</p>
+                    
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+# Example: Website traffic analysis
+# Average 5 visitors per minute
+lambda_rate = 5
+
+# Create Poisson distribution
+poisson_dist = stats.poisson(lambda_rate)
+
+print(f"Website Traffic: λ = {lambda_rate} visitors/minute")
+print(f"\nExpected visitors: {poisson_dist.mean():.1f}")
+print(f"Standard deviation: {poisson_dist.std():.2f}")
+
+# Calculate probabilities
+print("\nProbability Calculations:")
+for k in [0, 3, 5, 8, 10]:
+    prob = poisson_dist.pmf(k)
+    print(f"P(exactly {k} visitors) = {prob:.4f} or {prob*100:.2f}%")
+
+# What's the probability of getting more than 8 visitors?
+prob_more_than_8 = 1 - poisson_dist.cdf(8)
+print(f"\nP(more than 8 visitors) = {prob_more_than_8:.4f}")
+
+# What's the probability of getting 0 visitors? (downtime indicator)
+prob_zero = poisson_dist.pmf(0)
+print(f"P(0 visitors) = {prob_zero:.4f} - potential downtime!")
+
+# Simulate 100 minutes of traffic
+simulated_traffic = poisson_dist.rvs(size=100)
+print(f"\n100-minute simulation:")
+print(f"Average: {simulated_traffic.mean():.2f} visitors/min")
+print(f"Max in one minute: {simulated_traffic.max()}")
+print(f"Minutes with 0 visitors: {(simulated_traffic == 0).sum()}")</code></pre>
+
+                    <h3>ML Application: Anomaly Detection</h3>
+                    <pre><code class="language-python"># Use Poisson to detect unusual server activity
+# Normal: average 10 requests per second
+# Alert if we see unusually high/low activity
+
+lambda_normal = 10
+poisson_normal = stats.poisson(lambda_normal)
+
+# Set thresholds: flag values in bottom 1% or top 1%
+lower_threshold = poisson_normal.ppf(0.01)
+upper_threshold = poisson_normal.ppf(0.99)
+
+print("Server Anomaly Detection System:")
+print(f"Normal rate: λ = {lambda_normal} requests/second")
+print(f"Alert thresholds: < {lower_threshold:.0f} or > {upper_threshold:.0f} requests/sec")
+
+# Simulate 24 hours of server traffic (86,400 seconds)
+np.random.seed(42)
+normal_traffic = poisson_normal.rvs(size=86000)
+
+# Inject some anomalies (DDoS attack with λ=50 for 400 seconds)
+attack_traffic = stats.poisson(50).rvs(size=400)
+all_traffic = np.concatenate([normal_traffic, attack_traffic])
+
+# Detect anomalies
+anomalies = (all_traffic < lower_threshold) | (all_traffic > upper_threshold)
+anomaly_indices = np.where(anomalies)[0]
+
+print(f"\nTotal seconds monitored: {len(all_traffic):,}")
+print(f"Anomalies detected: {anomalies.sum():,} ({anomalies.sum()/len(all_traffic)*100:.2f}%)")
+print(f"First anomaly at second: {anomaly_indices[0] if len(anomaly_indices) > 0 else 'None'}")
+
+# Most of the anomalies should be in the attack period (last 400 seconds)
+attack_period_anomalies = (anomaly_indices >= len(normal_traffic)).sum()
+print(f"Anomalies in attack period: {attack_period_anomalies}")</code></pre>
+
+                    <h3>Poisson Process in Real-Time Systems</h3>
+                    <pre><code class="language-python"># Customer service queue modeling
+# Average 20 calls per hour = λ = 20/60 ≈ 0.333 calls per minute
+
+lambda_per_minute = 20/60
+lambda_per_hour = 20
+
+# Probability of getting 0 calls in next minute (agent can take break)
+prob_no_calls_1min = stats.poisson(lambda_per_minute).pmf(0)
+print(f"P(0 calls in next minute) = {prob_no_calls_1min:.4f} or {prob_no_calls_1min*100:.2f}%")
+
+# Probability of getting more than 30 calls in next hour (understaffed)
+prob_over_30 = 1 - stats.poisson(lambda_per_hour).cdf(30)
+print(f"P(>30 calls in hour) = {prob_over_30:.4f} or {prob_over_30*100:.2f}%")
+
+# Expected wait time between calls (exponential distribution, covered next)
+expected_wait_minutes = 1 / lambda_per_minute
+print(f"Expected time between calls: {expected_wait_minutes:.2f} minutes")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Poisson Assumptions</strong>
+                        <p>Events must be independent (one event doesn't affect another) and occur at a constant average rate. If your rate changes over time (e.g., website traffic during business hours), split into time periods with different λ values or use non-homogeneous Poisson processes.</p>
+                    </div>
+                </section>
+
+                <!-- Exponential Distribution -->
+                <section class="content-section">
+                    <h2>⏱️ Exponential Distribution</h2>
+                    <p>
+                        The exponential distribution models the time between events in a Poisson process. If events occur according to a Poisson distribution, the waiting time between events follows an exponential distribution. It's the continuous counterpart to the Poisson distribution.
+                    </p>
+                    
+                    <h3>Key Properties</h3>
+                    <ul>
+                        <li><strong>Memoryless property:</strong> Past doesn't affect future - if you've waited 5 minutes, probability of waiting 5 more is same as initially</li>
+                        <li><strong>Always positive:</strong> Time is never negative</li>
+                        <li><strong>Skewed right:</strong> Long tail toward higher values</li>
+                        <li><strong>Related to Poisson:</strong> If events occur at rate λ, time between events ~ Exp(λ)</li>
+                    </ul>
+                    
+                    <p><strong>Parameter:</strong> λ (rate parameter) - same as Poisson rate</p>
+                    <p><strong>Mean:</strong> 1/λ, <strong>Variance:</strong> 1/λ²</p>
+                    
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+# Example: Server response time
+# Average 10 requests per second → average time between requests = 1/10 = 0.1 seconds
+lambda_rate = 10
+exp_dist = stats.expon(scale=1/lambda_rate)  # scale = 1/λ
+
+print(f"Server Response Time: λ = {lambda_rate} events/second")
+print(f"Mean time between events: {exp_dist.mean():.3f} seconds")
+print(f"Standard deviation: {exp_dist.std():.3f} seconds")
+
+# Probability calculations
+print("\nProbability of wait times:")
+for t in [0.05, 0.10, 0.20, 0.50]:
+    # Probability of waiting LESS than t seconds
+    prob_less = exp_dist.cdf(t)
+    # Probability of waiting MORE than t seconds
+    prob_more = 1 - prob_less
+    print(f"P(wait < {t:.2f}s) = {prob_less:.4f} | P(wait > {t:.2f}s) = {prob_more:.4f}")
+
+# Service Level Agreement (SLA): 95% of requests within X seconds
+sla_time = exp_dist.ppf(0.95)
+print(f"\n95% of requests processed within: {sla_time:.4f} seconds")
+
+# Simulate 1000 wait times
+simulated_waits = exp_dist.rvs(size=1000)
+print(f"\nSimulation (1000 requests):")
+print(f"Average wait: {simulated_waits.mean():.4f}s")
+print(f"Median wait: {np.median(simulated_waits):.4f}s")
+print(f"Max wait: {simulated_waits.max():.4f}s")
+print(f"% within 0.1s: {(simulated_waits < 0.1).sum()/10:.1f}%")</code></pre>
+
+                    <h3>ML Application: System Reliability</h3>
+                    <pre><code class="language-python"># Machine failure prediction
+# Machine fails on average once every 500 hours
+mean_time_to_failure = 500  # hours
+lambda_failure = 1 / mean_time_to_failure
+failure_dist = stats.expon(scale=mean_time_to_failure)
+
+print("Machine Reliability Analysis:")
+print(f"Mean time to failure (MTTF): {mean_time_to_failure} hours")
+
+# Probability machine survives different durations
+durations = [100, 250, 500, 750, 1000]
+print("\nReliability (probability of survival):")
+for duration in durations:
+    reliability = 1 - failure_dist.cdf(duration)
+    print(f"P(survive {duration:4d} hours) = {reliability:.4f} or {reliability*100:.2f}%")
+
+# When should we do preventive maintenance?
+# Target: 90% probability machine is still working
+maintenance_interval = failure_dist.ppf(0.90)
+print(f"\nPreventive maintenance every: {maintenance_interval:.0f} hours")
+print(f"This ensures 90% reliability until maintenance")
+
+# Calculate expected number of failures in 10,000 hours of operation
+expected_failures = 10000 / mean_time_to_failure
+print(f"\nExpected failures in 10,000 hours: {expected_failures:.1f}")</code></pre>
+
+                    <h3>Memoryless Property Demonstration</h3>
+                    <pre><code class="language-python"># Memoryless property: P(X > s+t | X > s) = P(X > t)
+# "If you've already waited s time, probability of waiting t more is same as originally"
+
+lambda_rate = 2  # events per hour
+exp_dist = stats.expon(scale=1/lambda_rate)
+
+# Customer service: Average call every 30 minutes (λ=2/hour)
+# You've been waiting 15 minutes. What's P(wait another 15 min)?
+
+s = 0.25  # already waited 15 min (0.25 hours)
+t = 0.25  # want to wait 15 more min
+
+# Conditional probability: P(X > s+t | X > s)
+prob_conditional = (1 - exp_dist.cdf(s + t)) / (1 - exp_dist.cdf(s))
+
+# Original probability: P(X > t)
+prob_original = 1 - exp_dist.cdf(t)
+
+print("Memoryless Property Test:")
+print(f"Already waited {s*60:.0f} minutes")
+print(f"P(wait another {t*60:.0f} min | already waited {s*60:.0f}) = {prob_conditional:.4f}")
+print(f"P(originally wait {t*60:.0f} min from start) = {prob_original:.4f}")
+print(f"Difference: {abs(prob_conditional - prob_original):.6f}")
+print("These are equal! Past waiting time doesn't matter.")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ Exponential vs Poisson</strong>
+                        <p>Poisson counts events in a fixed time (discrete). Exponential measures time between events (continuous). If customers arrive as Poisson(λ=5/hour), the time between arrivals is Exponential(λ=5). They're two sides of the same coin!</p>
+                    </div>
+                </section>
+
+                <!-- Choosing the Right Distribution -->
+                <section class="content-section">
+                    <h2>🎯 Choosing the Right Distribution</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: #eff6ff; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #078930;">
+                            <h3 style="color: #065f46; margin-top: 0;">📊 Use Normal When:</h3>
+                            <ul style="color: #334155; margin: 0;">
+                                <li>Measuring continuous quantities</li>
+                                <li>Data is symmetric around mean</li>
+                                <li>Central Limit Theorem applies</li>
+                                <li>Examples: Heights, test scores, errors</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #fef3c7; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                            <h3 style="color: #d97706; margin-top: 0;">🎲 Use Binomial When:</h3>
+                            <ul style="color: #334155; margin: 0;">
+                                <li>Fixed number of trials</li>
+                                <li>Each trial: success or failure</li>
+                                <li>Constant success probability</li>
+                                <li>Examples: Coin flips, A/B tests, conversions</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #d1fae5; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #10b981;">
+                            <h3 style="color: #059669; margin-top: 0;">⏰ Use Poisson When:</h3>
+                            <ul style="color: #334155; margin: 0;">
+                                <li>Counting events in fixed interval</li>
+                                <li>Events occur independently</li>
+                                <li>Constant average rate</li>
+                                <li>Examples: Customer arrivals, requests, defects</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background: #fce7f3; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #ec4899;">
+                            <h3 style="color: #db2777; margin-top: 0;">⏱️ Use Exponential When:</h3>
+                            <ul style="color: #334155; margin: 0;">
+                                <li>Measuring time between events</li>
+                                <li>Memoryless process</li>
+                                <li>Related to Poisson process</li>
+                                <li>Examples: Wait times, lifetimes, intervals</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <pre><code class="language-python"># Decision tree for choosing distribution
+
+def suggest_distribution(question_answers):
+    """Interactive guide to choosing the right distribution"""
+    
+    scenarios = {
+        'continuous_symmetric': {
+            'name': 'Normal Distribution',
+            'check': 'Is data continuous and roughly symmetric?',
+            'examples': ['Heights', 'Test scores', 'Measurement errors']
+        },
+        'count_fixed_trials': {
+            'name': 'Binomial Distribution',
+            'check': 'Counting successes in fixed number of trials?',
+            'examples': ['Coin flips', 'A/B test conversions', 'Survey yes/no']
+        },
+        'count_time_interval': {
+            'name': 'Poisson Distribution',
+            'check': 'Counting rare events in time/space?',
+            'examples': ['Website visitors per hour', 'Emails per day', 'Defects per batch']
+        },
+        'time_between_events': {
+            'name': 'Exponential Distribution',
+            'check': 'Measuring time between events?',
+            'examples': ['Time between customer arrivals', 'Machine lifetime', 'Wait times']
+        }
+    }
+    
+    print("Distribution Selection Guide:")
+    print("=" * 60)
+    
+    for key, info in scenarios.items():
+        print(f"\n✓ {info['name']}")
+        print(f"  Use when: {info['check']}")
+        print(f"  Examples: {', '.join(info['examples'])}")
+
+# Run the guide
+suggest_distribution({})</code></pre>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <h3>Exercise 1: Normal Distribution - Student Grades</h3>
+                    <p><strong>Scenario:</strong> Exam scores are normally distributed with μ=75 and σ=10.</p>
+                    <ol>
+                        <li>What percentage of students scored above 85?</li>
+                        <li>What score is needed to be in the top 5%?</li>
+                        <li>What's the probability of scoring between 70 and 80?</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Binomial - Email Campaign</h3>
+                    <p><strong>Scenario:</strong> You send 500 promotional emails, each has 3% conversion probability.</p>
+                    <ol>
+                        <li>What's the expected number of conversions?</li>
+                        <li>What's P(exactly 15 conversions)?</li>
+                        <li>What's P(at least 20 conversions)?</li>
+                    </ol>
+                    
+                    <h3>Exercise 3: Poisson - Customer Service</h3>
+                    <p><strong>Scenario:</strong> Call center receives average 8 calls per hour.</p>
+                    <ol>
+                        <li>What's P(0 calls in next hour)? (Can staff take break?)</li>
+                        <li>What's P(more than 12 calls in next hour)?</li>
+                        <li>What's most likely number of calls in 30 minutes?</li>
+                    </ol>
+                    
+                    <h3>Exercise 4: Exponential - Machine Maintenance</h3>
+                    <p><strong>Scenario:</strong> Machine fails on average every 200 hours.</p>
+                    <ol>
+                        <li>What's P(machine survives first 100 hours)?</li>
+                        <li>If it's already run 100 hours, what's P(it runs another 100)?</li>
+                        <li>When should preventive maintenance be scheduled (99% reliability)?</li>
+                    </ol>
+                    
+                    <h3>Exercise 5: Real-World ML Problem</h3>
+                    <p><strong>Challenge:</strong> You're building a fraud detection system. Historical data shows:</p>
+                    <ul>
+                        <li>Average 1000 transactions per hour (Poisson)</li>
+                        <li>0.1% are fraudulent (Binomial)</li>
+                        <li>Fraud detection latency is exponential with mean 0.5 seconds</li>
+                    </ul>
+                    <p>Calculate:</p>
+                    <ol>
+                        <li>Expected fraudulent transactions per hour</li>
+                        <li>P(more than 2 fraudulent transactions in an hour)</li>
+                        <li>P(detection takes longer than 2 seconds)</li>
+                    </ol>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>You've mastered the four essential probability distributions that power machine learning and data science:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📈 Normal Distribution</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Bell curve for continuous symmetric data. 68-95-99.7 rule, z-scores, used in linear regression, neural network initialization, and anomaly detection.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎲 Binomial Distribution</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Count successes in fixed trials. Used in A/B testing, conversion analysis, binary classification evaluation, and success rate modeling.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">⏰ Poisson Distribution</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Count rare events in intervals. Perfect for traffic analysis, anomaly detection, queue modeling, and rare event prediction.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">⏱️ Exponential Distribution</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Time between events. Memoryless property, used in reliability engineering, wait time prediction, and survival analysis.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Takeaway</strong>
+                        <p>Understanding these distributions isn't just theoretical—they're the building blocks of ML algorithms. Linear regression uses normal distributions. Naive Bayes uses binomial/multinomial. Recommendation systems use Poisson. Reliability models use exponential. Master these four, and you'll understand the math behind most ML algorithms!</p>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 1:</strong> In a normal distribution with μ=100 and σ=15, approximately what percentage of values fall between 85 and 115?</p>
+                            <div class="quiz-option" data-value="a">a) 50%</div>
+                            <div class="quiz-option" data-value="b">b) 95%</div>
+                            <div class="quiz-option" data-value="c">c) 68%</div>
+                            <div class="quiz-option" data-value="d">d) 99.7%</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 2:</strong> Which distribution should you use to model the number of website visitors in an hour?</p>
+                            <div class="quiz-option" data-value="a">a) Normal Distribution</div>
+                            <div class="quiz-option" data-value="b">b) Poisson Distribution</div>
+                            <div class="quiz-option" data-value="c">c) Binomial Distribution</div>
+                            <div class="quiz-option" data-value="d">d) Exponential Distribution</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 3:</strong> The exponential distribution has which unique property?</p>
+                            <div class="quiz-option" data-value="a">a) Symmetry around the mean</div>
+                            <div class="quiz-option" data-value="b">b) Discrete outcomes only</div>
+                            <div class="quiz-option" data-value="c">c) Fixed number of trials</div>
+                            <div class="quiz-option" data-value="d">d) Memoryless property</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 4:</strong> You flip a fair coin 10 times. Which distribution models the number of heads?</p>
+                            <div class="quiz-option" data-value="a">a) Binomial with n=10, p=0.5</div>
+                            <div class="quiz-option" data-value="b">b) Poisson with λ=5</div>
+                            <div class="quiz-option" data-value="c">c) Normal with μ=5, σ=2.5</div>
+                            <div class="quiz-option" data-value="d">d) Exponential with λ=0.5</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 5:</strong> In linear regression, which distribution is assumed for the residuals (errors)?</p>
+                            <div class="quiz-option" data-value="a">a) Binomial</div>
+                            <div class="quiz-option" data-value="b">b) Poisson</div>
+                            <div class="quiz-option" data-value="c">c) Normal</div>
+                            <div class="quiz-option" data-value="d">d) Exponential</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 6:</strong> If events occur according to a Poisson process with rate λ, the time between events follows:</p>
+                            <div class="quiz-option" data-value="a">a) Poisson distribution with parameter λ</div>
+                            <div class="quiz-option" data-value="b">b) Exponential distribution with parameter λ</div>
+                            <div class="quiz-option" data-value="c">c) Normal distribution with mean λ</div>
+                            <div class="quiz-option" data-value="d">d) Binomial distribution with p=λ</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 7:</strong> The binomial distribution can be approximated by the normal distribution when:</p>
+                            <div class="quiz-option" data-value="a">a) p is very small</div>
+                            <div class="quiz-option" data-value="b">b) n is very small</div>
+                            <div class="quiz-option" data-value="c">c) Both np > 5 and n(1-p) > 5</div>
+                            <div class="quiz-option" data-value="d">d) λ is large</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 8:</strong> Which distribution is most appropriate for modeling machine failure times?</p>
+                            <div class="quiz-option" data-value="a">a) Exponential</div>
+                            <div class="quiz-option" data-value="b">b) Binomial</div>
+                            <div class="quiz-option" data-value="c">c) Normal</div>
+                            <div class="quiz-option" data-value="d">d) Poisson</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="probability-foundations.html" class="nav-button">← Previous: Probability Foundations</a>
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button">Back to Course</a>
+                    <span class="nav-button disabled">Next: Coming Soon →</span>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

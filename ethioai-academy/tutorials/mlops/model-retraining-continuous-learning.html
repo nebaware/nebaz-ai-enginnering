@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master automated model retraining, continuous learning strategies, trigger conditions, online vs batch learning, shadow mode testing, and safe rollback procedures for production ML systems.">
+    <meta name="keywords" content="model retraining, continuous learning, automated ML, online learning, shadow mode, MLOps, production ML, model updates">
+    <title>Model Retraining & Continuous Learning - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="model-retraining-continuous-learning.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Model Retraining & Continuous Learning</span>
+            </div>
+            <h1>Model Retraining & Continuous Learning</h1>
+            <p class="tutorial-intro">Automate model retraining pipelines, implement trigger conditions, online vs batch learning, shadow mode testing, and safe rollback strategies</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 12</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🔄 Why Retrain Models?</h2>
+                <p>
+                    Your model was 95% accurate at launch. Six months later:
+                </p>
+                <ul>
+                    <li>Accuracy dropped to 75% due to changing user behavior</li>
+                    <li>New product categories appeared (not in training data)</li>
+                    <li>Seasonal patterns shifted consumer preferences</li>
+                    <li>Competitors changed market dynamics</li>
+                    <li>Data drift detected across multiple features</li>
+                </ul>
+
+                <p>
+                    <strong>Model retraining</strong> keeps models relevant by learning from new data. Unlike static models that degrade over time, continuously learning models adapt to changing patterns and maintain performance.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 When to Retrain:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>Performance Degradation:</strong> Accuracy drops below threshold</li>
+                        <li><strong>Data Drift Detected:</strong> Input distributions change significantly</li>
+                        <li><strong>New Data Available:</strong> Sufficient fresh labeled data accumulated</li>
+                        <li><strong>Business Events:</strong> Product launches, seasonal changes, market shifts</li>
+                        <li><strong>Scheduled Intervals:</strong> Weekly/monthly regular retraining</li>
+                        <li><strong>Concept Drift:</strong> Relationship between features and target changes</li>
+                    </ul>
+                </div>
+
+                <h3>Retraining Strategies</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>When to Use</th>
+                            <th>Pros</th>
+                            <th>Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Scheduled</strong></td>
+                            <td>Stable environments, predictable patterns</td>
+                            <td>Simple, predictable</td>
+                            <td>May retrain unnecessarily or miss urgent issues</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trigger-Based</strong></td>
+                            <td>Dynamic environments, when monitoring is active</td>
+                            <td>Efficient, responds to real issues</td>
+                            <td>Requires robust monitoring</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Continuous</strong></td>
+                            <td>Fast-changing environments, real-time systems</td>
+                            <td>Always up-to-date</td>
+                            <td>Complex, resource intensive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hybrid</strong></td>
+                            <td>Most production systems</td>
+                            <td>Balanced approach</td>
+                            <td>More complex implementation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Trigger Conditions -->
+            <section class="content-section" id="triggers">
+                <h2>🎯 Retraining Trigger Conditions</h2>
+                
+                <h3>Performance-Based Triggers</h3>
+                <pre><code class="language-python">"""
+Monitor performance and trigger retraining
+"""
+import pandas as pd
+from datetime import datetime, timedelta
+
+class RetrainingTrigger:
+    def __init__(
+        self,
+        accuracy_threshold=0.85,
+        drift_threshold=0.3,
+        min_new_samples=1000,
+        lookback_days=7
+    ):
+        self.accuracy_threshold = accuracy_threshold
+        self.drift_threshold = drift_threshold
+        self.min_new_samples = min_new_samples
+        self.lookback_days = lookback_days
+    
+    def should_retrain(self):
+        """Check if retraining should be triggered"""
+        
+        triggers = {}
+        
+        # Check 1: Performance degradation
+        recent_accuracy = self.get_recent_accuracy()
+        if recent_accuracy < self.accuracy_threshold:
+            triggers['performance'] = f"Accuracy {recent_accuracy:.2f} < {self.accuracy_threshold}"
+        
+        # Check 2: Data drift
+        drift_score = self.calculate_drift()
+        if drift_score > self.drift_threshold:
+            triggers['drift'] = f"Drift score {drift_score:.2f} > {self.drift_threshold}"
+        
+        # Check 3: Sufficient new data
+        new_samples = self.count_new_samples()
+        if new_samples >= self.min_new_samples:
+            triggers['new_data'] = f"{new_samples} new samples available"
+        
+        # Check 4: Prediction distribution shift
+        prediction_shift = self.check_prediction_shift()
+        if prediction_shift > 0.2:
+            triggers['prediction_shift'] = f"Prediction distribution shifted by {prediction_shift:.2f}"
+        
+        # Trigger if any condition met
+        if triggers:
+            print(f"🔄 Retraining triggered: {triggers}")
+            return True, triggers
+        
+        return False, {}
+    
+    def get_recent_accuracy(self):
+        """Calculate accuracy over recent predictions with ground truth"""
+        cutoff = datetime.now() - timedelta(days=self.lookback_days)
+        
+        predictions = pd.read_sql(
+            f"""
+            SELECT predicted, actual
+            FROM predictions
+            WHERE timestamp > '{cutoff}' AND actual IS NOT NULL
+            """,
+            con=db_connection
+        )
+        
+        if len(predictions) < 100:
+            return None  # Insufficient data
+        
+        accuracy = (predictions['predicted'] == predictions['actual']).mean()
+        return accuracy
+    
+    def calculate_drift(self):
+        """Calculate data drift score"""
+        from evidently.report import Report
+        from evidently.metrics import DatasetDriftMetric
+        
+        reference_data = load_reference_data()
+        current_data = load_recent_data(days=self.lookback_days)
+        
+        report = Report(metrics=[DatasetDriftMetric()])
+        report.run(reference_data=reference_data, current_data=current_data)
+        
+        results = report.as_dict()
+        drift_score = results['metrics'][0]['result']['share_of_drifted_columns']
+        
+        return drift_score
+    
+    def count_new_samples(self):
+        """Count new labeled samples since last training"""
+        last_training = get_last_training_date()
+        
+        count = pd.read_sql(
+            f"""
+            SELECT COUNT(*) as cnt
+            FROM training_data
+            WHERE timestamp > '{last_training}' AND label IS NOT NULL
+            """,
+            con=db_connection
+        )
+        
+        return count['cnt'].iloc[0]
+    
+    def check_prediction_shift(self):
+        """Check if prediction distribution has shifted"""
+        from scipy.stats import wasserstein_distance
+        
+        reference_predictions = load_reference_predictions()
+        current_predictions = load_recent_predictions(days=self.lookback_days)
+        
+        distance = wasserstein_distance(reference_predictions, current_predictions)
+        return distance
+
+# Usage
+trigger = RetrainingTrigger()
+should_retrain, reasons = trigger.should_retrain()
+
+if should_retrain:
+    trigger_retraining_pipeline(reasons)</code></pre>
+
+                <h3>Scheduled Retraining with Airflow</h3>
+                <pre><code class="language-python">"""
+Airflow DAG for scheduled retraining
+"""
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from datetime import datetime, timedelta
+
+default_args = {
+    'owner': 'mlops',
+    'depends_on_past': False,
+    'email': ['team@company.com'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'retries': 2,
+    'retry_delay': timedelta(minutes=5),
+}
+
+dag = DAG(
+    'model_retraining',
+    default_args=default_args,
+    description='Automated model retraining pipeline',
+    schedule_interval='0 2 * * 0',  # Every Sunday at 2 AM
+    start_date=datetime(2024, 1, 1),
+    catchup=False,
+)
+
+def check_if_retraining_needed(**context):
+    """Decide if retraining should proceed"""
+    trigger = RetrainingTrigger()
+    should_retrain, reasons = trigger.should_retrain()
+    
+    if not should_retrain:
+        print("No retraining needed")
+        # Skip downstream tasks
+        context['task_instance'].xcom_push(key='skip_retrain', value=True)
+        return False
+    
+    print(f"Retraining needed: {reasons}")
+    context['task_instance'].xcom_push(key='retrain_reasons', value=reasons)
+    return True
+
+check_trigger = PythonOperator(
+    task_id='check_trigger',
+    python_callable=check_if_retraining_needed,
+    dag=dag,
+)
+
+fetch_data = BashOperator(
+    task_id='fetch_training_data',
+    bash_command='python scripts/fetch_training_data.py --days 90',
+    dag=dag,
+)
+
+preprocess = BashOperator(
+    task_id='preprocess_data',
+    bash_command='python scripts/preprocess.py',
+    dag=dag,
+)
+
+train_model = BashOperator(
+    task_id='train_model',
+    bash_command='python scripts/train.py --experiment retraining-{{ ds }}',
+    dag=dag,
+)
+
+evaluate = PythonOperator(
+    task_id='evaluate_model',
+    python_callable=evaluate_new_model,
+    dag=dag,
+)
+
+deploy = PythonOperator(
+    task_id='deploy_if_better',
+    python_callable=deploy_if_improved,
+    dag=dag,
+)
+
+check_trigger >> fetch_data >> preprocess >> train_model >> evaluate >> deploy</code></pre>
+            </section>
+
+            <!-- Online vs Batch Learning -->
+            <section class="content-section" id="online-vs-batch">
+                <h2>📚 Online vs Batch Learning</h2>
+                
+                <h3>Batch Learning (Retraining)</h3>
+                <p>
+                    Train on entire dataset periodically. Most common approach for production ML.
+                </p>
+
+                <pre><code class="language-python">"""
+Batch retraining pipeline
+"""
+import mlflow
+from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+
+def batch_retrain():
+    """Retrain model on accumulated data"""
+    
+    # Fetch all training data (including new samples)
+    training_data = pd.read_sql("""
+        SELECT * FROM training_data
+        WHERE timestamp > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+    """, con=db_connection)
+    
+    print(f"Training samples: {len(training_data)}")
+    
+    X = training_data.drop(['label', 'timestamp'], axis=1)
+    y = training_data['label']
+    
+    # Split
+    from sklearn.model_selection import train_test_split
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train
+    with mlflow.start_run(run_name=f"retrain-{datetime.now().strftime('%Y%m%d')}"):
+        model = RandomForestClassifier(n_estimators=200, max_depth=20)
+        model.fit(X_train, y_train)
+        
+        # Evaluate
+        train_acc = model.score(X_train, y_train)
+        val_acc = model.score(X_val, y_val)
+        
+        print(f"Training accuracy: {train_acc:.4f}")
+        print(f"Validation accuracy: {val_acc:.4f}")
+        
+        # Log metrics
+        mlflow.log_metric("train_accuracy", train_acc)
+        mlflow.log_metric("val_accuracy", val_acc)
+        mlflow.log_param("n_samples", len(training_data))
+        mlflow.log_param("retrain_date", datetime.now().isoformat())
+        
+        # Save model
+        mlflow.sklearn.log_model(model, "model")
+        
+        return model, val_acc</code></pre>
+
+                <h3>Online Learning (Incremental)</h3>
+                <p>
+                    Update model continuously with new samples. Suitable for streaming data and fast-changing environments.
+                </p>
+
+                <pre><code class="language-python">"""
+Online learning with incremental updates
+"""
+from sklearn.linear_model import SGDClassifier
+import pickle
+
+class OnlineLearner:
+    def __init__(self, model_path='online_model.pkl'):
+        self.model_path = model_path
+        
+        # Load or initialize model
+        try:
+            with open(model_path, 'rb') as f:
+                self.model = pickle.load(f)
+            print("Loaded existing model")
+        except FileNotFoundError:
+            self.model = SGDClassifier(
+                loss='log',
+                learning_rate='adaptive',
+                eta0=0.01,
+                warm_start=True  # Continue training
+            )
+            print("Initialized new model")
+    
+    def partial_fit(self, X, y, classes=None):
+        """Update model with new samples"""
+        if classes is None:
+            classes = [0, 1]  # Binary classification
+        
+        self.model.partial_fit(X, y, classes=classes)
+        
+        # Save updated model
+        with open(self.model_path, 'wb') as f:
+            pickle.dump(self.model, f)
+    
+    def predict(self, X):
+        """Make predictions"""
+        return self.model.predict(X)
+
+# Usage in production
+learner = OnlineLearner()
+
+# When new labeled data arrives
+@app.post("/feedback")
+async def receive_feedback(feedback: FeedbackData):
+    """Receive feedback and update model"""
+    
+    # Store feedback
+    store_feedback(feedback)
+    
+    # Accumulate batch
+    feedback_batch = get_pending_feedback(min_batch_size=50)
+    
+    if len(feedback_batch) >= 50:
+        # Update model
+        X = feedback_batch[features]
+        y = feedback_batch['label']
+        
+        learner.partial_fit(X, y)
+        
+        print(f"Model updated with {len(feedback_batch)} samples")
+        mark_feedback_processed(feedback_batch)</code></pre>
+
+                <h3>Comparison: Batch vs Online</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Batch Learning</th>
+                            <th>Online Learning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Update Frequency</strong></td>
+                            <td>Periodic (daily/weekly/monthly)</td>
+                            <td>Continuous (per sample or mini-batch)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Requirements</strong></td>
+                            <td>Full dataset each time</td>
+                            <td>New samples only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Algorithms</strong></td>
+                            <td>Any (tree-based, neural networks, etc.)</td>
+                            <td>SGD-based (linear models, neural networks)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Computational Cost</strong></td>
+                            <td>High per training, low frequency</td>
+                            <td>Low per update, high frequency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Stability</strong></td>
+                            <td>More stable</td>
+                            <td>Can be unstable, needs careful tuning</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>Most production systems</td>
+                            <td>Real-time systems, concept drift</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Shadow Mode -->
+            <section class="content-section" id="shadow-mode">
+                <h2>🕶️ Shadow Mode Testing</h2>
+                
+                <p>
+                    <strong>Shadow mode</strong> runs new model alongside production model without affecting users. Compare predictions to validate new model before full deployment.
+                </p>
+
+                <h3>Shadow Mode Implementation</h3>
+                <pre><code class="language-python">"""
+Shadow mode deployment
+"""
+import asyncio
+from typing import Dict
+
+class ShadowModePredictor:
+    def __init__(self, production_model, shadow_model):
+        self.production_model = production_model
+        self.shadow_model = shadow_model
+        self.comparison_log = []
+    
+    async def predict(self, features):
+        """Make predictions with both models"""
+        
+        # Production prediction (synchronous)
+        prod_prediction = self.production_model.predict(features)
+        
+        # Shadow prediction (async, non-blocking)
+        shadow_task = asyncio.create_task(
+            self.shadow_predict(features, prod_prediction)
+        )
+        
+        # Return production result immediately
+        return prod_prediction
+    
+    async def shadow_predict(self, features, prod_prediction):
+        """Run shadow model and compare"""
+        try:
+            # Shadow prediction
+            shadow_prediction = self.shadow_model.predict(features)
+            
+            # Log comparison
+            comparison = {
+                'timestamp': datetime.now(),
+                'features': features,
+                'production': prod_prediction,
+                'shadow': shadow_prediction,
+                'match': prod_prediction == shadow_prediction
+            }
+            
+            # Store for analysis
+            await self.log_comparison(comparison)
+            
+        except Exception as e:
+            print(f"Shadow prediction failed: {e}")
+            # Don't affect production
+    
+    async def log_comparison(self, comparison):
+        """Store comparison for analysis"""
+        # Write to database
+        await db.execute("""
+            INSERT INTO shadow_predictions
+            (timestamp, production_pred, shadow_pred, match)
+            VALUES (%s, %s, %s, %s)
+        """, (
+            comparison['timestamp'],
+            comparison['production'],
+            comparison['shadow'],
+            comparison['match']
+        ))
+
+# FastAPI endpoint with shadow mode
+@app.post("/predict")
+async def predict(request: PredictRequest):
+    """Prediction endpoint with shadow model"""
+    
+    # Load models
+    production_model = load_model("production")
+    shadow_model = load_model("shadow")  # New model candidate
+    
+    predictor = ShadowModePredictor(production_model, shadow_model)
+    
+    # Get prediction (shadow runs asynchronously)
+    prediction = await predictor.predict(request.features)
+    
+    return {"prediction": prediction}</code></pre>
+
+                <h3>Shadow Mode Analysis</h3>
+                <pre><code class="language-python">"""
+Analyze shadow mode results
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def analyze_shadow_mode(days=7):
+    """Analyze shadow model performance"""
+    
+    # Fetch comparisons
+    comparisons = pd.read_sql(f"""
+        SELECT *
+        FROM shadow_predictions
+        WHERE timestamp > DATE_SUB(NOW(), INTERVAL {days} DAY)
+    """, con=db_connection)
+    
+    print(f"\n📊 Shadow Mode Analysis ({len(comparisons)} predictions)")
+    print("=" * 50)
+    
+    # Agreement rate
+    agreement = comparisons['match'].mean()
+    print(f"Agreement: {agreement:.2%}")
+    
+    # When ground truth is available
+    labeled = comparisons[comparisons['actual'].notna()]
+    
+    if len(labeled) > 0:
+        prod_acc = (labeled['production_pred'] == labeled['actual']).mean()
+        shadow_acc = (labeled['shadow_pred'] == labeled['actual']).mean()
+        
+        print(f"\nAccuracy (on {len(labeled)} labeled samples):")
+        print(f"  Production: {prod_acc:.2%}")
+        print(f"  Shadow:     {shadow_acc:.2%}")
+        print(f"  Improvement: {(shadow_acc - prod_acc):.2%}")
+        
+        # Decision
+        if shadow_acc > prod_acc + 0.02:  # 2% improvement
+            print("\n✅ Shadow model performs better - Recommend promotion")
+            return True
+        elif shadow_acc < prod_acc - 0.02:
+            print("\n❌ Shadow model performs worse - Keep production model")
+            return False
+        else:
+            print("\n⚠️ Performance similar - Need more data")
+            return None
+    
+    return None
+
+# Check shadow model weekly
+if __name__ == '__main__':
+    promote = analyze_shadow_mode(days=7)
+    
+    if promote:
+        promote_shadow_to_production()</code></pre>
+            </section>
+
+            <!-- Safe Rollback -->
+            <section class="content-section" id="rollback">
+                <h2>↩️ Safe Rollback Strategies</h2>
+                
+                <h3>Model Versioning for Rollback</h3>
+                <pre><code class="language-python">"""
+Model version management with rollback
+"""
+import mlflow
+from mlflow.tracking import MlflowClient
+
+class ModelVersionManager:
+    def __init__(self, model_name):
+        self.model_name = model_name
+        self.client = MlflowClient()
+    
+    def promote_to_production(self, version):
+        """Promote model version to production"""
+        
+        # Archive current production
+        current = self.get_production_version()
+        if current:
+            self.client.transition_model_version_stage(
+                name=self.model_name,
+                version=current,
+                stage="Archived"
+            )
+        
+        # Promote new version
+        self.client.transition_model_version_stage(
+            name=self.model_name,
+            version=version,
+            stage="Production"
+        )
+        
+        print(f"✅ Promoted v{version} to production")
+        
+        # Log deployment
+        self.log_deployment(version)
+    
+    def rollback_to_previous(self):
+        """Rollback to previous production version"""
+        
+        # Get archived versions (sorted by creation date)
+        archived = self.client.search_model_versions(
+            f"name='{self.model_name}' AND run_id IS NOT NULL"
+        )
+        
+        archived_sorted = sorted(
+            [v for v in archived if v.current_stage == "Archived"],
+            key=lambda x: x.creation_timestamp,
+            reverse=True
+        )
+        
+        if not archived_sorted:
+            print("❌ No previous version to rollback to")
+            return False
+        
+        previous = archived_sorted[0]
+        
+        # Rollback
+        self.promote_to_production(previous.version)
+        
+        print(f"↩️ Rolled back to v{previous.version}")
+        return True
+    
+    def get_production_version(self):
+        """Get current production version"""
+        versions = self.client.search_model_versions(
+            f"name='{self.model_name}'"
+        )
+        
+        for v in versions:
+            if v.current_stage == "Production":
+                return v.version
+        
+        return None
+    
+    def log_deployment(self, version):
+        """Log deployment event"""
+        import requests
+        
+        # Log to monitoring system
+        requests.post('http://monitoring/api/deployments', json={
+            'model': self.model_name,
+            'version': version,
+            'timestamp': datetime.now().isoformat(),
+            'deployed_by': 'mlops-pipeline'
+        })
+
+# Usage
+manager = ModelVersionManager("fraud_detection")
+
+# Deploy new version
+manager.promote_to_production(version=15)
+
+# If issues detected, rollback
+if detect_issues():
+    manager.rollback_to_previous()</code></pre>
+
+                <h3>Automated Rollback on Failure</h3>
+                <pre><code class="language-python">"""
+Automatic rollback based on health checks
+"""
+import time
+from datetime import datetime, timedelta
+
+class AutoRollback:
+    def __init__(
+        self,
+        error_rate_threshold=0.1,
+        latency_threshold=1.0,
+        check_duration_minutes=30
+    ):
+        self.error_rate_threshold = error_rate_threshold
+        self.latency_threshold = latency_threshold
+        self.check_duration = timedelta(minutes=check_duration_minutes)
+        self.deployment_time = None
+    
+    def monitor_deployment(self, version):
+        """Monitor new deployment and rollback if unhealthy"""
+        
+        self.deployment_time = datetime.now()
+        print(f"🔍 Monitoring deployment of v{version}...")
+        
+        while datetime.now() - self.deployment_time < self.check_duration:
+            # Check health metrics
+            metrics = self.get_current_metrics()
+            
+            # Check error rate
+            if metrics['error_rate'] > self.error_rate_threshold:
+                print(f"❌ Error rate {metrics['error_rate']:.2%} exceeds threshold")
+                self.trigger_rollback(version, "high_error_rate")
+                return False
+            
+            # Check latency
+            if metrics['p95_latency'] > self.latency_threshold:
+                print(f"❌ P95 latency {metrics['p95_latency']:.2f}s exceeds threshold")
+                self.trigger_rollback(version, "high_latency")
+                return False
+            
+            # Check prediction quality
+            if metrics.get('accuracy') and metrics['accuracy'] < 0.8:
+                print(f"❌ Accuracy {metrics['accuracy']:.2%} too low")
+                self.trigger_rollback(version, "low_accuracy")
+                return False
+            
+            time.sleep(60)  # Check every minute
+        
+        print("✅ Deployment healthy - monitoring complete")
+        return True
+    
+    def get_current_metrics(self):
+        """Fetch current production metrics"""
+        # Query Prometheus
+        import requests
+        
+        response = requests.get('http://prometheus:9090/api/v1/query', params={
+            'query': 'rate(ml_prediction_requests_total{status="error"}[5m])'
+        })
+        error_rate = float(response.json()['data']['result'][0]['value'][1])
+        
+        response = requests.get('http://prometheus:9090/api/v1/query', params={
+            'query': 'histogram_quantile(0.95, ml_prediction_latency_seconds)'
+        })
+        p95_latency = float(response.json()['data']['result'][0]['value'][1])
+        
+        return {
+            'error_rate': error_rate,
+            'p95_latency': p95_latency
+        }
+    
+    def trigger_rollback(self, version, reason):
+        """Trigger automatic rollback"""
+        print(f"↩️ Triggering rollback from v{version}: {reason}")
+        
+        manager = ModelVersionManager("fraud_detection")
+        manager.rollback_to_previous()
+        
+        # Alert team
+        send_alert(
+            subject=f"🚨 Auto-rollback triggered: {reason}",
+            message=f"Version {version} rolled back due to {reason}"
+        )
+
+# Use in deployment pipeline
+def deploy_with_monitoring(new_version):
+    """Deploy new version with automatic rollback"""
+    
+    manager = ModelVersionManager("fraud_detection")
+    manager.promote_to_production(new_version)
+    
+    # Monitor for 30 minutes
+    rollback = AutoRollback(check_duration_minutes=30)
+    success = rollback.monitor_deployment(new_version)
+    
+    if not success:
+        print("Deployment failed - rolled back")
+    else:
+        print("Deployment successful")
+    
+    return success</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered model retraining and continuous learning:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Trigger Conditions</h3>
+                        <p>Automate retraining based on performance, drift, and data availability</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📚</div>
+                        <h3>Batch Learning</h3>
+                        <p>Periodic retraining on accumulated data</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Online Learning</h3>
+                        <p>Continuous incremental updates with new samples</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🕶️</div>
+                        <h3>Shadow Mode</h3>
+                        <p>Test new models alongside production safely</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">↩️</div>
+                        <h3>Safe Rollback</h3>
+                        <p>Version management and automatic rollback on failure</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Automation</h3>
+                        <p>End-to-end automated retraining pipelines</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Define clear trigger conditions for retraining (performance, drift, data)</li>
+                    <li>Choose batch vs online learning based on your use case</li>
+                    <li>Always test new models in shadow mode before promotion</li>
+                    <li>Implement automated rollback for failed deployments</li>
+                    <li>Monitor new deployments closely during initial period</li>
+                    <li>Maintain model version history for safe rollbacks</li>
+                    <li>Automate the entire retraining pipeline with Airflow</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your models continuously improve! Next, you'll learn production best practices - feature stores, model governance, compliance, and cost optimization for enterprise ML systems.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q1: When should you trigger model retraining?</strong></p>
+                    <div class="quiz-option" data-value="a">Every hour automatically</div>
+                    <div class="quiz-option" data-value="b">When performance degrades, data drift detected, or sufficient new labeled data accumulated</div>
+                    <div class="quiz-option" data-value="c">Only when users complain</div>
+                    <div class="quiz-option" data-value="d">Never, models don't need retraining</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q2: What is online learning?</strong></p>
+                    <div class="quiz-option" data-value="a">Training models on the internet</div>
+                    <div class="quiz-option" data-value="b">Training while users are online</div>
+                    <div class="quiz-option" data-value="c">Incremental model updates with new samples continuously, without retraining from scratch</div>
+                    <div class="quiz-option" data-value="d">Cloud-based training</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: What is shadow mode deployment?</strong></p>
+                    <div class="quiz-option" data-value="a">Running new model alongside production model to compare predictions without affecting users</div>
+                    <div class="quiz-option" data-value="b">Deploying at night</div>
+                    <div class="quiz-option" data-value="c">Using dark theme</div>
+                    <div class="quiz-option" data-value="d">Hiding models from users</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: Why implement automatic rollback?</strong></p>
+                    <div class="quiz-option" data-value="a">To save disk space</div>
+                    <div class="quiz-option" data-value="b">To train faster</div>
+                    <div class="quiz-option" data-value="c">To reduce costs</div>
+                    <div class="quiz-option" data-value="d">To quickly revert to previous version if new deployment shows high errors, latency, or accuracy issues</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q5: Batch learning vs online learning - which is more common?</strong></p>
+                    <div class="quiz-option" data-value="a">Online learning for all production systems</div>
+                    <div class="quiz-option" data-value="b">Batch learning is more common, online learning for fast-changing environments</div>
+                    <div class="quiz-option" data-value="c">Both equally common</div>
+                    <div class="quiz-option" data-value="d">Neither, models never update</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="model-monitoring.html">← Previous: Model Monitoring</a>
+                <a href="production-best-practices.html">Next: Production Best Practices →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

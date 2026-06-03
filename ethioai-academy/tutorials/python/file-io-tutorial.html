@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Python file operations - reading, writing, CSV, JSON handling. Master file I/O with practical examples and best practices.">
+    <title>File I/O in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge intermediate">Intermediate</div><h1 class="page-title">File I/O in Python</h1>
+            <p class="page-subtitle">Master reading, writing, and managing files in Python</p>
+            </div>
+    </div>
+
+    <div class="tutorial-content">
+        <div class="container">
+            
+            <section class="content-section">
+                <p>
+                    Working with files is essential for any real-world application. Whether you're processing data, saving user preferences, or generating reports, file operations are fundamental to persistent data storage.
+                </p>
+                <p>
+                    Python makes file handling straightforward and safe with built-in functions and context managers. You'll learn to read, write, and manipulate files with confidence.
+                </p>
+            </section>
+
+            <div class="info-box">
+                <h3>📚 What You'll Learn</h3>
+                <ul>
+                    <li>Opening and closing files properly</li>
+                    <li>Reading file content (entire file, line by line, chunks)</li>
+                    <li>Writing and appending to files</li>
+                    <li>Using the with statement for automatic cleanup</li>
+                    <li>Working with file paths</li>
+                    <li>Handling CSV and JSON files</li>
+                    <li>Best practices for file operations</li>
+                </ul>
+            </div>
+
+            <section class="content-section">
+                <h2>1. Opening and Closing Files</h2>
+
+                <h3>Basic File Operations</h3>
+
+                <pre><code class="language-python"># Opening a file (manual close - not recommended)
+file = open('example.txt', 'r')  # 'r' = read mode
+content = file.read()
+file.close()  # Must remember to close!
+
+# Better: Using with statement (recommended)
+with open('example.txt', 'r') as file:
+    content = file.read()
+    print(content)
+# File automatically closes when leaving the with block
+
+# File modes
+# 'r'  - Read (default) - Error if file doesn't exist
+# 'w'  - Write - Creates new file or overwrites existing
+# 'a'  - Append - Adds to end of file
+# 'x'  - Exclusive create - Error if file exists
+# 'r+' - Read and write
+# 'b'  - Binary mode (e.g., 'rb', 'wb')
+# 't'  - Text mode (default)</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Best Practice:</strong> Always use the <code>with</code> statement. It automatically closes files even if errors occur, preventing resource leaks.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>2. Reading Files</h2>
+
+                <h3>Reading Entire File</h3>
+
+                <pre><code class="language-python"># Read entire file as a string
+with open('data.txt', 'r') as file:
+    content = file.read()
+    print(content)
+
+# Read entire file as list of lines
+with open('data.txt', 'r') as file:
+    lines = file.readlines()  # Returns list with \n characters
+    for line in lines:
+        print(line.strip())  # Remove \n</code></pre>
+
+                <h3>Reading Line by Line (Memory Efficient)</h3>
+
+                <pre><code class="language-python"># Best for large files
+with open('large_file.txt', 'r') as file:
+    for line in file:  # Iterates one line at a time
+        print(line.strip())
+
+# Read specific number of lines
+with open('data.txt', 'r') as file:
+    first_line = file.readline()
+    second_line = file.readline()
+    print(f"First: {first_line.strip()}")
+    print(f"Second: {second_line.strip()}")
+
+# Read in chunks (for very large files)
+with open('huge_file.txt', 'r') as file:
+    while True:
+        chunk = file.read(1024)  # Read 1KB at a time
+        if not chunk:
+            break
+        process_chunk(chunk)</code></pre>
+
+                <h3>Practical Example: Log File Analyzer</h3>
+
+                <pre><code class="language-python">def analyze_log_file(filename):
+    """Analyze log file and count error occurrences."""
+    error_count = 0
+    warning_count = 0
+    
+    try:
+        with open(filename, 'r') as file:
+            for line_num, line in enumerate(file, 1):
+                if 'ERROR' in line:
+                    error_count += 1
+                    print(f"Line {line_num}: {line.strip()}")
+                elif 'WARNING' in line:
+                    warning_count += 1
+        
+        print(f"\nSummary:")
+        print(f"Errors: {error_count}")
+        print(f"Warnings: {warning_count}")
+        
+    except FileNotFoundError:
+        print(f"Error: {filename} not found")
+    except PermissionError:
+        print(f"Error: No permission to read {filename}")
+
+# Usage
+analyze_log_file('app.log')</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>3. Writing to Files</h2>
+
+                <h3>Writing Text</h3>
+
+                <pre><code class="language-python"># Write to file (overwrites existing content)
+with open('output.txt', 'w') as file:
+    file.write("Hello, World!\n")
+    file.write("Python is awesome!\n")
+
+# Write multiple lines at once
+lines = ["Line 1\n", "Line 2\n", "Line 3\n"]
+with open('output.txt', 'w') as file:
+    file.writelines(lines)
+
+# Append to file (adds to end)
+with open('output.txt', 'a') as file:
+    file.write("This is appended\n")
+
+# Writing with print function
+with open('output.txt', 'w') as file:
+    print("Hello", "World", file=file)  # Uses print's formatting</code></pre>
+
+                <h3>Practical Example: Report Generator</h3>
+
+                <pre><code class="language-python">def generate_report(data, filename='report.txt'):
+    """Generate a formatted text report."""
+    with open(filename, 'w') as file:
+        # Header
+        file.write("=" * 50 + "\n")
+        file.write("SALES REPORT\n")
+        file.write("=" * 50 + "\n\n")
+        
+        # Data
+        total = 0
+        for item, amount in data.items():
+            file.write(f"{item:<30} ${amount:>8.2f}\n")
+            total += amount
+        
+        # Footer
+        file.write("\n" + "-" * 50 + "\n")
+        file.write(f"{'TOTAL':<30} ${total:>8.2f}\n")
+        file.write("=" * 50 + "\n")
+    
+    print(f"Report generated: {filename}")
+
+# Usage
+sales_data = {
+    'Product A': 1250.50,
+    'Product B': 890.75,
+    'Product C': 2100.00
+}
+generate_report(sales_data)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>4. Working with File Paths</h2>
+
+                <pre><code class="language-python">import os
+from pathlib import Path
+
+# os.path module (traditional)
+current_dir = os.getcwd()
+file_path = os.path.join(current_dir, 'data', 'file.txt')
+print(f"File path: {file_path}")
+
+# Check if file/directory exists
+if os.path.exists('data.txt'):
+    print("File exists")
+
+# Get file info
+if os.path.isfile('data.txt'):
+    size = os.path.getsize('data.txt')
+    print(f"File size: {size} bytes")
+
+# Split path components
+directory, filename = os.path.split('/home/user/data.txt')
+name, extension = os.path.splitext(filename)
+
+# pathlib module (modern, recommended)
+path = Path('data') / 'subdir' / 'file.txt'  # Works on all OS
+print(path)
+
+# Path operations
+if path.exists():
+    print(f"Size: {path.stat().st_size}")
+    print(f"Name: {path.name}")
+    print(f"Extension: {path.suffix}")
+    print(f"Parent: {path.parent}")
+
+# Create directories
+Path('data/output').mkdir(parents=True, exist_ok=True)
+
+# List files in directory
+for file_path in Path('data').glob('*.txt'):
+    print(file_path)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>5. Working with CSV Files</h2>
+
+                <pre><code class="language-python">import csv
+
+# Reading CSV
+with open('data.csv', 'r') as file:
+    csv_reader = csv.reader(file)
+    header = next(csv_reader)  # Skip header
+    
+    for row in csv_reader:
+        print(row)  # Each row is a list
+
+# Reading CSV as dictionaries
+with open('data.csv', 'r') as file:
+    csv_reader = csv.DictReader(file)
+    
+    for row in csv_reader:
+        print(row)  # Each row is a dictionary
+        print(f"Name: {row['name']}, Age: {row['age']}")
+
+# Writing CSV
+data = [
+    ['Name', 'Age', 'City'],
+    ['Alice', 30, 'NYC'],
+    ['Bob', 25, 'LA'],
+    ['Charlie', 35, 'Chicago']
+]
+
+with open('output.csv', 'w', newline='') as file:
+    csv_writer = csv.writer(file)
+    csv_writer.writerows(data)
+
+# Writing CSV from dictionaries
+data = [
+    {'name': 'Alice', 'age': 30, 'city': 'NYC'},
+    {'name': 'Bob', 'age': 25, 'city': 'LA'}
+]
+
+with open('output.csv', 'w', newline='') as file:
+    fieldnames = ['name', 'age', 'city']
+    csv_writer = csv.DictWriter(file, fieldnames=fieldnames)
+    
+    csv_writer.writeheader()
+    csv_writer.writerows(data)</code></pre>
+
+                <h3>Practical Example: CSV Data Processor</h3>
+
+                <pre><code class="language-python">import csv
+
+def process_sales_csv(input_file, output_file):
+    """Read sales data, calculate totals, write summary."""
+    sales_by_region = {}
+    
+    # Read and aggregate
+    with open(input_file, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            region = row['region']
+            amount = float(row['amount'])
+            sales_by_region[region] = sales_by_region.get(region, 0) + amount
+    
+    # Write summary
+    with open(output_file, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Region', 'Total Sales'])
+        
+        for region, total in sorted(sales_by_region.items()):
+            writer.writerow([region, f'${total:,.2f}'])
+    
+    print(f"Summary written to {output_file}")
+
+# Usage
+process_sales_csv('sales.csv', 'summary.csv')</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>6. Working with JSON Files</h2>
+
+                <pre><code class="language-python">import json
+
+# Reading JSON
+with open('data.json', 'r') as file:
+    data = json.load(file)  # Parse JSON to Python object
+    print(data)
+
+# Writing JSON
+data = {
+    'name': 'Alice',
+    'age': 30,
+    'skills': ['Python', 'JavaScript', 'SQL'],
+    'active': True
+}
+
+with open('output.json', 'w') as file:
+    json.dump(data, file, indent=4)  # Pretty print with 4 spaces
+
+# Working with JSON strings
+json_string = json.dumps(data, indent=2)
+parsed_data = json.loads(json_string)
+
+# Practical example: Configuration file
+config = {
+    'database': {
+        'host': 'localhost',
+        'port': 5432,
+        'name': 'mydb'
+    },
+    'api': {
+        'key': 'secret123',
+        'timeout': 30
+    }
+}
+
+# Save config
+with open('config.json', 'w') as file:
+    json.dump(config, file, indent=4)
+
+# Load config
+with open('config.json', 'r') as file:
+    loaded_config = json.load(file)
+    db_host = loaded_config['database']['host']</code></pre>
+
+                <h3>Practical Example: User Data Manager</h3>
+
+                <pre><code class="language-python">import json
+from datetime import datetime
+
+class UserDataManager:
+    def __init__(self, filename='users.json'):
+        self.filename = filename
+        self.users = self.load_users()
+    
+    def load_users(self):
+        """Load users from JSON file."""
+        try:
+            with open(self.filename, 'r') as file:
+                return json.load(file)
+        except FileNotFoundError:
+            return {}
+    
+    def save_users(self):
+        """Save users to JSON file."""
+        with open(self.filename, 'w') as file:
+            json.dump(self.users, file, indent=4)
+    
+    def add_user(self, username, email):
+        """Add a new user."""
+        self.users[username] = {
+            'email': email,
+            'created': datetime.now().isoformat(),
+            'active': True
+        }
+        self.save_users()
+    
+    def get_user(self, username):
+        """Get user data."""
+        return self.users.get(username)
+    
+    def list_users(self):
+        """List all users."""
+        for username, data in self.users.items():
+            print(f"{username}: {data['email']}")
+
+# Usage
+manager = UserDataManager()
+manager.add_user('alice', 'alice@example.com')
+manager.add_user('bob', 'bob@example.com')
+manager.list_users()</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>7. Best Practices</h2>
+
+                <div class="info-box">
+                    <h3>✅ Do's</h3>
+                    <ul>
+                        <li><strong>Use with statement:</strong> Ensures files are properly closed</li>
+                        <li><strong>Handle exceptions:</strong> Use try-except for file operations</li>
+                        <li><strong>Use pathlib:</strong> More intuitive than os.path for modern Python</li>
+                        <li><strong>Specify encoding:</strong> Use <code>encoding='utf-8'</code> for text files</li>
+                        <li><strong>Read in chunks:</strong> For large files to save memory</li>
+                        <li><strong>Validate paths:</strong> Check if files exist before opening</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Don'ts</h3>
+                    <ul>
+                        <li><strong>Don't forget to close:</strong> Without with, files stay open</li>
+                        <li><strong>Don't use 'w' carelessly:</strong> It overwrites existing files</li>
+                        <li><strong>Don't load huge files:</strong> Use line-by-line reading</li>
+                        <li><strong>Don't hardcode paths:</strong> Use os.path.join or Path</li>
+                        <li><strong>Don't ignore errors:</strong> Always handle FileNotFoundError, etc.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>8. Practice Exercise: File Backup System</h2>
+
+                <details>
+                    <summary>Click to see solution</summary>
+                    <pre><code class="language-python">import shutil
+from pathlib import Path
+from datetime import datetime
+
+def backup_files(source_dir, backup_dir):
+    """Create timestamped backup of all files in directory."""
+    source = Path(source_dir)
+    
+    # Create backup directory with timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    backup = Path(backup_dir) / f"backup_{timestamp}"
+    backup.mkdir(parents=True, exist_ok=True)
+    
+    # Copy all files
+    file_count = 0
+    for file_path in source.glob('*'):
+        if file_path.is_file():
+            shutil.copy2(file_path, backup / file_path.name)
+            file_count += 1
+    
+    print(f"✅ Backed up {file_count} files to {backup}")
+    return backup
+
+# Usage
+backup_files('data', 'backups')</code></pre>
+                </details>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="success-box">
+                    <h3>✅ What You've Learned</h3>
+                    <ul>
+                        <li><strong>File Operations:</strong> Open, read, write with proper resource management</li>
+                        <li><strong>Context Managers:</strong> Using with for automatic cleanup</li>
+                        <li><strong>Path Handling:</strong> Working with file paths across different OS</li>
+                        <li><strong>CSV Files:</strong> Reading and writing structured data</li>
+                        <li><strong>JSON Files:</strong> Working with configuration and data files</li>
+                        <li><strong>Best Practices:</strong> Error handling and efficient file processing</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="info-box">
+                <h3>🎯 What's Next?</h3>
+                <p>With file I/O mastered, you can now:</p>
+                <ul>
+                    <li><strong>Object-Oriented Programming:</strong> Build complex applications with classes</li>
+                    <li><strong>Data Processing:</strong> Work with real datasets and APIs</li>
+                    <li><strong>Web Scraping:</strong> Save extracted data to files</li>
+                </ul>
+            </div>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of file I/O!</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: Which mode opens a file for reading?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) 'w'</div>
+                            <div class="quiz-option" data-value="b">B) 'r'</div>
+                            <div class="quiz-option" data-value="c">C) 'a'</div>
+                            <div class="quiz-option" data-value="d">D) 'x'</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: What does the 'with' statement ensure?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) File is created</div>
+                            <div class="quiz-option" data-value="b">B) File is readable</div>
+                            <div class="quiz-option" data-value="c">C) File is properly closed</div>
+                            <div class="quiz-option" data-value="d">D) File is deleted</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: Which method reads all lines into a list?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) readlines()</div>
+                            <div class="quiz-option" data-value="b">B) read()</div>
+                            <div class="quiz-option" data-value="c">C) readline()</div>
+                            <div class="quiz-option" data-value="d">D) getlines()</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <h3>Question 4: What mode appends to a file without erasing it?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) 'r'</div>
+                            <div class="quiz-option" data-value="b">B) 'w'</div>
+                            <div class="quiz-option" data-value="c">C) 'r+'</div>
+                            <div class="quiz-option" data-value="d">D) 'a'</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: Which module helps work with file paths?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) sys</div>
+                            <div class="quiz-option" data-value="b">B) os</div>
+                            <div class="quiz-option" data-value="c">C) file</div>
+                            <div class="quiz-option" data-value="d">D) path</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="exception-handling-tutorial.html" class="btn btn-secondary">← Previous: Exception Handling</a>
+                <a href="oop-tutorial.html" class="btn btn-primary">Next: Object-Oriented Programming →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../js/common.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

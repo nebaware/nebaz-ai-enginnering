@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master the fundamentals of neural networks. Learn about neurons, activation functions, forward propagation, and backpropagation from first principles.">
+    <meta name="keywords" content="neural networks tutorial, deep learning fundamentals, neurons, activation functions, backpropagation">
+    <title>Neural Networks Fundamentals - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="neural-networks-fundamentals.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .formula-box { background: white; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; text-align: center; font-family: serif; }
+        .formula-box code { color: #1e293b; background: transparent; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Neural Networks Fundamentals</span>
+            </div>
+            <h1>Neural Networks Fundamentals</h1>
+            <p class="tutorial-intro">Master the building blocks of deep learning: neurons, layers, activation functions, and how data flows through networks</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🧠 Welcome to Neural Networks</h2>
+                <p>
+                    Neural networks are the foundation of modern deep learning and the driving force behind today's AI revolution. They power everything from ChatGPT to self-driving cars, from medical diagnosis to protein folding predictions. But what makes them so powerful?
+                </p>
+                <p>
+                    Unlike traditional programming where you explicitly code every rule, neural networks <strong>learn patterns from data</strong>. They're inspired by biological neurons in the human brain — billions of interconnected cells that fire signals to each other, creating intelligence through their connections.
+                </p>
+                <p>
+                    In this comprehensive tutorial, you'll build intuition for how neural networks work from first principles. We'll start with a single artificial neuron, understand the mathematics behind it, explore how neurons connect into layers, and discover how networks learn through backpropagation. By the end, you'll understand exactly why deep learning is so transformative.
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Prerequisites:</strong> Basic Python knowledge and understanding of matrix multiplication will help, but we'll explain concepts from the ground up. If you see mathematical notation, don't worry — we'll break it down with intuitive examples.</p>
+                </div>
+
+                <h3>Why Neural Networks Matter</h3>
+                <div class="cards-grid" style="margin-top: 1.5rem;">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h4>Pattern Recognition</h4>
+                        <p>Automatically discover complex patterns in data that humans can't easily program</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h4>Continuous Learning</h4>
+                        <p>Improve performance as they see more data, without manual intervention</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h4>Universal Function Approximators</h4>
+                        <p>Can approximate any continuous function given enough neurons and data</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h4>End-to-End Learning</h4>
+                        <p>Learn directly from raw inputs to outputs without manual feature engineering</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔬 The Artificial Neuron: Building Block of Intelligence</h2>
+                
+                <p>
+                    Everything in deep learning starts with the artificial neuron. It's a mathematical function inspired by biological neurons in your brain. Just as biological neurons receive signals through dendrites, process them, and send output through axons, artificial neurons receive inputs, apply transformations, and produce outputs.
+                </p>
+
+                <div class="info-box">
+                    <h3>What is a Neuron?</h3>
+                    <p>
+                        A neuron (also called a perceptron or node) is a computational unit that takes multiple numerical inputs, combines them with learned weights, adds a bias term, and passes the result through an activation function to produce an output. Think of it as a tiny decision-maker that learns which inputs are important.
+                    </p>
+                </div>
+
+                <h3>The Mathematical Foundation</h3>
+                <p>
+                    Every neuron performs two key operations: a <strong>linear combination</strong> followed by a <strong>non-linear activation</strong>. Let's understand each component:
+                </p>
+
+                <div class="formula-box">
+                    <strong>Complete Neuron Equation:</strong><br><br>
+                    output = activation(w₁·x₁ + w₂·x₂ + ... + wₙ·xₙ + b)<br><br>
+                    <strong>Or in vector form:</strong><br>
+                    output = activation(w<sup>T</sup>x + b)<br><br>
+                    <small style="font-family: sans-serif; margin-top: 0.75rem; display: block;">
+                        where:<br>
+                        • x = input vector [x₁, x₂, ..., xₙ]<br>
+                        • w = weight vector [w₁, w₂, ..., wₙ]<br>
+                        • b = bias (scalar value)<br>
+                        • w<sup>T</sup>x = dot product (weights transpose times inputs)
+                    </small>
+                </div>
+
+                <h3>Understanding Each Component</h3>
+
+                <h4>1. Inputs (x)</h4>
+                <p>
+                    These are your features — the raw data you're feeding into the neuron. For image recognition, inputs might be pixel values. For house price prediction, they might be square footage, number of bedrooms, and location scores.
+                </p>
+
+                <h4>2. Weights (w)</h4>
+                <p>
+                    Weights determine how important each input is. <strong>This is what the network learns during training.</strong> A weight of 0 means "ignore this input completely." A large positive weight means "this input is very important." Negative weights mean "this input should decrease the output."
+                </p>
+                <div class="example-box">
+                    <strong>Intuition:</strong> If you're predicting house prices, the weight for square footage might be 300 (very important!), while the weight for paint color might be near 0 (barely relevant).
+                </div>
+
+                <h4>3. Bias (b)</h4>
+                <p>
+                    The bias is a constant that shifts the activation function. It allows the neuron to fit data even when all inputs are zero. <strong>Think of it as the neuron's "threshold" for activation.</strong> Without bias, the neuron's decision boundary must pass through the origin, severely limiting what it can learn.
+                </p>
+
+                <h4>4. Weighted Sum (Linear Combination)</h4>
+                <p>
+                    The neuron first calculates: z = w₁·x₁ + w₂·x₂ + ... + wₙ·xₙ + b
+                </p>
+                <p>
+                    This is just a weighted average of inputs plus a bias. By itself, this can only model linear relationships (straight lines, planes, hyperplanes).
+                </p>
+
+                <h4>5. Activation Function</h4>
+                <p>
+                    The activation function introduces <strong>non-linearity</strong>. Without it, stacking many neurons would still only create linear transformations. Activation functions enable neural networks to learn complex, curved decision boundaries and solve non-linear problems.
+                </p>
+
+                <h3>Step-by-Step Computation</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Process Flow:</strong>
+                    <ol style="margin-top: 1rem; line-height: 2;">
+                        <li><strong>Receive Inputs:</strong> Get all input values (x₁, x₂, ..., xₙ)</li>
+                        <li><strong>Weight Multiplication:</strong> Multiply each input by its corresponding weight</li>
+                        <li><strong>Sum Everything:</strong> Add all weighted inputs together</li>
+                        <li><strong>Add Bias:</strong> Add the bias term to shift the sum</li>
+                        <li><strong>Apply Activation:</strong> Pass through activation function (e.g., ReLU, sigmoid)</li>
+                        <li><strong>Produce Output:</strong> This becomes input to next layer or final prediction</li>
+                    </ol>
+                </div>
+
+                <h3>🧮 Detailed Examples</h3>
+
+                <div class="example-box">
+                    <strong>Example 1: Customer Purchase Prediction</strong>
+                    <p style="margin-top: 1rem;">Predicting if someone will buy a product based on age and income:</p>
+                    <ul style="margin-top: 0.75rem; padding-left: 1.5rem; line-height: 1.8;">
+                        <li><strong>Input 1:</strong> Age = 35 years</li>
+                        <li><strong>Weight 1:</strong> w₁ = 0.2 (age matters moderately)</li>
+                        <li><strong>Input 2:</strong> Income = $80,000</li>
+                        <li><strong>Weight 2:</strong> w₂ = 0.00001 (income in dollars, needs small weight)</li>
+                        <li><strong>Bias:</strong> b = -5 (threshold to overcome)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Calculation:</strong></p>
+                    <div style="font-family: monospace; background: white; padding: 1rem; border-radius: 6px; margin-top: 0.5rem;">
+                        z = w₁·x₁ + w₂·x₂ + b<br>
+                        z = 0.2 × 35 + 0.00001 × 80000 + (-5)<br>
+                        z = 7 + 0.8 - 5<br>
+                        z = 2.8<br><br>
+                        output = sigmoid(2.8) ≈ 0.95
+                    </div>
+                    <p style="margin-top: 1rem;"><strong>Interpretation:</strong> 95% probability of purchase! The positive value after bias indicates strong likelihood.</p>
+                </div>
+
+                <div class="example-box">
+                    <strong>Example 2: Email Spam Detection</strong>
+                    <p style="margin-top: 1rem;">Simple spam classifier with 3 features:</p>
+                    <ul style="margin-top: 0.75rem; padding-left: 1.5rem; line-height: 1.8;">
+                        <li>x₁ = Contains word "free" (1 = yes, 0 = no) → x₁ = 1, w₁ = 2.0</li>
+                        <li>x₂ = Contains word "click" → x₂ = 1, w₂ = 1.5</li>
+                        <li>x₃ = Sender reputation score (0-10) → x₃ = 3, w₃ = -0.5</li>
+                        <li>Bias: b = -1</li>
+                    </ul>
+                    <div style="font-family: monospace; background: white; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+                        z = 2.0×1 + 1.5×1 + (-0.5)×3 + (-1)<br>
+                        z = 2.0 + 1.5 - 1.5 - 1<br>
+                        z = 1.0<br><br>
+                        output = sigmoid(1.0) ≈ 0.73
+                    </div>
+                    <p style="margin-top: 1rem;"><strong>Result:</strong> 73% chance of spam. The spam words pushed it up, but poor sender reputation reduced confidence.</p>
+                </div>
+
+                <h3>Why This Design Works</h3>
+                <div class="success-box">
+                    <p><strong>✅ Key Insight:</strong> The beauty of this simple formula is that by adjusting weights and bias during training, a single neuron can learn to separate data into two classes (linearly separable problems). Multiple neurons working together can solve arbitrarily complex problems!</p>
+                </div>
+
+                <h3>Implementing a Neuron from Scratch</h3>
+                <pre><code class="language-python">import numpy as np
+
+class Neuron:
+    def __init__(self, n_inputs):
+        """Initialize random weights and bias"""
+        # Small random weights (Xavier initialization concept)
+        self.weights = np.random.randn(n_inputs) * 0.01
+        self.bias = 0.0
+    
+    def forward(self, inputs):
+        """Forward pass: compute output"""
+        # Weighted sum
+        z = np.dot(self.weights, inputs) + self.bias
+        
+        # Activation (using sigmoid)
+        output = 1 / (1 + np.exp(-z))
+        
+        return output
+
+# Create a neuron with 3 inputs
+neuron = Neuron(n_inputs=3)
+print(f"Initial weights: {neuron.weights}")
+print(f"Initial bias: {neuron.bias}")
+
+# Test with sample inputs
+inputs = np.array([1.0, 0.5, -1.5])
+output = neuron.forward(inputs)
+print(f"\\nInput: {inputs}")
+print(f"Output: {output:.4f}")
+
+# Example 2: Customer prediction neuron
+neuron.weights = np.array([0.2, 0.00001])  # Age, Income weights
+neuron.bias = -5.0
+
+customer = np.array([35, 80000])  # 35 years old, $80k income
+prediction = neuron.forward(customer)
+print(f"\\nCustomer: Age={customer[0]}, Income=${customer[1]}")
+print(f"Purchase probability: {prediction:.2%}")</code></pre>
+
+                <h3>Common Questions & Misconceptions</h3>
+                <div class="info-box">
+                    <strong>Q: Why not just use weights without bias?</strong><br>
+                    A: Without bias, the activation function is forced to pass through the origin (0,0). This severely limits what the neuron can represent. Bias allows flexibility in where the decision boundary is positioned.
+                </div>
+
+                <div class="info-box">
+                    <strong>Q: How are weights initialized?</strong><br>
+                    A: Usually with small random values. If too large, activations explode. If zero, all neurons learn identically (symmetry problem). We'll cover initialization strategies in detail later.
+                </div>
+
+                <div class="info-box">
+                    <strong>Q: Can one neuron solve any problem?</strong><br>
+                    A: No! A single neuron can only learn linear decision boundaries (a line in 2D, plane in 3D). For complex problems like image recognition, you need many neurons organized in layers.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ Activation Functions: The Non-Linear Secret</h2>
+                
+                <p>
+                    Activation functions are the "secret sauce" that makes deep learning work. Without them, even the deepest neural network would collapse into a simple linear model. They introduce <strong>non-linearity</strong>, enabling networks to learn complex curves, patterns, and decision boundaries that linear models cannot capture.
+                </p>
+
+                <div class="warning-box">
+                    <strong>⚠️ Critical Concept:</strong> If we removed all activation functions and just stacked linear transformations, the entire neural network would reduce to a single linear transformation. Multiple layers would provide no additional power! Activation functions break this limitation.
+                </div>
+
+                <h3>Why Non-Linearity Matters</h3>
+                <p>
+                    Real-world data is rarely linear. The relationship between features and outputs often involves:
+                </p>
+                <ul>
+                    <li>Curves and polynomial relationships (house price vs. size isn't perfectly linear)</li>
+                    <li>Thresholds and step functions (spam vs. not spam has sharp boundaries)</li>
+                    <li>Interactions between features (age AND income together affect decisions)</li>
+                    <li>Complex manifolds in high dimensions (image pixels to "cat" classification)</li>
+                </ul>
+                <p>
+                    Activation functions let neurons learn these complex mappings by transforming their linear weighted sums into non-linear outputs.
+                </p>
+
+                <h3>Common Activation Functions</h3>
+
+                <h4>1. ReLU (Rectified Linear Unit) 🌟 Most Popular</h4>
+                <div class="formula-box">
+                    <strong>Formula:</strong> f(x) = max(0, x)<br><br>
+                    <strong>Derivative:</strong> f'(x) = 1 if x > 0, else 0<br><br>
+                    <small style="font-family: sans-serif;">
+                        Output: [0, ∞)<br>
+                        "If positive, keep it. If negative, zero it out."
+                    </small>
+                </div>
+
+                <p><strong>How it works:</strong> ReLU is beautifully simple — it passes positive values unchanged and blocks negative values (setting them to zero). Despite this simplicity, it's incredibly effective.</p>
+
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>✅ <strong>Computationally efficient:</strong> Just a comparison and max operation (no exponentials!)</li>
+                    <li>✅ <strong>Prevents vanishing gradients:</strong> Gradient is 1 for positive inputs, allowing error to flow backward</li>
+                    <li>✅ <strong>Sparse activation:</strong> Typically ~50% of neurons output zero, creating sparse representations</li>
+                    <li>✅ <strong>Empirically strong:</strong> Works extremely well in practice for deep networks</li>
+                </ul>
+
+                <p><strong>Disadvantages:</strong></p>
+                <ul>
+                    <li>❌ <strong>Dying ReLU problem:</strong> If a neuron's weighted sum is always negative, gradient becomes 0 forever — the neuron "dies" and stops learning</li>
+                    <li>❌ <strong>Not zero-centered:</strong> All outputs are positive, which can slow convergence</li>
+                    <li>❌ <strong>Unbounded output:</strong> Can lead to exploding activations in some cases</li>
+                </ul>
+
+                <p><strong>When to use:</strong> Default choice for hidden layers in most architectures (CNNs, ResNets, Transformers)</p>
+
+                <div class="example-box">
+                    <strong>Example:</strong><br>
+                    Input: [-2, -1, 0, 1, 2]<br>
+                    ReLU Output: [0, 0, 0, 1, 2]<br>
+                    → All negative values become 0, positive values pass through
+                </div>
+
+                <h4>2. Leaky ReLU - Fixing the Dying Neuron</h4>
+                <div class="formula-box">
+                    <strong>Formula:</strong> f(x) = max(αx, x), where α = 0.01<br><br>
+                    <strong>Derivative:</strong> f'(x) = 1 if x > 0, else α
+                </div>
+
+                <p><strong>The fix:</strong> Instead of zeroing out negative values, multiply them by a small coefficient (typically 0.01). This keeps a tiny gradient flowing even for negative inputs, preventing neurons from dying completely.</p>
+
+                <p><strong>Advantages:</strong> All benefits of ReLU + no dying neuron problem</p>
+                <p><strong>When to use:</strong> When you notice many "dead" neurons in training (check activation statistics)</p>
+
+                <h4>3. Sigmoid (Logistic Function)</h4>
+                <div class="formula-box">
+                    <strong>Formula:</strong> f(x) = 1 / (1 + e<sup>-x</sup>)<br><br>
+                    <strong>Derivative:</strong> f'(x) = f(x) · (1 - f(x))<br><br>
+                    <small style="font-family: sans-serif;">
+                        Output: (0, 1)<br>
+                        "Squashes input to probability-like output"
+                    </small>
+                </div>
+
+                <p><strong>How it works:</strong> Sigmoid smoothly maps any input to a value between 0 and 1, resembling a probability. Large negative values → ~0, large positive values → ~1, zero → 0.5.</p>
+
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>✅ <strong>Smooth and differentiable everywhere:</strong> Nice mathematical properties</li>
+                    <li>✅ <strong>Bounded output:</strong> Always between 0 and 1, interpretable as probability</li>
+                    <li>✅ <strong>Clear probabilistic interpretation:</strong> Perfect for binary classification</li>
+                </ul>
+
+                <p><strong>Disadvantages:</strong></p>
+                <ul>
+                    <li>❌ <strong>Vanishing gradient:</strong> For |x| > 4, gradient becomes very small (~0), making learning slow in deep networks</li>
+                    <li>❌ <strong>Not zero-centered:</strong> Outputs are all positive, causing zig-zagging weight updates</li>
+                    <li>❌ <strong>Computationally expensive:</strong> Requires exponential calculation</li>
+                    <li>❌ <strong>Saturation kills gradients:</strong> When output is near 0 or 1, gradient is near 0</li>
+                </ul>
+
+                <p><strong>When to use:</strong> <strong>Output layer only</strong> for binary classification. Avoid in hidden layers of deep networks.</p>
+
+                <div class="example-box">
+                    <strong>Example:</strong><br>
+                    Input: [-5, -1, 0, 1, 5]<br>
+                    Sigmoid Output: [0.007, 0.27, 0.5, 0.73, 0.993]<br>
+                    → All values squeezed to (0,1) range
+                </div>
+
+                <h4>4. Tanh (Hyperbolic Tangent)</h4>
+                <div class="formula-box">
+                    <strong>Formula:</strong> f(x) = (e<sup>x</sup> - e<sup>-x</sup>) / (e<sup>x</sup> + e<sup>-x</sup>)<br><br>
+                    <strong>Alternative:</strong> f(x) = 2·sigmoid(2x) - 1<br><br>
+                    <strong>Derivative:</strong> f'(x) = 1 - f(x)²<br><br>
+                    <small style="font-family: sans-serif;">
+                        Output: (-1, 1)<br>
+                        "Zero-centered version of sigmoid"
+                    </small>
+                </div>
+
+                <p><strong>How it works:</strong> Similar to sigmoid but outputs range from -1 to 1, making it zero-centered. This is essentially a scaled and shifted sigmoid.</p>
+
+                <p><strong>Advantages:</strong></p>
+                <ul>
+                    <li>✅ <strong>Zero-centered:</strong> Better than sigmoid for hidden layers</li>
+                    <li>✅ <strong>Stronger gradients:</strong> Slightly better than sigmoid (but still vanishes)</li>
+                    <li>✅ <strong>Symmetric around origin:</strong> Helps optimization</li>
+                </ul>
+
+                <p><strong>Disadvantages:</strong></p>
+                <ul>
+                    <li>❌ <strong>Still has vanishing gradient:</strong> Same problem as sigmoid for |x| > 2</li>
+                    <li>❌ <strong>Computationally expensive:</strong> Two exponentials required</li>
+                </ul>
+
+                <p><strong>When to use:</strong> Sometimes used in RNNs and LSTMs. Generally replaced by ReLU in modern architectures.</p>
+
+                <h4>5. Softmax - Multi-Class Probability Distribution</h4>
+                <div class="formula-box">
+                    <strong>Formula:</strong> f(x<sub>i</sub>) = e<sup>x<sub>i</sub></sup> / Σ<sub>j</sub>e<sup>x<sub>j</sub></sup><br><br>
+                    <small style="font-family: sans-serif;">
+                        Output: Each value in (0, 1), sum = 1<br>
+                        "Converts logits to probability distribution"
+                    </small>
+                </div>
+
+                <p><strong>How it works:</strong> Softmax takes a vector of numbers (logits) and converts them into a probability distribution. It exponentiates each value (making them positive) and normalizes by the sum (making them sum to 1).</p>
+
+                <p><strong>Key Properties:</strong></p>
+                <ul>
+                    <li>✅ <strong>Outputs sum to 1:</strong> Perfect for multi-class classification probabilities</li>
+                    <li>✅ <strong>Differentiable:</strong> Works well with backpropagation</li>
+                    <li>✅ <strong>Emphasizes maximum:</strong> Largest input gets largest probability (winner-take-most effect)</li>
+                    <li>✅ <strong>Handles any number of classes:</strong> Binary, 10-way, 1000-way classification</li>
+                </ul>
+
+                <p><strong>When to use:</strong> <strong>Output layer only</strong> for multi-class classification (mutually exclusive classes)</p>
+
+                <div class="example-box">
+                    <strong>Example - Image Classification (3 classes):</strong><br>
+                    Logits from network: [2.0, 1.0, 0.1]<br>
+                    After Softmax: [0.659, 0.242, 0.099]<br>
+                    → Class 1: 65.9%, Class 2: 24.2%, Class 3: 9.9%<br>
+                    → These sum to 100% and represent class probabilities
+                </div>
+
+                <h3>Activation Function Comparison Table</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Function</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Range</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Zero-Centered</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Typical Use</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Main Issue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>ReLU</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">[0, ∞)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Hidden layers</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Dying neurons</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Leaky ReLU</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">(-∞, ∞)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Hidden layers</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Hyperparameter α</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Sigmoid</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">(0, 1)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Binary output</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Vanishing gradient</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Tanh</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">(-1, 1)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Yes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">RNNs/LSTMs</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Vanishing gradient</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Softmax</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">(0, 1), Σ=1</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Multi-class output</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Expensive for large classes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Implementation from Scratch</h3>
+                <pre><code class="language-python">import numpy as np
+
+class ActivationFunctions:
+    @staticmethod
+    def relu(x):
+        """ReLU: max(0, x)"""
+        return np.maximum(0, x)
+    
+    @staticmethod
+    def relu_derivative(x):
+        """Gradient of ReLU"""
+        return (x > 0).astype(float)
+    
+    @staticmethod
+    def leaky_relu(x, alpha=0.01):
+        """Leaky ReLU: max(alpha*x, x)"""
+        return np.where(x > 0, x, alpha * x)
+    
+    @staticmethod
+    def sigmoid(x):
+        """Sigmoid: 1 / (1 + e^-x)"""
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))  # Clip for numerical stability
+    
+    @staticmethod
+    def sigmoid_derivative(x):
+        """Gradient of sigmoid"""
+        sig = ActivationFunctions.sigmoid(x)
+        return sig * (1 - sig)
+    
+    @staticmethod
+    def tanh(x):
+        """Tanh activation"""
+        return np.tanh(x)
+    
+    @staticmethod
+    def tanh_derivative(x):
+        """Gradient of tanh"""
+        return 1 - np.tanh(x) ** 2
+    
+    @staticmethod
+    def softmax(x):
+        """Softmax: converts logits to probabilities"""
+        # Subtract max for numerical stability
+        exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+        return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+# Test different activations
+x = np.array([-2, -1, 0, 1, 2])
+
+print("Input:", x)
+print("ReLU:", ActivationFunctions.relu(x))
+print("Leaky ReLU:", ActivationFunctions.leaky_relu(x))
+print("Sigmoid:", ActivationFunctions.sigmoid(x))
+print("Tanh:", ActivationFunctions.tanh(x))
+
+# Softmax example (multi-class logits)
+logits = np.array([2.0, 1.0, 0.1])
+probs = ActivationFunctions.softmax(logits)
+print(f"\\nLogits: {logits}")
+print(f"Softmax probabilities: {probs}")
+print(f"Sum of probabilities: {probs.sum()}")  # Should be 1.0</code></pre>
+
+                <h3>Choosing the Right Activation</h3>
+                <div class="success-box">
+                    <strong>💡 Simple Decision Guide:</strong>
+                    <ul style="margin-top: 1rem; line-height: 1.8;">
+                        <li><strong>Hidden Layers:</strong> Start with ReLU. If you see dying neurons, try Leaky ReLU or GELU.</li>
+                        <li><strong>Binary Classification Output:</strong> Sigmoid (gives you probability between 0 and 1)</li>
+                        <li><strong>Multi-Class Classification Output:</strong> Softmax (gives probability distribution)</li>
+                        <li><strong>Regression Output:</strong> No activation or Linear (for unrestricted output range)</li>
+                        <li><strong>RNNs/LSTMs:</strong> Tanh for cell state, Sigmoid for gates</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Common Mistake:</strong> Using sigmoid/tanh in hidden layers of deep networks leads to vanishing gradients. Stick with ReLU variants for hidden layers!
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ Neural Network Layers: Building the Architecture</h2>
+                
+                <p>
+                    Individual neurons are powerful, but the real magic happens when we organize them into <strong>layers</strong> and stack multiple layers together. This layered architecture is what gives neural networks their ability to learn hierarchical representations of data.
+                </p>
+
+                <h3>The Three Types of Layers</h3>
+
+                <h4>1. Input Layer</h4>
+                <p>
+                    The input layer is not really a "computational" layer — it simply holds your raw feature data. If you're predicting house prices with 5 features (size, bedrooms, bathrooms, location score, age), your input layer has 5 neurons.
+                </p>
+                <div class="info-box">
+                    <strong>Key Point:</strong> The size of the input layer is determined by your data's feature count. For images (28×28 pixels), that's 784 input neurons. For text embeddings (768-dimensional), that's 768 inputs.
+                </div>
+
+                <h4>2. Hidden Layers</h4>
+                <p>
+                    Hidden layers perform the actual computation and feature transformation. Each hidden layer learns increasingly abstract representations:
+                </p>
+                <ul>
+                    <li><strong>Layer 1:</strong> Learns simple features (edges in images, simple word patterns in text)</li>
+                    <li><strong>Layer 2:</strong> Combines simple features into parts (shapes, phrases)</li>
+                    <li><strong>Layer 3:</strong> Combines parts into objects (faces, semantic meanings)</li>
+                    <li><strong>Deeper layers:</strong> Build even more abstract and complex representations</li>
+                </ul>
+
+                <h4>3. Output Layer</h4>
+                <p>
+                    The output layer produces your final prediction. Its size and activation depend on your task:
+                </p>
+                <ul>
+                    <li><strong>Binary Classification:</strong> 1 neuron with sigmoid (probability of positive class)</li>
+                    <li><strong>Multi-Class Classification:</strong> N neurons with softmax (N class probabilities)</li>
+                    <li><strong>Regression:</strong> 1 neuron with no activation or linear (predicting a number)</li>
+                </ul>
+
+                <h3>Width vs Depth: Architecture Design</h3>
+                <p><strong>Rule of thumb:</strong> Start with 2-3 hidden layers of moderate width (64-256 neurons). Add depth if you have lots of data and complex patterns.</p>
+
+                <pre><code class="language-python"># Building a simple neural network with TensorFlow/Keras
+import tensorflow as tf
+
+# Sequential API (for simple stack of layers)
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(10,)),    # 10 features → 64 neurons
+    tf.keras.layers.Dense(32, activation='relu'),                       # 64 → 32 neurons
+    tf.keras.layers.Dense(16, activation='relu'),                       # 32 → 16 neurons
+    tf.keras.layers.Dense(1, activation='sigmoid')                      # 16 → 1 output (binary)
+])
+
+model.summary()  # View architecture and parameter counts
+
+# Parameter calculation:
+# Layer 1: (10 × 64) + 64 biases = 704 parameters
+# Layer 2: (64 × 32) + 32 = 2,080 parameters
+# Layer 3: (32 × 16) + 16 = 528 parameters
+# Output: (16 × 1) + 1 = 17 parameters
+# Total: 3,329 trainable parameters</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Practical Guidelines:</strong>
+                    <ul style="margin-top: 1rem; line-height: 1.8;">
+                        <li><strong>Small datasets (< 1K samples):</strong> 1-2 hidden layers, 32-64 neurons</li>
+                        <li><strong>Medium datasets (1K-100K):</strong> 2-4 hidden layers, 64-256 neurons</li>
+                        <li><strong>Large datasets (100K+):</strong> 3-10+ layers, 128-512 neurons</li>
+                        <li><strong>Start simple:</strong> Can always add complexity if needed!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📤 Forward Propagation</h2>
+                
+                <p>
+                    Forward propagation is how data flows through the network from input to output.
+                </p>
+
+                <h3>The Process</h3>
+                <ol>
+                    <li>Input data enters the input layer</li>
+                    <li>Each neuron in hidden layer 1 receives all inputs, multiplies by weights, adds bias</li>
+                    <li>Apply activation function</li>
+                    <li>Pass outputs to next layer</li>
+                    <li>Repeat until reaching output layer</li>
+                    <li>Output layer produces final prediction</li>
+                </ol>
+
+                <div class="example-box">
+                    <strong>📊 Example:</strong> A 3-layer network processing input
+                    <p style="margin-top: 0.75rem;">
+                        Input: [2.5, 3.1] → Hidden 1: [0.8, 0.2, 0.9] → Hidden 2: [0.6, 0.4] → Output: 0.85
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📉 Backpropagation</h2>
+                
+                <div class="info-box">
+                    <h3>The Key to Learning</h3>
+                    <p>
+                        Backpropagation is how neural networks learn. After forward pass, it calculates error and flows it backward to update weights.
+                    </p>
+                </div>
+
+                <h3>How It Works</h3>
+                <ol>
+                    <li><strong>Forward Pass:</strong> Run data through network, get prediction</li>
+                    <li><strong>Calculate Error:</strong> Compare prediction with actual value</li>
+                    <li><strong>Backward Pass:</strong> Calculate how much each weight contributed to the error</li>
+                    <li><strong>Update Weights:</strong> Adjust weights to reduce error (using gradient descent)</li>
+                    <li><strong>Repeat:</strong> Many times until accuracy improves</li>
+                </ol>
+
+                <div class="success-box">
+                    <p>✅ <strong>Chain Rule Magic:</strong> Calculus chain rule allows us to compute gradients efficiently through all layers!</p>
+                </div>
+
+                <pre><code class="language-python"># Training a neural network (simplified)
+import tensorflow as tf
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(32, activation='relu', input_shape=(10,)),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Compile: specify loss function and optimizer
+model.compile(
+    optimizer='adam',              # How to update weights
+    loss='binary_crossentropy',    # Measure of error
+    metrics=['accuracy']           # What to track
+)
+
+# Train: this runs forward and backward propagation
+model.fit(X_train, y_train, epochs=10, batch_size=32)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Neurons are the basic units: weights × inputs + bias → activation</li>
+                    <li>Activation functions introduce non-linearity (ReLU, Sigmoid, Tanh)</li>
+                    <li>Networks stack neurons into layers (input → hidden → output)</li>
+                    <li>Forward propagation flows data through the network</li>
+                    <li>Backpropagation updates weights to reduce error</li>
+                    <li>Together, they enable learning!</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Training Neural Networks</strong>, we'll dive deep into optimizers, loss functions, and techniques to train networks effectively!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Excellent Start!</strong> You now understand the foundation of deep learning. You're ready to train real networks!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Neural Network Fundamentals!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is a neuron in a neural network?</h4>
+                        <div class="quiz-option" data-value="A">A) A biological cell</div>
+                        <div class="quiz-option" data-value="B">B) A computational unit that takes inputs, applies weights, and produces output</div>
+                        <div class="quiz-option" data-value="C">C) A data storage unit</div>
+                        <div class="quiz-option" data-value="D">D) A random number generator</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What is the purpose of an activation function?</h4>
+                        <div class="quiz-option" data-value="A">A) To initialize weights</div>
+                        <div class="quiz-option" data-value="B">B) To speed up training</div>
+                        <div class="quiz-option" data-value="C">C) To introduce non-linearity and enable learning complex patterns</div>
+                        <div class="quiz-option" data-value="D">D) To reduce model size</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is forward propagation?</h4>
+                        <div class="quiz-option" data-value="A">A) Passing input through layers to get predictions</div>
+                        <div class="quiz-option" data-value="B">B) Updating weights based on errors</div>
+                        <div class="quiz-option" data-value="C">C) Adding new layers to the network</div>
+                        <div class="quiz-option" data-value="D">D) Removing unnecessary neurons</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What algorithm is used to train neural networks?</h4>
+                        <div class="quiz-option" data-value="A">A) Binary search</div>
+                        <div class="quiz-option" data-value="B">B) Bubble sort</div>
+                        <div class="quiz-option" data-value="C">C) Dijkstra's algorithm</div>
+                        <div class="quiz-option" data-value="D">D) Backpropagation with gradient descent</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. Which activation function is most commonly used in hidden layers?</h4>
+                        <div class="quiz-option" data-value="A">A) Sigmoid</div>
+                        <div class="quiz-option" data-value="B">B) ReLU (Rectified Linear Unit)</div>
+                        <div class="quiz-option" data-value="C">C) Linear</div>
+                        <div class="quiz-option" data-value="D">D) Step function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="../../courses/deep-learning.html" class="btn btn-secondary">← Back to Course</a>
+                <a href="training-neural-networks.html" class="btn btn-primary">Next: Training Neural Networks →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

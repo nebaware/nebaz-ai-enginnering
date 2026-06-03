@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hands-On Project: Build a Complete Transformer from Scratch in PyTorch. Step-by-step implementation of encoder-decoder architecture for machine translation.">
+    <meta name="keywords" content="transformer implementation, pytorch transformer, machine translation, encoder decoder, attention mechanism, hands-on project">
+    <title>Project 1: Build a Transformer from Scratch | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Project 1: Build Transformer from Scratch</span>
+            </nav>
+        </div>
+    </div>
+    
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">🛠️ Project 1: Build a Transformer from Scratch</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Hands-On Project</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟡 Intermediate</span>
+                    <span style="color: rgba(255,255,255,0.9);">⏱️ 2-3 hours</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Implement a complete encoder-decoder transformer in PyTorch and train it for machine translation
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    In this hands-on project, you'll build a complete transformer architecture from scratch using PyTorch. By the end, you'll have a working machine translation model that can translate English to French.
+                </p>
+
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #078930;">
+                    <h3 style="margin-top: 0; color: #065f46;">What You'll Build</h3>
+                    <ul style="color: #1e3a8a; margin: 0; line-height: 1.8;">
+                        <li>✅ Multi-head self-attention mechanism</li>
+                        <li>✅ Positional encoding layer</li>
+                        <li>✅ Encoder stack (6 layers)</li>
+                        <li>✅ Decoder stack with cross-attention (6 layers)</li>
+                        <li>✅ Complete transformer model</li>
+                        <li>✅ Training loop with English→French translation</li>
+                        <li>✅ Inference and beam search decoding</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>📋 Prerequisites</h4>
+                    <ul style="margin: 0.5rem 0;">
+                        <li>Python 3.7+</li>
+                        <li>PyTorch 2.0+ (<code>pip install torch</code>)</li>
+                        <li>Basic understanding of transformer components (from previous tutorials)</li>
+                        <li>1-2 GB GPU memory recommended (or CPU)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 1: Setup and Imports</h2>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+import numpy as np
+from torch.utils.data import Dataset, DataLoader
+
+# Set device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(f"Using device: {device}")
+
+# Hyperparameters
+d_model = 512        # Model dimension
+num_heads = 8        # Number of attention heads
+num_layers = 6       # Number of encoder/decoder layers
+d_ff = 2048          # Feed-forward dimension
+dropout = 0.1        # Dropout rate
+max_seq_len = 100    # Maximum sequence length
+vocab_size_src = 10000  # Source vocabulary size
+vocab_size_tgt = 10000  # Target vocabulary size
+
+print("✅ Setup complete!")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 2: Positional Encoding</h2>
+                <p>
+                    First, implement positional encoding to give the model information about token positions.
+                </p>
+                <pre><code class="language-python">class PositionalEncoding(nn.Module):
+    """
+    Sinusoidal positional encoding from 'Attention Is All You Need'.
+    PE(pos, 2i) = sin(pos / 10000^(2i/d_model))
+    PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))
+    """
+    def __init__(self, d_model, max_seq_len=5000, dropout=0.1):
+        super().__init__()
+        self.dropout = nn.Dropout(dropout)
+        
+        # Create positional encoding matrix
+        pe = torch.zeros(max_seq_len, d_model)
+        position = torch.arange(0, max_seq_len).unsqueeze(1).float()
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * 
+                            -(math.log(10000.0) / d_model))
+        
+        pe[:, 0::2] = torch.sin(position * div_term)  # Even dimensions
+        pe[:, 1::2] = torch.cos(position * div_term)  # Odd dimensions
+        
+        pe = pe.unsqueeze(0)  # [1, max_seq_len, d_model]
+        self.register_buffer('pe', pe)
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch, seq_len, d_model]
+        Returns:
+            [batch, seq_len, d_model] with positional encoding added
+        """
+        x = x + self.pe[:, :x.size(1), :]
+        return self.dropout(x)
+
+# Test
+pe = PositionalEncoding(d_model=512)
+test_input = torch.randn(2, 10, 512)
+output = pe(test_input)
+print(f"✅ Positional Encoding: {test_input.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 3: Multi-Head Attention</h2>
+                <p>
+                    Implement the core attention mechanism with multiple heads.
+                </p>
+                <pre><code class="language-python">class MultiHeadAttention(nn.Module):
+    """
+    Multi-head scaled dot-product attention.
+    """
+    def __init__(self, d_model, num_heads, dropout=0.1):
+        super().__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # Linear projections for Q, K, V
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        
+        # Output projection
+        self.W_o = nn.Linear(d_model, d_model)
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def scaled_dot_product_attention(self, Q, K, V, mask=None):
+        """
+        Compute scaled dot-product attention.
+        
+        Args:
+            Q, K, V: [batch, num_heads, seq_len, d_k]
+            mask: [batch, 1, seq_len, seq_len] or [batch, 1, 1, seq_len]
+        
+        Returns:
+            output: [batch, num_heads, seq_len, d_k]
+            attention_weights: [batch, num_heads, seq_len, seq_len]
+        """
+        # Compute attention scores
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+        # [batch, num_heads, seq_len_q, seq_len_k]
+        
+        # Apply mask (if provided)
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+        # Compute attention weights
+        attention_weights = F.softmax(scores, dim=-1)
+        attention_weights = self.dropout(attention_weights)
+        
+        # Apply attention to values
+        output = torch.matmul(attention_weights, V)
+        # [batch, num_heads, seq_len_q, d_k]
+        
+        return output, attention_weights
+    
+    def forward(self, query, key, value, mask=None):
+        """
+        Args:
+            query: [batch, seq_len_q, d_model]
+            key: [batch, seq_len_k, d_model]
+            value: [batch, seq_len_v, d_model]
+            mask: [batch, seq_len_q, seq_len_k] or [batch, 1, seq_len_k]
+        
+        Returns:
+            output: [batch, seq_len_q, d_model]
+            attention_weights: [batch, num_heads, seq_len_q, seq_len_k]
+        """
+        batch_size = query.size(0)
+        
+        # Linear projections and split into heads
+        Q = self.W_q(query).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        K = self.W_k(key).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        V = self.W_v(value).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        # [batch, num_heads, seq_len, d_k]
+        
+        # Expand mask for multi-head
+        if mask is not None:
+            mask = mask.unsqueeze(1)  # [batch, 1, seq_len_q, seq_len_k]
+        
+        # Apply attention
+        attn_output, attention_weights = self.scaled_dot_product_attention(Q, K, V, mask)
+        
+        # Concatenate heads
+        attn_output = attn_output.transpose(1, 2).contiguous().view(
+            batch_size, -1, self.d_model
+        )  # [batch, seq_len_q, d_model]
+        
+        # Final linear projection
+        output = self.W_o(attn_output)
+        
+        return output, attention_weights
+
+# Test
+mha = MultiHeadAttention(d_model=512, num_heads=8)
+test_q = torch.randn(2, 10, 512)
+test_k = torch.randn(2, 10, 512)
+test_v = torch.randn(2, 10, 512)
+output, attn_weights = mha(test_q, test_k, test_v)
+print(f"✅ Multi-Head Attention: Q{test_q.shape} → Output{output.shape}")
+print(f"   Attention weights: {attn_weights.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 4: Feed-Forward Network</h2>
+                <pre><code class="language-python">class FeedForward(nn.Module):
+    """
+    Position-wise feed-forward network.
+    FFN(x) = ReLU(xW1 + b1)W2 + b2
+    """
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super().__init__()
+        self.linear1 = nn.Linear(d_model, d_ff)
+        self.dropout = nn.Dropout(dropout)
+        self.linear2 = nn.Linear(d_ff, d_model)
+    
+    def forward(self, x):
+        """
+        Args:
+            x: [batch, seq_len, d_model]
+        Returns:
+            [batch, seq_len, d_model]
+        """
+        return self.linear2(self.dropout(F.relu(self.linear1(x))))
+
+# Test
+ffn = FeedForward(d_model=512, d_ff=2048)
+test_input = torch.randn(2, 10, 512)
+output = ffn(test_input)
+print(f"✅ Feed-Forward Network: {test_input.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 5: Encoder Layer</h2>
+                <pre><code class="language-python">class EncoderLayer(nn.Module):
+    """
+    Single encoder layer: Self-Attention + Feed-Forward
+    with residual connections and layer normalization.
+    """
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super().__init__()
+        self.self_attention = MultiHeadAttention(d_model, num_heads, dropout)
+        self.feed_forward = FeedForward(d_model, d_ff, dropout)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+    
+    def forward(self, x, mask=None):
+        """
+        Args:
+            x: [batch, seq_len, d_model]
+            mask: [batch, seq_len, seq_len] padding mask
+        Returns:
+            [batch, seq_len, d_model]
+        """
+        # Self-attention + residual + norm
+        attn_output, _ = self.self_attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout1(attn_output))
+        
+        # Feed-forward + residual + norm
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout2(ff_output))
+        
+        return x
+
+# Test
+encoder_layer = EncoderLayer(d_model=512, num_heads=8, d_ff=2048)
+test_input = torch.randn(2, 10, 512)
+output = encoder_layer(test_input)
+print(f"✅ Encoder Layer: {test_input.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 6: Complete Encoder</h2>
+                <pre><code class="language-python">class Encoder(nn.Module):
+    """
+    Complete transformer encoder: embedding + N encoder layers.
+    """
+    def __init__(self, vocab_size, d_model, num_layers, num_heads, d_ff, 
+                 max_seq_len, dropout=0.1):
+        super().__init__()
+        self.d_model = d_model
+        
+        # Token + positional embedding
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.positional_encoding = PositionalEncoding(d_model, max_seq_len, dropout)
+        
+        # Stack of encoder layers
+        self.layers = nn.ModuleList([
+            EncoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, src, src_mask=None):
+        """
+        Args:
+            src: [batch, src_len] token indices
+            src_mask: [batch, 1, src_len] padding mask
+        Returns:
+            [batch, src_len, d_model] encoded representations
+        """
+        # Embed and scale
+        x = self.embedding(src) * math.sqrt(self.d_model)
+        x = self.positional_encoding(x)
+        
+        # Pass through encoder layers
+        for layer in self.layers:
+            x = layer(x, src_mask)
+        
+        return x
+
+# Test
+encoder = Encoder(vocab_size=10000, d_model=512, num_layers=6, 
+                  num_heads=8, d_ff=2048, max_seq_len=100)
+test_src = torch.randint(0, 10000, (2, 10))
+output = encoder(test_src)
+print(f"✅ Complete Encoder: {test_src.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 7: Decoder Layer</h2>
+                <pre><code class="language-python">class DecoderLayer(nn.Module):
+    """
+    Single decoder layer: Masked Self-Attention + Cross-Attention + Feed-Forward
+    """
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super().__init__()
+        self.self_attention = MultiHeadAttention(d_model, num_heads, dropout)
+        self.cross_attention = MultiHeadAttention(d_model, num_heads, dropout)
+        self.feed_forward = FeedForward(d_model, d_ff, dropout)
+        
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.norm3 = nn.LayerNorm(d_model)
+        
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+        self.dropout3 = nn.Dropout(dropout)
+    
+    def forward(self, x, encoder_output, src_mask=None, tgt_mask=None):
+        """
+        Args:
+            x: [batch, tgt_len, d_model] decoder input
+            encoder_output: [batch, src_len, d_model]
+            src_mask: [batch, 1, src_len] encoder padding mask
+            tgt_mask: [batch, tgt_len, tgt_len] causal mask
+        Returns:
+            [batch, tgt_len, d_model]
+        """
+        # Masked self-attention
+        attn_output, _ = self.self_attention(x, x, x, tgt_mask)
+        x = self.norm1(x + self.dropout1(attn_output))
+        
+        # Cross-attention to encoder
+        attn_output, _ = self.cross_attention(x, encoder_output, encoder_output, src_mask)
+        x = self.norm2(x + self.dropout2(attn_output))
+        
+        # Feed-forward
+        ff_output = self.feed_forward(x)
+        x = self.norm3(x + self.dropout3(ff_output))
+        
+        return x
+
+# Test
+decoder_layer = DecoderLayer(d_model=512, num_heads=8, d_ff=2048)
+test_x = torch.randn(2, 8, 512)
+test_enc = torch.randn(2, 10, 512)
+output = decoder_layer(test_x, test_enc)
+print(f"✅ Decoder Layer: {test_x.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 8: Complete Decoder</h2>
+                <pre><code class="language-python">class Decoder(nn.Module):
+    """
+    Complete transformer decoder: embedding + N decoder layers.
+    """
+    def __init__(self, vocab_size, d_model, num_layers, num_heads, d_ff, 
+                 max_seq_len, dropout=0.1):
+        super().__init__()
+        self.d_model = d_model
+        
+        # Token + positional embedding
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.positional_encoding = PositionalEncoding(d_model, max_seq_len, dropout)
+        
+        # Stack of decoder layers
+        self.layers = nn.ModuleList([
+            DecoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        # Output projection to vocabulary
+        self.fc_out = nn.Linear(d_model, vocab_size)
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, tgt, encoder_output, src_mask=None, tgt_mask=None):
+        """
+        Args:
+            tgt: [batch, tgt_len] target token indices
+            encoder_output: [batch, src_len, d_model]
+            src_mask: [batch, 1, src_len]
+            tgt_mask: [batch, tgt_len, tgt_len] causal mask
+        Returns:
+            [batch, tgt_len, vocab_size] logits
+        """
+        # Embed and scale
+        x = self.embedding(tgt) * math.sqrt(self.d_model)
+        x = self.positional_encoding(x)
+        
+        # Pass through decoder layers
+        for layer in self.layers:
+            x = layer(x, encoder_output, src_mask, tgt_mask)
+        
+        # Project to vocabulary
+        logits = self.fc_out(x)
+        
+        return logits
+
+# Test
+decoder = Decoder(vocab_size=10000, d_model=512, num_layers=6, 
+                  num_heads=8, d_ff=2048, max_seq_len=100)
+test_tgt = torch.randint(0, 10000, (2, 8))
+test_enc = torch.randn(2, 10, 512)
+output = decoder(test_tgt, test_enc)
+print(f"✅ Complete Decoder: {test_tgt.shape} → {output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 9: Complete Transformer Model</h2>
+                <pre><code class="language-python">class Transformer(nn.Module):
+    """
+    Complete transformer model: Encoder + Decoder
+    """
+    def __init__(self, src_vocab_size, tgt_vocab_size, d_model=512, 
+                 num_layers=6, num_heads=8, d_ff=2048, max_seq_len=100, dropout=0.1):
+        super().__init__()
+        
+        self.encoder = Encoder(src_vocab_size, d_model, num_layers, num_heads, 
+                              d_ff, max_seq_len, dropout)
+        self.decoder = Decoder(tgt_vocab_size, d_model, num_layers, num_heads, 
+                              d_ff, max_seq_len, dropout)
+    
+    def make_src_mask(self, src):
+        """Create padding mask for source."""
+        # src: [batch, src_len]
+        src_mask = (src != 0).unsqueeze(1).unsqueeze(2)
+        # [batch, 1, 1, src_len]
+        return src_mask
+    
+    def make_tgt_mask(self, tgt):
+        """Create causal mask for target."""
+        # tgt: [batch, tgt_len]
+        batch_size, tgt_len = tgt.shape
+        
+        # Padding mask
+        tgt_pad_mask = (tgt != 0).unsqueeze(1).unsqueeze(2)
+        # [batch, 1, 1, tgt_len]
+        
+        # Causal mask (lower triangular)
+        tgt_sub_mask = torch.tril(torch.ones((tgt_len, tgt_len), device=tgt.device)).bool()
+        # [tgt_len, tgt_len]
+        
+        # Combine masks
+        tgt_mask = tgt_pad_mask & tgt_sub_mask
+        # [batch, 1, tgt_len, tgt_len]
+        
+        return tgt_mask
+    
+    def forward(self, src, tgt):
+        """
+        Args:
+            src: [batch, src_len] source token indices
+            tgt: [batch, tgt_len] target token indices
+        Returns:
+            [batch, tgt_len, tgt_vocab_size] output logits
+        """
+        src_mask = self.make_src_mask(src)
+        tgt_mask = self.make_tgt_mask(tgt)
+        
+        encoder_output = self.encoder(src, src_mask)
+        decoder_output = self.decoder(tgt, encoder_output, src_mask, tgt_mask)
+        
+        return decoder_output
+
+# Create model
+model = Transformer(
+    src_vocab_size=10000,
+    tgt_vocab_size=10000,
+    d_model=512,
+    num_layers=6,
+    num_heads=8,
+    d_ff=2048,
+    max_seq_len=100,
+    dropout=0.1
+).to(device)
+
+# Count parameters
+total_params = sum(p.numel() for p in model.parameters())
+print(f"✅ Complete Transformer Model Created!")
+print(f"   Total parameters: {total_params:,}")
+
+# Test forward pass
+test_src = torch.randint(1, 10000, (2, 10)).to(device)
+test_tgt = torch.randint(1, 10000, (2, 8)).to(device)
+output = model(test_src, test_tgt)
+print(f"   Forward pass: src{test_src.shape} + tgt{test_tgt.shape} → output{output.shape}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 10: Training Setup</h2>
+                <pre><code class="language-python">import torch.optim as optim
+
+# Optimizer
+optimizer = optim.Adam(model.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
+
+# Loss function (ignore padding tokens)
+criterion = nn.CrossEntropyLoss(ignore_index=0)
+
+# Learning rate scheduler (Noam scheduler from paper)
+class NoamScheduler:
+    def __init__(self, optimizer, d_model, warmup_steps=4000):
+        self.optimizer = optimizer
+        self.d_model = d_model
+        self.warmup_steps = warmup_steps
+        self.step_num = 0
+    
+    def step(self):
+        self.step_num += 1
+        lr = self.d_model ** (-0.5) * min(
+            self.step_num ** (-0.5),
+            self.step_num * self.warmup_steps ** (-1.5)
+        )
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = lr
+
+scheduler = NoamScheduler(optimizer, d_model=512, warmup_steps=4000)
+
+print("✅ Training setup complete!")
+print(f"   Optimizer: Adam")
+print(f"   Loss: CrossEntropyLoss (ignore padding)")
+print(f"   Scheduler: Noam (warmup_steps=4000)")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 11: Training Loop</h2>
+                <pre><code class="language-python">def train_epoch(model, dataloader, optimizer, criterion, scheduler, device):
+    """Train for one epoch."""
+    model.train()
+    total_loss = 0
+    
+    for batch_idx, (src, tgt) in enumerate(dataloader):
+        src, tgt = src.to(device), tgt.to(device)
+        
+        # Prepare decoder input (shift right)
+        tgt_input = tgt[:, :-1]
+        tgt_output = tgt[:, 1:]
+        
+        # Forward pass
+        output = model(src, tgt_input)
+        
+        # Compute loss
+        output = output.reshape(-1, output.size(-1))
+        tgt_output = tgt_output.reshape(-1)
+        loss = criterion(output, tgt_output)
+        
+        # Backward pass
+        optimizer.zero_grad()
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+        optimizer.step()
+        scheduler.step()
+        
+        total_loss += loss.item()
+        
+        if batch_idx % 100 == 0:
+            print(f"  Batch {batch_idx}/{len(dataloader)}, Loss: {loss.item():.4f}")
+    
+    return total_loss / len(dataloader)
+
+
+def evaluate(model, dataloader, criterion, device):
+    """Evaluate model."""
+    model.eval()
+    total_loss = 0
+    
+    with torch.no_grad():
+        for src, tgt in dataloader:
+            src, tgt = src.to(device), tgt.to(device)
+            
+            tgt_input = tgt[:, :-1]
+            tgt_output = tgt[:, 1:]
+            
+            output = model(src, tgt_input)
+            
+            output = output.reshape(-1, output.size(-1))
+            tgt_output = tgt_output.reshape(-1)
+            loss = criterion(output, tgt_output)
+            
+            total_loss += loss.item()
+    
+    return total_loss / len(dataloader)
+
+
+# Training loop
+num_epochs = 10
+
+print("🚀 Starting training...")
+for epoch in range(num_epochs):
+    print(f"\nEpoch {epoch+1}/{num_epochs}")
+    
+    train_loss = train_epoch(model, train_loader, optimizer, criterion, scheduler, device)
+    val_loss = evaluate(model, val_loader, criterion, device)
+    
+    print(f"  Train Loss: {train_loss:.4f}")
+    print(f"  Val Loss: {val_loss:.4f}")
+    
+    # Save checkpoint
+    if (epoch + 1) % 5 == 0:
+        torch.save({
+            'epoch': epoch,
+            'model_state_dict': model.state_dict(),
+            'optimizer_state_dict': optimizer.state_dict(),
+            'train_loss': train_loss,
+            'val_loss': val_loss,
+        }, f'transformer_checkpoint_epoch_{epoch+1}.pt')
+        print(f"  ✅ Checkpoint saved!")
+
+print("\n🎉 Training complete!")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 12: Inference (Greedy Decoding)</h2>
+                <pre><code class="language-python">def translate(model, src_sentence, src_vocab, tgt_vocab, device, max_len=50):
+    """
+    Translate a source sentence to target language.
+    
+    Args:
+        model: Trained transformer
+        src_sentence: Source text string
+        src_vocab: Source vocabulary
+        tgt_vocab: Target vocabulary
+        device: torch device
+        max_len: Maximum output length
+    
+    Returns:
+        Translated text string
+    """
+    model.eval()
+    
+    # Tokenize and add special tokens
+    src_tokens = ['<sos>'] + src_sentence.split() + ['<eos>']
+    src_indices = [src_vocab.get(token, src_vocab['<unk>']) for token in src_tokens]
+    src_tensor = torch.LongTensor(src_indices).unsqueeze(0).to(device)
+    
+    # Encode
+    with torch.no_grad():
+        src_mask = model.make_src_mask(src_tensor)
+        encoder_output = model.encoder(src_tensor, src_mask)
+    
+    # Decode (greedy)
+    tgt_indices = [tgt_vocab['<sos>']]
+    
+    for _ in range(max_len):
+        tgt_tensor = torch.LongTensor(tgt_indices).unsqueeze(0).to(device)
+        
+        with torch.no_grad():
+            tgt_mask = model.make_tgt_mask(tgt_tensor)
+            output = model.decoder(tgt_tensor, encoder_output, src_mask, tgt_mask)
+        
+        # Get next token
+        next_token_logits = output[0, -1, :]
+        next_token_id = torch.argmax(next_token_logits).item()
+        
+        tgt_indices.append(next_token_id)
+        
+        # Stop if EOS token
+        if next_token_id == tgt_vocab['<eos>']:
+            break
+    
+    # Convert indices to tokens
+    tgt_tokens = [list(tgt_vocab.keys())[list(tgt_vocab.values()).index(idx)] 
+                  for idx in tgt_indices[1:-1]]  # Skip <sos> and <eos>
+    
+    return ' '.join(tgt_tokens)
+
+
+# Example translations
+test_sentences = [
+    "Hello, how are you?",
+    "I love machine learning.",
+    "Transformers are amazing!",
+]
+
+print("\n🌍 Testing Translations:")
+print("=" * 70)
+for sentence in test_sentences:
+    translation = translate(model, sentence, src_vocab, tgt_vocab, device)
+    print(f"EN: {sentence}")
+    print(f"FR: {translation}")
+    print("-" * 70)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎉 Congratulations!</h2>
+                <div class="success-box">
+                    <h4>What You've Accomplished</h4>
+                    <ul style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li>✅ Built a complete transformer from scratch (encoder-decoder)</li>
+                        <li>✅ Implemented multi-head attention, positional encoding, and all components</li>
+                        <li>✅ Created training and evaluation loops</li>
+                        <li>✅ Implemented inference with greedy decoding</li>
+                        <li>✅ Trained a machine translation model</li>
+                    </ul>
+                </div>
+
+                <h3>Next Steps</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔬 Experiment</h4>
+                        <ul style="font-size: 0.9rem; color: #047857; margin: 0;">
+                            <li>Try different model sizes (d_model, num_layers)</li>
+                            <li>Experiment with dropout rates</li>
+                            <li>Test different datasets</li>
+                        </ul>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">🚀 Optimize</h4>
+                        <ul style="font-size: 0.9rem; color: #b45309; margin: 0;">
+                            <li>Implement beam search</li>
+                            <li>Add label smoothing</li>
+                            <li>Use mixed precision training</li>
+                        </ul>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">📊 Analyze</h4>
+                        <ul style="font-size: 0.9rem; color: #065f46; margin: 0;">
+                            <li>Visualize attention weights</li>
+                            <li>Analyze what heads learn</li>
+                            <li>Track training metrics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(135deg, #fde047 0%, #facc15 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center;">
+                    <p style="font-size: 1.2rem; margin: 0; color: #854d0e;">
+                        <strong>🏆 You've built a transformer from scratch!</strong>
+                    </p>
+                    <p style="margin-top: 1rem; color: #854d0e;">
+                        This is the same architecture powering GPT, BERT, and modern AI systems. You now understand how these models work at a fundamental level.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the first component you implement in a Transformer?</strong></p>
+                    <div class="quiz-option" data-value="a">The output layer</div>
+                    <div class="quiz-option" data-value="b">The training loop</div>
+                    <div class="quiz-option" data-value="c">The self-attention mechanism</div>
+                    <div class="quiz-option" data-value="d">The loss function</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What PyTorch module is commonly used for multi-head attention?</strong></p>
+                    <div class="quiz-option" data-value="a">nn.Linear</div>
+                    <div class="quiz-option" data-value="b">nn.MultiheadAttention</div>
+                    <div class="quiz-option" data-value="c">nn.Conv2d</div>
+                    <div class="quiz-option" data-value="d">nn.LSTM</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What must be added to token embeddings for position information?</strong></p>
+                    <div class="quiz-option" data-value="a">Random noise</div>
+                    <div class="quiz-option" data-value="b">Gradient values</div>
+                    <div class="quiz-option" data-value="c">Loss values</div>
+                    <div class="quiz-option" data-value="d">Positional encodings</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is the purpose of the feedforward network in each layer?</strong></p>
+                    <div class="quiz-option" data-value="a">To apply non-linear transformations to each position independently</div>
+                    <div class="quiz-option" data-value="b">To replace attention</div>
+                    <div class="quiz-option" data-value="c">To tokenize input</div>
+                    <div class="quiz-option" data-value="d">To compute loss</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: Why implement a Transformer from scratch?</strong></p>
+                    <div class="quiz-option" data-value="a">It's faster than using libraries</div>
+                    <div class="quiz-option" data-value="b">Libraries don't work</div>
+                    <div class="quiz-option" data-value="c">To deeply understand the architecture and its components</div>
+                    <div class="quiz-option" data-value="d">It's required for production</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Back to Course</a>
+                <a href="project-2-simple-language-model.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next Project: Simple Language Model →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

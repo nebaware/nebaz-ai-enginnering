@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master ML pipeline orchestration with Apache Airflow, Kubeflow Pipelines, and MLflow Pipelines. Build automated end-to-end workflows and CI/CD for machine learning models.">
+    <meta name="keywords" content="ML pipelines, orchestration, Apache Airflow, Kubeflow Pipelines, MLflow Pipelines, CI/CD, workflow automation, MLOps, DAG">
+    <title>Orchestration & ML Pipelines - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="orchestration-ml-pipelines.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .pipeline-flow { background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 1.5rem 0; text-align: center; font-family: monospace; }
+        .flow-step { display: inline-block; padding: 0.75rem 1.5rem; background: white; border: 2px solid #078930; border-radius: 8px; margin: 0.5rem; font-weight: 600; }
+        .flow-arrow { display: inline-block; margin: 0 0.5rem; color: #078930; font-size: 1.5rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } .pipeline-flow { padding: 1rem; } .flow-step { display: block; margin: 0.5rem 0; } .flow-arrow { display: block; transform: rotate(90deg); } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Orchestration & ML Pipelines</span>
+            </div>
+            <h1>Orchestration & ML Pipelines</h1>
+            <p class="tutorial-intro">Automate your entire ML lifecycle with Apache Airflow, Kubeflow Pipelines, and MLflow. Build robust, reproducible workflows from data ingestion to model deployment</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 8</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🔄 The ML Pipeline Challenge</h2>
+                <p>
+                    You've trained a model manually: downloaded data, cleaned it in a notebook, trained on your laptop, evaluated results, and deployed. It worked! But then:
+                </p>
+                <ul>
+                    <li>New data arrives daily - you need to retrain weekly</li>
+                    <li>A colleague asks "How did you preprocess the data?"</li>
+                    <li>You need to run the same pipeline on 10 different datasets</li>
+                    <li>The model performance degrades - which version was in production?</li>
+                    <li>Training crashes at 3 AM - no one notices until morning</li>
+                </ul>
+
+                <p>
+                    <strong>ML orchestration</strong> solves this with automated, reproducible workflows. Instead of running scripts manually, you define pipelines as code that execute automatically on schedules or triggers.
+                </p>
+
+                <div class="pipeline-flow">
+                    <div class="flow-step">Data Ingestion</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Validation</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Preprocessing</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Training</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Evaluation</div>
+                    <span class="flow-arrow">→</span>
+                    <div class="flow-step">Deployment</div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Benefits of ML Orchestration:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Reproducibility: Same inputs always produce same outputs</li>
+                        <li>Automation: Run pipelines on schedules or triggers</li>
+                        <li>Monitoring: Track pipeline health and failures</li>
+                        <li>Scalability: Process large datasets in parallel</li>
+                        <li>Versioning: Track every pipeline run and artifact</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Framework Comparison -->
+            <section class="content-section" id="framework-comparison">
+                <h2>🛠️ Orchestration Framework Comparison</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>Apache Airflow</th>
+                            <th>Kubeflow Pipelines</th>
+                            <th>MLflow Pipelines</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>General workflow orchestration</td>
+                            <td>✅ ML-specific, Kubernetes-native</td>
+                            <td>Simple ML workflows</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Curve</strong></td>
+                            <td>Moderate</td>
+                            <td>Steep (needs K8s knowledge)</td>
+                            <td>✅ Easy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UI Dashboard</strong></td>
+                            <td>✅ Excellent</td>
+                            <td>✅ Good</td>
+                            <td>Basic</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scalability</strong></td>
+                            <td>Good</td>
+                            <td>✅ Excellent (K8s)</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ML Features</strong></td>
+                            <td>Via integrations</td>
+                            <td>✅ Native (experiments, artifacts)</td>
+                            <td>✅ Native</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Community</strong></td>
+                            <td>✅ Largest</td>
+                            <td>Large</td>
+                            <td>Growing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deployment</strong></td>
+                            <td>Anywhere</td>
+                            <td>Kubernetes only</td>
+                            <td>Anywhere</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p><strong>🎯 Which to Choose?</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>Airflow:</strong> Best for complex workflows mixing ML and non-ML tasks</li>
+                        <li><strong>Kubeflow:</strong> Best for K8s environments with heavy ML workloads</li>
+                        <li><strong>MLflow Pipelines:</strong> Best for simple ML workflows and rapid prototyping</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Apache Airflow -->
+            <section class="content-section" id="airflow">
+                <h2>🌪️ Apache Airflow</h2>
+                
+                <h3>What is Airflow?</h3>
+                <p>
+                    Airflow is a platform to programmatically author, schedule, and monitor workflows. You define workflows as Directed Acyclic Graphs (DAGs) in Python.
+                </p>
+
+                <h3>Installation & Setup</h3>
+                <pre><code class="language-bash"># Install Airflow
+pip install apache-airflow
+
+# Initialize database
+airflow db init
+
+# Create admin user
+airflow users create \
+    --username admin \
+    --firstname Admin \
+    --lastname User \
+    --role Admin \
+    --email admin@example.com
+
+# Start webserver
+airflow webserver --port 8080
+
+# Start scheduler (in another terminal)
+airflow scheduler
+
+# Access UI at http://localhost:8080</code></pre>
+
+                <h3>Your First ML Pipeline DAG</h3>
+                <pre><code class="language-python">"""
+Simple ML training pipeline with Airflow
+File: dags/ml_training_dag.py
+"""
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.utils.dates import days_ago
+from datetime import timedelta
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+import joblib
+
+# Default arguments
+default_args = {
+    'owner': 'mlops-team',
+    'depends_on_past': False,
+    'email': ['alerts@example.com'],
+    'email_on_failure': True,
+    'email_on_retry': False,
+    'retries': 2,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Define DAG
+dag = DAG(
+    'ml_training_pipeline',
+    default_args=default_args,
+    description='Train and evaluate ML model',
+    schedule_interval='0 2 * * *',  # Run daily at 2 AM
+    start_date=days_ago(1),
+    catchup=False,
+    tags=['ml', 'training'],
+)
+
+def load_data(**context):
+    """Load and validate data"""
+    df = pd.read_csv('/data/training_data.csv')
+    
+    # Data validation
+    assert df.isnull().sum().sum() == 0, "Data contains null values"
+    assert len(df) > 1000, "Insufficient data samples"
+    
+    print(f"Loaded {len(df)} samples")
+    
+    # Push to XCom for next task
+    context['ti'].xcom_push(key='data_path', value='/data/training_data.csv')
+    context['ti'].xcom_push(key='num_samples', value=len(df))
+
+def preprocess_data(**context):
+    """Preprocess and split data"""
+    # Pull from XCom
+    data_path = context['ti'].xcom_pull(key='data_path', task_ids='load_data')
+    
+    df = pd.read_csv(data_path)
+    
+    # Feature engineering
+    X = df.drop('target', axis=1)
+    y = df['target']
+    
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Save splits
+    X_train.to_csv('/data/X_train.csv', index=False)
+    X_test.to_csv('/data/X_test.csv', index=False)
+    y_train.to_csv('/data/y_train.csv', index=False)
+    y_test.to_csv('/data/y_test.csv', index=False)
+    
+    print(f"Train size: {len(X_train)}, Test size: {len(X_test)}")
+
+def train_model(**context):
+    """Train ML model"""
+    # Load processed data
+    X_train = pd.read_csv('/data/X_train.csv')
+    y_train = pd.read_csv('/data/y_train.csv').values.ravel()
+    
+    # Train model
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model.fit(X_train, y_train)
+    
+    # Save model
+    model_path = '/models/model_{{ ds }}.joblib'  # Date-stamped
+    joblib.dump(model, model_path)
+    
+    context['ti'].xcom_push(key='model_path', value=model_path)
+    print(f"Model saved to {model_path}")
+
+def evaluate_model(**context):
+    """Evaluate model performance"""
+    model_path = context['ti'].xcom_pull(key='model_path', task_ids='train_model')
+    
+    # Load model and test data
+    model = joblib.load(model_path)
+    X_test = pd.read_csv('/data/X_test.csv')
+    y_test = pd.read_csv('/data/y_test.csv').values.ravel()
+    
+    # Evaluate
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    print(f"Model Accuracy: {accuracy:.4f}")
+    
+    # Quality gate
+    if accuracy < 0.85:
+        raise ValueError(f"Model accuracy {accuracy:.4f} below threshold 0.85")
+    
+    context['ti'].xcom_push(key='accuracy', value=accuracy)
+
+def deploy_model(**context):
+    """Deploy model to production"""
+    model_path = context['ti'].xcom_pull(key='model_path', task_ids='train_model')
+    accuracy = context['ti'].xcom_pull(key='accuracy', task_ids='evaluate_model')
+    
+    # Copy to production location
+    import shutil
+    shutil.copy(model_path, '/models/production/model.joblib')
+    
+    print(f"✅ Deployed model with accuracy {accuracy:.4f}")
+
+# Define tasks
+load_task = PythonOperator(
+    task_id='load_data',
+    python_callable=load_data,
+    dag=dag,
+)
+
+preprocess_task = PythonOperator(
+    task_id='preprocess_data',
+    python_callable=preprocess_data,
+    dag=dag,
+)
+
+train_task = PythonOperator(
+    task_id='train_model',
+    python_callable=train_model,
+    dag=dag,
+)
+
+evaluate_task = PythonOperator(
+    task_id='evaluate_model',
+    python_callable=evaluate_model,
+    dag=dag,
+)
+
+deploy_task = PythonOperator(
+    task_id='deploy_model',
+    python_callable=deploy_model,
+    dag=dag,
+)
+
+# Define dependencies
+load_task >> preprocess_task >> train_task >> evaluate_task >> deploy_task</code></pre>
+
+                <h3>Advanced: Parallel Training with Dynamic Tasks</h3>
+                <pre><code class="language-python">"""
+Train multiple models in parallel
+"""
+from airflow.operators.python import PythonOperator
+from airflow.models import Variable
+
+# Models to train
+MODELS = ['random_forest', 'xgboost', 'lightgbm', 'catboost']
+
+def train_specific_model(model_name, **context):
+    """Train a specific model"""
+    X_train = pd.read_csv('/data/X_train.csv')
+    y_train = pd.read_csv('/data/y_train.csv').values.ravel()
+    
+    if model_name == 'random_forest':
+        from sklearn.ensemble import RandomForestClassifier
+        model = RandomForestClassifier(n_estimators=100)
+    elif model_name == 'xgboost':
+        import xgboost as xgb
+        model = xgb.XGBClassifier()
+    # ... other models
+    
+    model.fit(X_train, y_train)
+    
+    # Evaluate
+    X_test = pd.read_csv('/data/X_test.csv')
+    y_test = pd.read_csv('/data/y_test.csv').values.ravel()
+    accuracy = model.score(X_test, y_test)
+    
+    # Save
+    model_path = f'/models/{model_name}_{{{{ ds }}}}.joblib'
+    joblib.dump(model, model_path)
+    
+    return {'model': model_name, 'accuracy': accuracy, 'path': model_path}
+
+# Create parallel training tasks
+training_tasks = []
+for model_name in MODELS:
+    task = PythonOperator(
+        task_id=f'train_{model_name}',
+        python_callable=train_specific_model,
+        op_kwargs={'model_name': model_name},
+        dag=dag,
+    )
+    training_tasks.append(task)
+
+def select_best_model(**context):
+    """Select best performing model"""
+    results = []
+    for model_name in MODELS:
+        result = context['ti'].xcom_pull(task_ids=f'train_{model_name}')
+        results.append(result)
+    
+    # Find best
+    best = max(results, key=lambda x: x['accuracy'])
+    print(f"Best model: {best['model']} with accuracy {best['accuracy']:.4f}")
+    
+    # Deploy best model
+    import shutil
+    shutil.copy(best['path'], '/models/production/model.joblib')
+
+select_task = PythonOperator(
+    task_id='select_best_model',
+    python_callable=select_best_model,
+    dag=dag,
+)
+
+# All training tasks run in parallel, then selection
+preprocess_task >> training_tasks >> select_task</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Airflow Best Practices:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Keep tasks idempotent (can run multiple times safely)</li>
+                        <li>Don't put heavy computation in DAG definition (runs every heartbeat)</li>
+                        <li>Use XCom sparingly (limited size, not for large data)</li>
+                        <li>Implement proper error handling and retries</li>
+                        <li>Use sensors for external dependencies</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Kubeflow Pipelines -->
+            <section class="content-section" id="kubeflow">
+                <h2>☸️ Kubeflow Pipelines</h2>
+                
+                <h3>What is Kubeflow?</h3>
+                <p>
+                    Kubeflow Pipelines is a platform for building and deploying ML workflows on Kubernetes. Each step runs in a container, making pipelines portable and scalable.
+                </p>
+
+                <h3>Installation</h3>
+                <pre><code class="language-bash"># Install Kubeflow Pipelines SDK
+pip install kfp
+
+# Deploy Kubeflow on Kubernetes cluster
+# (Requires existing K8s cluster)
+export PIPELINE_VERSION=1.8.5
+kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=$PIPELINE_VERSION"
+kubectl wait --for condition=established --timeout=60s crd/applications.app.k8s.io
+kubectl apply -k "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=$PIPELINE_VERSION"
+
+# Access UI (port-forward)
+kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80</code></pre>
+
+                <h3>Building a Kubeflow Pipeline</h3>
+                <pre><code class="language-python">"""
+Kubeflow ML pipeline with component-based design
+"""
+import kfp
+from kfp import dsl
+from kfp.components import create_component_from_func
+
+# Define components as Python functions
+
+@create_component_from_func
+def load_data(data_path: str) -> str:
+    """Load and validate data"""
+    import pandas as pd
+    
+    df = pd.read_csv(data_path)
+    print(f"Loaded {len(df)} samples")
+    
+    # Save processed data
+    output_path = '/tmp/processed_data.csv'
+    df.to_csv(output_path, index=False)
+    
+    return output_path
+
+@create_component_from_func
+def train_model(
+    data_path: str,
+    n_estimators: int = 100,
+    max_depth: int = 10
+) -> str:
+    """Train model and return path"""
+    import pandas as pd
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.model_selection import train_test_split
+    import joblib
+    
+    # Load data
+    df = pd.read_csv(data_path)
+    X = df.drop('target', axis=1)
+    y = df['target']
+    
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Train
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+    
+    # Evaluate
+    accuracy = model.score(X_test, y_test)
+    print(f"Model Accuracy: {accuracy:.4f}")
+    
+    # Save
+    model_path = '/tmp/model.joblib'
+    joblib.dump(model, model_path)
+    
+    return model_path
+
+@create_component_from_func
+def evaluate_model(model_path: str, data_path: str) -> float:
+    """Evaluate model and return metrics"""
+    import pandas as pd
+    import joblib
+    from sklearn.metrics import accuracy_score, f1_score
+    from sklearn.model_selection import train_test_split
+    
+    # Load model and data
+    model = joblib.load(model_path)
+    df = pd.read_csv(data_path)
+    X = df.drop('target', axis=1)
+    y = df['target']
+    
+    _, X_test, _, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    
+    # Predict
+    y_pred = model.predict(X_test)
+    
+    # Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred, average='weighted')
+    
+    print(f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}")
+    
+    return accuracy
+
+@create_component_from_func
+def deploy_model(model_path: str, accuracy: float, threshold: float = 0.85):
+    """Deploy model if meets quality threshold"""
+    if accuracy < threshold:
+        raise ValueError(f"Accuracy {accuracy:.4f} below threshold {threshold}")
+    
+    # In production, deploy to serving system
+    print(f"✅ Deploying model with accuracy {accuracy:.4f}")
+
+# Define pipeline
+@dsl.pipeline(
+    name='ML Training Pipeline',
+    description='End-to-end ML training and deployment'
+)
+def ml_pipeline(
+    data_path: str = 'gs://my-bucket/data.csv',
+    n_estimators: int = 100,
+    max_depth: int = 10,
+    accuracy_threshold: float = 0.85
+):
+    """Complete ML pipeline"""
+    
+    # Step 1: Load data
+    load_data_task = load_data(data_path=data_path)
+    
+    # Step 2: Train model
+    train_task = train_model(
+        data_path=load_data_task.output,
+        n_estimators=n_estimators,
+        max_depth=max_depth
+    )
+    
+    # Step 3: Evaluate
+    eval_task = evaluate_model(
+        model_path=train_task.output,
+        data_path=load_data_task.output
+    )
+    
+    # Step 4: Deploy (conditional)
+    deploy_task = deploy_model(
+        model_path=train_task.output,
+        accuracy=eval_task.output,
+        threshold=accuracy_threshold
+    )
+
+# Compile and submit pipeline
+if __name__ == '__main__':
+    kfp.compiler.Compiler().compile(ml_pipeline, 'ml_pipeline.yaml')
+    
+    # Submit to Kubeflow
+    client = kfp.Client(host='http://localhost:8080/')
+    
+    # Create experiment
+    experiment = client.create_experiment(name='ml-training')
+    
+    # Run pipeline
+    run = client.run_pipeline(
+        experiment_id=experiment.id,
+        job_name='ml-training-run',
+        pipeline_package_path='ml_pipeline.yaml',
+        params={
+            'data_path': 'gs://my-bucket/data.csv',
+            'n_estimators': 100,
+            'accuracy_threshold': 0.85
+        }
+    )
+    
+    print(f"Pipeline submitted: {run.run_id}")</code></pre>
+
+                <h3>Hyperparameter Tuning with Parallel Runs</h3>
+                <pre><code class="language-python">"""
+Run multiple experiments with different hyperparameters
+"""
+# Hyperparameter grid
+param_grid = [
+    {'n_estimators': 50, 'max_depth': 5},
+    {'n_estimators': 100, 'max_depth': 10},
+    {'n_estimators': 200, 'max_depth': 15},
+    {'n_estimators': 300, 'max_depth': 20},
+]
+
+# Submit multiple runs
+client = kfp.Client(host='http://localhost:8080')
+experiment = client.create_experiment(name='hyperparameter-tuning')
+
+for params in param_grid:
+    run = client.run_pipeline(
+        experiment_id=experiment.id,
+        job_name=f"train_n{params['n_estimators']}_d{params['max_depth']}",
+        pipeline_package_path='ml_pipeline.yaml',
+        params=params
+    )
+    print(f"Submitted run: {run.run_id}")
+
+# Kubeflow will run all in parallel on K8s cluster!</code></pre>
+
+                <h3>Using Prebuilt Components</h3>
+                <pre><code class="language-python">"""
+Use Kubeflow's prebuilt components
+"""
+from kfp.components import load_component_from_url
+
+# Load prebuilt components
+train_sklearn = load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/master/components/sklearn/Train/component.yaml'
+)
+
+deploy_model = load_component_from_url(
+    'https://raw.githubusercontent.com/kubeflow/pipelines/master/components/kubeflow/deployer/component.yaml'
+)
+
+@dsl.pipeline(name='Quick ML Pipeline')
+def quick_pipeline(data_path: str):
+    # Use prebuilt training component
+    train_task = train_sklearn(
+        training_data=data_path,
+        model_type='RandomForestClassifier'
+    )
+    
+    # Use prebuilt deployment component
+    deploy_task = deploy_model(
+        model=train_task.outputs['model'],
+        namespace='production'
+    )</code></pre>
+            </section>
+
+            <!-- MLflow Pipelines -->
+            <section class="content-section" id="mlflow-pipelines">
+                <h2>📦 MLflow Pipelines (Recipes)</h2>
+                
+                <h3>Overview</h3>
+                <p>
+                    MLflow Pipelines (formerly MLflow Recipes) provides predefined pipeline templates for common ML tasks with built-in best practices.
+                </p>
+
+                <h3>Installation & Setup</h3>
+                <pre><code class="language-bash">pip install mlflow[pipelines]
+
+# Create pipeline from template
+mlflow recipes create --template regression --name my_pipeline
+cd my_pipeline</code></pre>
+
+                <h3>Pipeline Structure</h3>
+                <pre><code class="language-yaml"># pipeline.yaml - Configuration
+template: "regression/v1"
+target_col: "price"
+
+steps:
+  ingest:
+    using: parquet
+    location: "data/training_data.parquet"
+  
+  split:
+    split_ratios: [0.7, 0.15, 0.15]  # train/val/test
+    random_state: 42
+  
+  transform:
+    using: custom
+    transformer_method: transform
+  
+  train:
+    using: sklearn
+    estimator_method: estimator
+  
+  evaluate:
+    validation_criteria:
+      - metric: root_mean_squared_error
+        threshold: 10000
+      - metric: mean_absolute_percentage_error
+        threshold: 0.15
+  
+  register:
+    registry_uri: "sqlite:///mlflow.db"
+    model_name: "price_predictor"</code></pre>
+
+                <h3>Custom Steps</h3>
+                <pre><code class="language-python"># steps/transform.py
+def transform(training_data):
+    """Custom transformation logic"""
+    from sklearn.preprocessing import StandardScaler
+    
+    # Feature engineering
+    training_data['age'] = 2024 - training_data['year_built']
+    training_data['price_per_sqft'] = training_data['price'] / training_data['sqft']
+    
+    # Scale features
+    scaler = StandardScaler()
+    numeric_cols = ['sqft', 'bedrooms', 'age']
+    training_data[numeric_cols] = scaler.fit_transform(training_data[numeric_cols])
+    
+    return training_data
+
+# steps/train.py
+def estimator():
+    """Define model to train"""
+    from sklearn.ensemble import GradientBoostingRegressor
+    
+    return GradientBoostingRegressor(
+        n_estimators=200,
+        learning_rate=0.1,
+        max_depth=5,
+        random_state=42
+    )</code></pre>
+
+                <h3>Running Pipeline</h3>
+                <pre><code class="language-bash"># Run entire pipeline
+mlflow recipes run
+
+# Run specific step
+mlflow recipes run --step train
+
+# Inspect results
+mlflow recipes inspect
+
+# View artifacts
+mlflow recipes inspect --step train</code></pre>
+
+                <h3>Integration with MLflow Tracking</h3>
+                <pre><code class="language-python">"""
+MLflow Pipelines automatically log to MLflow Tracking
+"""
+import mlflow
+
+# View logged runs
+client = mlflow.tracking.MlflowClient()
+experiment = client.get_experiment_by_name("my_pipeline")
+runs = client.search_runs(experiment.experiment_id)
+
+for run in runs:
+    print(f"Run ID: {run.info.run_id}")
+    print(f"Metrics: {run.data.metrics}")
+    print(f"Params: {run.data.params}")
+    print(f"Artifacts: {client.list_artifacts(run.info.run_id)}")
+    print("---")</code></pre>
+            </section>
+
+            <!-- CI/CD for ML -->
+            <section class="content-section" id="cicd">
+                <h2>🔄 CI/CD for ML Models</h2>
+                
+                <h3>What is ML CI/CD?</h3>
+                <p>
+                    Continuous Integration and Continuous Deployment for ML extends traditional software CI/CD with model training, validation, and deployment automation.
+                </p>
+
+                <h3>GitHub Actions ML Pipeline</h3>
+                <pre><code class="language-yaml"># .github/workflows/ml-pipeline.yml
+name: ML Training Pipeline
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Download training data
+        run: |
+          aws s3 cp s3://my-bucket/data.csv data/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: Train model
+        run: |
+          python train.py --config config.yaml
+      
+      - name: Evaluate model
+        id: evaluate
+        run: |
+          python evaluate.py --model model.pkl
+          echo "accuracy=$(cat metrics.json | jq -r '.accuracy')" >> $GITHUB_OUTPUT
+      
+      - name: Quality gate
+        run: |
+          if (( $(echo "${{ steps.evaluate.outputs.accuracy }} < 0.85" | bc -l) )); then
+            echo "Model accuracy below threshold"
+            exit 1
+          fi
+      
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model
+          path: model.pkl
+      
+      - name: Log to MLflow
+        run: |
+          python log_model.py
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+  
+  deploy:
+    needs: train
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download model
+        uses: actions/download-artifact@v3
+        with:
+          name: trained-model
+      
+      - name: Deploy to production
+        run: |
+          # Build Docker image
+          docker build -t ml-model:${{ github.sha }} .
+          
+          # Push to registry
+          docker push ml-model:${{ github.sha }}
+          
+          # Update K8s deployment
+          kubectl set image deployment/ml-model \
+            ml-model=ml-model:${{ github.sha }}
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}</code></pre>
+
+                <h3>Model Testing in CI/CD</h3>
+                <pre><code class="language-python">"""
+tests/test_model.py - Model quality tests
+"""
+import pytest
+import joblib
+import pandas as pd
+from sklearn.metrics import accuracy_score
+
+@pytest.fixture
+def model():
+    """Load trained model"""
+    return joblib.load('model.pkl')
+
+@pytest.fixture
+def test_data():
+    """Load test dataset"""
+    return pd.read_csv('data/test.csv')
+
+def test_model_accuracy(model, test_data):
+    """Test model meets accuracy threshold"""
+    X_test = test_data.drop('target', axis=1)
+    y_test = test_data['target']
+    
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    
+    assert accuracy >= 0.85, f"Accuracy {accuracy:.4f} below threshold 0.85"
+
+def test_prediction_latency(model, test_data):
+    """Test prediction speed"""
+    import time
+    
+    X_sample = test_data.drop('target', axis=1).iloc[0:1]
+    
+    start = time.time()
+    _ = model.predict(X_sample)
+    duration = time.time() - start
+    
+    assert duration < 0.1, f"Prediction took {duration:.4f}s, exceeds 100ms limit"
+
+def test_no_null_predictions(model, test_data):
+    """Test model doesn't produce null predictions"""
+    X_test = test_data.drop('target', axis=1)
+    predictions = model.predict(X_test)
+    
+    assert not pd.isnull(predictions).any(), "Model produced null predictions"
+
+def test_prediction_distribution(model, test_data):
+    """Test predictions follow expected distribution"""
+    X_test = test_data.drop('target', axis=1)
+    predictions = model.predict(X_test)
+    
+    # Check class balance (for classification)
+    unique, counts = np.unique(predictions, return_counts=True)
+    min_class_ratio = counts.min() / counts.sum()
+    
+    assert min_class_ratio >= 0.05, "Severe class imbalance in predictions"</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ ML CI/CD Best Practices:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Automate model training on code or data changes</li>
+                        <li>Implement quality gates (accuracy thresholds)</li>
+                        <li>Test model performance and latency</li>
+                        <li>Version control data, code, and models</li>
+                        <li>Use canary deployments for gradual rollout</li>
+                        <li>Monitor model performance post-deployment</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered ML orchestration and pipeline automation:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🌪️</div>
+                        <h3>Apache Airflow</h3>
+                        <p>DAG-based orchestration for complex workflows mixing ML and non-ML tasks</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>Kubeflow Pipelines</h3>
+                        <p>Kubernetes-native ML pipelines with containerized components</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📦</div>
+                        <h3>MLflow Pipelines</h3>
+                        <p>Template-based pipelines with built-in best practices</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>ML CI/CD</h3>
+                        <p>Automated training, testing, and deployment workflows</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🧪</div>
+                        <h3>Model Testing</h3>
+                        <p>Quality gates and performance validation</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Experiment Tracking</h3>
+                        <p>Version control for models, data, and metrics</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>ML pipelines provide reproducibility, automation, and scalability</li>
+                    <li>Airflow excels at complex workflows with diverse tasks</li>
+                    <li>Kubeflow is ideal for Kubernetes-based ML infrastructure</li>
+                    <li>MLflow Pipelines offer quick setup with templates</li>
+                    <li>CI/CD for ML automates the entire model lifecycle</li>
+                    <li>Implement quality gates to prevent bad models reaching production</li>
+                    <li>Version everything: code, data, models, and configurations</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your ML workflows are fully automated! Next, you'll learn Kubernetes for ML - deploying and scaling ML workloads on K8s with GPU scheduling, autoscaling, and production-grade infrastructure.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main benefit of using an ML orchestration framework like Airflow?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes models more accurate</div>
+                    <div class="quiz-option" data-value="b">It reduces training time</div>
+                    <div class="quiz-option" data-value="c">It automates and makes ML workflows reproducible, with scheduling, monitoring, and error handling</div>
+                    <div class="quiz-option" data-value="d">It's required for deployment</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is a DAG in Apache Airflow?</strong></p>
+                    <div class="quiz-option" data-value="a">A type of database</div>
+                    <div class="quiz-option" data-value="b">Directed Acyclic Graph - a workflow where tasks have dependencies but no cycles</div>
+                    <div class="quiz-option" data-value="c">A deployment strategy</div>
+                    <div class="quiz-option" data-value="d">A data format</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: When should you choose Kubeflow Pipelines over Apache Airflow?</strong></p>
+                    <div class="quiz-option" data-value="a">When you're running on Kubernetes and need ML-specific features like experiment tracking and model versioning</div>
+                    <div class="quiz-option" data-value="b">Always, it's better</div>
+                    <div class="quiz-option" data-value="c">Never use Kubeflow</div>
+                    <div class="quiz-option" data-value="d">Only for simple workflows</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What is a quality gate in ML CI/CD?</strong></p>
+                    <div class="quiz-option" data-value="a">A security feature</div>
+                    <div class="quiz-option" data-value="b">A type of neural network layer</div>
+                    <div class="quiz-option" data-value="c">A deployment strategy</div>
+                    <div class="quiz-option" data-value="d">A checkpoint that validates model performance meets thresholds before deployment</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What should you version control in an ML project?</strong></p>
+                    <div class="quiz-option" data-value="a">Only the code</div>
+                    <div class="quiz-option" data-value="b">Only the trained models</div>
+                    <div class="quiz-option" data-value="c">Code, data, models, configurations, and pipeline definitions</div>
+                    <div class="quiz-option" data-value="d">Nothing, version control isn't needed</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="model-serving-scale.html">← Previous: Model Serving at Scale</a>
+                <a href="kubernetes-for-ml.html">Next: Kubernetes for ML →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

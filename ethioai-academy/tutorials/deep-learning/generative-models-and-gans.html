@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn generative models: Autoencoders, VAEs, GANs, and Diffusion Models. Create new images and data from scratch with deep learning.">
+    <meta name="keywords" content="GANs, generative models, autoencoders, VAE, diffusion models, image generation">
+    <title>Generative Models & GANs - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="generative-models-and-gans.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .comparison-table th { background-color: #078930; color: white; padding: 1rem; text-align: left; font-weight: 600; }
+        .comparison-table td { padding: 1rem; border-bottom: 1px solid #e2e8f0; }
+        .comparison-table tbody tr:last-child td { border-bottom: none; }
+        .comparison-table tbody tr:hover { background-color: #f8fafc; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Generative Models</span>
+            </div>
+            <h1>Generative Models & GANs</h1>
+            <p class="tutorial-intro">Master the art of creation. Learn to generate images, text, and data from scratch using cutting-edge generative models</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 7</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎨 Welcome to Generative AI: From Classification to Creation</h2>
+                <p>
+                    Everything you've learned so far—CNNs, RNNs, Transformers—has been about <strong>discriminative models</strong>: networks that analyze existing data to make predictions. "Is this a cat or dog?" "What's the next word?" "What class does this belong to?"
+                </p>
+                <p>
+                    Now we enter a fundamentally different realm: <strong>generative models</strong>. These networks don't just analyze—they <em>create</em>. They learn what data looks like, then generate entirely new examples that never existed before.
+                </p>
+
+                <div class="info-box">
+                    <h3>🧠 The Fundamental Shift</h3>
+                    <table style="width: 100%; margin-top: 1rem;">
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 1rem; width: 50%; border-right: 2px solid #078930;"><strong>🕵️ Discriminative Models</strong></td>
+                            <td style="padding: 1rem; width: 50%;"><strong>🎨 Generative Models</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-right: 2px solid #078930; vertical-align: top;">
+                                <strong>Goal:</strong> Learn P(Y|X)<br>
+                                "Given input X, what is label Y?"<br><br>
+                                <strong>Examples:</strong><br>
+                                • Image classification<br>
+                                • Sentiment analysis<br>
+                                • Object detection<br><br>
+                                <strong>Input → Output:</strong><br>
+                                Image → "Cat"<br>
+                                Text → Positive/Negative
+                            </td>
+                            <td style="padding: 1rem; vertical-align: top;">
+                                <strong>Goal:</strong> Learn P(X)<br>
+                                "What does data X look like?"<br><br>
+                                <strong>Examples:</strong><br>
+                                • Image generation<br>
+                                • Text generation<br>
+                                • Music composition<br><br>
+                                <strong>Noise → Output:</strong><br>
+                                Random noise → Realistic image<br>
+                                "Once upon a" → Complete story
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3>The Generative AI Revolution</h3>
+                <p>
+                    The past 5 years have seen an explosion in generative AI capabilities. What was once limited to blurry, 32×32 images is now creating photorealistic artwork, writing essays, composing music, and generating videos.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="example-box" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                        <strong>🖼️ Images:</strong> DALL-E 3, Midjourney, Stable Diffusion<br>
+                        Generate photorealistic images from text descriptions<br>
+                        <em>"A cat astronaut riding a rainbow unicorn"</em> → Detailed artwork
+                    </div>
+
+                    <div class="example-box" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                        <strong>✏️ Text:</strong> ChatGPT, GPT-4, Claude<br>
+                        Generate human-like text, code, essays, stories<br>
+                        <em>"Explain quantum physics to a 5-year-old"</em> → Coherent explanation
+                    </div>
+
+                    <div class="example-box" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                        <strong>🎵 Audio:</strong> VALL-E, MusicLM<br>
+                        Generate realistic speech from text, compose music<br>
+                        <em>"Create a jazz piano piece"</em> → Original composition
+                    </div>
+
+                    <div class="example-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <strong>🎬 Video:</strong> Runway Gen-2, Pika Labs<br>
+                        Generate short videos from text or images<br>
+                        <em>"A dog running on beach, sunset"</em> → Video clip
+                    </div>
+                </div>
+
+                <h3>Why Learn Generative Models?</h3>
+                <ul style="line-height: 2;">
+                    <li>🎨 <strong>Creative Applications:</strong> Art generation, content creation, design assistance</li>
+                    <li>🛠️ <strong>Data Augmentation:</strong> Generate synthetic training data when real data is scarce</li>
+                    <li>🔬 <strong>Research & Science:</strong> Drug discovery (generate molecule structures), materials design</li>
+                    <li>🎮 <strong>Gaming & Entertainment:</strong> Procedural content generation, NPC dialogue</li>
+                    <li>🌐 <strong>Industry Impact:</strong> Advertising (generate ad creatives), architecture (design concepts)</li>
+                    <li>💼 <strong>Career Value:</strong> Generative AI is THE hottest field in tech (2024)</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>✨ This Tutorial's Journey:</strong></p>
+                    <p style="margin-top: 0.75rem;">
+                        We'll build up from simple to state-of-the-art:<br>
+                        1️⃣ <strong>Autoencoders:</strong> Learn compressed representations<br>
+                        2️⃣ <strong>VAEs:</strong> Add probabilistic structure for generation<br>
+                        3️⃣ <strong>GANs:</strong> Adversarial training for high-quality images<br>
+                        4️⃣ <strong>Diffusion Models:</strong> State-of-the-art (powers DALL-E, Stable Diffusion)<br><br>
+                        Each builds on the previous, culminating in the techniques used by today's most advanced AI systems.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📦 Autoencoders: Learning to Compress & Reconstruct</h2>
+                
+                <p>
+                    An autoencoder is like a smart compression algorithm. It learns to squeeze data through a narrow "bottleneck," forcing it to capture only the most important features, then reconstructs the original from this compressed form.
+                </p>
+
+                <div class="info-box">
+                    <h3>💡 The Core Intuition</h3>
+                    <p>
+                        Imagine describing a face using only 10 numbers instead of 784 pixels (28×28 image). You'd choose the 10 most important attributes: face shape, eye size, nose position, etc. That's what the bottleneck learns to do—find the minimal representation that still captures essence.
+                    </p>
+                </div>
+
+                <h3>Architecture: Encoder → Bottleneck → Decoder</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📥</div>
+                        <h3>1. Encoder</h3>
+                        <p><strong>Function:</strong> Compress input to latent representation</p>
+                        <p><strong>Example:</strong> 784 dims → 256 → 128 → 64 dims</p>
+                        <p><strong>Operation:</strong> z = Encoder(x)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💾</div>
+                        <h3>2. Latent Space (Bottleneck)</h3>
+                        <p><strong>Size:</strong> Much smaller than input (e.g., 64 vs 784)</p>
+                        <p><strong>Purpose:</strong> Forces network to learn meaningful features</p>
+                        <p><strong>Contains:</strong> Compressed essence of input</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📤</div>
+                        <h3>3. Decoder</h3>
+                        <p><strong>Function:</strong> Reconstruct original from latent code</p>
+                        <p><strong>Example:</strong> 64 dims → 128 → 256 → 784 dims</p>
+                        <p><strong>Operation:</strong> x̂ = Decoder(z)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>4. Loss Function</h3>
+                        <p><strong>Goal:</strong> Minimize reconstruction error</p>
+                        <p><strong>Formula:</strong> L = ||x - x̂||² (MSE)</p>
+                        <p><strong>Meaning:</strong> Pixel-by-pixel difference</p>
+                    </div>
+                </div>
+
+                <h3>Step-by-Step Example: MNIST Digit (28×28 = 784 pixels)</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Input:</strong> Digit "5" (784 pixel values: [0.0, 0.0, 0.8, ..., 0.0])<br><br>
+                    
+                    <strong>Encoder:</strong><br>
+                    • Layer 1: 784 → 256 neurons (ReLU) → [0.3, 0.0, 1.2, ..., 0.5] (256 values)<br>
+                    • Layer 2: 256 → 128 neurons (ReLU) → [0.7, 0.0, 0.4, ..., 1.1] (128 values)<br>
+                    • Layer 3: 128 → <strong>32 neurons</strong> (Bottleneck) → [0.8, 0.2, 0.0, ..., 0.9] <strong>(32 values!)</strong><br><br>
+                    
+                    <strong>Latent Representation:</strong> 32 numbers capture "essence" of digit 5<br>
+                    • Maybe: [top curve size, bottom curve size, vertical line length, ...]<br><br>
+                    
+                    <strong>Decoder:</strong><br>
+                    • Layer 1: 32 → 128 neurons (ReLU) → [0.5, 0.9, ..., 0.3] (128 values)<br>
+                    • Layer 2: 128 → 256 neurons (ReLU) → [0.4, 0.0, ..., 0.8] (256 values)<br>
+                    • Layer 3: 256 → 784 neurons (Sigmoid) → [0.0, 0.0, 0.75, ..., 0.0] (784 values)<br><br>
+                    
+                    <strong>Reconstruction:</strong> Looks like original "5" (hopefully!)<br>
+                    <strong>Loss:</strong> MSE = average of (original_pixel - reconstructed_pixel)²<br>
+                    • If loss is low (≈ 0.01), reconstruction is good<br>
+                    • If loss is high (≈ 0.5), model hasn't learned yet
+                </div>
+
+                <h3>Complete Implementation</h3>
+                <pre><code class="language-python"># ============ COMPLETE AUTOENCODER IMPLEMENTATION ============
+import tensorflow as tf
+from tensorflow.keras import layers, models
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load MNIST dataset
+(x_train, _), (x_test, _) = tf.keras.datasets.mnist.load_data()
+
+# Normalize to [0, 1]
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Flatten: (28, 28) → (784,)
+x_train = x_train.reshape(-1, 784)
+x_test = x_test.reshape(-1, 784)
+
+print(f"Training data shape: {x_train.shape}")  # (60000, 784)
+
+# Define dimensions
+input_dim = 784
+latent_dim = 32  # Bottleneck: 784 → 32 (24x compression!)
+
+# ============ ENCODER ============
+encoder = models.Sequential([
+    layers.Dense(256, activation='relu', input_shape=(input_dim,), name='encoder_1'),
+    layers.Dense(128, activation='relu', name='encoder_2'),
+    layers.Dense(latent_dim, activation='relu', name='latent')  # Bottleneck
+], name='encoder')
+
+print("\nEncoder architecture:")
+encoder.summary()
+
+# ============ DECODER ============
+decoder = models.Sequential([
+    layers.Dense(128, activation='relu', input_shape=(latent_dim,), name='decoder_1'),
+    layers.Dense(256, activation='relu', name='decoder_2'),
+    layers.Dense(input_dim, activation='sigmoid', name='output')  # Sigmoid for [0,1] output
+], name='decoder')
+
+print("\nDecoder architecture:")
+decoder.summary()
+
+# ============ FULL AUTOENCODER ============
+autoencoder = models.Sequential([encoder, decoder], name='autoencoder')
+
+# Compile
+autoencoder.compile(
+    optimizer='adam',
+    loss='mse',  # Mean Squared Error (reconstruction loss)
+    metrics=['mae']  # Mean Absolute Error for monitoring
+)
+
+print("\nFull Autoencoder:")
+autoencoder.summary()
+
+# Count parameters
+trainable_params = sum([tf.size(w).numpy() for w in autoencoder.trainable_weights])
+print(f"\nTrainable parameters: {trainable_params:,}")
+
+# ============ TRAINING ============
+history = autoencoder.fit(
+    x_train, x_train,  # Input = Output (reconstruct itself)
+    epochs=20,
+    batch_size=256,
+    validation_split=0.1,
+    callbacks=[
+        tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+    ],
+    verbose=1
+)
+
+# ============ EVALUATION ============
+test_loss, test_mae = autoencoder.evaluate(x_test, x_test)
+print(f"\nTest Loss (MSE): {test_loss:.4f}")
+print(f"Test MAE: {test_mae:.4f}")
+
+# ============ VISUALIZE RECONSTRUCTIONS ============
+n_samples = 10
+test_samples = x_test[:n_samples]
+reconstructed = autoencoder.predict(test_samples)
+
+fig, axes = plt.subplots(2, n_samples, figsize=(20, 4))
+for i in range(n_samples):
+    # Original
+    axes[0, i].imshow(test_samples[i].reshape(28, 28), cmap='gray')
+    axes[0, i].axis('off')
+    if i == 0:
+        axes[0, i].set_title('Original', fontsize=12, fontweight='bold')
+    
+    # Reconstructed
+    axes[1, i].imshow(reconstructed[i].reshape(28, 28), cmap='gray')
+    axes[1, i].axis('off')
+    if i == 0:
+        axes[1, i].set_title('Reconstructed', fontsize=12, fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('autoencoder_reconstructions.png', dpi=150)
+plt.show()
+
+# ============ VISUALIZE LATENT SPACE ============
+# Encode test set
+latent_representations = encoder.predict(x_test[:5000])
+print(f"\nLatent space shape: {latent_representations.shape}")  # (5000, 32)
+
+# Use PCA to visualize 32D → 2D
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+latent_2d = pca.fit_transform(latent_representations)
+
+# Load labels for coloring
+_, (_, y_test) = tf.keras.datasets.mnist.load_data()
+y_test = y_test[:5000]
+
+plt.figure(figsize=(10, 8))
+for digit in range(10):
+    mask = y_test == digit
+    plt.scatter(latent_2d[mask, 0], latent_2d[mask, 1], label=str(digit), alpha=0.5, s=10)
+plt.legend()
+plt.title('Autoencoder Latent Space (32D → 2D via PCA)')
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('latent_space_visualization.png', dpi=150)
+plt.show()
+
+print("\n✅ Autoencoder training complete!")</code></pre>
+
+                <h3>Use Cases & Applications</h3>
+                <div class="cards-grid">
+                    <div class="example-box">
+                        <strong>📏 1. Dimensionality Reduction</strong><br>
+                        Alternative to PCA. Use encoder to compress 784D → 32D<br>
+                        <strong>Advantage:</strong> Non-linear (vs PCA's linear compression)<br>
+                        <strong>Use:</strong> Visualization, feature extraction, preprocessing
+                    </div>
+
+                    <div class="example-box">
+                        <strong>🚨 2. Anomaly Detection</strong><br>
+                        Normal data reconstructs well (low loss), anomalies don't<br>
+                        <strong>Threshold:</strong> If reconstruction loss &gt; 0.1, flag as anomaly<br>
+                        <strong>Use:</strong> Fraud detection, equipment failure, medical diagnosis
+                    </div>
+
+                    <div class="example-box">
+                        <strong>🧤 3. Denoising</strong><br>
+                        Train on noisy images → clean images (instead of x → x)<br>
+                        <strong>Trick:</strong> Add noise to x_train, but use clean x_train as targets<br>
+                        <strong>Use:</strong> Image restoration, audio cleanup, data cleaning
+                    </div>
+
+                    <div class="example-box">
+                        <strong>💾 4. Data Compression</strong><br>
+                        Encoder = compress (784 → 32), Decoder = decompress<br>
+                        <strong>Compression ratio:</strong> 24x (vs JPEG's ~10x)<br>
+                        <strong>Use:</strong> Storage, transmission, learned compression
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Limitations of Basic Autoencoders:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>❌ <strong>Can't generate new data:</strong> Only reconstructs existing inputs, doesn't learn data distribution</li>
+                        <li>❌ <strong>Latent space is unstructured:</strong> Random points in latent space don't decode to meaningful outputs</li>
+                        <li>❌ <strong>Overfitting risk:</strong> Might memorize training data instead of learning generalizable features</li>
+                        <li>➡️ <strong>Solution:</strong> Variational Autoencoders (VAEs) fix these issues!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎲 Variational Autoencoders (VAE)</h2>
+                
+                <p>
+                    VAEs improve autoencoders by making the latent space smooth and continuous. Instead of single points, they learn distributions.
+                </p>
+
+                <div class="info-box">
+                    <h3>The Key Idea</h3>
+                    <p>
+                        Each input maps to a distribution (mean + variance) rather than a point. This lets you sample new variations and interpolate smoothly between examples.
+                    </p>
+                </div>
+
+                <h3>VAE Components</h3>
+                <ul>
+                    <li><strong>Encoder:</strong> Maps input to latent distribution (μ, σ)</li>
+                    <li><strong>Sampling:</strong> Sample z from N(μ, σ)</li>
+                    <li><strong>Decoder:</strong> Reconstructs from z</li>
+                    <li><strong>Loss:</strong> Reconstruction + KL divergence (regularization)</li>
+                </ul>
+
+                <pre><code class="language-python"># VAE sampling layer
+import tensorflow as tf
+from tensorflow.keras import layers
+
+class Sampling(layers.Layer):
+    def call(self, inputs):
+        z_mean, z_log_var = inputs
+        batch = tf.shape(z_mean)[0]
+        dim = tf.shape(z_mean)[1]
+        
+        # Sample epsilon
+        epsilon = tf.random.normal(shape=(batch, dim))
+        
+        # Reparameterization trick
+        z = z_mean + tf.exp(0.5 * z_log_var) * epsilon
+        return z
+
+# Encoder outputs distribution
+encoder_outputs = encoder(inputs)
+z_mean = Dense(latent_dim)(encoder_outputs)
+z_log_var = Dense(latent_dim)(encoder_outputs)
+
+# Sample from distribution
+z = Sampling()([z_mean, z_log_var])
+
+# Decoder reconstructs from sample
+reconstructed = decoder(z)
+
+# Loss = reconstruction + KL divergence
+reconstruction_loss = tf.reduce_mean(
+    tf.square(inputs - reconstructed)
+)
+kl_loss = -0.5 * tf.reduce_mean(
+    1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
+)
+total_loss = reconstruction_loss + kl_loss</code></pre>
+
+                <h3>Why VAE > Autoencoder?</h3>
+                <ul>
+                    <li>Can generate new samples by sampling from latent space</li>
+                    <li>Smooth interpolation between examples</li>
+                    <li>Better regularization via KL divergence</li>
+                    <li>More mathematically grounded (probabilistic)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚔️ Generative Adversarial Networks (GANs)</h2>
+                
+                <p>
+                    GANs use a brilliant game between two networks: a Generator that makes fake data, and a Discriminator that spots fakes. They get better by competing.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎭</div>
+                        <h3>Generator</h3>
+                        <p>Creates realistic fake images from random noise</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔎</div>
+                        <h3>Discriminator</h3>
+                        <p>Distinguishes real from fake images (binary classifier)</p>
+                    </div>
+                </div>
+
+                <h3>The GAN Game</h3>
+                <ol>
+                    <li><strong>Discriminator:</strong> Learns to classify real vs fake (binary cross-entropy loss)</li>
+                    <li><strong>Generator:</strong> Learns to fool discriminator (wants discriminator output ≈ 0.5)</li>
+                    <li>Repeat until equilibrium (both optimal)</li>
+                </ol>
+
+                <pre><code class="language-python"># Simple GAN
+import tensorflow as tf
+
+# Generator: noise → image
+generator = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(100,)),
+    tf.keras.layers.Dense(256, activation='relu'),
+    tf.keras.layers.Dense(28*28, activation='sigmoid')  # 28x28 image
+])
+
+# Discriminator: image → real/fake
+discriminator = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(28*28,)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')  # Binary
+])
+
+# Loss function
+cross_entropy = tf.keras.losses.BinaryCrossentropy()
+
+# Training step
+def train_step(real_images):
+    # Generate fake images
+    noise = tf.random.normal([batch_size, 100])
+    fake_images = generator(noise)
+    
+    # Train discriminator
+    with tf.GradientTape() as disc_tape:
+        real_output = discriminator(real_images)
+        fake_output = discriminator(fake_images)
+        
+        d_loss = (
+            cross_entropy(tf.ones_like(real_output), real_output) +
+            cross_entropy(tf.zeros_like(fake_output), fake_output)
+        )
+    
+    # Train generator
+    with tf.GradientTape() as gen_tape:
+        noise = tf.random.normal([batch_size, 100])
+        generated = generator(noise)
+        output = discriminator(generated)
+        
+        g_loss = cross_entropy(tf.ones_like(output), output)
+    
+    # Update weights
+    d_grads = disc_tape.gradient(d_loss, discriminator.trainable_variables)
+    g_grads = gen_tape.gradient(g_loss, generator.trainable_variables)
+    
+    discriminator.optimizer.apply_gradients(
+        zip(d_grads, discriminator.trainable_variables)
+    )
+    generator.optimizer.apply_gradients(
+        zip(g_grads, generator.trainable_variables)
+    )
+    
+    return d_loss, g_loss</code></pre>
+
+                <h3>GAN Training: The Art of Balance</h3>
+                <p>
+                    Training GANs is notoriously difficult. The generator and discriminator must stay balanced—if one gets too strong, training collapses.
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <strong>⚖️ The Goldilocks Problem:</strong><br><br>\n                    <strong>Discriminator too strong:</strong> G gets no useful gradient (D outputs 0 or 1 confidently)<br>\n                    → Generator can't learn, stuck generating noise<br><br>\n                    <strong>Generator too strong:</strong> D can't distinguish real from fake<br>\n                    → No signal to improve G further, both stagnate<br><br>\n                    <strong>Just right:</strong> D outputs 0.3-0.7 (uncertain), both networks improve together\n                </div>
+
+                <h3>GAN Training Best Practices</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>1. Use DCGAN Guidelines</h3>
+                        <p>• Replace pooling with strided convolutions</p>
+                        <p>• Use BatchNorm in both G and D</p>
+                        <p>• Remove fully connected layers</p>
+                        <p>• Use ReLU (G), LeakyReLU (D)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎲</div>
+                        <h3>2. Train D More Than G</h3>
+                        <p>• Train D for 3-5 steps</p>
+                        <p>• Then train G for 1 step</p>
+                        <p>• Keeps D slightly ahead</p>
+                        <p>• Provides useful gradients to G</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🐌</div>
+                        <h3>3. Use Low Learning Rates</h3>
+                        <p>• Typical: 0.0002 (2e-4)</p>
+                        <p>• Adam optimizer with β₁=0.5</p>
+                        <p>• Slow and steady wins</p>
+                        <p>• Prevents oscillation</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">👀</div>
+                        <h3>4. Monitor Metrics</h3>
+                        <p>• D_loss should stay 0.5-0.7</p>
+                        <p>• G_loss around 1.0-2.0</p>
+                        <p>• If D_loss → 0, D too strong</p>
+                        <p>• Save generated samples often</p>
+                    </div>
+                </div>
+
+                <h3>Common GAN Failure Modes</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Problem</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Symptoms</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Mode Collapse</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">G generates same image repeatedly, ignores noise input</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Use minibatch discrimination, unrolled GAN, or switch to Wasserstein loss</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Vanishing Gradients</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">G_loss stays high, no improvement, D_loss → 0</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Train D less frequently (1:1 instead of 5:1), use Wasserstein loss, add noise to D inputs</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Oscillation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Losses oscillate wildly, quality fluctuates</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Lower learning rates (1e-4), use gradient penalty, try spectral normalization</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>GAN Variants: Evolution of GANs</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Year</th>
+                            <th>Key Innovation</th>
+                            <th>Use Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vanilla GAN</strong></td>
+                            <td>2014</td>
+                            <td>Original adversarial training</td>
+                            <td>Proof of concept, unstable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DCGAN</strong></td>
+                            <td>2016</td>
+                            <td>Convolutional + architecture guidelines</td>
+                            <td>High-quality 64×64 images, face generation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WGAN</strong></td>
+                            <td>2017</td>
+                            <td>Wasserstein distance (Earth Mover's)</td>
+                            <td>Much more stable training, better convergence</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Conditional GAN</strong></td>
+                            <td>2014</td>
+                            <td>Condition on class labels</td>
+                            <td>Generate specific digits, controlled generation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pix2Pix</strong></td>
+                            <td>2017</td>
+                            <td>Paired image-to-image translation</td>
+                            <td>Edges→Photos, Day→Night, Sketch→Image</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CycleGAN</strong></td>
+                            <td>2017</td>
+                            <td>Unpaired translation with cycle consistency</td>
+                            <td>Photo↔Painting, Horse↔Zebra, Summer↔Winter</td>
+                        </tr>
+                        <tr>
+                            <td><strong>StyleGAN</strong></td>
+                            <td>2019</td>
+                            <td>Style-based generator, progressive growing</td>
+                            <td>Photorealistic 1024×1024 faces (thispersondoesnotexist.com)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>StyleGAN2/3</strong></td>
+                            <td>2020/21</td>
+                            <td>Improved artifacts, better quality</td>
+                            <td>State-of-the-art faces, current industry standard</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ GAN Training Reality Check:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>🎲 <strong>Training is unstable:</strong> Mode collapse, divergence, oscillation are common</li>
+                        <li>⏱️ <strong>Slow convergence:</strong> Can take days on GPUs to get good results</li>
+                        <li>🎨 <strong>Hyperparameter sensitive:</strong> Learning rates, architecture, batch size critical</li>
+                        <li>📊 <strong>Hard to evaluate:</strong> No clear loss metric for quality (use FID, IS, or visual inspection)</li>
+                        <li>💡 <strong>Modern alternative:</strong> Diffusion models (next section) are more stable and often better</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ When to Use GANs:</strong></p>
+                    <p style="margin-top: 0.75rem;">
+                        Despite challenges, GANs excel at:<br>
+                        • <strong>Fast inference:</strong> Single forward pass (vs 50+ steps for diffusion)<br>
+                        • <strong>Real-time generation:</strong> Video games, live applications<br>
+                        • <strong>Image-to-image translation:</strong> Pix2Pix, CycleGAN still dominant<br>
+                        • <strong>Super-resolution:</strong> Upscaling images (ESRGAN)<br>
+                        • <strong>Legacy codebases:</strong> Lots of existing GAN models/code to leverage
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>✨ Diffusion Models (Latest)</h2>
+                
+                <p>
+                    Diffusion models are the newest and most successful approach (used by DALL-E 2, Stable Diffusion, Midjourney).
+                </p>
+
+                <h3>The Idea</h3>
+                <ol>
+                    <li><strong>Forward diffusion:</strong> Gradually add noise to real image until it's pure noise</li>
+                    <li><strong>Reverse diffusion:</strong> Learn to remove noise step-by-step, starting from pure noise</li>
+                    <li>To generate: Start with random noise, apply reverse diffusion</li>
+                </ol>
+
+                <p>
+                    Think of it like the inverse of a super-slow decay. Instead of destroying information, you're learning to reconstruct.
+                </p>
+
+                <div class="success-box">
+                    <p>✅ <strong>Advantages of Diffusion Models:</strong> More stable training than GANs, better diversity than VAEs, generate high-quality images. This is the current state-of-the-art!</p>
+                </div>
+
+                <h3>Why Diffusion Works</h3>
+                <ul>
+                    <li><strong>Multiple steps:</strong> Unlike GANs (one shot), diffusion refines gradually</li>
+                    <li><strong>Better guidance:</strong> Can condition on text, images, class labels</li>
+                    <li><strong>Stable training:</strong> No adversarial instability like GANs</li>
+                    <li><strong>Flexibility:</strong> Works for images, audio, video, molecules</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Generative Models Comparison</h2>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Complexity</th>
+                            <th>Training Stability</th>
+                            <th>Quality</th>
+                            <th>Speed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Autoencoder</strong></td>
+                            <td>⭐ Low</td>
+                            <td>✅ Stable</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>⚡⚡⚡ Fast</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VAE</strong></td>
+                            <td>⭐⭐ Medium</td>
+                            <td>✅ Stable</td>
+                            <td>⭐⭐⭐ Good</td>
+                            <td>⚡⚡ Fast</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GAN</strong></td>
+                            <td>⭐⭐⭐ High</td>
+                            <td>⚠️ Unstable</td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>⚡ Slow</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Diffusion</strong></td>
+                            <td>⭐⭐⭐ High</td>
+                            <td>✅ Stable</td>
+                            <td>⭐⭐⭐⭐⭐ Excellent</td>
+                            <td>🐌 Very Slow</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <h3>Choose Your Model</h3>
+                    <p>
+                        <strong>Autoencoder:</strong> Data compression, anomaly detection<br>
+                        <strong>VAE:</strong> Smooth variations, interpolation<br>
+                        <strong>GAN:</strong> Highest quality, if you can train it<br>
+                        <strong>Diffusion:</strong> State-of-the-art quality + stability (current industry standard)
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Next Steps</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Autoencoders compress data via bottleneck</li>
+                    <li>VAEs learn smooth latent distributions, enabling generation</li>
+                    <li>GANs use adversarial game between generator and discriminator</li>
+                    <li>Diffusion models gradually add/remove noise (state-of-the-art)</li>
+                    <li>Each has tradeoffs: complexity, stability, quality, speed</li>
+                </ul>
+
+                <h3>Your Deep Learning Journey</h3>
+                <p>
+                    You've now mastered the complete deep learning stack:
+                </p>
+                <ul>
+                    <li>✅ Fundamentals (neurons, activation, backprop)</li>
+                    <li>✅ Training (optimizers, regularization, loss functions)</li>
+                    <li>✅ CNNs for vision</li>
+                    <li>✅ RNNs for sequences</li>
+                    <li>✅ Transformers for modern AI</li>
+                    <li>✅ Transfer learning for practical results</li>
+                    <li>✅ Generative models for creation</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You're now equipped to build cutting-edge AI. Combine these techniques and you can tackle any deep learning problem!</p>
+                </div>
+
+                <h3>Keep Learning</h3>
+                <ul>
+                    <li>Build projects: Image classifier, chatbot, art generator</li>
+                    <li>Read papers: "Attention Is All You Need", "Denoising Diffusion Models"</li>
+                    <li>Experiment: Try different architectures, datasets, hyperparameters</li>
+                    <li>Join community: Kaggle competitions, HuggingFace forums, ArXiv</li>
+                </ul>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of generative models and GANs!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="C">
+                        <h4>1. What does GAN stand for?</h4>
+                        <div class="quiz-option" data-value="A">A) General Adversarial Network</div>
+                        <div class="quiz-option" data-value="B">B) Gradient Augmented Network</div>
+                        <div class="quiz-option" data-value="C">C) Generative Adversarial Network</div>
+                        <div class="quiz-option" data-value="D">D) Graph Attention Network</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>2. What is the role of the generator in a GAN?</h4>
+                        <div class="quiz-option" data-value="A">A) To classify real and fake data</div>
+                        <div class="quiz-option" data-value="B">B) To create synthetic data that resembles real data</div>
+                        <div class="quiz-option" data-value="C">C) To optimize the loss function</div>
+                        <div class="quiz-option" data-value="D">D) To validate the training process</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What does the discriminator do in a GAN?</h4>
+                        <div class="quiz-option" data-value="A">A) Distinguishes between real and generated data</div>
+                        <div class="quiz-option" data-value="B">B) Generates new training samples</div>
+                        <div class="quiz-option" data-value="C">C) Applies data augmentation</div>
+                        <div class="quiz-option" data-value="D">D) Compresses input data</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What is adversarial training?</h4>
+                        <div class="quiz-option" data-value="A">A) Training models to resist attacks</div>
+                        <div class="quiz-option" data-value="B">B) Training multiple models independently</div>
+                        <div class="quiz-option" data-value="C">C) Using adversarial examples for data augmentation</div>
+                        <div class="quiz-option" data-value="D">D) Two models competing against each other to improve performance</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What is mode collapse in GANs?</h4>
+                        <div class="quiz-option" data-value="A">A) When the discriminator becomes too powerful</div>
+                        <div class="quiz-option" data-value="B">B) When the generator produces limited variety in outputs</div>
+                        <div class="quiz-option" data-value="C">C) When training fails to converge</div>
+                        <div class="quiz-option" data-value="D">D) When the model architecture is too complex</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Certificate Request Section -->
+            <link rel="stylesheet" href="../../certificates/certificate.css">
+            <section class="certificate-section">
+                <div class="certificate-icon">🎓</div>
+                <h2>Get Your Completion Certificate</h2>
+                <p class="subtitle">Showcase your Deep Learning expertise!</p>
+                
+                <div class="certificate-benefits">
+                    <h4>📜 Your certificate includes:</h4>
+                    <ul>
+                        <li>✅ Official completion verification</li>
+                        <li>✅ Unique certificate ID</li>
+                        <li>✅ Shareable on LinkedIn, Twitter, and resume</li>
+                        <li>✅ Public verification page</li>
+                        <li>✅ Professional PDF download</li>
+                    </ul>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="Deep Learning">
+                    <div class="form-group">
+                        <label for="cert-name-dl">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-dl"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-dl">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-dl"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="transfer-learning-and-fine-tuning.html" class="btn btn-secondary">← Previous: Transfer Learning</a>
+                <a href="../../courses/deep-learning.html" class="btn btn-primary">Back to Deep Learning Course</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../certificates/certificate.js"></script>
+</body>
+
+</html>

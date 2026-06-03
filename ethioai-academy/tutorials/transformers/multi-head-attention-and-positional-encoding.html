@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Multi-Head Attention and Positional Encoding - Learn how transformers use multiple attention perspectives and encode position information.">
+    <meta name="keywords" content="multi-head attention, positional encoding, rotary embeddings, sinusoidal encoding, absolute position, relative position">
+    <title>Multi-Head Attention & Positional Encoding | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Multi-Head Attention & Positional Encoding</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Multi-Head Attention & Positional Encoding</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 4</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟡 Intermediate</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Understand multiple attention perspectives and how transformers track position without recurrence
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>Multi-Head Attention: More Perspectives = Better Understanding</h2>
+                <p>
+                    Single attention is powerful, but what if we computed attention from multiple different angles simultaneously? That's the revolutionary idea behind multi-head attention - the mechanism that gives transformers their remarkable ability to understand language.
+                </p>
+                <div class="info-box">
+                    <strong>Core Insight:</strong> Just like humans see depth using two eyes, transformers understand relationships using multiple attention heads. Each head learns to focus on different aspects of language.
+                </div>
+
+                <h3>The Problem with Single-Head Attention</h3>
+                <div style="background: #fff3cd; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ffc107;">
+                    <p><strong>⚠️ Limitation: One attention mechanism can't capture everything!</strong></p>
+                    <p style="margin-top: 0.5rem;">Consider the sentence: <em>"The lawyer questioned the witness about the crime."</em></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #856404;">
+                        <li><strong>Syntactic relationships:</strong> "lawyer" → "The", "questioned" → "lawyer" (subject)</li>
+                        <li><strong>Semantic relationships:</strong> "crime" → "witness", "questioned" → "about"</li>
+                        <li><strong>Long-range dependencies:</strong> "witness" → "lawyer" (agent-patient)</li>
+                        <li><strong>Discourse structure:</strong> Main action vs. details</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #856404;">
+                        <strong>Problem:</strong> A single attention head must choose one pattern to prioritize. It can't simultaneously capture syntax, semantics, and discourse structure!
+                    </p>
+                </div>
+
+                <h3>The Multi-Head Solution</h3>
+                <p>
+                    Instead of forcing one attention mechanism to do everything, run multiple attention mechanisms in parallel - each can specialize in different linguistic phenomena.
+                </p>
+
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <h4 style="margin-top: 0; color: #065f46;">The Human Vision Analogy</h4>
+                    <p style="color: #065f46;">Your brain doesn't process vision with one system:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46;">
+                        <li><strong>One pathway:</strong> Detects shapes and objects ("what" pathway)</li>
+                        <li><strong>Another pathway:</strong> Tracks motion and spatial relationships ("where" pathway)</li>
+                        <li><strong>Color processing:</strong> Separate neurons for different wavelengths</li>
+                        <li><strong>Depth perception:</strong> Combines inputs from both eyes</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #065f46;">
+                        <strong>Multi-head attention works the same way:</strong> Different "heads" (pathways) each focus on different linguistic features, then their outputs are combined for complete understanding.
+                    </p>
+                </div>
+
+                <h3>How Many Heads Do Modern Models Use?</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Model</th>
+                            <th style="padding: 0.75rem; text-align: center;">d_model</th>
+                            <th style="padding: 0.75rem; text-align: center;">Num Heads</th>
+                            <th style="padding: 0.75rem; text-align: center;">d_k per head</th>
+                            <th style="padding: 0.75rem; text-align: left;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>BERT-base</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">768</td>
+                            <td style="padding: 0.75rem; text-align: center;">12</td>
+                            <td style="padding: 0.75rem; text-align: center;">64</td>
+                            <td style="padding: 0.75rem;">768 / 12 = 64 per head</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>GPT-2</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">768</td>
+                            <td style="padding: 0.75rem; text-align: center;">12</td>
+                            <td style="padding: 0.75rem; text-align: center;">64</td>
+                            <td style="padding: 0.75rem;">Same as BERT-base</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>GPT-3</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">12,288</td>
+                            <td style="padding: 0.75rem; text-align: center;">96</td>
+                            <td style="padding: 0.75rem; text-align: center;">128</td>
+                            <td style="padding: 0.75rem;">12,288 / 96 = 128 per head</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>LLaMA-2 70B</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">8,192</td>
+                            <td style="padding: 0.75rem; text-align: center;">64</td>
+                            <td style="padding: 0.75rem; text-align: center;">128</td>
+                            <td style="padding: 0.75rem;">8,192 / 64 = 128 per head</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>GPT-4 (est.)</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">~18,000</td>
+                            <td style="padding: 0.75rem; text-align: center;">~128</td>
+                            <td style="padding: 0.75rem; text-align: center;">~140</td>
+                            <td style="padding: 0.75rem;">Unconfirmed architecture</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p style="margin-top: 1rem; padding: 1rem; background: #ecfdf5; border-radius: 8px; border-left: 4px solid #078930;">
+                    <strong>📊 Pattern:</strong> The ratio d_model / num_heads stays remarkably consistent (64-128) across models. This suggests there's an optimal "head dimension" that balances expressiveness with computational efficiency.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>How Multi-Head Attention Works - Step by Step</h2>
+                <p>
+                    Multi-head attention is elegantly simple: run multiple attention mechanisms in parallel, each with its own learned projections. Let's break down the process:
+                </p>
+
+                <h3>The 5-Step Process</h3>
+                <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #10b981;">
+                    <ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46; line-height: 1.8;">
+                        <li><strong>Linear Projection:</strong> Project input to Q, K, V for ALL heads simultaneously (one big matrix multiplication)</li>
+                        <li><strong>Split into Heads:</strong> Reshape from [batch, seq, d_model] to [batch, num_heads, seq, d_k]</li>
+                        <li><strong>Parallel Attention:</strong> Compute attention for all heads at once (highly parallelized on GPU)</li>
+                        <li><strong>Concatenate:</strong> Merge all head outputs back to [batch, seq, d_model]</li>
+                        <li><strong>Output Projection:</strong> Final linear transformation to mix information from all heads</li>
+                    </ol>
+                </div>
+
+                <h3>Conceptual Example: 2 Heads Processing "The cat sat"</h3>
+                <pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+# Setup
+tokens = ["The", "cat", "sat"]
+seq_len = 3
+d_model = 8  # Small for illustration
+num_heads = 2
+d_k = d_model // num_heads  # 8 / 2 = 4 per head
+
+# Input embeddings (normally from embedding layer)
+X = torch.tensor([
+    [0.1, 0.2, -0.1, 0.3, 0.4, -0.2, 0.1, 0.0],  # "The"
+    [0.3, -0.1, 0.5, 0.2, 0.1, 0.4, -0.3, 0.2],  # "cat"
+    [-0.2, 0.4, 0.1, -0.3, 0.5, 0.1, 0.2, -0.1]   # "sat"
+]).unsqueeze(0)  # [1, 3, 8]
+
+print("Input shape:", X.shape)
+print("We have 2 heads, each will get 4 dimensions\n")
+
+# Step 1: Project to Q, K, V (for ALL heads at once)
+W_Q = torch.nn.Linear(d_model, d_model, bias=False)
+W_K = torch.nn.Linear(d_model, d_model, bias=False)
+W_V = torch.nn.Linear(d_model, d_model, bias=False)
+
+Q = W_Q(X)  # [1, 3, 8]
+K = W_K(X)  # [1, 3, 8]
+V = W_V(X)  # [1, 3, 8]
+
+print("After projection:")
+print(f"Q shape: {Q.shape}")
+print(f"K shape: {K.shape}")
+print(f"V shape: {V.shape}\n")
+
+# Step 2: Split into heads
+# Reshape: [batch, seq, d_model] → [batch, seq, num_heads, d_k]
+# Then transpose: [batch, num_heads, seq, d_k]
+batch_size = X.shape[0]
+
+Q = Q.view(batch_size, seq_len, num_heads, d_k).transpose(1, 2)
+K = K.view(batch_size, seq_len, num_heads, d_k).transpose(1, 2)
+V = V.view(batch_size, seq_len, num_heads, d_k).transpose(1, 2)
+
+print("After splitting into heads:")
+print(f"Q shape: {Q.shape}  # [batch, num_heads, seq, d_k]")
+print(f"K shape: {K.shape}")
+print(f"V shape: {V.shape}\n")
+
+print("Head 0 gets Q[:, 0, :, :] - dimensions 0-3")
+print("Head 1 gets Q[:, 1, :, :] - dimensions 4-7\n")
+
+# Step 3: Compute attention for BOTH heads in parallel
+scores = torch.matmul(Q, K.transpose(-2, -1)) / (d_k ** 0.5)
+# [1, 2, 3, 3] - 2 attention matrices (one per head)
+
+attention_weights = F.softmax(scores, dim=-1)
+output = torch.matmul(attention_weights, V)
+# [1, 2, 3, 4] - 2 heads, each produces 3 tokens of 4 dimensions
+
+print("After attention:")
+print(f"Output shape: {output.shape}  # [batch, num_heads, seq, d_k]")
+print(f"\nHead 0 output: {output[0, 0, :, :].shape}  # [3, 4]")
+print(f"Head 1 output: {output[0, 1, :, :].shape}  # [3, 4]\n")
+
+# Step 4: Concatenate heads
+# Transpose back: [batch, num_heads, seq, d_k] → [batch, seq, num_heads, d_k]
+output = output.transpose(1, 2).contiguous()
+# Reshape: [batch, seq, num_heads, d_k] → [batch, seq, d_model]
+output = output.view(batch_size, seq_len, d_model)
+
+print("After concatenating heads:")
+print(f"Output shape: {output.shape}  # [1, 3, 8]")
+print("Back to original dimensions!\n")
+
+# Step 5: Output projection
+W_O = torch.nn.Linear(d_model, d_model, bias=False)
+final_output = W_O(output)
+
+print(f"Final output shape: {final_output.shape}  # [1, 3, 8]")
+print("\nThis output has information from BOTH heads combined!")</code></pre>
+
+                <h3>Visual Representation of Multi-Head Splitting</h3>
+                <pre><code class="language-text">Original Q matrix: [batch, seq_len, d_model=512]
+                    
+     Dimension:  0   64  128 192 256 320 384 448  512
+                 ↓   ↓   ↓   ↓   ↓   ↓   ↓   ↓    ↓
+     Token 0:  [================================================]
+     Token 1:  [================================================]
+     Token 2:  [================================================]
+     Token 3:  [================================================]
+
+After reshaping to [batch, num_heads=8, seq_len, d_k=64]:
+
+     Head 0 (dims 0-63):
+     Token 0:  [=======]
+     Token 1:  [=======]
+     Token 2:  [=======]
+     Token 3:  [=======]
+
+     Head 1 (dims 64-127):
+     Token 0:          [=======]
+     Token 1:          [=======]
+     Token 2:          [=======]
+     Token 3:          [=======]
+
+     ... (Heads 2-6) ...
+
+     Head 7 (dims 448-511):
+     Token 0:                                  [=======]
+     Token 1:                                  [=======]
+     Token 2:                                  [=======]
+     Token 3:                                  [=======]
+
+Each head independently computes attention on its slice!
+Then we concatenate everything back together.</code></pre>
+
+                <h3>Why This Design is Brilliant</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">✅ Parallelizable</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">All heads compute simultaneously on GPU. Same wall-clock time as single head!</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">✅ Specialized Learning</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">Each head learns different patterns through gradient descent naturally.</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">✅ Parameter Efficient</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">Total params same as single attention with larger d_k. Same computation cost!</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">✅ Flexible Representation</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;">Model can blend different perspectives in output projection.</p>
+                    </div>
+                </div>
+
+                <h3>Single-Head vs Multi-Head: Direct Comparison</h3>
+                <pre><code class="language-python"># Single-head attention
+d_model = 512
+d_k = 512  # Full dimension
+
+Q = W_Q(X)  # [batch, seq, 512]
+K = W_K(X)  # [batch, seq, 512]
+V = W_V(X)  # [batch, seq, 512]
+
+scores = Q @ K.T / sqrt(512)
+attn = softmax(scores)
+output = attn @ V  # [batch, seq, 512]
+
+# Parameters: 3 × (512 × 512) = 786,432
+
+#----------------------------------------------------------------
+
+# Multi-head attention (8 heads)
+num_heads = 8
+d_k = 512 // 8 = 64  # Per-head dimension
+
+Q = W_Q(X)  # [batch, seq, 512] - same projection size!
+K = W_K(X)  # [batch, seq, 512]
+V = W_V(X)  # [batch, seq, 512]
+
+# Reshape to [batch, 8, seq, 64]
+# Each head operates on 64 dimensions
+
+# Compute 8 attention patterns in parallel
+outputs = [attention_head_i(Q_i, K_i, V_i) for i in range(8)]
+output = concat(outputs)  # [batch, seq, 512]
+output = W_O(output)  # Final projection
+
+# Parameters: 3 × (512 × 512) + (512 × 512) = 1,048,576
+# Only 33% more parameters, but 8× the representational capacity!</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Multiple Heads? Head Specialization in Practice</h2>
+                <p>
+                    Research has shown that different attention heads spontaneously specialize in different linguistic phenomena during training. This isn't programmed - it emerges naturally through gradient descent!
+                </p>
+
+                <h3>Documented Head Specialization Patterns</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">🔤 Syntactic Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Grammatical dependencies</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46;">
+                            <li>Determiners → Nouns: "the" → "cat"</li>
+                            <li>Adjectives → Nouns: "big" → "dog"</li>
+                            <li>Subject → Verb: "Alice" → "walked"</li>
+                            <li>Verb → Object: "ate" → "apple"</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">💭 Semantic Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Meaning relationships</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46;">
+                            <li>Coreference: "she" → "Alice"</li>
+                            <li>Related concepts: "doctor" → "hospital"</li>
+                            <li>Semantic roles: agent, patient, instrument</li>
+                            <li>Thematic relations: cause-effect</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">📍 Positional Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Relative position</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #92400e;">
+                            <li>Previous token (n-1)</li>
+                            <li>Next token (n+1)</li>
+                            <li>Window of ±2-3 tokens</li>
+                            <li>Sentence start/end markers</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">🌐 Global Context Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Broad information</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #5b21b6;">
+                            <li>Uniform attention to all tokens</li>
+                            <li>Topic-level information</li>
+                            <li>Document-wide context</li>
+                            <li>Aggregation functions</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #ef4444;">
+                        <h4 style="margin-top: 0; color: #991b1b;">⚠️ Rare Word Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Important tokens</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #991b1b;">
+                            <li>Named entities: "Einstein", "Paris"</li>
+                            <li>Numbers and dates</li>
+                            <li>Technical terms</li>
+                            <li>Unique identifiers</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #6b7280;">
+                        <h4 style="margin-top: 0; color: #374151;">📊 Delimiter Heads</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0;"><strong>Focus:</strong> Structure markers</p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #374151;">
+                            <li>Punctuation: periods, commas</li>
+                            <li>Special tokens: [CLS], [SEP]</li>
+                            <li>Sentence boundaries</li>
+                            <li>Paragraph structure</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Real Example: Visualizing Head Specialization in BERT</h3>
+                <pre><code class="language-python">from transformers import BertTokenizer, BertModel
+import torch
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load BERT and analyze attention patterns
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained('bert-base-uncased', output_attentions=True)
+model.eval()
+
+# Example sentence with clear syntactic structure
+text = "The elderly professor taught the enthusiastic students about quantum physics."
+inputs = tokenizer(text, return_tensors='pt')
+tokens = tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])
+
+print(f"Tokens: {tokens}")
+print(f"Analyzing {model.config.num_hidden_layers} layers, {model.config.num_attention_heads} heads per layer\n")
+
+# Get attention weights
+with torch.no_grad():
+    outputs = model(**inputs)
+    attentions = outputs.attentions  # Tuple of 12 layers
+
+# Analyze each head in layer 6 (middle layer often shows clear patterns)
+layer_idx = 6
+layer_attentions = attentions[layer_idx][0]  # [num_heads, seq_len, seq_len]
+
+print(f"Layer {layer_idx} Head Specialization:\n")
+
+# Function to identify head type based on attention pattern
+def analyze_head(attn_matrix, tokens):
+    """Classify what pattern this head is focusing on."""
+    seq_len = len(tokens)
+    
+    # Check for syntactic pattern (determiners → nouns)
+    det_indices = [i for i, t in enumerate(tokens) if t in ['the', 'a', 'an']]
+    if det_indices:
+        # Do following tokens attend to determiners?
+        det_attention = attn_matrix[:, det_indices].mean()
+        if det_attention > 0.3:
+            return "Syntactic (Determiner-Noun)"
+    
+    # Check for positional pattern (diagonal/nearby)
+    diagonal_strength = torch.diag(attn_matrix).mean()
+    if diagonal_strength > 0.5:
+        return "Positional (Self-attention)"
+    
+    # Check for next-token pattern
+    next_token_attn = torch.diag(attn_matrix, diagonal=1).mean()
+    if next_token_attn > 0.4:
+        return "Positional (Next-token)"
+    
+    # Check for uniform (broadcast) pattern
+    attn_std = attn_matrix.std()
+    if attn_std < 0.15:
+        return "Global Context (Uniform)"
+    
+    # Check for delimiter pattern
+    delim_indices = [i for i, t in enumerate(tokens) if t in ['.', ',', '[SEP]', '[CLS]']]
+    if delim_indices:
+        delim_attention = attn_matrix[:, delim_indices].mean()
+        if delim_attention > 0.4:
+            return "Delimiter-focused"
+    
+    return "Semantic/Other"
+
+# Analyze each head
+for head_idx in range(model.config.num_attention_heads):
+    attn = layer_attentions[head_idx].cpu()
+    head_type = analyze_head(attn, tokens)
+    
+    # Find strongest attention connections
+    max_val = attn.max().item()
+    max_pos = (attn == max_val).nonzero(as_tuple=True)
+    from_token = tokens[max_pos[0][0].item()]
+    to_token = tokens[max_pos[1][0].item()]
+    
+    print(f"Head {head_idx:2d}: {head_type:<30s} | Strongest: {from_token} → {to_token} ({max_val:.3f})")
+
+# Visualize different head types side by side
+fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+head_examples = [0, 2, 5, 7, 9, 11]  # Select diverse heads
+
+for idx, head_idx in enumerate(head_examples):
+    ax = axes[idx // 3, idx % 3]
+    attn = layer_attentions[head_idx].cpu().numpy()
+    
+    sns.heatmap(attn, annot=False, cmap='YlOrRd', 
+                xticklabels=tokens, yticklabels=tokens,
+                cbar_kws={'label': 'Attention'}, ax=ax)
+    
+    head_type = analyze_head(layer_attentions[head_idx].cpu(), tokens)
+    ax.set_title(f'Head {head_idx}: {head_type}', fontsize=10)
+    ax.set_xlabel('Attending to', fontsize=8)
+    ax.set_ylabel('Attending from', fontsize=8)
+    ax.tick_params(labelsize=6)
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>Research Finding: Head Pruning Studies</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>📚 Key Research: "Are Sixteen Heads Really Better than One?" (Michel et al., 2019)</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+                        <li><strong>Finding 1:</strong> In BERT, you can remove 50% of heads with minimal performance loss!</li>
+                        <li><strong>Finding 2:</strong> Some heads are "doing the heavy lifting" while others contribute little</li>
+                        <li><strong>Finding 3:</strong> Head importance varies by task - translation needs different heads than classification</li>
+                        <li><strong>Finding 4:</strong> Early layers: positional/syntactic heads. Deep layers: semantic heads</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1rem; padding: 1rem; background: #ecfdf5; border-radius: 6px; font-size: 0.9rem;">
+                        <strong>💡 Implication:</strong> This led to efficient models like DistilBERT (removes heads) and MobileBERT (shares heads) that maintain 97%+ performance with 40% fewer parameters.
+                    </p>
+                </div>
+
+                <h3>Head Importance by Layer Depth</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Layer Range</th>
+                            <th style="padding: 0.75rem; text-align: left;">Typical Head Focus</th>
+                            <th style="padding: 0.75rem; text-align: left;">Example Patterns</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Layers 1-3 (Early)</strong></td>
+                            <td style="padding: 0.75rem;">Surface-level, positional</td>
+                            <td style="padding: 0.75rem;">Previous token, next token, nearby words, punctuation</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Layers 4-7 (Middle)</strong></td>
+                            <td style="padding: 0.75rem;">Syntactic structure</td>
+                            <td style="padding: 0.75rem;">Subject-verb, verb-object, determiner-noun, modifiers</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Layers 8-12 (Deep)</strong></td>
+                            <td style="padding: 0.75rem;">Semantic relationships</td>
+                            <td style="padding: 0.75rem;">Coreference, semantic roles, discourse structure, topic</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <strong>Key Benefit of Multi-Head Attention:</strong> A single attention mechanism would need to choose between capturing syntax OR semantics OR position. Multiple heads capture ALL of these simultaneously, giving transformers their remarkable ability to understand language at multiple levels of abstraction.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Multi-Head Implementation</h2>
+                <pre><code class="language-python">
+import torch
+import torch.nn.functional as F
+
+class MultiHeadAttention(torch.nn.Module):
+    def __init__(self, d_model, num_heads):
+        super().__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+        
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # Single set of projection matrices
+        # These automatically split across heads
+        self.W_Q = torch.nn.Linear(d_model, d_model)
+        self.W_K = torch.nn.Linear(d_model, d_model)
+        self.W_V = torch.nn.Linear(d_model, d_model)
+        
+        # Output projection to combine all heads
+        self.W_O = torch.nn.Linear(d_model, d_model)
+    
+    def forward(self, X, mask=None):
+        batch_size, seq_len, d_model = X.shape
+        
+        # Project to Q, K, V
+        Q = self.W_Q(X)  # [batch, seq_len, d_model]
+        K = self.W_K(X)
+        V = self.W_V(X)
+        
+        # Split into multiple heads
+        # Reshape to [batch, seq_len, num_heads, d_k]
+        # Then transpose to [batch, num_heads, seq_len, d_k]
+        Q = Q.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        K = K.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        V = V.view(batch_size, seq_len, self.num_heads, self.d_k).transpose(1, 2)
+        # Now: [batch, num_heads, seq_len, d_k]
+        
+        # Compute attention for all heads in parallel
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.d_k ** 0.5)
+        # [batch, num_heads, seq_len, seq_len]
+        
+        # Apply mask if provided (e.g., causal mask)
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+        # Softmax
+        attention_weights = F.softmax(scores, dim=-1)
+        
+        # Apply to values
+        output = torch.matmul(attention_weights, V)
+        # [batch, num_heads, seq_len, d_k]
+        
+        # Reshape and concatenate heads
+        output = output.transpose(1, 2).contiguous()
+        # [batch, seq_len, num_heads, d_k]
+        output = output.view(batch_size, seq_len, d_model)
+        # [batch, seq_len, d_model]
+        
+        # Final output projection
+        output = self.W_O(output)
+        
+        return output, attention_weights
+
+# Usage
+d_model = 512
+num_heads = 8
+mha = MultiHeadAttention(d_model, num_heads)
+
+X = torch.randn(2, 4, 512)
+output, weights = mha(X)
+print(output.shape)        # [2, 4, 512]
+print(weights.shape)       # [2, 8, 4, 4] - one attention map per head!
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Positional Encoding: The Missing Ingredient</h2>
+                <p>
+                    Here's a fundamental problem with attention: it's <strong>permutation-invariant</strong>. The attention mechanism computes similarities between tokens, but doesn't inherently know where those tokens are in the sequence!
+                </p>
+
+                <h3>Demonstrating the Position Problem</h3>
+                <pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+# Simple attention function (no position info)
+def basic_attention(X):
+    """X: [batch, seq_len, d_model]"""
+    Q = K = V = X  # Simplified
+    scores = Q @ K.transpose(-2, -1)
+    attn = F.softmax(scores, dim=-1)
+    output = attn @ V
+    return output
+
+# Two sentences with different word order but same tokens
+tokens1 = ["The", "cat", "sat", "on", "the", "mat"]
+tokens2 = ["mat", "the", "on", "sat", "cat", "The"]  # Scrambled!
+
+# Simulate embeddings (same embeddings, different order)
+embeddings = torch.randn(6, 512)  # 6 unique token embeddings
+
+# Sentence 1: embeddings in order [0,1,2,3,4,5]
+X1 = embeddings[[0,1,2,3,4,5]].unsqueeze(0)
+
+# Sentence 2: same embeddings, scrambled order [5,4,3,2,1,0]
+X2 = embeddings[[5,4,3,2,1,0]].unsqueeze(0)
+
+print("X1 (original order):", X1.shape)
+print("X2 (scrambled order):", X2.shape)
+
+# Apply attention
+out1 = basic_attention(X1)
+out2 = basic_attention(X2)
+
+# Check if outputs are related by the same permutation
+# They should be! Attention doesn't know about position.
+print("\nAttention is permutation-invariant:")
+print("If we permute inputs, outputs are permuted the same way")
+print("This means attention CAN'T distinguish word order!")</code></pre>
+
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">❌ The Problem in Action</h4>
+                    <p style="color: #991b1b; margin: 0.5rem 0;">Consider these completely different meanings:</p>
+                    <pre style="background: #fff; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;"><code class="language-text">1. "The dog bit the man"    ← Dog is agent
+2. "The man bit the dog"    ← Man is agent
+
+3. "She told him not to go"     ← Positive instruction
+4. "She told him to not go"     ← Same words, different meaning
+
+5. "I didn't say she stole money"  ← Emphasis position changes meaning!
+   "I didn't SAY she stole money"  (I implied it)
+   "I didn't say SHE stole money"  (someone else did)
+   "I didn't say she STOLE money" (she borrowed it)</code></pre>
+                    <p style="color: #991b1b; margin-top: 0.5rem;">
+                        <strong>Without position information, attention can't tell these apart!</strong> All have the same tokens, just in different positions.
+                    </p>
+                </div>
+
+                <h3>Why RNNs Didn't Have This Problem</h3>
+                <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #6b7280;">
+                    <p><strong>RNNs naturally encode position through sequential processing:</strong></p>
+                    <pre><code class="language-python"># RNN processes tokens one at a time, left to right
+h_0 = initial_state
+h_1 = RNN(h_0, token_0)  # Position 0
+h_2 = RNN(h_1, token_1)  # Position 1 (knows it came after token_0)
+h_3 = RNN(h_2, token_2)  # Position 2 (knows entire history)
+
+# Position is implicit in the processing order</code></pre>
+                    <p style="margin-top: 1rem; color: #374151;">
+                        <strong>But transformers process all tokens in parallel!</strong> This is what makes them fast, but it means we must explicitly add position information.
+                    </p>
+                </div>
+
+                <h3>The Solution: Positional Encoding</h3>
+                <p>
+                    Add position information to token embeddings before passing them to attention. There are several ways to do this:
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">1. Sinusoidal (Original)</h4>
+                        <p style="font-size: 0.9rem; color: #065f46;">Fixed sine/cosine functions at different frequencies</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;"><strong>Used in:</strong> Original Transformer (2017)</p>
+                    </div>
+
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">2. Learned Embeddings</h4>
+                        <p style="font-size: 0.9rem; color: #065f46;">Treat position as another embedding table</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;"><strong>Used in:</strong> BERT, GPT-2</p>
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">3. Rotary (RoPE)</h4>
+                        <p style="font-size: 0.9rem; color: #92400e;">Rotate Q and K by position angle</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;"><strong>Used in:</strong> LLaMA, GPT-NeoX, PaLM</p>
+                    </div>
+
+                    <div style="background: #ede9fe; padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">4. ALiBi</h4>
+                        <p style="font-size: 0.9rem; color: #5b21b6;">Add linear bias to attention scores</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;"><strong>Used in:</strong> BLOOM, MPT</p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <strong>Core Principle:</strong> We add (not concatenate) position information to token embeddings. This allows the model to use both content and position information from the very first attention layer.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Sinusoidal Positional Encoding - Deep Dive</h2>
+                <p>
+                    The original "Attention is All You Need" paper (2017) introduced sinusoidal positional encodings - a mathematically elegant solution that uses sine and cosine functions at different frequencies.
+                </p>
+
+                <h3>The Mathematical Formula</h3>
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p style="color: #065f46; font-size: 1.1rem; margin-bottom: 0.5rem;"><strong>Positional Encoding Formula:</strong></p>
+                    <pre><code style="color: #065f46; font-size: 1.05rem;">PE(pos, 2i)   = sin(pos / 10000^(2i/d_model))
+PE(pos, 2i+1) = cos(pos / 10000^(2i/d_model))</code></pre>
+                    <p style="color: #065f46; margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Where:</strong><br>
+                        • pos = position in sequence (0, 1, 2, ..., seq_len-1)<br>
+                        • i = dimension index (0, 1, 2, ..., d_model/2-1)<br>
+                        • 2i = even dimensions get sine<br>
+                        • 2i+1 = odd dimensions get cosine
+                    </p>
+                </div>
+
+                <h3>Understanding the Design Choices</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Why 10000? Why sine/cosine? Let's break it down:</strong></p>
+                    
+                    <h4 style="color: #065f46; margin-top: 1rem;">1. Different Frequencies for Different Dimensions</h4>
+                    <pre><code class="language-python"># Frequency for each dimension pair decreases exponentially
+d_model = 512
+dimensions = torch.arange(0, d_model, 2)
+
+# Calculate wavelengths
+wavelengths = 10000 ** (dimensions / d_model)
+
+print("Dimension | Wavelength")
+print("-" * 30)
+for i in range(0, d_model, 64):  # Sample every 64 dimensions
+    wavelength = 10000 ** (i / d_model)
+    print(f"  {i:3d}     | {wavelength:10.2f}")
+
+# Output:
+#   0     |       1.00  (high frequency, changes every position)
+#  64     |       3.98  (changes every ~4 positions)
+# 128     |      15.85  (changes every ~16 positions)
+# 192     |      63.10  (changes every ~63 positions)
+# 256     |     251.19  (changes every ~251 positions)
+# 320     |    1000.00  (changes every ~1000 positions)
+# 384     |    3981.07  (changes every ~4000 positions)
+# 448     |   15848.93  (changes every ~15,000 positions)</code></pre>
+
+                    <p style="margin-top: 1rem; color: #374151;">
+                        <strong>Why this matters:</strong> Different dimensions capture position at different scales:
+                    </p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #374151;">
+                        <li>Low dimensions (high freq): Distinguish nearby positions (1 vs 2)</li>
+                        <li>Mid dimensions (med freq): Distinguish local chunks (position 10 vs 50)</li>
+                        <li>High dimensions (low freq): Distinguish distant regions (beginning vs end)</li>
+                    </ul>
+
+                    <h4 style="color: #065f46; margin-top: 1.5rem;">2. Why Sine AND Cosine?</h4>
+                    <p style="margin: 0.5rem 0;">Using both sine and cosine for each frequency provides two key benefits:</p>
+                    <pre><code class="language-python">import matplotlib.pyplot as plt
+import numpy as np
+
+pos = np.arange(0, 100)
+freq = 1/10  # One cycle per 10 positions
+
+# Sine and cosine are 90° out of phase
+sine_wave = np.sin(2 * np.pi * freq * pos)
+cosine_wave = np.cos(2 * np.pi * freq * pos)
+
+plt.figure(figsize=(12, 4))
+plt.plot(pos, sine_wave, label='sin', linewidth=2)
+plt.plot(pos, cosine_wave, label='cos', linewidth=2)
+plt.xlabel('Position')
+plt.ylabel('Value')
+plt.title('Sine and Cosine: Orthogonal Information')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Benefit 1: Linear combinations can represent any phase shift
+# Benefit 2: Derivatives are well-behaved (sin' = cos, cos' = -sin)</code></pre>
+
+                    <h4 style="color: #065f46; margin-top: 1.5rem;">3. Why 10000 Specifically?</h4>
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 6px; margin: 0.5rem 0;">
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            <strong>The value 10000 was chosen empirically to:</strong>
+                        </p>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Create wavelengths ranging from 2π (fastest) to 10000×2π (slowest)</li>
+                            <li>Allow the model to learn position relationships up to ~10,000 tokens</li>
+                            <li>Provide smooth gradients across typical sequence lengths (512-2048)</li>
+                            <li>Balance between too much variation (hard to learn) and too little (ambiguous)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Complete Implementation with Detailed Comments</h3>
+                <pre><code class="language-python">import torch
+import numpy as np
+import matplotlib.pyplot as plt
+
+def positional_encoding(d_model, max_seq_len=512):
+    """
+    Create sinusoidal positional encodings.
+    
+    Args:
+        d_model: Dimension of model (must be even)
+        max_seq_len: Maximum sequence length to precompute
+        
+    Returns:
+        Positional encoding matrix [max_seq_len, d_model]
+    """
+    # Create position indices: [0, 1, 2, ..., max_seq_len-1]
+    pos = torch.arange(0, max_seq_len, dtype=torch.float).unsqueeze(1)
+    # Shape: [max_seq_len, 1]
+    # Example for max_seq_len=5: [[0], [1], [2], [3], [4]]
+    
+    # Create dimension indices: [0, 2, 4, ..., d_model-2]
+    # We only need half because each pair (2i, 2i+1) shares the same frequency
+    i = torch.arange(0, d_model, 2, dtype=torch.float).unsqueeze(0)
+    # Shape: [1, d_model/2]
+    # Example for d_model=8: [[0, 2, 4, 6]]
+    
+    # Calculate angular frequency for each dimension
+    # freq = 1 / (10000^(2i/d_model))
+    # This creates exponentially decreasing frequencies:
+    # - Lower dimensions oscillate rapidly (high frequency)
+    # - Higher dimensions oscillate slowly (low frequency)
+    freq = 1.0 / (10000 ** (i / d_model))
+    # Shape: [1, d_model/2]
+    
+    # Multiply position by frequency to get angles
+    # Broadcasting: [max_seq_len, 1] × [1, d_model/2] → [max_seq_len, d_model/2]
+    angle_rates = pos * freq
+    # Shape: [max_seq_len, d_model/2]
+    # Each row represents one position
+    # Each column represents one frequency component
+    
+    # Initialize positional encoding matrix
+    pe = torch.zeros(max_seq_len, d_model)
+    
+    # Apply sine to even indices (0, 2, 4, ...)
+    pe[:, 0::2] = torch.sin(angle_rates)
+    
+    # Apply cosine to odd indices (1, 3, 5, ...)
+    pe[:, 1::2] = torch.cos(angle_rates)
+    
+    # Final shape: [max_seq_len, d_model]
+    # Each row is the positional encoding for one position
+    # Each position has a unique pattern across all dimensions
+    
+    return pe
+
+# Generate positional encodings
+d_model = 512
+max_seq_len = 100
+pe = positional_encoding(d_model, max_seq_len)
+
+print(f"Positional Encoding Shape: {pe.shape}")
+print(f"Each position has {d_model} values")
+print(f"Values range: [{pe.min():.3f}, {pe.max():.3f}]")
+
+# Verify properties
+print(f"\nPosition 0 encoding: {pe[0, :8]}")  # First 8 dimensions
+print(f"Position 1 encoding: {pe[1, :8]}")
+print(f"Position 2 encoding: {pe[2, :8]}")
+
+# Show that each position has unique encoding
+print(f"\nAll positions are unique: {len(torch.unique(pe, dim=0)) == max_seq_len}")
+
+# Visualize the encoding pattern
+plt.figure(figsize=(12, 8))
+plt.imshow(pe.numpy().T, cmap='RdBu', aspect='auto', interpolation='nearest')
+plt.xlabel('Position in Sequence', fontsize=12)
+plt.ylabel('Embedding Dimension', fontsize=12)
+plt.title('Sinusoidal Positional Encoding Heatmap', fontsize=14)
+plt.colorbar(label='Encoding Value')
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>Visualizing Positional Encoding Patterns</h3>
+                <pre><code class="language-python"># Visualize how different dimensions encode position differently
+fig, axes = plt.subplots(3, 1, figsize=(14, 10))
+
+positions = np.arange(0, 100)
+pe_numpy = pe[:100].numpy()
+
+# Plot low-frequency dimensions (high index)
+axes[0].plot(positions, pe_numpy[:, 0], label='Dim 0 (fastest)', linewidth=2)
+axes[0].plot(positions, pe_numpy[:, 1], label='Dim 1', linewidth=2)
+axes[0].set_title('Low Dimensions: High Frequency (changes every position)', fontsize=12)
+axes[0].set_ylabel('Encoding Value')
+axes[0].legend()
+axes[0].grid(True, alpha=0.3)
+
+# Plot mid-frequency dimensions
+axes[1].plot(positions, pe_numpy[:, 64], label='Dim 64', linewidth=2)
+axes[1].plot(positions, pe_numpy[:, 65], label='Dim 65', linewidth=2)
+axes[1].set_title('Middle Dimensions: Medium Frequency (captures local structure)', fontsize=12)
+axes[1].set_ylabel('Encoding Value')
+axes[1].legend()
+axes[1].grid(True, alpha=0.3)
+
+# Plot high-frequency dimensions (low index)
+axes[2].plot(positions, pe_numpy[:, 256], label='Dim 256', linewidth=2)
+axes[2].plot(positions, pe_numpy[:, 257], label='Dim 257', linewidth=2)
+axes[2].set_title('High Dimensions: Low Frequency (captures global position)', fontsize=12)
+axes[2].set_xlabel('Position')
+axes[2].set_ylabel('Encoding Value')
+axes[2].legend()
+axes[2].grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print("Notice how:")
+print("- Low dims oscillate rapidly (distinguish 1 vs 2)")
+print("- Mid dims oscillate moderately (distinguish 10 vs 50)")
+print("- High dims oscillate slowly (distinguish early vs late in sequence)")</code></pre>
+
+                <h3>Key Properties of Sinusoidal Encoding</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">✅ Bounded</h4>
+                        <p style="font-size: 0.9rem; color: #065f46;">All values in [-1, 1]. Won't cause numerical instability or gradient explosion.</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">✅ Deterministic</h4>
+                        <p style="font-size: 0.9rem; color: #065f46;">No parameters to learn. Same encoding every time. Can extrapolate to unseen lengths.</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">✅ Linear Relationships</h4>
+                        <p style="font-size: 0.9rem; color: #92400e;">PE(pos+k) can be expressed as linear function of PE(pos), allowing model to learn relative positions.</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">✅ Multi-Scale</h4>
+                        <p style="font-size: 0.9rem; color: #5b21b6;">Different dimensions capture position at different granularities (fine to coarse).</p>
+                    </div>
+                </div>
+
+                <h3>Usage in Practice</h3>
+                <pre><code class="language-python"># Complete example: Adding positional encoding to token embeddings
+batch_size = 2
+seq_len = 10
+d_model = 512
+vocab_size = 10000
+
+# Token embeddings (learned during training)
+token_embedding = torch.nn.Embedding(vocab_size, d_model)
+
+# Positional encodings (fixed)
+pe = positional_encoding(d_model, max_seq_len=1000)
+
+# Input token IDs
+token_ids = torch.randint(0, vocab_size, (batch_size, seq_len))
+print(f"Token IDs shape: {token_ids.shape}")  # [2, 10]
+
+# Get token embeddings
+embeddings = token_embedding(token_ids)
+print(f"Token embeddings shape: {embeddings.shape}")  # [2, 10, 512]
+
+# Add positional encodings
+# Select the positional encodings for the current sequence length
+pos_encodings = pe[:seq_len, :].unsqueeze(0)  # [1, 10, 512]
+print(f"Positional encodings shape: {pos_encodings.shape}")
+
+# Add (broadcast across batch dimension)
+embeddings_with_position = embeddings + pos_encodings
+print(f"Final embeddings shape: {embeddings_with_position.shape}")  # [2, 10, 512]
+
+print("\nNow each token embedding contains:")
+print("- Token semantic information (learned)")
+print("- Position information (fixed sinusoidal)")
+print("- Ready for attention mechanism!")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Rotary Positional Embeddings (Modern)</h2>
+                <p>
+                    Newer models use rotary positional embeddings (RoPE), which are more efficient and generalize better:
+                </p>
+
+                <pre><code class="language-python">
+# Rotary embeddings rotate Q and K by position angle
+def apply_rotary_pos_emb(x, freqs, t=0):
+    """
+    Apply rotary position embedding
+    x: [batch, num_heads, seq_len, head_dim]
+    freqs: [seq_len, head_dim/2]
+    t: position offset (useful for streaming)
+    """
+    # Extract 2D consecutive pairs and apply 2D rotation
+    x1, x2 = x[..., 0::2], x[..., 1::2]
+    
+    # Rotation matrix for each frequency
+    cos_freqs = freqs.cos()
+    sin_freqs = freqs.sin()
+    
+    # Apply rotation: (x1, x2) → (x1*cos - x2*sin, x1*sin + x2*cos)
+    x_rot1 = x1 * cos_freqs - x2 * sin_freqs
+    x_rot2 = x1 * sin_freqs + x2 * cos_freqs
+    
+    # Interleave back
+    x_rot = torch.empty_like(x)
+    x_rot[..., 0::2] = x_rot1
+    x_rot[..., 1::2] = x_rot2
+    
+    return x_rot
+
+# Advantages over sinusoidal:
+# - Better long-context extrapolation
+# - More efficient GPU implementation
+# - Works better with fine-tuning
+# - Used in LLaMA, Mistral, recent GPT-4
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Comparing Positional Encoding Methods</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Method</th>
+                            <th style="padding: 0.75rem; text-align: left;">Pros</th>
+                            <th style="padding: 0.75rem; text-align: left;">Cons</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Sinusoidal</strong></td>
+                            <td style="padding: 0.75rem;">Simple, no learning, generalizes OK</td>
+                            <td style="padding: 0.75rem;">Fixed, doesn't adapt to data</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Learned</strong></td>
+                            <td style="padding: 0.75rem;">Adaptive, data-driven</td>
+                            <td style="padding: 0.75rem;">Can't extrapolate beyond training length</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>RoPE (Rotary)</strong></td>
+                            <td style="padding: 0.75rem;">Extrapolates well, efficient, modern</td>
+                            <td style="padding: 0.75rem;">Slightly more complex implementation</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>ALiBi (Attention Bias)</strong></td>
+                            <td style="padding: 0.75rem;">Super simple, no embeddings needed</td>
+                            <td style="padding: 0.75rem;">Less flexibility for complex patterns</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Add, Not Concatenate?</h2>
+                <p>
+                    Why add positional encoding to embeddings instead of concatenating?
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>Option 1 (Used):</strong> x = token_embedding + position_encoding</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #92400e;">
+                        <li>Dimensions stay same (don't grow)</li>
+                        <li>Position and content interact from the start</li>
+                        <li>More parameter-efficient</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem;"><strong>Option 2 (Not used):</strong> x = [token_embedding; position_embedding]</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #92400e;">
+                        <li>Doubles dimensions</li>
+                        <li>More parameters in first layer</li>
+                        <li>Position and content kept separate longer</li>
+                    </ul>
+                </div>
+
+                <p>
+                    Addition is simpler and works better in practice.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Complete Forward Pass: Embeddings + Position</h2>
+                <pre><code class="language-python">
+import torch
+import torch.nn.functional as F
+
+class TransformerEmbedding(torch.nn.Module):
+    def __init__(self, vocab_size, d_model, max_seq_len=512):
+        super().__init__()
+        self.token_embedding = torch.nn.Embedding(vocab_size, d_model)
+        self.positional_encoding = self.create_positional_encoding(d_model, max_seq_len)
+        self.d_model = d_model
+    
+    def create_positional_encoding(self, d_model, max_seq_len):
+        pos = torch.arange(0, max_seq_len, dtype=torch.float).unsqueeze(1)
+        i = torch.arange(0, d_model, 2, dtype=torch.float).unsqueeze(0)
+        freq = 1.0 / (10000 ** (i / d_model))
+        angle_rates = pos * freq
+        
+        pe = torch.zeros(max_seq_len, d_model)
+        pe[:, 0::2] = torch.sin(angle_rates)
+        pe[:, 1::2] = torch.cos(angle_rates)
+        
+        # Register as buffer (not a parameter)
+        self.register_buffer("pe", pe.unsqueeze(0))
+        return pe
+    
+    def forward(self, token_ids):
+        """
+        token_ids: [batch, seq_len]
+        """
+        seq_len = token_ids.size(1)
+        
+        # Token embeddings
+        embeddings = self.token_embedding(token_ids)  # [batch, seq_len, d_model]
+        
+        # Scale embeddings
+        embeddings = embeddings * (self.d_model ** 0.5)
+        
+        # Add positional encoding
+        embeddings = embeddings + self.pe[:, :seq_len, :]
+        
+        return embeddings
+
+# Usage
+vocab_size = 50000
+d_model = 512
+embedding_layer = TransformerEmbedding(vocab_size, d_model)
+
+token_ids = torch.randint(0, vocab_size, (2, 4))
+embeddings = embedding_layer(token_ids)
+print(embeddings.shape)  # [2, 4, 512]
+# Now each embedding includes both token meaning AND position!
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Multi-Head Attention:</strong> Multiple parallel attention mechanisms, each learning different patterns</li>
+                        <li><strong>Head Specialization:</strong> Different heads focus on syntax, semantics, discourse, etc.</li>
+                        <li><strong>Concatenation:</strong> All heads concatenated back to full dimension</li>
+                        <li><strong>Positional Encoding:</strong> Add position info since attention is permutation-invariant</li>
+                        <li><strong>Sinusoidal PE:</strong> Original approach using sine/cosine at different frequencies</li>
+                        <li><strong>Rotary PE (RoPE):</strong> Modern approach with better extrapolation</li>
+                        <li><strong>Additive Combination:</strong> Add position to embeddings (not concatenate)</li>
+                        <li><strong>Scaling Factor:</strong> Multiply embeddings by √d_model before adding position</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the purpose of multi-head attention?</strong></p>
+                    <div class="quiz-option" data-value="a">To make the model larger</div>
+                    <div class="quiz-option" data-value="b">To slow down training</div>
+                    <div class="quiz-option" data-value="c">To allow the model to attend to different representation subspaces simultaneously</div>
+                    <div class="quiz-option" data-value="d">To eliminate positional encoding</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: Why do we need positional encodings in Transformers?</strong></p>
+                    <div class="quiz-option" data-value="a">To make the model more complex</div>
+                    <div class="quiz-option" data-value="b">Because self-attention has no inherent notion of token order</div>
+                    <div class="quiz-option" data-value="c">To reduce computational cost</div>
+                    <div class="quiz-option" data-value="d">To eliminate the need for embeddings</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: How many attention heads does a multi-head attention layer typically have?</strong></p>
+                    <div class="quiz-option" data-value="a">Always 1</div>
+                    <div class="quiz-option" data-value="b">Always 2</div>
+                    <div class="quiz-option" data-value="c">Always 4</div>
+                    <div class="quiz-option" data-value="d">Typically 8 or 12, but varies by model</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What are the two main types of positional encoding?</strong></p>
+                    <div class="quiz-option" data-value="a">Sinusoidal (fixed) and learned (trainable)</div>
+                    <div class="quiz-option" data-value="b">Random and sequential</div>
+                    <div class="quiz-option" data-value="c">Static and dynamic</div>
+                    <div class="quiz-option" data-value="d">Local and global</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: In multi-head attention, what happens after each head computes its attention?</strong></p>
+                    <div class="quiz-option" data-value="a">The heads are discarded</div>
+                    <div class="quiz-option" data-value="b">Only the first head is used</div>
+                    <div class="quiz-option" data-value="c">The outputs are concatenated and linearly transformed</div>
+                    <div class="quiz-option" data-value="d">The outputs are averaged</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="self-attention-mechanism.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Self-Attention Mechanism</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="complete-transformer-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Complete Transformer Architecture</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

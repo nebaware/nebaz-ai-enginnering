@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 6: Risk Management with AI | AI for Project Managers</title>
+    <meta name="description" content="Identify 50+ project risks, create mitigation strategies, track issues, and make data-driven decisions under uncertainty.">
+    
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-meta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-badge {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .tutorial-content h2 {
+            border-bottom: 3px solid #fed7aa;
+        }
+        
+        /* Learning Objectives */
+        .learning-objectives {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            border: 2px solid #fbbf24;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+        }
+        
+        .learning-objectives h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .objective-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #f59e0b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .objective-item::before {
+            content: "✓";
+            color: #f59e0b;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 5px solid #078930;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 5px solid #ef4444;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #10b981;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Two Column Grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        /* Risk Category Cards */
+        .risk-category {
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .risk-category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .risk-category.technical {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-color: #078930;
+        }
+        
+        .risk-category.resource {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: #f59e0b;
+        }
+        
+        .risk-category.schedule {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+        }
+        
+        .risk-category.budget {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #10b981;
+        }
+        
+        .risk-category.stakeholder {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-color: #8b5cf6;
+        }
+        
+        .risk-category h4 {
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .risk-category .icon {
+            font-size: 2rem;
+        }
+        
+        /* Risk Matrix */
+        .risk-matrix {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .risk-matrix table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .risk-matrix th,
+        .risk-matrix td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+        
+        .risk-matrix th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .risk-high {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: 600;
+        }
+        
+        .risk-medium {
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 600;
+        }
+        
+        .risk-low {
+            background: #dcfce7;
+            color: #065f46;
+            font-weight: 600;
+        }
+        
+        /* Mitigation Strategy Cards */
+        .mitigation-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        
+        .mitigation-card h4 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .mitigation-card .strategy-type {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: #078930;
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #1e293b !important;
+            border-radius: 0.75rem;
+            padding: 1.5rem !important;
+            margin: 2rem 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Practice Exercise */
+        .practice-exercise {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+        
+        .practice-exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #10b981;
+        }
+        
+        .key-takeaways h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-takeaways ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .key-takeaways li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+        
+        .key-takeaways li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        /* Navigation */
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1.5rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .tutorial-content h1 {
+                font-size: 2rem;
+            }
+            
+            .tutorial-content h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content h3 {
+                font-size: 1.35rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+            
+            .objectives-grid,
+            .two-column-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+            
+            .risk-matrix {
+                padding: 1rem;
+            }
+            
+            .risk-matrix table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-project-managers.html">AI for Project Managers</a> → 
+                Module 6
+            </div>
+            <h1 class="page-title">Tutorial 6: Risk Management with AI</h1>
+            <p class="tutorial-intro">Identify 50+ project risks, create mitigation strategies, track issues, and make data-driven decisions under uncertainty.</p>
+                        <div class="tutorial-meta-info">
+                <span class="meta-item">📚 Week 4</span>
+                <span class="meta-item">🎯 Advanced</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+            <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <!-- Learning Objectives -->
+        <div class="learning-objectives">
+            <h3>🎯 What You'll Master</h3>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    Generate comprehensive risk registers with 50+ potential risks in minutes
+                </div>
+                <div class="objective-item">
+                    Create detailed mitigation strategies for every identified risk
+                </div>
+                <div class="objective-item">
+                    Build risk matrices and prioritize which risks need immediate attention
+                </div>
+                <div class="objective-item">
+                    Track issues proactively and make data-driven decisions under uncertainty
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <h2>The Hidden Cost of Reactive Risk Management</h2>
+        
+        <p>
+            Most project failures aren't caused by unforeseen disasters—they're caused by <strong>predictable risks 
+            that nobody identified or planned for</strong>. Yet Project Managers consistently underinvest in risk management 
+            because it feels like non-essential overhead work.
+        </p>
+
+        <div class="warning-box">
+            <h4>⏰ The Reactive Risk Management Trap</h4>
+            <ul>
+                <li><strong>Time Spent on Risk Identification:</strong> 30-60 minutes (rushed, superficial)</li>
+                <li><strong>Time Spent Creating Mitigation Plans:</strong> 15 minutes (generic, copy-pasted)</li>
+                <li><strong>Time Spent Firefighting Realized Risks:</strong> 10-40 hours (crisis mode, late nights)</li>
+            </ul>
+            <p><strong>The Problem:</strong> We spend 2-3 hours on prevention but 20-40 hours on firefighting.</p>
+        </div>
+
+        <p>
+            ChatGPT flips this equation. Instead of spending minimal time on risk identification, you can generate 
+            <strong>comprehensive 50+ risk registers in 10 minutes</strong>—covering technical, resource, schedule, 
+            budget, and stakeholder risks with tailored mitigation strategies for each.
+        </p>
+
+        <div class="info-box">
+            <h4>🚀 What This Looks Like With AI:</h4>
+            <ul>
+                <li><strong>Risk Identification:</strong> 10 minutes (comprehensive, thorough)</li>
+                <li><strong>Mitigation Planning:</strong> 15 minutes (specific, actionable)</li>
+                <li><strong>Ongoing Risk Monitoring:</strong> 5 minutes/week (proactive tracking)</li>
+                <li><strong>Firefighting Avoided:</strong> 20-40 hours saved per project</li>
+            </ul>
+            <p><strong>Result:</strong> More time preventing issues, less time fighting fires.</p>
+        </div>
+
+        <!-- Risk Identification -->
+        <h2>🔍 1. Comprehensive Risk Identification</h2>
+
+        <p>
+            The first step in risk management is identifying <strong>everything that could go wrong</strong>. Most PMs 
+            identify 5-10 obvious risks. AI helps you think through 50+ potential risks across all categories.
+        </p>
+
+        <h3>The 5 Major Risk Categories</h3>
+
+        <div class="risk-category technical">
+            <h4><span class="icon">💻</span> Technical Risks</h4>
+            <p>Technology failures, integration issues, performance problems, security vulnerabilities, data quality issues</p>
+            <p><strong>Examples:</strong> API incompatibility, scalability bottlenecks, legacy system constraints, third-party service outages</p>
+        </div>
+
+        <div class="risk-category resource">
+            <h4><span class="icon">👥</span> Resource Risks</h4>
+            <p>Team availability, skill gaps, key person dependencies, contractor reliability, competing priorities</p>
+            <p><strong>Examples:</strong> Lead developer leaving mid-project, designer overcommitted to multiple projects, offshore team time zone challenges</p>
+        </div>
+
+        <div class="risk-category schedule">
+            <h4><span class="icon">📅</span> Schedule Risks</h4>
+            <p>Timeline estimates, dependency delays, scope creep, approval bottlenecks, testing time underestimation</p>
+            <p><strong>Examples:</strong> Vendor delays, regulatory approval taking longer than expected, holiday schedules impact, underestimated complexity</p>
+        </div>
+
+        <div class="risk-category budget">
+            <h4><span class="icon">💰</span> Budget Risks</h4>
+            <p>Cost overruns, currency fluctuations, unplanned expenses, licensing fees, infrastructure costs</p>
+            <p><strong>Examples:</strong> Cloud hosting costs higher than projected, additional licensing required, consultant hourly rates increase</p>
+        </div>
+
+        <div class="risk-category stakeholder">
+            <h4><span class="icon">🤝</span> Stakeholder Risks</h4>
+            <p>Changing requirements, approval delays, conflicting priorities, executive turnover, user adoption resistance</p>
+            <p><strong>Examples:</strong> New executive wants different direction, users resistant to new system, competing project gets higher priority</p>
+        </div>
+
+        <h3>ChatGPT Risk Identification Prompt</h3>
+
+        <pre><code class="language-plaintext">Generate a comprehensive risk register for this project:
+
+Project Name: [Mobile Banking App Redesign]
+Duration: [16 weeks]
+Budget: [$500,000]
+Team Size: [12 people - 6 developers, 2 designers, 2 QA, 1 PM, 1 BA]
+
+Project Scope:
+- [Redesign UI/UX for 50+ screens]
+- [Implement biometric authentication]
+- [Integrate with 3 third-party APIs (payments, credit score, analytics)]
+- [Support iOS and Android]
+- [Must comply with financial regulations (PCI-DSS, SOC 2)]
+
+Key Dependencies:
+- [Vendor API delivery dates]
+- [Security audit approval before launch]
+- [App store approval process]
+
+Create a risk register with at least 50 potential risks across these categories:
+1. Technical Risks (15+ risks)
+2. Resource Risks (10+ risks)
+3. Schedule Risks (10+ risks)
+4. Budget Risks (10+ risks)
+5. Stakeholder Risks (5+ risks)
+
+For each risk, include:
+- Risk Description
+- Category
+- Probability (High/Medium/Low)
+- Impact (High/Medium/Low)
+- Risk Score (Probability × Impact)
+
+Format as a table for easy scanning.</code></pre>
+
+        <div class="success-box">
+            <h4>✨ Sample AI-Generated Risks (Excerpt):</h4>
+            
+            <div class="risk-matrix">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 35%;">Risk Description</th>
+                            <th style="width: 15%;">Category</th>
+                            <th style="width: 12%;">Probability</th>
+                            <th style="width: 12%;">Impact</th>
+                            <th style="width: 12%;">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Third-party payment API experiences downtime during testing phase</td>
+                            <td>Technical</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>iOS biometric authentication API changes with new OS update</td>
+                            <td>Technical</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Lead iOS developer accepts job offer and leaves mid-project</td>
+                            <td>Resource</td>
+                            <td>Low</td>
+                            <td>High</td>
+                            <td class="risk-medium">MEDIUM</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Security audit identifies critical vulnerabilities requiring major rework</td>
+                            <td>Technical</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>PCI-DSS compliance review takes longer than 2-week estimate</td>
+                            <td>Schedule</td>
+                            <td>High</td>
+                            <td>Medium</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Cloud hosting costs 40% higher than projected due to usage spikes</td>
+                            <td>Budget</td>
+                            <td>Medium</td>
+                            <td>Medium</td>
+                            <td class="risk-medium">MEDIUM</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>QA team identifies 200+ bugs requiring additional sprint</td>
+                            <td>Schedule</td>
+                            <td>Medium</td>
+                            <td>Medium</td>
+                            <td class="risk-medium">MEDIUM</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>App Store rejects app due to guideline violations, requires resubmission</td>
+                            <td>Schedule</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Designer working on 3 projects simultaneously, misses milestone deadlines</td>
+                            <td>Resource</td>
+                            <td>High</td>
+                            <td>Medium</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>New CMO wants to add social features mid-project (scope creep)</td>
+                            <td>Stakeholder</td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td class="risk-high">HIGH</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p style="margin-top: 1.5rem; font-size: 0.95rem; color: #64748b;">
+                    <em>This is just 10 of 50+ risks ChatGPT generates. The full register covers architecture risks, 
+                    device compatibility issues, data migration challenges, regulatory changes, and much more.</em>
+                </p>
+            </div>
+        </div>
+
+        <!-- Mitigation Strategies -->
+        <h2>🛡️ 2. Creating Mitigation Strategies</h2>
+
+        <p>
+            Identifying risks isn't enough—you need <strong>specific, actionable mitigation plans</strong> for each 
+            high-priority risk. ChatGPT generates tailored strategies based on risk type and severity.
+        </p>
+
+        <h3>The 4 Mitigation Strategy Types</h3>
+
+        <div class="two-column-grid">
+            <div class="info-box">
+                <h4>🚫 Avoid</h4>
+                <p>Eliminate the risk entirely by changing project approach</p>
+                <p><strong>Example:</strong> Switch to a proven technology instead of experimental framework</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>🎯 Mitigate</h4>
+                <p>Reduce probability or impact through proactive actions</p>
+                <p><strong>Example:</strong> Add buffer time to schedule, cross-train team members</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>↔️ Transfer</h4>
+                <p>Shift risk to another party (insurance, vendor, contractor)</p>
+                <p><strong>Example:</strong> Include penalty clauses in vendor contracts</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>✅ Accept</h4>
+                <p>Acknowledge risk but don't take action (contingency plan ready)</p>
+                <p><strong>Example:</strong> Monitor low-probability risks without preemptive action</p>
+            </div>
+        </div>
+
+        <h3>Mitigation Strategy Prompt</h3>
+
+        <pre><code class="language-plaintext">Create detailed mitigation strategies for these HIGH-priority risks:
+
+Project: [Mobile Banking App Redesign]
+
+Risks:
+1. Third-party payment API experiences downtime during testing (Prob: Medium, Impact: High)
+2. iOS biometric authentication API changes with new OS update (Prob: Medium, Impact: High)
+3. Security audit identifies critical vulnerabilities requiring major rework (Prob: Medium, Impact: High)
+4. PCI-DSS compliance review takes longer than 2-week estimate (Prob: High, Impact: Medium)
+5. Designer overcommitted to multiple projects, misses milestones (Prob: High, Impact: Medium)
+
+For each risk, provide:
+- Mitigation Strategy Type (Avoid/Mitigate/Transfer/Accept)
+- Specific Actions to Take (3-5 concrete steps)
+- Responsible Party
+- Timeline for Implementation
+- Success Criteria (how we'll know mitigation worked)
+- Contingency Plan (backup if mitigation fails)
+
+Be specific and actionable—no generic advice.</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Mitigation Strategies:</h4>
+            
+            <div class="mitigation-card">
+                <span class="strategy-type">MITIGATE</span>
+                <h4>Risk #1: Third-Party Payment API Downtime</h4>
+                
+                <p><strong>Specific Actions:</strong></p>
+                <ol>
+                    <li>Build mock API endpoints for testing environment (week 2)</li>
+                    <li>Implement circuit breaker pattern to handle API failures gracefully</li>
+                    <li>Set up API health monitoring with PagerDuty alerts</li>
+                    <li>Negotiate SLA with vendor: 99.9% uptime guarantee</li>
+                    <li>Create automated test suite that doesn't depend on live API</li>
+                </ol>
+                
+                <p><strong>Responsible Party:</strong> Lead Backend Developer + DevOps Engineer</p>
+                <p><strong>Timeline:</strong> Complete by end of Week 3</p>
+                <p><strong>Success Criteria:</strong> Testing proceeds without API dependency; no blocked work</p>
+                
+                <div class="warning-box" style="margin-top: 1.5rem;">
+                    <p><strong>⚠️ Contingency Plan:</strong> If vendor API proves unreliable, evaluate alternative payment providers 
+                    (Stripe, Braintree) and implement abstraction layer to allow easy swapping.</p>
+                </div>
+            </div>
+            
+            <div class="mitigation-card">
+                <span class="strategy-type">AVOID</span>
+                <h4>Risk #2: iOS Biometric API Changes with OS Update</h4>
+                
+                <p><strong>Specific Actions:</strong></p>
+                <ol>
+                    <li>Target iOS 16 specifically (don't build for iOS 17 beta)</li>
+                    <li>Use stable, documented Apple APIs only (avoid experimental features)</li>
+                    <li>Set up beta testing program to catch OS update issues early</li>
+                    <li>Subscribe to Apple Developer notifications for API changes</li>
+                    <li>Build fallback PIN authentication for users on unsupported devices</li>
+                </ol>
+                
+                <p><strong>Responsible Party:</strong> iOS Lead Developer</p>
+                <p><strong>Timeline:</strong> Architecture decision by Week 1; implementation ongoing</p>
+                <p><strong>Success Criteria:</strong> Biometric auth works on iOS 15-16 without breaking changes</p>
+                
+                <div class="warning-box" style="margin-top: 1.5rem;">
+                    <p><strong>⚠️ Contingency Plan:</strong> If iOS 17 release breaks implementation, delay app launch by 2 weeks 
+                    for compatibility update OR launch with PIN-only authentication initially.</p>
+                </div>
+            </div>
+            
+            <div class="mitigation-card">
+                <span class="strategy-type">MITIGATE + TRANSFER</span>
+                <h4>Risk #4: PCI-DSS Compliance Delays</h4>
+                
+                <p><strong>Specific Actions:</strong></p>
+                <ol>
+                    <li>Hire certified security consultant upfront (Week 1) to review architecture</li>
+                    <li>Schedule compliance review for Week 10 (not Week 14 as originally planned)</li>
+                    <li>Implement PCI-DSS requirements checklist from day 1</li>
+                    <li>Contract with compliance vendor who guarantees 5-day turnaround</li>
+                    <li>Build 2-week buffer into timeline after compliance review</li>
+                </ol>
+                
+                <p><strong>Responsible Party:</strong> Security Consultant + Project Manager</p>
+                <p><strong>Timeline:</strong> Consultant hired by Week 1; review scheduled Week 10</p>
+                <p><strong>Success Criteria:</strong> Compliance review completes in 5 days; zero critical findings</p>
+                
+                <div class="warning-box" style="margin-top: 1.5rem;">
+                    <p><strong>⚠️ Contingency Plan:</strong> If critical findings emerge, activate 2-week buffer. If that's insufficient, 
+                    launch with limited feature set (remove payment functionality temporarily).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Monitoring -->
+        <h2>📊 3. Ongoing Risk Monitoring & Tracking</h2>
+
+        <p>
+            Risk management isn't a one-time activity—it requires <strong>continuous monitoring and updating</strong>. 
+            AI helps you maintain risk registers, track changes, and identify new risks as the project evolves.
+        </p>
+
+        <div class="info-box">
+            <h4>🔄 Weekly Risk Review Workflow</h4>
+            <ol>
+                <li><strong>Review existing risks:</strong> Have probabilities or impacts changed?</li>
+                <li><strong>Check mitigation actions:</strong> Are they working? On schedule?</li>
+                <li><strong>Identify new risks:</strong> What's emerged since last week?</li>
+                <li><strong>Update risk register:</strong> Document changes and decisions</li>
+                <li><strong>Communicate high-priority risks:</strong> Alert stakeholders as needed</li>
+            </ol>
+            <p><strong>Time Investment:</strong> 15 minutes/week with AI assistance</p>
+        </div>
+
+        <h3>Weekly Risk Monitoring Prompt</h3>
+
+        <pre><code class="language-plaintext">Update my project risk register based on this week's developments:
+
+Project: [Mobile Banking App Redesign]
+Current Week: [Week 6 of 16]
+
+This Week's Developments:
+- [iOS developer gave notice - leaving in 3 weeks]
+- [Payment vendor API delayed 2 weeks (now arriving Week 9)]
+- [Security consultant found 3 medium-severity vulnerabilities]
+- [Designer caught up on milestones after previous delays]
+- [QA team identified performance issues on older Android devices]
+
+Current High-Priority Risks:
+1. Payment API downtime
+2. iOS biometric API changes
+3. Security audit findings
+4. PCI-DSS compliance delays
+5. Designer availability
+
+Questions:
+1. Which existing risks need probability/impact updates?
+2. Should any risks be escalated to HIGH priority?
+3. Are there new risks to add to the register?
+4. Which mitigation strategies need adjustment?
+5. What should I communicate to stakeholders this week?
+
+Provide actionable recommendations.</code></pre>
+
+        <div class="warning-box">
+            <h4>⚠️ AI-Generated Risk Update:</h4>
+            
+            <p><strong>Critical Updates Needed:</strong></p>
+            
+            <p><strong>1. ESCALATE: iOS Developer Departure (NEW: HIGH PRIORITY)</strong></p>
+            <ul>
+                <li><strong>Action:</strong> Immediately begin knowledge transfer process</li>
+                <li><strong>Mitigation:</strong> Contract iOS freelancer as backup (start recruiting this week)</li>
+                <li><strong>Timeline Impact:</strong> Potential 2-week delay if replacement not found</li>
+            </ul>
+            
+            <p><strong>2. ESCALATE: Payment API Delay (Impact Increased to HIGH)</strong></p>
+            <ul>
+                <li><strong>Original:</strong> Arrive Week 7, now arriving Week 9</li>
+                <li><strong>Impact:</strong> Blocks payment testing, compresses QA timeline</li>
+                <li><strong>Action:</strong> Accelerate mock API development; extend QA phase by 1 week</li>
+            </ul>
+            
+            <p><strong>3. NEW RISK: Android Performance Issues</strong></p>
+            <ul>
+                <li><strong>Risk:</strong> App laggy on devices older than 2 years (30% of user base)</li>
+                <li><strong>Priority:</strong> MEDIUM (High impact, Medium probability)</li>
+                <li><strong>Action:</strong> Performance optimization sprint in Week 8</li>
+            </ul>
+            
+            <p><strong>4. DE-ESCALATE: Designer Availability (Medium → Low)</strong></p>
+            <ul>
+                <li>Designer caught up; milestone risk reduced</li>
+                <li>Continue monitoring but lower priority</li>
+            </ul>
+            
+            <p><strong>5. MONITOR: Security Vulnerabilities</strong></p>
+            <ul>
+                <li>3 medium-severity issues found (not critical)</li>
+                <li>Add 3 days to development timeline for fixes</li>
+                <li>Security audit still on track for Week 10</li>
+            </ul>
+            
+            <div class="success-box" style="margin-top: 1.5rem;">
+                <h4>📢 Stakeholder Communication Needed:</h4>
+                <p><strong>Alert executives about:</strong></p>
+                <ol>
+                    <li>iOS developer departure - recruiting replacement immediately</li>
+                    <li>Payment API 2-week delay - adjusting timeline</li>
+                    <li>Potential launch date slip of 1-2 weeks if issues compound</li>
+                </ol>
+                <p><strong>Recommended message:</strong> "Proactively managing two emerging risks that could impact timeline. 
+                Have mitigation plans in place and will update you next week."</p>
+            </div>
+        </div>
+
+        <!-- Decision-Making Under Uncertainty -->
+        <h2>🎲 4. Data-Driven Decision Making Under Uncertainty</h2>
+
+        <p>
+            Sometimes you face impossible choices: <strong>Should we delay the launch? Cut features? Add resources?</strong> 
+            AI helps you model scenarios, analyze trade-offs, and make informed decisions with incomplete information.
+        </p>
+
+        <h3>Scenario Analysis Prompt</h3>
+
+        <pre><code class="language-plaintext">Help me analyze decision options for this risk scenario:
+
+Situation:
+We're in Week 10 of a 16-week project. Two HIGH-priority risks have materialized:
+1. iOS developer left; replacement won't start until Week 12
+2. Payment vendor API delayed by 3 weeks (now arriving Week 12)
+
+Current Status:
+- Original launch date: Week 16 (March 1)
+- 60% of features complete
+- iOS development now 3 weeks behind schedule
+- Payment integration can't begin until Week 12 (API arrival)
+
+Three Options:
+
+Option 1: Delay Launch by 3 Weeks (March 22)
+- Pros: Deliver all planned features, thorough testing
+- Cons: Miss Q1 deadline, $300K revenue delay, marketing campaign rescheduled
+- Probability of success: 85%
+
+Option 2: Cut Features & Launch on Time (March 1)
+- Remove: Bill payment feature, account aggregation, investment tracking
+- Pros: Hit Q1 deadline, keep revenue on track
+- Cons: Reduced value proposition, 40% of planned features missing
+- Probability of success: 90%
+
+Option 3: Add Contractor Resources & Accelerate ($50K extra budget)
+- Hire 2 contractors for Weeks 10-16
+- Pros: Attempt to maintain timeline and features
+- Cons: $50K over budget, integration complexity, no guarantee
+- Probability of success: 60%
+
+Analyze:
+1. Which option has best risk/reward trade-off?
+2. What are the hidden costs of each option?
+3. What questions should I ask stakeholders before deciding?
+4. Is there a hybrid option I'm not seeing?
+5. What's your recommendation and why?</code></pre>
+
+        <div class="success-box">
+            <h4>💡 AI Decision Analysis:</h4>
+            
+            <p><strong>Recommended Approach: HYBRID Option (Modified Option 1)</strong></p>
+            
+            <div class="mitigation-card">
+                <h4>🎯 Strategic Recommendation</h4>
+                
+                <p><strong>Delay launch by 2 weeks (not 3) + Cut 1 non-critical feature</strong></p>
+                
+                <p><strong>Rationale:</strong></p>
+                <ul>
+                    <li><strong>Delay to March 15</strong> (2 weeks) instead of March 22 (3 weeks)</li>
+                    <li><strong>Remove investment tracking feature</strong> (least critical, can add later)</li>
+                    <li><strong>Keep bill payment and account aggregation</strong> (core value proposition)</li>
+                    <li><strong>Probability of success:</strong> 80% (nearly as good as full delay)</li>
+                </ul>
+                
+                <p><strong>Why This Works Better:</strong></p>
+                <ol>
+                    <li><strong>Minimizes Revenue Impact:</strong> 2-week delay = $200K vs $300K (Option 1)</li>
+                    <li><strong>Maintains Core Value:</strong> Unlike Option 2, delivers 90% of planned features</li>
+                    <li><strong>Lower Risk Than Option 3:</strong> No budget overrun, no contractor integration challenges</li>
+                    <li><strong>Marketing Adjustment Easier:</strong> 2-week push vs complete campaign overhaul</li>
+                </ol>
+            </div>
+            
+            <p><strong>Hidden Costs Analysis:</strong></p>
+            
+            <div class="two-column-grid">
+                <div class="warning-box">
+                    <h4>❌ Option 1 Hidden Costs:</h4>
+                    <ul>
+                        <li>Marketing campaign costs (~$30K waste)</li>
+                        <li>Customer communication damage</li>
+                        <li>Team morale impact (feels like failure)</li>
+                        <li>Competitor gains 3-week head start</li>
+                    </ul>
+                    <p><strong>True Cost:</strong> $300K revenue + $50K other = $350K</p>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>❌ Option 2 Hidden Costs:</h4>
+                    <ul>
+                        <li>Customer disappointment (missing features)</li>
+                        <li>Lower adoption rates</li>
+                        <li>App store rating damage (3.5★ vs 4.5★ expected)</li>
+                        <li>Rework costs to add features later ($80K)</li>
+                    </ul>
+                    <p><strong>True Cost:</strong> Lost market positioning + $80K rework</p>
+                </div>
+            </div>
+            
+            <div class="info-box" style="margin-top: 2rem;">
+                <h4>🤝 Questions to Ask Stakeholders:</h4>
+                <ol>
+                    <li><strong>To CEO/CFO:</strong> "Would you prefer 2-week delay with 90% features, or on-time launch with 60% features?"</li>
+                    <li><strong>To Marketing:</strong> "Can we adjust campaign by 2 weeks for $15K instead of full rescheduling at $30K?"</li>
+                    <li><strong>To Product:</strong> "Can we deprioritize investment tracking feature and add it in v1.1 (April release)?"</li>
+                    <li><strong>To Sales:</strong> "Will customers accept 2-week delay if we communicate proactively?"</li>
+                </ol>
+            </div>
+            
+            <div class="success-box" style="margin-top: 2rem;">
+                <h4>✅ Final Recommendation: Hybrid Approach</h4>
+                <p><strong>Decision:</strong> Delay to March 15 (2 weeks) + Cut investment tracking feature</p>
+                <p><strong>Communication Strategy:</strong></p>
+                <ul>
+                    <li><strong>Internal:</strong> "We're taking an extra 2 weeks to ensure quality. This is strategic, not reactive."</li>
+                    <li><strong>External:</strong> "We've added enhancements based on beta feedback. New launch date: March 15."</li>
+                    <li><strong>Customers:</strong> "Extra time means better experience for you—worth the short wait!"</li>
+                </ul>
+                <p><strong>Success Probability:</strong> 80% | <strong>Financial Impact:</strong> $200K delay (vs $300K Option 1)</p>
+            </div>
+        </div>
+
+        <!-- Practice Exercise -->
+        <div class="practice-exercise">
+            <h3>🎯 Practice Exercise: Risk Management for Product Launch</h3>
+            
+            <p><strong>Scenario:</strong></p>
+            <p>
+                You're managing the launch of an enterprise SaaS platform. Go-live date is 8 weeks away. Budget: $750K. 
+                Team: 20 people. You need to present a risk management plan to the executive team tomorrow.
+            </p>
+            
+            <p><strong>Your Task:</strong></p>
+            <ol>
+                <li><strong>Identify 20+ potential risks</strong> across all categories (Technical, Resource, Schedule, Budget, Stakeholder)</li>
+                <li><strong>Create a risk matrix</strong> showing High/Medium/Low probability and impact</li>
+                <li><strong>Develop mitigation strategies</strong> for the top 5 highest-priority risks</li>
+                <li><strong>Build a monitoring plan</strong> - how will you track risks weekly?</li>
+            </ol>
+
+            <p><strong>Project Details:</strong></p>
+            <ul>
+                <li>Platform: Cloud-based customer success software</li>
+                <li>Features: Dashboard, reporting, email automation, Slack integration, API</li>
+                <li>Dependencies: AWS infrastructure, Slack API, SendGrid email service</li>
+                <li>Compliance: SOC 2, GDPR</li>
+                <li>Users: 5 enterprise pilot customers ready to onboard on day 1</li>
+            </ul>
+
+            <div class="info-box" style="margin-top: 1.5rem;">
+                <h4>💡 Suggested Prompt:</h4>
+                <pre style="background: white; padding: 1rem; border-radius: 0.5rem;"><code class="language-plaintext">Create a comprehensive risk management plan for an enterprise SaaS launch:
+
+Project: Customer Success Platform
+Timeline: 8 weeks to launch
+Budget: $750K
+Team: 20 people (10 dev, 3 design, 4 QA, 2 PM, 1 DevOps)
+
+Scope:
+- Cloud-based dashboard with real-time analytics
+- Email automation via SendGrid
+- Slack integration for alerts
+- Public API for enterprise customers
+- SOC 2 and GDPR compliant
+
+Dependencies:
+- AWS infrastructure
+- Slack API
+- SendGrid API
+- SOC 2 audit completion
+- 5 pilot customers onboarding day 1
+
+Deliverables:
+1. Risk Register: 25+ risks across all categories
+2. Risk Matrix: Categorize by probability/impact
+3. Top 5 Mitigation Plans: Detailed strategies with timelines
+4. Weekly Monitoring Plan: How to track and update risks
+
+Format for executive presentation (clear, scannable, data-driven)</code></pre>
+            </div>
+
+            <details style="margin-top: 1.5rem;">
+                <summary style="cursor: pointer; font-weight: 600; color: #92400e; font-size: 1.1rem;">
+                    View Sample Solution ↓
+                </summary>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h4>Sample AI-Generated Risk Management Plan</h4>
+                    
+                    <p><strong>TOP 5 CRITICAL RISKS:</strong></p>
+                    
+                    <div class="risk-matrix">
+                        <table>
+                            <tr>
+                                <th>Risk</th>
+                                <th>Probability</th>
+                                <th>Impact</th>
+                                <th>Priority</th>
+                                <th>Mitigation Strategy</th>
+                            </tr>
+                            <tr>
+                                <td>SOC 2 audit delays launch approval</td>
+                                <td>High</td>
+                                <td>High</td>
+                                <td class="risk-high">CRITICAL</td>
+                                <td>Schedule audit Week 1; 3-week buffer built in</td>
+                            </tr>
+                            <tr>
+                                <td>AWS infrastructure costs exceed budget by 30%</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td class="risk-high">HIGH</td>
+                                <td>Set up cost alerts; negotiate reserved instance pricing</td>
+                            </tr>
+                            <tr>
+                                <td>Slack API rate limits impact enterprise customers</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td class="risk-high">HIGH</td>
+                                <td>Build queueing system; upgrade to Slack Enterprise API</td>
+                            </tr>
+                            <tr>
+                                <td>Pilot customer has custom requirements not in scope</td>
+                                <td>High</td>
+                                <td>Medium</td>
+                                <td class="risk-high">HIGH</td>
+                                <td>Lock scope with signed SOW; offer v2 roadmap for extras</td>
+                            </tr>
+                            <tr>
+                                <td>QA uncovers critical bugs in Week 7 (1 week before launch)</td>
+                                <td>Medium</td>
+                                <td>High</td>
+                                <td class="risk-high">HIGH</td>
+                                <td>Start QA Week 4 (not Week 6); daily bug triage meetings</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <p style="margin-top: 2rem;"><strong>WEEKLY MONITORING PLAN:</strong></p>
+                    <ul>
+                        <li><strong>Monday 9 AM:</strong> 15-min risk review with PM team</li>
+                        <li><strong>Monday 2 PM:</strong> Update risk register in Jira/Asana</li>
+                        <li><strong>Friday 4 PM:</strong> Send risk dashboard to executives (RED/YELLOW/GREEN status)</li>
+                        <li><strong>Trigger Alerts:</strong> Any risk moves to HIGH priority → immediate Slack notification</li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="key-takeaways">
+            <h3>🎓 Key Takeaways</h3>
+            <ul>
+                <li><strong>Proactive Beats Reactive:</strong> 30 minutes of AI-powered risk planning saves 20+ hours of crisis firefighting</li>
+                <li><strong>Think Comprehensively:</strong> Most PMs identify 5-10 risks; AI helps you find 50+ across all categories</li>
+                <li><strong>Mitigation Must Be Specific:</strong> "Monitor closely" isn't a strategy—AI generates actionable, concrete plans</li>
+                <li><strong>Monitor Weekly:</strong> Risks evolve; dedicate 15 minutes every week to update your register</li>
+                <li><strong>Use Data for Decisions:</strong> When facing tough choices, AI scenario analysis provides clarity</li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <h4>🚀 What You've Mastered</h4>
+            <p>
+                You can now generate comprehensive risk registers with 50+ identified risks, create detailed mitigation 
+                strategies for each high-priority threat, and make data-driven decisions when risks materialize. AI transforms 
+                risk management from a checkbox exercise into a strategic advantage.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>Next up:</strong> Module 7 will teach you how to handle difficult conversations, provide constructive 
+                feedback, and develop team leadership skills with AI coaching.
+            </p>
+        </div>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of AI for risk management!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="C">
+                    <h4>1. How can AI help with project risk management?</h4>
+                    <div class="quiz-option" data-value="A">A) By eliminating all risks</div>
+                    <div class="quiz-option" data-value="B">B) AI cannot help with risks</div>
+                    <div class="quiz-option" data-value="C">C) By identifying potential risks and suggesting mitigation strategies</div>
+                    <div class="quiz-option" data-value="D">D) By making projects risk-free</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>2. What role should AI play in risk assessment?</h4>
+                    <div class="quiz-option" data-value="A">A) Make all final risk decisions</div>
+                    <div class="quiz-option" data-value="B">B) Support PMs in identifying and analyzing risks</div>
+                    <div class="quiz-option" data-value="C">C) Replace risk management processes</div>
+                    <div class="quiz-option" data-value="D">D) Ignore expert judgment</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How can AI improve risk monitoring?</h4>
+                    <div class="quiz-option" data-value="A">A) Analyzing patterns and early warning signs</div>
+                    <div class="quiz-option" data-value="B">B) Ignoring risk indicators</div>
+                    <div class="quiz-option" data-value="C">C) Monitoring is unnecessary</div>
+                    <div class="quiz-option" data-value="D">D) AI cannot monitor risks</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What should PMs remember about AI risk analysis?</h4>
+                    <div class="quiz-option" data-value="A">A) AI predictions are always 100% accurate</div>
+                    <div class="quiz-option" data-value="B">B) No human validation needed</div>
+                    <div class="quiz-option" data-value="C">C) AI knows all project-specific context</div>
+                    <div class="quiz-option" data-value="D">D) AI suggestions should be validated with project knowledge</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. How can AI assist with risk response planning?</h4>
+                    <div class="quiz-option" data-value="A">A) By implementing responses automatically</div>
+                    <div class="quiz-option" data-value="B">B) By generating mitigation strategies and contingency plans</div>
+                    <div class="quiz-option" data-value="C">C) Response planning doesn't need AI</div>
+                    <div class="quiz-option" data-value="D">D) By avoiding all risks</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="tutorial-nav">
+            <a href="email-professional-writing.html" class="prev">← Tutorial 5: Email & Professional Writing</a>
+            <a href="team-leadership-coaching.html" class="next">Module 7: Team Leadership & Coaching →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

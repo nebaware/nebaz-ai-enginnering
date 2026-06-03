@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore the three types of AI: Narrow AI, General AI, and Superintelligence. Learn where we are today and what the future holds.">
+    <title>Tutorial 3: Types of AI (From Narrow to General) - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .ai-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .ai-type-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+            transition: transform 0.3s;
+        }
+        
+        .ai-type-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .ai-type-card.narrow {
+            border-color: #078930;
+        }
+        
+        .ai-type-card.general {
+            border-color: #0d9488;
+        }
+        
+        .ai-type-card.super {
+            border-color: #8b5cf6;
+        }
+        
+        .ai-type-card h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .ai-type-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .examples-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .examples-list h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .music-analogy {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .musician-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .musician-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 3</span>
+            </div>
+            <h1>Tutorial 3: Types of AI (From Narrow to General)</h1>
+            <p class="tutorial-intro">Understand the spectrum of AI intelligence — from task specialists to hypothetical general minds</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>Your phone's virtual assistant can tell jokes, set reminders, and even control your smart home — but it doesn't actually <em>understand</em> humor, time, or what a "home" means. Your calculator can solve complex equations in microseconds, but it has no concept of what "numbers" represent.</p>
+                
+                <p>Both are examples of <strong>Narrow AI</strong> — intelligent systems designed for specific tasks. They're remarkably good at what they do, but completely helpless at everything else.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 Key Question:</strong> If AI can beat world champions at chess and translate 100 languages, why can't it tie its own shoelaces or understand a simple joke? The answer lies in understanding the different <em>types</em> of AI.</p>
+                </div>
+            </section>
+
+            <!-- The Three Categories -->
+            <section class="content-section">
+                <h2>🎯 The Three Types of AI</h2>
+                
+                <p>AI systems can be categorized into three broad levels based on their capabilities:</p>
+                
+                <div class="ai-types-grid">
+                    <div class="ai-type-card narrow">
+                        <div class="ai-type-icon">🎯</div>
+                        <h3>Narrow AI (ANI)</h3>
+                        <p><strong>Artificial Narrow Intelligence</strong></p>
+                        <p>Specialized systems designed for specific tasks. Excellent at one thing, useless at everything else.</p>
+                        <p><strong>Status:</strong> ✅ Exists today</p>
+                    </div>
+                    
+                    <div class="ai-type-card general">
+                        <div class="ai-type-icon">🧠</div>
+                        <h3>General AI (AGI)</h3>
+                        <p><strong>Artificial General Intelligence</strong></p>
+                        <p>Systems that can learn, reason, and apply knowledge across any domain like humans do.</p>
+                        <p><strong>Status:</strong> 🔬 Research phase</p>
+                    </div>
+                    
+                    <div class="ai-type-card super">
+                        <div class="ai-type-icon">🚀</div>
+                        <h3>Superintelligence (ASI)</h3>
+                        <p><strong>Artificial Superintelligence</strong></p>
+                        <p>Hypothetical AI that surpasses human intelligence in every domain — science, creativity, wisdom.</p>
+                        <p><strong>Status:</strong> 💭 Theoretical</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Narrow AI Deep Dive -->
+            <section class="content-section">
+                <h2>🎯 Narrow AI: The Specialist Era</h2>
+                
+                <p>We live in the <strong>Age of Narrow AI</strong>. Every AI system you interact with today falls into this category:</p>
+                
+                <div class="examples-list">
+                    <h4>Examples of Narrow AI in Your Life:</h4>
+                    <ul>
+                        <li><strong>Siri/Alexa:</strong> Voice command specialists (can't understand context like humans)</li>
+                        <li><strong>Netflix recommendations:</strong> Pattern matching experts (don't "watch" shows)</li>
+                        <li><strong>Spam filters:</strong> Email classification masters (don't read content)</li>
+                        <li><strong>Face ID:</strong> Facial recognition pros (can't recognize faces in paintings)</li>
+                        <li><strong>Chess engines:</strong> Game strategy geniuses (can't play checkers without retraining)</li>
+                        <li><strong>Autonomous cars:</strong> Driving specialists (can't fix themselves)</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>🔍 Key Limitation:</strong> Narrow AI can't transfer knowledge. A chess-playing AI can't suddenly play poker — even though both are strategy games. It would need complete retraining from scratch.</p>
+                </div>
+                
+                <p><strong>Why it matters:</strong> Narrow AI is incredibly powerful for specific applications, but it's fundamentally different from human intelligence. We can learn chess, then apply strategic thinking to business, relationships, or cooking. AI can't — yet.</p>
+            </section>
+
+            <!-- The Music Analogy -->
+            <section class="content-section">
+                <h2>🎵 The Musician Analogy</h2>
+                
+                <p>Think of the three types of AI as three different musicians:</p>
+                
+                <div class="music-analogy">
+                    <div class="musician-card">
+                        <div class="musician-icon">🎸</div>
+                        <h3>Narrow AI</h3>
+                        <p><strong>One-Song Specialist</strong></p>
+                        <p>Plays "Stairway to Heaven" flawlessly — but only that song. Ask for anything else, and they're helpless.</p>
+                    </div>
+                    
+                    <div class="musician-card">
+                        <div class="musician-icon">🎼</div>
+                        <h3>General AI</h3>
+                        <p><strong>Multi-Genre Composer</strong></p>
+                        <p>Can create jazz, rock, classical, or hip-hop. Learns new styles quickly and improvises naturally.</p>
+                    </div>
+                    
+                    <div class="musician-card">
+                        <div class="musician-icon">🎭</div>
+                        <h3>Superintelligence</h3>
+                        <p><strong>Digital Mozart</strong></p>
+                        <p>Invents entirely new music forms humans never imagined. Composes symphonies that make Beethoven seem simple.</p>
+                    </div>
+                </div>
+                
+                <p>Right now, all our "AI musicians" can only play one song each — but they play it incredibly well. The dream of General AI is a musician who truly understands music and can create in any style.</p>
+            </section>
+
+            <!-- General AI -->
+            <section class="content-section">
+                <h2>🧠 General AI: The Holy Grail</h2>
+                
+                <p><strong>Artificial General Intelligence (AGI)</strong> is AI that can:</p>
+                
+                <ul>
+                    <li>Learn any task a human can learn</li>
+                    <li>Transfer knowledge between domains</li>
+                    <li>Reason about problems it's never seen</li>
+                    <li>Understand context and nuance</li>
+                    <li>Improve itself across multiple areas</li>
+                </ul>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Key Difference:</strong> A Narrow AI learns to translate French. A General AI learns to learn languages — then applies that meta-skill to Japanese, programming, or music theory.</p>
+                </div>
+                
+                <h3>Are We Close to AGI?</h3>
+                
+                <p><strong>Short answer:</strong> Not yet, but progress is accelerating.</p>
+                
+                <div class="examples-list">
+                    <h4>Signs of Progress:</h4>
+                    <ul>
+                        <li><strong>ChatGPT/GPT-4:</strong> Shows multi-domain capabilities (writing, coding, reasoning)</li>
+                        <li><strong>DeepMind's AlphaZero:</strong> Mastered chess, shogi, and Go with one algorithm</li>
+                        <li><strong>Large Language Models:</strong> Demonstrate emergent abilities not explicitly trained</li>
+                    </ul>
+                </div>
+                
+                <p>These systems show <em>glimpses</em> of general intelligence — they can handle varied tasks and reason across domains. But they still lack:</p>
+                
+                <ul>
+                    <li>True understanding (they pattern-match, not comprehend)</li>
+                    <li>Common sense reasoning about physical reality</li>
+                    <li>Consistent logical reasoning</li>
+                    <li>Self-awareness and consciousness (if that's even possible)</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Expert Consensus:</strong> Most AI researchers estimate AGI is 10-50 years away. Some think never. Nobody knows for certain.</p>
+                </div>
+            </section>
+
+            <!-- Superintelligence -->
+            <section class="content-section">
+                <h2>🚀 Superintelligence: Science Fiction or Inevitable?</h2>
+                
+                <p><strong>Artificial Superintelligence (ASI)</strong> is a hypothetical AI that:</p>
+                
+                <ul>
+                    <li>Surpasses human intelligence in every domain</li>
+                    <li>Thinks millions of times faster than humans</li>
+                    <li>Solves problems we can't even conceptualize</li>
+                    <li>Improves itself recursively (gets smarter at getting smarter)</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Thought Experiment:</strong> Imagine explaining the internet to someone from the 1800s. That's roughly how hard it would be for a superintelligent AI to explain its thoughts to us.</p>
+                </div>
+                
+                <h3>Should We Build It?</h3>
+                
+                <p>This is where AI becomes philosophical:</p>
+                
+                <ul>
+                    <li><strong>Optimists:</strong> ASI could solve climate change, disease, poverty</li>
+                    <li><strong>Pessimists:</strong> Uncontrollable ASI could be humanity's last invention</li>
+                    <li><strong>Pragmatists:</strong> We're nowhere close, so let's focus on AGI ethics first</li>
+                </ul>
+                
+                <p><strong>Current reality:</strong> ASI is purely theoretical. We haven't even achieved AGI yet. It's like debating spaceship designs when we've only just invented the wheel.</p>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: AI Classification Exercise</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Goal: Identify AI Types in Your Digital Life</h3>
+                    
+                    <p>Create a three-column table:</p>
+                    
+                    <table style="width: 100%; margin: 1rem 0; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8fafc;">
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">App/Tool Name</th>
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Task It Performs</th>
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">AI Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Example: Spotify</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Music recommendations</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Narrow AI</td>
+                            </tr>
+                            <tr style="background: #f8fafc;">
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Your apps here...</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">...</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p><strong>Instructions:</strong></p>
+                    <ol>
+                        <li>List 10 AI-powered tools you use regularly</li>
+                        <li>Describe what each one does</li>
+                        <li>Classify as Narrow AI or "Aspiring General" (like ChatGPT)</li>
+                        <li>Reflect: How many are truly narrow vs. multi-domain?</li>
+                    </ol>
+                </div>
+                
+                <p><strong>What you'll discover:</strong> Almost everything is Narrow AI — even tools that feel "smart" are specialists. ChatGPT might feel general, but it can't drive cars or play physical sports.</p>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: The AI Spectrum</h2>
+                
+                <ul>
+                    <li>✅ <strong>Narrow AI (today):</strong> Task specialists, incredible at one thing</li>
+                    <li>✅ <strong>General AI (future):</strong> Multi-domain learners, human-like flexibility</li>
+                    <li>✅ <strong>Superintelligence (unknown):</strong> Hypothetical, beyond human comprehension</li>
+                    <li>✅ <strong>Current reality:</strong> We live in the Narrow AI era</li>
+                    <li>✅ <strong>Key limitation:</strong> Narrow AI can't transfer knowledge between domains</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> Today's AI is like a toolbox of specialists — each tool is brilliant at its job, but none can do another's work. True general intelligence remains a research dream, not a product feature.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 1: What defines Narrow AI?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Specialized for specific tasks, can't transfer knowledge</div>
+                            <div class="quiz-option" data-value="b">Can learn any task humans can learn</div>
+                            <div class="quiz-option" data-value="c">Surpasses human intelligence in all areas</div>
+                            <div class="quiz-option" data-value="d">Has consciousness and self-awareness</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: Which AI type exists in the real world today?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Artificial General Intelligence</div>
+                            <div class="quiz-option" data-value="b">Superintelligence</div>
+                            <div class="quiz-option" data-value="c">Narrow AI</div>
+                            <div class="quiz-option" data-value="d">All of the above</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 3: In the musician analogy, what does General AI represent?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A musician who plays one song perfectly</div>
+                            <div class="quiz-option" data-value="b">A composer who can create in any music genre</div>
+                            <div class="quiz-option" data-value="c">A digital Mozart who invents new music forms</div>
+                            <div class="quiz-option" data-value="d">A musician who only reads sheet music</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: Why can't a chess AI suddenly play poker?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It's not smart enough</div>
+                            <div class="quiz-option" data-value="b">Narrow AI can't transfer knowledge between tasks</div>
+                            <div class="quiz-option" data-value="c">Poker is too complex for AI</div>
+                            <div class="quiz-option" data-value="d">It needs better hardware</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the current consensus on AGI timeline?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It already exists</div>
+                            <div class="quiz-option" data-value="b">It's impossible to achieve</div>
+                            <div class="quiz-option" data-value="c">10-50 years away (uncertain)</div>
+                            <div class="quiz-option" data-value="d">Next year with certainty</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: AI in Daily Life</h2>
+                
+                <p>Now that you understand the different types of AI, let's discover how Narrow AI has already infiltrated every aspect of your daily routine — often invisibly.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Week 2:</strong> We'll explore the dozens of AI systems you interact with before breakfast, and how they're quietly shaping your decisions.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="how-does-ai-work.html" class="prev">← Module 2: How Does AI Work?</a>
+                    <a href="ai-in-daily-life.html" class="next">Module 4: AI in Daily Life →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

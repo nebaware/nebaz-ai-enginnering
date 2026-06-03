@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Python operators: arithmetic, comparison, and logical operators with practical examples and hands-on exercises">
+    <title>Python Operators - Complete Guide - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Python Operators</h1>
+            <p class="page-subtitle">Master arithmetic, comparison, logical, and assignment operators</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Imagine you're building a shopping app. A customer adds items to their cart, and you need to calculate the total price, check if they qualify for a discount, and verify their payment is sufficient. Every single one of these actions requires <strong>operators</strong>. You'll compare values, perform math, and combine conditions constantly in your Python journey—and this tutorial will show you exactly how.</p>
+        
+        <h2>What Are Python Operators?</h2>
+        
+        <p><strong>Operators</strong> are special symbols in Python that perform operations on values and variables. Think of them as the verbs of your code—they're the action words that make things happen. Just like in English where verbs connect subjects and objects ("The cat <em>chases</em> the mouse"), operators connect your data and make it do something useful.</p>
+        
+        <h3>What Is an Operator?</h3>
+        
+        <p>An operator is a symbol that tells Python to perform a specific operation. For example, the <code>+</code> symbol tells Python to add two numbers together. The <code>></code> symbol tells Python to check if one value is greater than another. Every operator has a specific job, and combining them is how you build logic into your programs.</p>
+        
+        <h3>The Three Main Types of Operators</h3>
+        
+        <p>Python operators fall into three major categories:</p>
+        
+        <ul>
+            <li><strong>Arithmetic Operators</strong> - Do math (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>, <code>**</code>)</li>
+            <li><strong>Comparison Operators</strong> - Compare values (<code>==</code>, <code>!=</code>, <code>></code>, <code><</code>, <code>>=</code>, <code><=</code>)</li>
+            <li><strong>Logical Operators</strong> - Combine conditions (<code>and</code>, <code>or</code>, <code>not</code>)</li>
+        </ul>
+        
+        <p>There's also a fourth category—<strong>assignment operators</strong> (<code>=</code>, <code>+=</code>, <code>-=</code>)—which help you store and update values efficiently.</p>
+        
+        <h3>How Do Operators Work?</h3>
+        
+        <p>Operators work by taking one or more values (called <strong>operands</strong>) and producing a result. For example, in the expression <code>5 + 3</code>, the <code>+</code> is the operator, and <code>5</code> and <code>3</code> are the operands. Python evaluates this and gives you <code>8</code>.</p>
+        
+        <p>Unlike a simple calculator that just adds or subtracts, Python operators can work with different data types and combine multiple operations in a single line. This flexibility is what makes operators so powerful.</p>
+        
+        <h2>The Perfect Analogy: Operators Are Like Verbs</h2>
+        
+        <p>Think of operators as the verbs in a sentence. Your variables are nouns (the "things"), and operators are the actions performed on those things. Just like in English where you might say "The price <strong>exceeds</strong> the budget," in Python you'd write <code>price > budget</code>. The <code>></code> operator is the verb that connects your two nouns and expresses a relationship between them.</p>
+        
+        <p>Here's another way to think about it: If variables are ingredients in a recipe, operators are the cooking instructions—"mix," "heat," "compare." Without operators, your ingredients just sit there. With operators, they transform into something useful!</p>
+        
+        <h2>Visual Mental Model</h2>
+        
+        <div class="visual-diagram">
+            <strong>How Operators Work in Your Code:</strong><br><br>
+            Value 1  →  OPERATOR  →  Value 2  →  Result<br><br>
+            
+            5  →  +  →  3  →  8<br>
+            score  →  >=  →  60  →  True<br>
+            age  →  >  →  18  <strong>and</strong>  age  →  <  →  65  →  True/False<br><br>
+            
+            <strong>Decision Flow:</strong><br>
+            Compare → Decide → Act
+        </div>
+        
+        <p>This diagram shows the fundamental pattern: operators take values, perform an action, and produce a result. This result can be a number, a boolean (True/False), or another value you can use in your program.</p>
+        
+        <h2>Arithmetic Operators: Doing the Math</h2>
+        
+        <p>Let's start with the most intuitive operators—the ones that do math. You've been using these since elementary school, but Python adds a few special ones that are incredibly useful.</p>
+        
+        <h3>Example 1: Basic Arithmetic</h3>
+        
+        <pre><code class="language-python"># Let's work with two numbers
+a = 10
+b = 3
+
+# Addition - combine two numbers
+print(a + b)  # Output: 13
+
+# Subtraction - find the difference
+print(a - b)  # Output: 7
+
+# Multiplication - repeat addition
+print(a * b)  # Output: 30
+
+# Division - split into equal parts (always returns a float)
+print(a / b)  # Output: 3.3333333333333335</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Tip:</strong> Notice that regular division (<code>/</code>) always returns a decimal number (float), even if you divide evenly. <code>10 / 2</code> gives you <code>5.0</code>, not <code>5</code>.</p>
+        </div>
+        
+        <h3>Example 2: Special Division and Exponents</h3>
+        
+        <pre><code class="language-python">a = 10
+b = 3
+
+# Floor division - divide and round DOWN to nearest whole number
+print(a // b)  # Output: 3 (not 3.33...)
+
+# Modulo - get the REMAINDER after division
+print(a % b)   # Output: 1 (because 10 ÷ 3 = 3 remainder 1)
+
+# Exponentiation - raise to a power
+print(a ** b)  # Output: 1000 (10 × 10 × 10)</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Real-world use case:</strong> The modulo operator (<code>%</code>) is perfect for checking if a number is even or odd. If <code>number % 2 == 0</code>, it's even. If <code>number % 2 == 1</code>, it's odd!</p>
+        </div>
+        
+        <h3>Example 3: All Arithmetic Operators Together</h3>
+        
+        <pre><code class="language-python">a, b = 7, 3  # Assign multiple variables in one line
+
+# Perform all operations and print results
+print(a + b)   # Addition: 10
+print(a - b)   # Subtraction: 4
+print(a * b)   # Multiplication: 21
+print(a / b)   # Division: 2.3333333333333335
+print(a // b)  # Floor division: 2
+print(a % b)   # Modulo: 1
+print(a ** b)  # Exponentiation: 343 (7³)</code></pre>
+        
+        <h2>Comparison Operators: Making Decisions</h2>
+        
+        <p>Comparison operators let you ask questions about your data. Is this value bigger? Are these two things equal? These operators always return a boolean: <code>True</code> or <code>False</code>.</p>
+        
+        <h3>Example 4: Comparing Numbers</h3>
+        
+        <pre><code class="language-python">score = 85
+passing_grade = 60
+perfect_score = 100
+
+# Equal to - checks if values are EXACTLY the same
+print(score == passing_grade)  # False (85 is not equal to 60)
+
+# Not equal to - checks if values are DIFFERENT
+print(score != passing_grade)  # True (85 is different from 60)
+
+# Greater than
+print(score > passing_grade)   # True (85 is greater than 60)
+
+# Less than
+print(score < perfect_score)   # True (85 is less than 100)
+
+# Greater than or equal to
+print(score >= 85)             # True (85 equals 85)
+
+# Less than or equal to
+print(score <= 90)             # True (85 is less than 90)</code></pre>
+        
+        <div class="warning-box">
+            <p>⚠️ <strong>Critical Mistake Alert:</strong> The most common beginner error is using <code>=</code> when you mean <code>==</code>. Remember: <code>=</code> assigns a value, <code>==</code> checks if values are equal!</p>
+        </div>
+        
+        <h3>Example 5: Practical Comparison</h3>
+        
+        <pre><code class="language-python">a = 7
+b = 3
+
+# Compare and print results
+print(a > b)         # True - 7 is greater than 3
+print(a == b)        # False - 7 does not equal 3
+print(not (a < b))   # True - it's NOT true that 7 < 3</code></pre>
+        
+        <h2>Logical Operators: Combining Conditions</h2>
+        
+        <p>Logical operators let you combine multiple comparisons. This is essential for making complex decisions in your code.</p>
+        
+        <h3>Example 6: Using AND, OR, NOT</h3>
+        
+        <pre><code class="language-python">age = 25
+has_license = True
+has_insurance = True
+
+# AND - both conditions must be True
+can_drive = age >= 18 and has_license
+print(can_drive)  # True (both conditions are met)
+
+# OR - at least one condition must be True
+needs_documents = not has_license or not has_insurance
+print(needs_documents)  # False (has both documents)
+
+# NOT - reverses the boolean value
+is_minor = not (age >= 18)
+print(is_minor)  # False (25 is not a minor)
+
+# Complex combination
+can_rent_car = age >= 21 and has_license and has_insurance
+print(can_rent_car)  # True (all conditions met)</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Remember:</strong> <code>and</code> is strict (both must be True), <code>or</code> is flexible (at least one must be True), and <code>not</code> flips the value.</p>
+        </div>
+        
+        <h2>Assignment Operators: Shortcuts for Updating</h2>
+        
+        <pre><code class="language-python"># Regular assignment
+score = 100
+
+# Add and assign (same as: score = score + 10)
+score += 10
+print(score)  # 110
+
+# Subtract and assign
+score -= 5
+print(score)  # 105
+
+# Multiply and assign
+score *= 2
+print(score)  # 210
+
+# Divide and assign
+score /= 3
+print(score)  # 70.0</code></pre>
+        
+        <h2>Hands-On Exercise: Grade Checker</h2>
+        
+        <p>Let's put everything together with a practical exercise. You'll check if a student's score qualifies as passing and if it's in the honor range.</p>
+        
+        <h3>Step 1: Set Up Your Variables</h3>
+        
+        <p>Create a new Python file called <code>grade_checker.py</code> and start with this:</p>
+        
+        <pre><code class="language-python"># Student's test score
+score = 87
+
+# Define grade boundaries
+passing_grade = 60
+honor_grade = 85</code></pre>
+        
+        <h3>Step 2: Check Passing Status</h3>
+        
+        <pre><code class="language-python"># Check if score is passing (>= 60)
+is_passing = score >= passing_grade
+print("Is passing:", is_passing)</code></pre>
+        
+        <h3>Step 3: Check Honor Status</h3>
+        
+        <pre><code class="language-python"># Check if score is in honor range (>= 85)
+is_honor = score >= honor_grade
+print("Is honor grade:", is_honor)</code></pre>
+        
+        <h3>Step 4: Combine Both Checks</h3>
+        
+        <pre><code class="language-python"># Check both conditions together
+qualifies_for_honor = is_passing and is_honor
+print("Qualifies for honor roll:", qualifies_for_honor)</code></pre>
+        
+        <h3>Step 5: Run and Verify</h3>
+        
+        <p>Run your script with: <code>python grade_checker.py</code></p>
+        
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>Is passing: True
+Is honor grade: True
+Qualifies for honor roll: True</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Try This:</strong> Change the score to different values (like 55, 70, or 92) and see how the results change. This helps you understand how the operators work in different scenarios.</p>
+        </div>
+        
+        <h2>Common Mistakes to Avoid</h2>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 1: Using = Instead of ==</h4>
+            <p><strong>Problem:</strong> You try to compare values but accidentally assign instead.</p>
+            <p><strong>Why it happens:</strong> In math class, we use = for "equals," but in Python, = assigns values.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌
+if score = 100:  # This tries to assign, not compare!
+
+# CORRECT ✅
+if score == 100:  # This compares the values</code></pre>
+            <p><strong>Prevention:</strong> Read = as "gets the value" and == as "is equal to."</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 2: Confusing / and //</h4>
+            <p><strong>Problem:</strong> You get unexpected decimal results or whole numbers when you want the opposite.</p>
+            <p><strong>Why it happens:</strong> Not understanding the difference between float and floor division.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># / always returns a float (decimal)
+print(10 / 3)   # 3.3333333333333335
+
+# // returns an integer (rounds down)
+print(10 // 3)  # 3</code></pre>
+            <p><strong>Prevention:</strong> Use / for accurate division, // when you want whole numbers only.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 3: Forgetting Operator Precedence</h4>
+            <p><strong>Problem:</strong> Your calculation produces unexpected results because operators are evaluated in the wrong order.</p>
+            <p><strong>Why it happens:</strong> Python follows mathematical order of operations (PEMDAS).</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG - without parentheses
+result = 10 + 5 * 2  # Result: 20 (multiplication happens first!)
+
+# CORRECT - with parentheses for clarity
+result = (10 + 5) * 2  # Result: 30</code></pre>
+            <p><strong>Prevention:</strong> When in doubt, use parentheses to make your intention clear.</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 4: Misusing Logical Operators</h4>
+            <p><strong>Problem:</strong> Your condition logic doesn't work as expected.</p>
+            <p><strong>Why it happens:</strong> Confusion about how and/or work together.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG - this is always False if age is a single value
+if age > 18 and age < 18:  # Can't be both!
+
+# CORRECT - check a range
+if age >= 18 and age <= 65:  # Between 18 and 65</code></pre>
+            <p><strong>Prevention:</strong> Think through the logic: "If both of these are true" (and) vs. "If either is true" (or).</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 5: Not Understanding Modulo</h4>
+            <p><strong>Problem:</strong> The % operator returns unexpected values.</p>
+            <p><strong>Why it happens:</strong> Thinking % means "percent" instead of "remainder."</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># % returns the REMAINDER after division
+print(10 % 3)   # 1 (because 10 ÷ 3 = 3 remainder 1)
+print(15 % 4)   # 3 (because 15 ÷ 4 = 3 remainder 3)
+print(8 % 2)    # 0 (evenly divides, no remainder)</code></pre>
+            <p><strong>Prevention:</strong> Remember: modulo = remainder. Perfect for checking even/odd or cycles!</p>
+        </div>
+        
+        <div class="mistake-card">
+            <h4>❌ Mistake 6: Comparing Different Data Types</h4>
+            <p><strong>Problem:</strong> Comparing a string to a number gives unexpected results.</p>
+            <p><strong>Why it happens:</strong> Python can't meaningfully compare different types.</p>
+            <p><strong>Solution:</strong></p>
+            <pre><code class="language-python"># WRONG ❌
+age = "25"
+if age > 18:  # Error! Can't compare string to int
+
+# CORRECT ✅
+age = int("25")  # Convert to integer first
+if age > 18:  # Now it works!</code></pre>
+            <p><strong>Prevention:</strong> Make sure you're comparing values of the same type.</p>
+        </div>
+        
+        <h2>Mini-Project: Smart Tip Calculator</h2>
+        
+        <p><strong>Project Goal:</strong> Build a tip calculator that automatically adjusts the tip percentage based on the bill amount.</p>
+        
+        <h3>Requirements</h3>
+        <ul>
+            <li>Ask the user for the bill amount</li>
+            <li>Calculate 15% tip for bills under $100</li>
+            <li>Calculate 20% tip for bills $100 or more</li>
+            <li>Display the tip amount rounded to 2 decimal places</li>
+            <li>Display the total amount (bill + tip)</li>
+        </ul>
+        
+        <h3>Step-by-Step Implementation</h3>
+        
+        <p><strong>Step 1:</strong> Create a file called <code>tip_calculator.py</code></p>
+        
+        <p><strong>Step 2:</strong> Get the bill amount from the user:</p>
+        
+        <pre><code class="language-python"># Get bill amount from user
+bill = float(input("Enter bill amount: $"))</code></pre>
+        
+        <p><strong>Step 3:</strong> Calculate the tip percentage based on bill amount:</p>
+        
+        <pre><code class="language-python"># Determine tip percentage
+# 15% for bills under $100, 20% for $100 or more
+tip_percentage = 0.15 if bill < 100 else 0.20</code></pre>
+        
+        <p><strong>Step 4:</strong> Calculate the tip amount and total:</p>
+        
+        <pre><code class="language-python"># Calculate tip and total
+tip_amount = bill * tip_percentage
+total = bill + tip_amount</code></pre>
+        
+        <p><strong>Step 5:</strong> Display the results nicely formatted:</p>
+        
+        <pre><code class="language-python"># Display results
+print(f"\nBill Amount: ${bill:.2f}")
+print(f"Tip ({int(tip_percentage * 100)}%): ${tip_amount:.2f}")
+print(f"Total Amount: ${total:.2f}")</code></pre>
+        
+        <h3>Complete Code</h3>
+        
+        <pre><code class="language-python"># Smart Tip Calculator
+print("=== Smart Tip Calculator ===\n")
+
+# Get bill amount from user
+bill = float(input("Enter bill amount: $"))
+
+# Determine tip percentage (15% under $100, 20% for $100+)
+tip_percentage = 0.15 if bill < 100 else 0.20
+
+# Calculate tip and total
+tip_amount = bill * tip_percentage
+total = bill + tip_amount
+
+# Display results
+print(f"\nBill Amount: ${bill:.2f}")
+print(f"Tip ({int(tip_percentage * 100)}%): ${tip_amount:.2f}")
+print(f"Total Amount: ${total:.2f}")</code></pre>
+        
+        <h3>Expected Output</h3>
+        
+        <pre><code>=== Smart Tip Calculator ===
+
+Enter bill amount: $85.50
+
+Bill Amount: $85.50
+Tip (15%): $12.82
+Total Amount: $98.32</code></pre>
+        
+        <h3>Bonus Challenges</h3>
+        
+        <ol>
+            <li><strong>Split the bill:</strong> Ask how many people are splitting and divide the total by that number</li>
+            <li><strong>Exceptional service:</strong> Add a third tier—25% tip for bills over $200</li>
+            <li><strong>Custom tip:</strong> Let the user override the automatic percentage with their own choice</li>
+        </ol>
+        
+        <div class="info-box">
+            <p>💡 <strong>Challenge Hint:</strong> For the bill splitting feature, you'll need another input and one more division operation. Think about where to add it in the code flow!</p>
+        </div>
+        
+        <h2>Summary: Key Takeaways</h2>
+        
+        <p>Congratulations! You've mastered the fundamental building blocks of Python programming. Here's what you now know:</p>
+        
+        <ul>
+            <li>✅ <strong>Arithmetic operators</strong> (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>//</code>, <code>%</code>, <code>**</code>) let you perform mathematical calculations</li>
+            <li>✅ <strong>Comparison operators</strong> (<code>==</code>, <code>!=</code>, <code>></code>, <code><</code>, <code>>=</code>, <code><=</code>) let you compare values and make decisions</li>
+            <li>✅ <strong>Logical operators</strong> (<code>and</code>, <code>or</code>, <code>not</code>) let you combine multiple conditions</li>
+            <li>✅ <strong>Assignment operators</strong> (<code>=</code>, <code>+=</code>, <code>-=</code>) let you store and update values efficiently</li>
+            <li>✅ The difference between <code>=</code> (assignment) and <code>==</code> (comparison) is critical</li>
+        </ul>
+        
+        <h3>What Makes Operators Special</h3>
+        
+        <ul>
+            <li>They're the <strong>verbs of your code</strong>—without them, your data just sits there doing nothing</li>
+            <li>They enable <strong>decision-making</strong>, which is what makes programs intelligent and useful</li>
+            <li>They're <strong>universal</strong>—once you understand operators, you'll recognize them in every programming language</li>
+        </ul>
+        
+        <h3>Your Next Steps</h3>
+        
+        <p>Now that you understand operators, you're ready to make your programs truly intelligent with <strong>conditionals</strong>. Here's your action plan:</p>
+        
+        <ul>
+            <li>✅ Complete the tip calculator mini-project and try all three bonus challenges</li>
+            <li>✅ Experiment with different operator combinations in the Python interactive shell</li>
+            <li>✅ Practice writing comparison expressions for real-world scenarios (age verification, price checks, etc.)</li>
+            <li>✅ Move on to the next tutorial: <strong>Conditionals (if/elif/else)</strong>—where you'll use these operators to make decisions</li>
+        </ul>
+        
+        <div class="info-box">
+            <p>🚀 <strong>You're building momentum!</strong> Operators are fundamental to everything you'll do in Python. With this knowledge, you're now ready to write programs that can think, decide, and respond to different situations. The next step is learning how to use these comparisons to make your code branch in different directions—that's where conditionals come in!</p>
+        </div>
+        
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Python Operators</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What is the result of <code>17 % 5</code>?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">3.4</div>
+                    <div class="quiz-option" data-correct="true">2</div>
+                    <div class="quiz-option" data-correct="false">3</div>
+                    <div class="quiz-option" data-correct="false">85</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Which operator checks if two values are equal?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">=</div>
+                    <div class="quiz-option" data-correct="true">==</div>
+                    <div class="quiz-option" data-correct="false">!=</div>
+                    <div class="quiz-option" data-correct="false">is</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What does <code>10 // 3</code> return?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">3.33</div>
+                    <div class="quiz-option" data-correct="true">3</div>
+                    <div class="quiz-option" data-correct="false">4</div>
+                    <div class="quiz-option" data-correct="false">1</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What will <code>True and False</code> evaluate to?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="true">False</div>
+                    <div class="quiz-option" data-correct="false">True</div>
+                    <div class="quiz-option" data-correct="false">None</div>
+                    <div class="quiz-option" data-correct="false">Error</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">5. What is <code>2 ** 3</code> equal to?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">6</div>
+                    <div class="quiz-option" data-correct="true">8</div>
+                    <div class="quiz-option" data-correct="false">9</div>
+                    <div class="quiz-option" data-correct="false">5</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">6. What does <code>not True</code> evaluate to?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">True</div>
+                    <div class="quiz-option" data-correct="true">False</div>
+                    <div class="quiz-option" data-correct="false">None</div>
+                    <div class="quiz-option" data-correct="false">1</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="data_types.html" class="btn btn-secondary">← Previous: Data Types</a>
+                <a href="conditional-statements-tutorial.html" class="btn btn-primary">Next: Conditional Statements →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

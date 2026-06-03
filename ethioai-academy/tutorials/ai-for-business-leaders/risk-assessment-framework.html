@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Risk Assessment Framework - AI for Business Leaders</title>
+    <meta name="description" content="Implement a comprehensive AI risk assessment framework. Learn risk identification, scoring, mitigation planning, and ongoing governance.">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link rel="stylesheet" href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+</head>
+<body>
+    <div class="tutorial-header">
+        <div class="breadcrumb">
+            <a href="../../courses/ai-for-business-leaders.html">AI for Business Leaders</a> > Module 4 > Lesson 15
+        </div>
+        <h1>AI Risk Assessment Framework</h1>
+        <p class="tutorial-intro">
+            Implement a systematic framework for identifying, scoring, prioritizing, and mitigating AI risks across your organization.
+        </p>
+        <div class="tutorial-meta">
+            <span>🎯 Advanced</span>
+            <span>📋 Framework</span>
+        </div>
+    </div>
+
+    <div class="tutorial-content">
+
+        <h2>From Ad Hoc to Systematic</h2>
+
+        <p>
+            Most companies approach AI risk reactively: Deploy technology → Something breaks → Scramble to fix. This is expensive, stressful, and dangerous.
+        </p>
+
+        <p>
+            <strong>What you need instead:</strong> A systematic framework that identifies risks <em>before</em> deployment, scores them objectively, prioritizes mitigation efforts, and monitors continuously. This lesson provides that framework—used by Fortune 500 companies and adaptable to any organization size.
+        </p>
+
+        <div class="info-box">
+            <strong>💡 Framework Overview: 5 Phases</strong>
+            <ol>
+                <li><strong>Identification:</strong> What could go wrong? (Comprehensive risk catalog)</li>
+                <li><strong>Assessment:</strong> How bad could it be? (Likelihood × Impact scoring)</li>
+                <li><strong>Prioritization:</strong> What do we address first? (Risk matrix)</li>
+                <li><strong>Mitigation:</strong> How do we reduce risk? (Control implementation)</li>
+                <li><strong>Monitoring:</strong> Are we staying safe? (Continuous oversight)</li>
+            </ol>
+        </div>
+
+        <h2>Phase 1: Risk Identification</h2>
+
+        <p>
+            You can't manage risks you haven't identified. This phase requires structured brainstorming across multiple stakeholder groups—not just your tech team.
+        </p>
+
+        <h3>The 6 Risk Categories</h3>
+
+        <p>
+            Use this taxonomy to ensure comprehensive coverage. For each AI system, ask: "What could go wrong in each category?"
+        </p>
+
+        <div class="framework-box">
+            <h4>1. Technical Risks</h4>
+            <ul>
+                <li><strong>Model Performance Degradation:</strong> Accuracy declines over time (concept drift)</li>
+                <li><strong>Data Quality Issues:</strong> Garbage in, garbage out—bad training data corrupts models</li>
+                <li><strong>Adversarial Attacks:</strong> Bad actors deliberately manipulate inputs to cause failures</li>
+                <li><strong>Model Theft:</strong> Competitors or criminals steal your proprietary models</li>
+                <li><strong>Integration Failures:</strong> AI doesn't play nicely with existing systems</li>
+            </ul>
+
+            <h4>2. Ethical & Bias Risks</h4>
+            <ul>
+                <li><strong>Algorithmic Discrimination:</strong> Disparate treatment of protected groups (race, gender, age)</li>
+                <li><strong>Fairness Violations:</strong> Unequal outcomes even without explicit discrimination</li>
+                <li><strong>Transparency Failures:</strong> "Black box" decisions that can't be explained</li>
+                <li><strong>Autonomy Erosion:</strong> Humans become rubber-stamps for AI decisions</li>
+            </ul>
+
+            <h4>3. Legal & Regulatory Risks</h4>
+            <ul>
+                <li><strong>GDPR/CCPA Violations:</strong> Privacy law breaches (fines up to 4% of global revenue)</li>
+                <li><strong>EU AI Act Non-Compliance:</strong> High-risk systems without required safeguards</li>
+                <li><strong>Employment Law Violations:</strong> AI hiring tools that discriminate (EEOC enforcement)</li>
+                <li><strong>Intellectual Property Disputes:</strong> Copyright/patent issues with AI-generated content</li>
+                <li><strong>Product Liability:</strong> Who's liable when AI causes harm?</li>
+            </ul>
+
+            <h4>4. Security & Privacy Risks</h4>
+            <ul>
+                <li><strong>Data Breaches:</strong> Hackers access training data or customer information</li>
+                <li><strong>Model Inversion:</strong> Attackers reconstruct training data from model outputs</li>
+                <li><strong>Privacy Leakage:</strong> AI inadvertently reveals sensitive information</li>
+                <li><strong>Supply Chain Vulnerabilities:</strong> Third-party vendors introduce security gaps</li>
+            </ul>
+
+            <h4>5. Operational Risks</h4>
+            <ul>
+                <li><strong>System Downtime:</strong> AI failures disrupt business operations</li>
+                <li><strong>Cascading Failures:</strong> One AI failure triggers failures in dependent systems</li>
+                <li><strong>Scalability Issues:</strong> System works in pilot but fails at scale</li>
+                <li><strong>Vendor Lock-In:</strong> Over-dependence on single AI provider</li>
+            </ul>
+
+            <h4>6. Strategic & Reputational Risks</h4>
+            <ul>
+                <li><strong>Brand Damage:</strong> Public backlash over AI misuse</li>
+                <li><strong>Customer Trust Erosion:</strong> Loss of confidence in AI-powered services</li>
+                <li><strong>Workforce Resistance:</strong> Employees sabotage or quit due to AI fears</li>
+                <li><strong>Competitive Disadvantage:</strong> Competitors move faster while you're mired in risk management</li>
+                <li><strong>Regulatory Capture:</strong> New regulations make your AI obsolete or illegal</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <strong>⚠️ Don't Identify Risks in Isolation</strong>
+            Form cross-functional risk identification workshops:
+            <ul>
+                <li><strong>Technical team:</strong> Spots model performance and security risks</li>
+                <li><strong>Legal/Compliance:</strong> Identifies regulatory and liability exposures</li>
+                <li><strong>Business stakeholders:</strong> Flags operational and strategic risks</li>
+                <li><strong>HR/DEI teams:</strong> Surfaces bias and fairness concerns</li>
+                <li><strong>External consultants:</strong> Bring fresh perspective and industry benchmarks</li>
+            </ul>
+            <strong>Budget 4-8 hours per major AI system for comprehensive identification.</strong>
+        </div>
+
+        <h2>Phase 2: Risk Assessment (Scoring)</h2>
+
+        <p>
+            Not all risks are equal. Scoring helps you allocate resources rationally. Use a 2-dimensional framework: <strong>Likelihood × Impact = Risk Score</strong>.
+        </p>
+
+        <h3>Likelihood Scoring (1-5 Scale)</h3>
+
+        <table class="scoring-table">
+            <thead>
+                <tr>
+                    <th>Score</th>
+                    <th>Level</th>
+                    <th>Definition</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="score-1">1</td>
+                    <td>Rare</td>
+                    <td>May occur in exceptional circumstances (&lt;5% probability)</td>
+                    <td>AI system causes physical injury to humans</td>
+                </tr>
+                <tr>
+                    <td class="score-2">2</td>
+                    <td>Unlikely</td>
+                    <td>Could occur but not expected (5-25% probability)</td>
+                    <td>Chatbot provides dangerously incorrect medical advice</td>
+                </tr>
+                <tr>
+                    <td class="score-3">3</td>
+                    <td>Possible</td>
+                    <td>Might occur at some point (25-50% probability)</td>
+                    <td>Demand forecasting model experiences concept drift</td>
+                </tr>
+                <tr>
+                    <td class="score-4">4</td>
+                    <td>Likely</td>
+                    <td>Will probably occur in most circumstances (50-75% probability)</td>
+                    <td>Facial recognition shows higher error rates for some demographics</td>
+                </tr>
+                <tr>
+                    <td class="score-5">5</td>
+                    <td>Almost Certain</td>
+                    <td>Expected to occur (>75% probability)</td>
+                    <td>EU AI Act compliance requirements will apply to your business</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Impact Scoring (1-5 Scale)</h3>
+
+        <table class="scoring-table">
+            <thead>
+                <tr>
+                    <th>Score</th>
+                    <th>Level</th>
+                    <th>Financial Impact</th>
+                    <th>Reputational Impact</th>
+                    <th>Operational Impact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="score-1">1</td>
+                    <td>Negligible</td>
+                    <td>&lt;$100K</td>
+                    <td>No media attention, handled internally</td>
+                    <td>No disruption to operations</td>
+                </tr>
+                <tr>
+                    <td class="score-2">2</td>
+                    <td>Minor</td>
+                    <td>$100K-$1M</td>
+                    <td>Local media coverage, customer complaints</td>
+                    <td>Brief service disruption (&lt;4 hours)</td>
+                </tr>
+                <tr>
+                    <td class="score-3">3</td>
+                    <td>Moderate</td>
+                    <td>$1M-$10M</td>
+                    <td>National media coverage, social media backlash</td>
+                    <td>Significant disruption (&lt;24 hours)</td>
+                </tr>
+                <tr>
+                    <td class="score-4">4</td>
+                    <td>Major</td>
+                    <td>$10M-$50M</td>
+                    <td>Sustained national media, brand damage, customer churn</td>
+                    <td>Major disruption (&lt;1 week), key services offline</td>
+                </tr>
+                <tr>
+                    <td class="score-5">5</td>
+                    <td>Catastrophic</td>
+                    <td>>$50M</td>
+                    <td>Congressional hearings, CEO resignation, existential threat</td>
+                    <td>Complete system failure, >1 week recovery</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-box">
+            <strong>💡 Calculating Risk Score</strong>
+            <p><strong>Risk Score = Likelihood × Impact</strong></p>
+            <p>This produces scores from 1 (lowest) to 25 (highest). Interpret as:</p>
+            <ul>
+                <li><strong>1-5 (LOW):</strong> Accept and monitor. No immediate action required.</li>
+                <li><strong>6-12 (MEDIUM):</strong> Mitigate within 6-12 months. Schedule mitigation planning.</li>
+                <li><strong>13-19 (HIGH):</strong> Mitigate within 90 days. Assign dedicated resources.</li>
+                <li><strong>20-25 (CRITICAL):</strong> Mitigate immediately. Escalate to executive leadership. Consider halting deployment until resolved.</li>
+            </ul>
+        </div>
+
+        <h3>Example: Scoring a Hiring Algorithm</h3>
+
+        <div class="framework-box">
+            <p><strong>AI System:</strong> Automated resume screening for technical roles</p>
+
+            <p><strong>Risk:</strong> Gender bias in candidate recommendations</p>
+
+            <p><strong>Likelihood Assessment:</strong></p>
+            <ul>
+                <li>Historical data shows tech resumes are 85% male</li>
+                <li>Industry research shows hiring AI frequently exhibits gender bias</li>
+                <li>No diverse testing has been conducted yet</li>
+                <li><strong>Score: 4 (Likely)</strong> - Will probably occur without intervention</li>
+            </ul>
+
+            <p><strong>Impact Assessment:</strong></p>
+            <ul>
+                <li>Financial: EEOC investigation ($500K legal), settlement ($2-5M), lost talent pipeline ($3M)</li>
+                <li>Reputational: #BoycottCompany campaign, difficulty recruiting diverse talent for years</li>
+                <li>Operational: Must pause hiring, revert to manual screening (6+ month delay)</li>
+                <li><strong>Score: 4 (Major)</strong> - $10M-$50M total impact</li>
+            </ul>
+
+            <p><strong>Risk Score: 4 × 4 = 16 (HIGH)</strong></p>
+
+            <p><strong>Action Required:</strong> Mitigate within 90 days before full deployment. Conduct bias audit, acquire diverse training dataset, implement human review, establish appeal mechanism.</p>
+        </div>
+
+        <h2>Phase 3: Risk Prioritization</h2>
+
+        <p>
+            You've identified 30+ risks across multiple AI systems. You can't address everything simultaneously—you need priorities. Use the Risk Matrix.
+        </p>
+
+        <div class="framework-box">
+            <h4>Risk Prioritization Matrix</h4>
+            <table class="scoring-table">
+                <thead>
+                    <tr>
+                        <th>Risk</th>
+                        <th>System</th>
+                        <th>Likelihood</th>
+                        <th>Impact</th>
+                        <th>Score</th>
+                        <th>Priority</th>
+                        <th>Owner</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #fecaca;">
+                        <td>EU AI Act non-compliance</td>
+                        <td>All high-risk systems</td>
+                        <td>5</td>
+                        <td>4</td>
+                        <td><strong>20</strong></td>
+                        <td>P0 (Critical)</td>
+                        <td>Chief Legal Officer</td>
+                    </tr>
+                    <tr style="background: #fecaca;">
+                        <td>Hiring algorithm bias</td>
+                        <td>Resume screening</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td><strong>16</strong></td>
+                        <td>P1 (High)</td>
+                        <td>Chief HR Officer</td>
+                    </tr>
+                    <tr style="background: #fed7aa;">
+                        <td>Customer data breach</td>
+                        <td>Recommendation engine</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td><strong>12</strong></td>
+                        <td>P1 (High)</td>
+                        <td>CISO</td>
+                    </tr>
+                    <tr style="background: #fef3c7;">
+                        <td>Forecast model drift</td>
+                        <td>Demand planning</td>
+                        <td>4</td>
+                        <td>3</td>
+                        <td><strong>12</strong></td>
+                        <td>P2 (Medium)</td>
+                        <td>VP Operations</td>
+                    </tr>
+                    <tr style="background: #fef3c7;">
+                        <td>Chatbot misinformation</td>
+                        <td>Customer service</td>
+                        <td>3</td>
+                        <td>2</td>
+                        <td><strong>6</strong></td>
+                        <td>P2 (Medium)</td>
+                        <td>VP Customer Success</td>
+                    </tr>
+                    <tr style="background: #d1fae5;">
+                        <td>Vendor lock-in</td>
+                        <td>Cloud AI platform</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td><strong>6</strong></td>
+                        <td>P3 (Low)</td>
+                        <td>CTO</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p><strong>Prioritization Rules:</strong></p>
+        <ul>
+            <li><strong>P0 (Critical, Score 20-25):</strong> All hands on deck. Halt deployment if needed. Weekly executive updates.</li>
+            <li><strong>P1 (High, Score 13-19):</strong> Dedicated team assigned. Mitigation plan required within 30 days. Monthly executive updates.</li>
+            <li><strong>P2 (Medium, Score 6-12):</strong> Assigned to existing teams. Mitigation within 6 months. Quarterly reviews.</li>
+            <li><strong>P3 (Low, Score 1-5):</strong> Monitor and revisit annually. Address opportunistically.</li>
+        </ul>
+
+        <h2>Phase 4: Risk Mitigation</h2>
+
+        <p>
+            For each high-priority risk, develop a mitigation plan using the 4T framework: <strong>Terminate, Treat, Transfer, or Tolerate</strong>.
+        </p>
+
+        <h3>The 4T Risk Response Framework</h3>
+
+        <div class="framework-box">
+            <h4>1. TERMINATE (Eliminate the risk by not pursuing the activity)</h4>
+            <p><strong>When to use:</strong> Risk is unacceptably high and can't be mitigated cost-effectively.</p>
+            <p><strong>Example:</strong> "We've assessed facial recognition for retail stores. Bias risk scores 20/25 (critical). Recommendation: <strong>TERMINATE</strong> this project. Deploy alternative loss prevention (security guards + traditional surveillance) instead."</p>
+            <p><strong>Cost:</strong> Opportunity cost of not pursuing AI (but avoids downside risk)</p>
+
+            <h4>2. TREAT (Reduce likelihood or impact through controls)</h4>
+            <p><strong>When to use:</strong> Risk is manageable with appropriate safeguards (most common approach).</p>
+            <p><strong>Example:</strong> "Hiring algorithm bias scores 16/25 (high). Recommendation: <strong>TREAT</strong> with:
+                <ul>
+                    <li>Bias audit and dataset diversification (reduces likelihood 4→2)</li>
+                    <li>Human review for all recommendations (reduces impact 4→2)</li>
+                    <li>Appeal mechanism (further reduces impact)</li>
+                    <li><strong>New score: 2×2=4 (low)</strong></li>
+                </ul>
+            </p>
+            <p><strong>Cost:</strong> $500K mitigation investment vs. $10M+ unmitigated risk</p>
+
+            <h4>3. TRANSFER (Shift risk to third party via contracts, insurance, or outsourcing)</h4>
+            <p><strong>When to use:</strong> Risk can be contractually transferred and third party has expertise to manage it.</p>
+            <p><strong>Example:</strong> "Data breach risk scores 12/25 (medium). Recommendation: <strong>TRANSFER</strong> by:
+                <ul>
+                    <li>Using enterprise AI cloud provider with SOC 2 certification</li>
+                    <li>Contractual liability clauses (vendor liable for breaches)</li>
+                    <li>Cyber insurance ($10M coverage)</li>
+                </ul>
+            </p>
+            <p><strong>Cost:</strong> Premium fees for secure hosting + $200K annual insurance vs. building security in-house</p>
+
+            <h4>4. TOLERATE (Accept residual risk after mitigation or consciously accept low-priority risks)</h4>
+            <p><strong>When to use:</strong> Risk is low priority, mitigation cost exceeds potential loss, or residual risk remains after treatment.</p>
+            <p><strong>Example:</strong> "Chatbot providing suboptimal product recommendations scores 4/25 (low). Recommendation: <strong>TOLERATE</strong>. Monitor customer satisfaction scores but don't invest in advanced NLP. Potential revenue loss ($200K) < mitigation cost ($500K+)."</p>
+            <p><strong>Cost:</strong> Ongoing monitoring only (~$20K/year)</p>
+        </div>
+
+        <h3>Mitigation Plan Template</h3>
+
+        <div class="checklist">
+            <h4>Risk Mitigation Plan: [Risk Name]</h4>
+
+            <div class="checklist-item">
+                <strong>Risk Description:</strong> [Clear description of what could go wrong]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Current Risk Score:</strong> [Likelihood × Impact = Score]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Mitigation Strategy:</strong> [Terminate / Treat / Transfer / Tolerate]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Specific Controls:</strong>
+                <ul>
+                    <li>[Control 1 with target implementation date]</li>
+                    <li>[Control 2 with target implementation date]</li>
+                    <li>[Control 3 with target implementation date]</li>
+                </ul>
+            </div>
+
+            <div class="checklist-item">
+                <strong>Residual Risk Score:</strong> [New likelihood × New impact = New score after mitigation]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Investment Required:</strong> [Upfront cost + annual ongoing]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Owner:</strong> [Executive responsible for execution]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Timeline:</strong> [Start date → Key milestones → Completion date]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Success Metrics:</strong> [How will we know mitigation is working?]
+            </div>
+
+            <div class="checklist-item">
+                <strong>Monitoring Plan:</strong> [Frequency of review, KPIs tracked, escalation triggers]
+            </div>
+        </div>
+
+        <h2>Phase 5: Continuous Monitoring</h2>
+
+        <p>
+            Risk management isn't "set and forget." Threats evolve, new regulations emerge, and models degrade. You need continuous monitoring with automated alerts.
+        </p>
+
+        <h3>The 3-Tier Monitoring System</h3>
+
+        <div class="framework-box">
+            <h4>Tier 1: Real-Time Operational Monitoring (Automated)</h4>
+            <p><strong>Frequency:</strong> Continuous (24/7 automated monitoring)</p>
+            <p><strong>What to Monitor:</strong></p>
+            <ul>
+                <li><strong>Model Performance:</strong> Accuracy, precision, recall metrics vs. baseline</li>
+                <li><strong>Concept Drift:</strong> Statistical distribution changes in inputs/outputs</li>
+                <li><strong>Data Quality:</strong> Missing values, outliers, schema violations</li>
+                <li><strong>System Health:</strong> Latency, throughput, error rates</li>
+                <li><strong>Security Anomalies:</strong> Unusual query patterns, potential attacks</li>
+            </ul>
+            <p><strong>Alert Triggers:</strong> Performance drops >5%, error rate >0.1%, anomaly detected</p>
+            <p><strong>Response Time:</strong> Immediate (automated alerts to on-call engineers)</p>
+            <p><strong>Tools:</strong> MLOps platforms (Datadog, Weights & Biases, AWS SageMaker Model Monitor)</p>
+
+            <h4>Tier 2: Tactical Risk Review (Human)</h4>
+            <p><strong>Frequency:</strong> Monthly</p>
+            <p><strong>What to Review:</strong></p>
+            <ul>
+                <li><strong>Incident Log:</strong> Any AI-related incidents in past month (root cause analysis)</li>
+                <li><strong>KPI Dashboard:</strong> Bias metrics, customer complaints, legal inquiries</li>
+                <li><strong>Mitigation Progress:</strong> Status of in-flight risk mitigation projects</li>
+                <li><strong>New Risks:</strong> Emerging threats identified by team or industry</li>
+            </ul>
+            <p><strong>Attendees:</strong> AI Risk Manager, product owners, compliance, security leads</p>
+            <p><strong>Outcome:</strong> Updated risk register, adjustments to mitigation plans</p>
+
+            <h4>Tier 3: Strategic Risk Review (Executive)</h4>
+            <p><strong>Frequency:</strong> Quarterly</p>
+            <p><strong>What to Review:</strong></p>
+            <ul>
+                <li><strong>Risk Portfolio:</strong> Overall risk exposure across all AI systems</li>
+                <li><strong>Mitigation ROI:</strong> Effectiveness of risk investments ($ spent vs. risk reduced)</li>
+                <li><strong>Regulatory Changes:</strong> New laws/regulations affecting AI (EU AI Act updates, state laws)</li>
+                <li><strong>Competitive Landscape:</strong> How are competitors managing AI risks?</li>
+                <li><strong>Budget Allocation:</strong> Is risk mitigation budget adequate?</li>
+            </ul>
+            <p><strong>Attendees:</strong> CEO/COO, Chief AI Officer, CFO, General Counsel, Chief Risk Officer</p>
+            <p><strong>Outcome:</strong> Strategic adjustments to AI risk appetite, budget approvals, major go/no-go decisions</p>
+        </div>
+
+        <h3>Key Risk Indicators (KRIs)</h3>
+
+        <p>
+            Track these metrics in your dashboard. When KRIs exceed thresholds, it's an early warning signal.
+        </p>
+
+        <div class="framework-box">
+            <table class="scoring-table">
+                <thead>
+                    <tr>
+                        <th>KRI</th>
+                        <th>Calculation</th>
+                        <th>Green Zone</th>
+                        <th>Yellow Zone</th>
+                        <th>Red Zone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Model Performance Drift</strong></td>
+                        <td>% change in accuracy vs. baseline</td>
+                        <td>&lt;3% decline</td>
+                        <td>3-7% decline</td>
+                        <td>>7% decline</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bias Disparity Ratio</strong></td>
+                        <td>Max group error rate / Min group error rate</td>
+                        <td>&lt;1.2x</td>
+                        <td>1.2-1.5x</td>
+                        <td>>1.5x</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Incident Frequency</strong></td>
+                        <td>AI-related incidents per month</td>
+                        <td>0-1</td>
+                        <td>2-3</td>
+                        <td>>3</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compliance Gap Count</strong></td>
+                        <td>Number of unaddressed regulatory requirements</td>
+                        <td>0-2</td>
+                        <td>3-5</td>
+                        <td>>5</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Risk Mitigation Budget Variance</strong></td>
+                        <td>Actual spend vs. planned spend</td>
+                        <td>±10%</td>
+                        <td>±10-25%</td>
+                        <td>>25%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mean Time to Incident Response</strong></td>
+                        <td>Hours from detection to resolution</td>
+                        <td>&lt;4 hours</td>
+                        <td>4-12 hours</td>
+                        <td>>12 hours</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Implementation Roadmap</h2>
+
+        <p>
+            Rolling out this framework takes time. Here's a realistic timeline for a mid-size company.
+        </p>
+
+        <div class="framework-box">
+            <h4>90-Day Risk Framework Implementation</h4>
+
+            <p><strong>Week 1-2: Foundation</strong></p>
+            <ul>
+                <li>Appoint AI Risk Manager (or assign to existing role)</li>
+                <li>Form cross-functional risk committee (8-12 members)</li>
+                <li>Customize this framework for your organization</li>
+                <li>Create initial AI system inventory (what AI do we have?)</li>
+            </ul>
+
+            <p><strong>Week 3-4: Identification</strong></p>
+            <ul>
+                <li>Run risk identification workshops for each major AI system</li>
+                <li>Build comprehensive risk register (expect 30-50 risks)</li>
+                <li>Document risk descriptions, potential causes, potential impacts</li>
+            </ul>
+
+            <p><strong>Week 5-6: Assessment</strong></p>
+            <ul>
+                <li>Score all identified risks (likelihood × impact)</li>
+                <li>Validate scores with subject matter experts</li>
+                <li>Create risk heatmap visualization</li>
+            </ul>
+
+            <p><strong>Week 7-8: Prioritization & Planning</strong></p>
+            <ul>
+                <li>Prioritize top 10-15 risks requiring immediate attention</li>
+                <li>Develop mitigation plans using 4T framework</li>
+                <li>Estimate mitigation budgets</li>
+                <li>Assign risk owners (executives responsible for mitigation)</li>
+            </ul>
+
+            <p><strong>Week 9-10: Executive Approval</strong></p>
+            <ul>
+                <li>Present risk assessment and mitigation plans to executive leadership</li>
+                <li>Secure budget approval for risk mitigation projects</li>
+                <li>Establish governance structure (monthly/quarterly review cadence)</li>
+            </ul>
+
+            <p><strong>Week 11-12: Monitoring Setup</strong></p>
+            <ul>
+                <li>Implement automated monitoring tools (Tier 1)</li>
+                <li>Create risk dashboard with KRIs</li>
+                <li>Schedule first monthly review (Tier 2)</li>
+                <li>Document escalation procedures</li>
+            </ul>
+
+            <p><strong>Week 13+: Continuous Improvement</strong></p>
+            <ul>
+                <li>Execute mitigation projects</li>
+                <li>Run monthly tactical reviews</li>
+                <li>Update risk register as new risks emerge</li>
+                <li>Quarterly strategic reviews with executives</li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <strong>✅ Success Criteria: You've Implemented This Framework When...</strong>
+            <ol>
+                <li><strong>Proactive Risk Identification:</strong> New AI projects automatically trigger risk assessments before deployment</li>
+                <li><strong>Clear Accountability:</strong> Every high-priority risk has a named executive owner</li>
+                <li><strong>Objective Decision-Making:</strong> Risk scores (not politics) determine mitigation priorities</li>
+                <li><strong>Continuous Monitoring:</strong> Automated alerts catch problems before they become crises</li>
+                <li><strong>Executive Engagement:</strong> C-suite receives quarterly risk briefings and makes informed go/no-go decisions</li>
+                <li><strong>Budget Alignment:</strong> 15-25% of AI budget allocated to risk mitigation (not afterthought)</li>
+                <li><strong>Learning Organization:</strong> Incidents are analyzed, lessons documented, processes improved</li>
+            </ol>
+        </div>
+
+        <h2>Key Takeaways</h2>
+
+        <div class="success-box">
+            <strong>✅ Remember These 7 Principles</strong>
+            <ol>
+                <li><strong>Systematic beats ad hoc:</strong> Structured frameworks catch risks that gut feel misses</li>
+                <li><strong>Cross-functional is essential:</strong> Tech teams alone miss business, legal, and ethical risks</li>
+                <li><strong>Quantify everything:</strong> Likelihood × Impact scoring enables rational prioritization</li>
+                <li><strong>You can't fix everything:</strong> Use 4T framework to focus resources on highest-impact mitigations</li>
+                <li><strong>Monitoring is not optional:</strong> Risks evolve—yesterday's safe system is tomorrow's crisis</li>
+                <li><strong>Executive ownership matters:</strong> Risk management fails without C-suite accountability</li>
+                <li><strong>Investment is insurance:</strong> 15-25% of AI budget for risk mitigation prevents 10x losses later</li>
+            </ol>
+        </div>
+<!-- Executive Toolkit CTA -->
+        <style>
+            .toolkit-cta {
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                border-left: 4px solid #0057b7;
+                border-radius: 8px;
+                padding: 20px 24px;
+                margin: 32px 0;
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .toolkit-cta-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .toolkit-cta-icon {
+                font-size: 1.5rem;
+            }
+            
+            .toolkit-cta-title {
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #0f172a;
+                margin: 0;
+            }
+            
+            .toolkit-cta-text {
+                color: #475569;
+                font-size: 0.95rem;
+                line-height: 1.6;
+                margin: 0 0 16px 0;
+            }
+            
+            .toolkit-cta-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #0057b7;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.95rem;
+                transition: all 0.3s ease;
+            }
+            
+            .toolkit-cta-button:hover {
+                background: #003d82;
+                transform: translateX(4px);
+                text-decoration: none;
+            }
+            
+            /* Dark mode */
+            body.dark-mode .toolkit-cta,
+            html[data-theme='dark'] .toolkit-cta {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                border-left-color: #078930;
+            }
+            
+            body.dark-mode .toolkit-cta-title,
+            html[data-theme='dark'] .toolkit-cta-title {
+                color: #f1f5f9;
+            }
+            
+            body.dark-mode .toolkit-cta-text,
+            html[data-theme='dark'] .toolkit-cta-text {
+                color: #cbd5e1;
+            }
+            
+            body.dark-mode .toolkit-cta-button,
+            html[data-theme='dark'] .toolkit-cta-button {
+                background: #078930;
+            }
+            
+            body.dark-mode .toolkit-cta-button:hover,
+            html[data-theme='dark'] .toolkit-cta-button:hover {
+                background: #065f46;
+            }
+        </style>
+        
+        <div class="toolkit-cta">
+            <div class="toolkit-cta-header">
+                <span class="toolkit-cta-icon">🎯</span>
+                <h3 class="toolkit-cta-title">Ready to Take Action?</h3>
+            </div>
+            <p class="toolkit-cta-text">
+                Access our curated Executive AI Toolkit featuring 20 enterprise-ready tools for strategy, marketing, finance, and operations — each vetted for ROI and ease of implementation.
+            </p>
+            <a href="executive-ai-toolkit.html" class="toolkit-cta-button">
+                <span>Explore AI Toolkit</span>
+                <span>→</span>
+            </a>
+        </div>
+
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of AI risk assessment frameworks!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="B">
+                    <h4>1. What is the purpose of a risk assessment framework for AI?</h4>
+                    <div class="quiz-option" data-value="A">A) To prevent any AI usage</div>
+                    <div class="quiz-option" data-value="B">B) To systematically identify and mitigate AI-related risks</div>
+                    <div class="quiz-option" data-value="C">C) Frameworks are unnecessary</div>
+                    <div class="quiz-option" data-value="D">D) To slow down innovation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="C">
+                    <h4>2. What should be included in an AI risk assessment?</h4>
+                    <div class="quiz-option" data-value="A">A) Only technical risks</div>
+                    <div class="quiz-option" data-value="B">B) Only financial risks</div>
+                    <div class="quiz-option" data-value="C">C) Technical, ethical, legal, and operational risks</div>
+                    <div class="quiz-option" data-value="D">D) Risk assessment is optional</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How often should AI risk assessments be conducted?</h4>
+                    <div class="quiz-option" data-value="A">A) Continuously and at key project milestones</div>
+                    <div class="quiz-option" data-value="B">B) Only once at the beginning</div>
+                    <div class="quiz-option" data-value="C">C) Never, after initial deployment</div>
+                    <div class="quiz-option" data-value="D">D) Risk assessment is one-time only</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. Who should be involved in AI risk assessment?</h4>
+                    <div class="quiz-option" data-value="A">A) Only data scientists</div>
+                    <div class="quiz-option" data-value="B">B) Only executives</div>
+                    <div class="quiz-option" data-value="C">C) Only legal teams</div>
+                    <div class="quiz-option" data-value="D">D) Cross-functional teams including technical, legal, and business stakeholders</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. What is risk mitigation in AI context?</h4>
+                    <div class="quiz-option" data-value="A">A) Ignoring identified risks</div>
+                    <div class="quiz-option" data-value="B">B) Implementing controls and safeguards to reduce risk impact</div>
+                    <div class="quiz-option" data-value="C">C) Accepting all risks without action</div>
+                    <div class="quiz-option" data-value="D">D) Mitigation is unnecessary</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tutorial-nav">
+            <a href="ceo-risk-briefing.html">← Previous: CEO Risk Briefing</a>
+            <a href="module-4-assessment.html">Next: Module 4 Assessment →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build an autonomous AI research assistant that searches the web, reads content, summarizes findings, and generates comprehensive research reports using LangChain and GPT-4.">
+    <meta name="keywords" content="AI agent, research assistant, LangChain, autonomous agent, web scraping, GPT-4, AI project">
+    <title>Project: AI Research Assistant | Nebaz AI Academy</title>
+    <link rel="canonical" href="ai-research-assistant.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .project-badge { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 50px; font-weight: bold; font-size: 0.9rem; display: inline-block; margin-bottom: 1rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+        .code-example { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .code-header { background: #1e293b; color: #e2e8f0; padding: 0.75rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0; font-weight: 600; font-size: 0.9rem; }
+        .architecture-diagram { background: white; border: 2px solid #e2e8f0; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="project-badge">🚀 HANDS-ON PROJECT</div>
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/ai-agents.html">AI Agents</a> → 
+                <span>AI Research Assistant Project</span>
+            </div>
+            <h1>🔍 Build an Autonomous AI Research Assistant</h1>
+            <p class="tutorial-intro">Create an intelligent agent that searches the web, reads content, and generates comprehensive research reports automatically</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Intermediate</span>
+                <span class="meta-item">⏱️ 2-3 hours</span>
+                <span class="meta-item">💻 Python + LangChain + GPT-4</span>
+                <span class="meta-item">🔧 Hands-on Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <!-- Project Overview -->
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Research is time-consuming. You search Google, read articles, synthesize information, and write reports. What if an AI agent could do this autonomously? In this project, you'll build an intelligent research assistant that:
+                </p>
+
+                <ul>
+                    <li><strong>Searches the web</strong> using multiple search engines (Google, DuckDuckGo, Wikipedia)</li>
+                    <li><strong>Reads and extracts</strong> content from websites intelligently</li>
+                    <li><strong>Summarizes findings</strong> from multiple sources</li>
+                    <li><strong>Generates reports</strong> with citations and structured information</li>
+                    <li><strong>Handles errors</strong> gracefully when sources are unavailable</li>
+                    <li><strong>Tracks progress</strong> and shows reasoning steps</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🚀 <strong>Real-World Impact:</strong> Companies like Perplexity.ai and Bing Chat use similar architectures. This project demonstrates enterprise-level agent design!</p>
+                </div>
+
+                <h3>What You'll Build</h3>
+                <div class="architecture-diagram">
+                    <pre style="text-align: left;">
+┌─────────────────────────────────────────────┐
+│         Research Assistant Agent            │
+│                                             │
+│  User Query: "Explain quantum computing"    │
+└──────────────────┬──────────────────────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │   Planning Module    │
+        │  (Break into steps)  │
+        └──────────┬───────────┘
+                   │
+          ┌────────┼────────┐
+          │        │        │
+          ▼        ▼        ▼
+      ┌─────┐  ┌─────┐  ┌─────┐
+      │Google│ │Wiki │  │DuckD│  ← Search Tools
+      └──┬──┘  └──┬──┘  └──┬──┘
+          │        │        │
+          └────────┼────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │  Content Extraction  │
+        │   (Read & Parse)     │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │   Summarization      │
+        │  (Synthesize Info)   │
+        └──────────┬───────────┘
+                   │
+                   ▼
+        ┌──────────────────────┐
+        │   Report Generation  │
+        │  (Final Document)    │
+        └──────────────────────┘
+                    </pre>
+                </div>
+            </section>
+
+            <!-- Setup -->
+            <section class="content-section">
+                <h2>🛠️ Setup & Dependencies</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Required Packages</h3>
+                    <pre><code class="language-bash"># Core dependencies
+pip install langchain langchain-community langchain-openai
+pip install openai python-dotenv
+
+# Search & web tools
+pip install google-search-results wikipedia duckduckgo-search
+pip install beautifulsoup4 requests html2text
+
+# Optional: For better PDF handling
+pip install pypdf pdfplumber</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Set Up API Keys</h3>
+                    <p>Create a <code>.env</code> file in your project root:</p>
+                    <pre><code class="language-bash"># OpenAI API key (required)
+OPENAI_API_KEY=your_openai_key_here
+
+# SerpAPI key for Google search (optional but recommended)
+SERPAPI_API_KEY=your_serpapi_key_here
+
+# Note: Wikipedia and DuckDuckGo don't require API keys</code></pre>
+
+                    <div class="info-box">
+                        <p><strong>💡 API Keys:</strong></p>
+                        <ul>
+                            <li><strong>OpenAI:</strong> Get from <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></li>
+                            <li><strong>SerpAPI:</strong> Free 100 searches/month at <a href="https://serpapi.com/" target="_blank">serpapi.com</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">3</span> Create Project Structure</h3>
+                    <pre><code class="language-bash">research-assistant/
+├── .env                    # API keys
+├── research_agent.py       # Main agent code
+├── tools/
+│   ├── search_tools.py     # Search implementations
+│   ├── web_tools.py        # Web scraping
+│   └── report_tools.py     # Report generation
+├── outputs/                # Generated reports
+└── requirements.txt        # Dependencies</code></pre>
+                </div>
+            </section>
+
+            <!-- Implementation -->
+            <section class="content-section">
+                <h2>💻 Building the Research Assistant</h2>
+
+                <h3>Step 1: Create Search Tools</h3>
+                <div class="code-example">
+                    <div class="code-header">tools/search_tools.py</div>
+                    <pre><code class="language-python">"""
+Search tools for the research assistant
+"""
+from langchain.tools import Tool
+from langchain_community.utilities import GoogleSearchAPIWrapper, WikipediaAPIWrapper
+from langchain_community.utilities import DuckDuckGoSearchAPIWrapper
+import os
+from typing import List, Dict
+
+class SearchTools:
+    """Collection of search tools"""
+    
+    def __init__(self):
+        # Initialize search APIs
+        self.serpapi_key = os.getenv("SERPAPI_API_KEY")
+        
+        # Google Search (if API key available)
+        if self.serpapi_key:
+            self.google_search = GoogleSearchAPIWrapper()
+        
+        # Wikipedia (always available)
+        self.wikipedia = WikipediaAPIWrapper()
+        
+        # DuckDuckGo (always available, no API key needed)
+        self.ddg_search = DuckDuckGoSearchAPIWrapper()
+    
+    def search_google(self, query: str) -> str:
+        """Search Google and return results"""
+        try:
+            if not self.serpapi_key:
+                return "Google search unavailable (no API key)"
+            
+            results = self.google_search.run(query)
+            return f"Google Results:\\n{results}"
+        except Exception as e:
+            return f"Google search failed: {str(e)}"
+    
+    def search_wikipedia(self, query: str) -> str:
+        """Search Wikipedia and return article summary"""
+        try:
+            results = self.wikipedia.run(query)
+            # Truncate to first 1000 characters
+            return f"Wikipedia Summary:\\n{results[:1000]}..."
+        except Exception as e:
+            return f"Wikipedia search failed: {str(e)}"
+    
+    def search_duckduckgo(self, query: str) -> str:
+        """Search DuckDuckGo and return results"""
+        try:
+            results = self.ddg_search.run(query)
+            return f"DuckDuckGo Results:\\n{results}"
+        except Exception as e:
+            return f"DuckDuckGo search failed: {str(e)}"
+    
+    def get_tools(self) -> List[Tool]:
+        """Get all search tools as LangChain Tools"""
+        tools = [
+            Tool(
+                name="Google Search",
+                func=self.search_google,
+                description="Search Google for current information. Use for recent events, news, and general web content."
+            ),
+            Tool(
+                name="Wikipedia Search",
+                func=self.search_wikipedia,
+                description="Search Wikipedia for factual, encyclopedic information. Best for historical facts, definitions, and well-established knowledge."
+            ),
+            Tool(
+                name="DuckDuckGo Search",
+                func=self.search_duckduckgo,
+                description="Search DuckDuckGo for web results. Good fallback when other searches fail. Privacy-focused."
+            )
+        ]
+        
+        return tools
+
+# Test the tools
+if __name__ == "__main__":
+    search_tools = SearchTools()
+    
+    # Test Wikipedia
+    result = search_tools.search_wikipedia("Artificial Intelligence")
+    print(result)
+    
+    # Test DuckDuckGo
+    result = search_tools.search_duckduckgo("latest AI developments")
+    print(result)</code></pre>
+                </div>
+
+                <h3>Step 2: Create Web Scraping Tools</h3>
+                <div class="code-example">
+                    <div class="code-header">tools/web_tools.py</div>
+                    <pre><code class="language-python">"""
+Web scraping and content extraction tools
+"""
+import requests
+from bs4 import BeautifulSoup
+import html2text
+from typing import Optional
+from langchain.tools import Tool
+
+class WebTools:
+    """Tools for fetching and parsing web content"""
+    
+    def __init__(self):
+        self.html2text = html2text.HTML2Text()
+        self.html2text.ignore_links = False
+        self.html2text.ignore_images = True
+    
+    def fetch_webpage(self, url: str) -> str:
+        """Fetch and extract text content from a webpage"""
+        try:
+            # Fetch page
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            # Parse HTML
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Remove script and style elements
+            for script in soup(["script", "style", "nav", "footer", "header"]):
+                script.decompose()
+            
+            # Get text
+            text = self.html2text.handle(str(soup))
+            
+            # Clean and truncate
+            text = text.strip()
+            if len(text) > 3000:
+                text = text[:3000] + "\\n\\n[Content truncated...]"
+            
+            return f"Content from {url}:\\n{text}"
+            
+        except requests.exceptions.Timeout:
+            return f"Error: Timeout fetching {url}"
+        except requests.exceptions.RequestException as e:
+            return f"Error fetching {url}: {str(e)}"
+        except Exception as e:
+            return f"Error parsing {url}: {str(e)}"
+    
+    def extract_links(self, url: str) -> str:
+        """Extract all links from a webpage"""
+        try:
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
+            
+            soup = BeautifulSoup(response.content, 'html.parser')
+            
+            # Extract all links
+            links = []
+            for link in soup.find_all('a', href=True):
+                href = link['href']
+                if href.startswith('http'):
+                    links.append(href)
+            
+            # Return first 10 links
+            links = links[:10]
+            return f"Links found on {url}:\\n" + "\\n".join(links)
+            
+        except Exception as e:
+            return f"Error extracting links from {url}: {str(e)}"
+    
+    def get_tools(self) -> list:
+        """Get web tools as LangChain Tools"""
+        return [
+            Tool(
+                name="Fetch Webpage",
+                func=self.fetch_webpage,
+                description="Fetch and read the full text content of a webpage given its URL. Returns cleaned text content."
+            ),
+            Tool(
+                name="Extract Links",
+                func=self.extract_links,
+                description="Extract all hyperlinks from a webpage. Useful for finding related resources."
+            )
+        ]
+
+# Test
+if __name__ == "__main__":
+    web_tools = WebTools()
+    content = web_tools.fetch_webpage("https://en.wikipedia.org/wiki/Artificial_intelligence")
+    print(content[:500])</code></pre>
+                </div>
+
+                <h3>Step 3: Build the Research Agent</h3>
+                <div class="code-example">
+                    <div class="code-header">research_agent.py</div>
+                    <pre><code class="language-python">"""
+Autonomous Research Assistant Agent
+"""
+import os
+from dotenv import load_dotenv
+from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain_openai import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from tools.search_tools import SearchTools
+from tools.web_tools import WebTools
+from datetime import datetime
+import json
+
+# Load environment variables
+load_dotenv()
+
+class ResearchAgent:
+    """Autonomous research assistant that can search and synthesize information"""
+    
+    def __init__(self, model: str = "gpt-4-turbo-preview", verbose: bool = True):
+        self.model = model
+        self.verbose = verbose
+        
+        # Initialize LLM
+        self.llm = ChatOpenAI(
+            model=model,
+            temperature=0.7,
+            openai_api_key=os.getenv("OPENAI_API_KEY")
+        )
+        
+        # Initialize tools
+        self.search_tools = SearchTools()
+        self.web_tools = WebTools()
+        
+        # Combine all tools
+        self.tools = self.search_tools.get_tools() + self.web_tools.get_tools()
+        
+        # Create agent
+        self.agent_executor = self._create_agent()
+    
+    def _create_agent(self) -> AgentExecutor:
+        """Create the research agent with tools"""
+        
+        # System prompt
+        system_prompt = """You are an expert research assistant. Your goal is to help users research topics thoroughly by:
+
+1. **Planning**: Break down the research question into sub-questions
+2. **Searching**: Use multiple search tools (Google, Wikipedia, DuckDuckGo) to gather information
+3. **Reading**: Fetch and read relevant webpages when needed
+4. **Synthesizing**: Combine information from multiple sources
+5. **Citing**: Always cite your sources with URLs
+
+**Research Process:**
+- Start by searching Wikipedia for foundational knowledge
+- Use Google or DuckDuckGo for recent information and diverse perspectives
+- Fetch full webpage content when you need detailed information
+- Cross-reference facts across multiple sources
+- Organize findings clearly with headings and bullet points
+
+**Output Format:**
+Your final report should include:
+- Executive Summary (2-3 sentences)
+- Key Findings (bullet points)
+- Detailed Analysis (organized sections)
+- Sources Cited (URLs with descriptions)
+
+Be thorough but concise. Prioritize accuracy over speed.
+"""
+        
+        # Create prompt template
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", system_prompt),
+            ("human", "{input}"),
+            MessagesPlaceholder(variable_name="agent_scratchpad")
+        ])
+        
+        # Create agent
+        agent = create_openai_tools_agent(
+            llm=self.llm,
+            tools=self.tools,
+            prompt=prompt
+        )
+        
+        # Create executor
+        return AgentExecutor(
+            agent=agent,
+            tools=self.tools,
+            verbose=self.verbose,
+            max_iterations=10,
+            handle_parsing_errors=True
+        )
+    
+    def research(self, query: str) -> dict:
+        """Conduct research on a topic"""
+        
+        print(f"\\n🔍 Starting research on: {query}\\n")
+        print("=" * 60)
+        
+        try:
+            # Run agent
+            result = self.agent_executor.invoke({
+                "input": f"""Research this topic thoroughly: {query}
+
+Please provide a comprehensive report with:
+1. Executive Summary
+2. Key Findings
+3. Detailed Analysis
+4. Sources Cited"""
+            })
+            
+            # Extract output
+            report = result["output"]
+            
+            print("\\n" + "=" * 60)
+            print("✅ Research Complete!")
+            print("=" * 60)
+            
+            return {
+                "success": True,
+                "query": query,
+                "report": report,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            print(f"\\n❌ Research failed: {str(e)}")
+            return {
+                "success": False,
+                "query": query,
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+    
+    def save_report(self, result: dict, filename: str = None):
+        """Save research report to file"""
+        
+        if not filename:
+            # Generate filename from query and timestamp
+            query_slug = result["query"][:30].replace(" ", "_")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"outputs/research_{query_slug}_{timestamp}.md"
+        
+        # Create outputs directory if it doesn't exist
+        os.makedirs("outputs", exist_ok=True)
+        
+        # Format report
+        content = f"""# Research Report: {result['query']}
+
+**Generated:** {result['timestamp']}
+**Status:** {'✅ Success' if result['success'] else '❌ Failed'}
+
+---
+
+{result.get('report', result.get('error', 'No content'))}
+
+---
+
+*Generated by AI Research Assistant*
+"""
+        
+        # Save to file
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        print(f"\\n📄 Report saved to: {filename}")
+
+# Main execution
+if __name__ == "__main__":
+    # Create agent
+    agent = ResearchAgent(model="gpt-4-turbo-preview", verbose=True)
+    
+    # Example research queries
+    queries = [
+        "What is quantum computing and how does it differ from classical computing?",
+        "Explain the latest developments in large language models as of 2024",
+        "What are the environmental impacts of AI and data centers?"
+    ]
+    
+    # Research first query
+    result = agent.research(queries[0])
+    
+    # Save report
+    agent.save_report(result)
+    
+    # Print report
+    if result["success"]:
+        print("\\n" + "=" * 60)
+        print("RESEARCH REPORT")
+        print("=" * 60)
+        print(result["report"])</code></pre>
+                </div>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint: Test Your Agent</h3>
+                    <p>Run the agent with a simple query:</p>
+                    <pre><code class="language-bash">python research_agent.py</code></pre>
+                    <p>You should see the agent:</p>
+                    <ul>
+                        <li>Planning its research approach</li>
+                        <li>Searching multiple sources</li>
+                        <li>Reading relevant content</li>
+                        <li>Generating a comprehensive report</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Advanced Features -->
+            <section class="content-section">
+                <h2>🚀 Advanced Features</h2>
+
+                <h3>Add Memory for Context</h3>
+                <div class="code-example">
+                    <div class="code-header">Memory-enabled research</div>
+                    <pre><code class="language-python">from langchain.memory import ConversationBufferMemory
+
+class ResearchAgentWithMemory(ResearchAgent):
+    """Research agent with conversation memory"""
+    
+    def __init__(self, model: str = "gpt-4-turbo-preview", verbose: bool = True):
+        super().__init__(model, verbose)
+        
+        # Add memory
+        self.memory = ConversationBufferMemory(
+            memory_key="chat_history",
+            return_messages=True
+        )
+    
+    def research_followup(self, query: str) -> dict:
+        """Research with access to previous conversation"""
+        
+        # Get conversation history
+        history = self.memory.load_memory_variables({})
+        
+        # Add to prompt
+        enhanced_query = f"""Previous context: {history}
+
+New research question: {query}"""
+        
+        result = self.research(enhanced_query)
+        
+        # Save to memory
+        self.memory.save_context(
+            {"input": query},
+            {"output": result.get("report", "")}
+        )
+        
+        return result
+
+# Usage
+agent = ResearchAgentWithMemory()
+result1 = agent.research("What is quantum computing?")
+result2 = agent.research_followup("How is it used in cryptography?")  # Has context!</code></pre>
+                </div>
+
+                <h3>Add Progress Tracking</h3>
+                <div class="code-example">
+                    <div class="code-header">Track research progress</div>
+                    <pre><code class="language-python">from langchain.callbacks import StdOutCallbackHandler
+from typing import Any
+
+class ProgressCallback(StdOutCallbackHandler):
+    """Custom callback to track progress"""
+    
+    def __init__(self):
+        super().__init__()
+        self.steps = []
+        self.current_step = 0
+    
+    def on_tool_start(self, serialized: dict, input_str: str, **kwargs):
+        """Called when tool starts"""
+        self.current_step += 1
+        tool_name = serialized.get("name", "Unknown")
+        
+        print(f"\\n🔧 Step {self.current_step}: Using {tool_name}")
+        print(f"   Input: {input_str[:100]}...")
+        
+        self.steps.append({
+            "step": self.current_step,
+            "tool": tool_name,
+            "input": input_str
+        })
+    
+    def on_tool_end(self, output: str, **kwargs):
+        """Called when tool completes"""
+        print(f"   ✓ Complete: {output[:100]}...")
+
+# Use with agent
+agent = ResearchAgent(verbose=True)
+callback = ProgressCallback()
+
+result = agent.agent_executor.invoke(
+    {"input": "Research quantum computing"},
+    config={"callbacks": [callback]}
+)
+
+# View progress
+print(f"\\n📊 Research completed in {len(callback.steps)} steps")</code></pre>
+                </div>
+
+                <h3>Add Cost Tracking</h3>
+                <div class="code-example">
+                    <div class="code-header">Track API costs</div>
+                    <pre><code class="language-python">from langchain.callbacks import get_openai_callback
+
+def research_with_cost_tracking(agent: ResearchAgent, query: str):
+    """Research and track costs"""
+    
+    with get_openai_callback() as cb:
+        result = agent.research(query)
+        
+        # Print cost summary
+        print(f"\\n💰 Cost Summary:")
+        print(f"   Tokens used: {cb.total_tokens}")
+        print(f"   Prompt tokens: {cb.prompt_tokens}")
+        print(f"   Completion tokens: {cb.completion_tokens}")
+        print(f"   Total cost: ${cb.total_cost:.4f}")
+        
+        # Add to result
+        result["cost"] = {
+            "tokens": cb.total_tokens,
+            "cost_usd": cb.total_cost
+        }
+    
+    return result
+
+# Usage
+agent = ResearchAgent()
+result = research_with_cost_tracking(agent, "Explain blockchain technology")</code></pre>
+                </div>
+            </section>
+
+            <!-- Challenges -->
+            <section class="content-section">
+                <h2>💪 Challenges & Extensions</h2>
+
+                <div class="step-card">
+                    <h3>🥉 Challenge 1: Multi-Topic Research</h3>
+                    <p>Modify the agent to research multiple related topics and compare findings.</p>
+                    <pre><code class="language-python">def compare_research(topics: list) -> dict:
+    """Research multiple topics and compare"""
+    agent = ResearchAgent()
+    
+    results = {}
+    for topic in topics:
+        results[topic] = agent.research(topic)
+    
+    # Generate comparison report
+    comparison_prompt = f"""Compare these research findings:
+    
+{json.dumps(results, indent=2)}
+
+Provide a comparative analysis highlighting:
+1. Common themes
+2. Key differences
+3. Unique insights from each
+"""
+    
+    # TODO: Use agent to generate comparison
+    pass
+
+# Test
+compare_research([
+    "Quantum computing",
+    "Classical computing",
+    "Neuromorphic computing"
+])</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3>🥈 Challenge 2: Add PDF Research</h3>
+                    <p>Enable the agent to read and analyze PDF documents.</p>
+                    <pre><code class="language-python">import pypdf
+
+def read_pdf_tool(file_path: str) -> str:
+    """Read and extract text from PDF"""
+    try:
+        reader = pypdf.PdfReader(file_path)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text()
+        return text[:3000]  # Truncate
+    except Exception as e:
+        return f"Error reading PDF: {e}"
+
+# Add to agent tools
+Tool(
+    name="Read PDF",
+    func=read_pdf_tool,
+    description="Read and extract text from a PDF file"
+)</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3>🥇 Challenge 3: Build a Web Interface</h3>
+                    <p>Create a Streamlit web interface for the research assistant.</p>
+                    <pre><code class="language-python">import streamlit as st
+
+st.title("🔍 AI Research Assistant")
+
+query = st.text_input("What would you like to research?")
+
+if st.button("Start Research"):
+    with st.spinner("Researching..."):
+        agent = ResearchAgent(verbose=False)
+        result = agent.research(query)
+        
+        if result["success"]:
+            st.success("Research complete!")
+            st.markdown(result["report"])
+        else:
+            st.error(f"Research failed: {result['error']}")
+
+# Run with: streamlit run app.py</code></pre>
+                </div>
+            </section>
+
+            <!-- Deployment -->
+            <section class="content-section">
+                <h2>🚀 Production Deployment</h2>
+
+                <h3>1. Add Error Handling & Retries</h3>
+                <pre><code class="language-python">from tenacity import retry, stop_after_attempt, wait_exponential
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(min=1, max=10))
+def search_with_retry(search_func, query):
+    """Search with automatic retries"""
+    return search_func(query)</code></pre>
+
+                <h3>2. Add Rate Limiting</h3>
+                <pre><code class="language-python">from ratelimit import limits, sleep_and_retry
+
+@sleep_and_retry
+@limits(calls=10, period=60)  # 10 calls per minute
+def rate_limited_search(query):
+    """Rate-limited search"""
+    return search(query)</code></pre>
+
+                <h3>3. Cache Results</h3>
+                <pre><code class="language-python">import functools
+import hashlib
+
+@functools.lru_cache(maxsize=100)
+def cached_research(query_hash: str):
+    """Cache research results"""
+    # Implementation
+    pass
+
+# Usage
+query_hash = hashlib.md5(query.encode()).hexdigest()
+result = cached_research(query_hash)</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Production Considerations:</strong></p>
+                    <ul>
+                        <li><strong>API Limits:</strong> Monitor OpenAI and search API usage</li>
+                        <li><strong>Cost Control:</strong> Set max_tokens limits to control costs</li>
+                        <li><strong>Error Handling:</strong> Implement comprehensive try-catch blocks</li>
+                        <li><strong>Logging:</strong> Log all searches and results for debugging</li>
+                        <li><strong>Security:</strong> Validate all URLs before fetching content</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section class="content-section">
+                <h2>🎯 Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Agent Architecture:</strong> Tools + LLM + Planning = Autonomous behavior</li>
+                        <li><strong>Tool Design:</strong> Each tool should have clear purpose and error handling</li>
+                        <li><strong>Search Strategy:</strong> Use multiple sources for comprehensive coverage</li>
+                        <li><strong>Error Handling:</strong> Graceful degradation when tools fail</li>
+                        <li><strong>Cost Management:</strong> Track tokens and implement caching</li>
+                        <li><strong>Iterative Improvement:</strong> Start simple, add features incrementally</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>📚 Next Steps</h2>
+                <ul>
+                    <li>🔗 <a href="multi-agent-code-review.html">Project 2: Multi-Agent Code Review System</a> - Learn agent collaboration</li>
+                    <li>🔗 <a href="business-process-automation.html">Project 3: Business Process Automation</a> - Build practical automation</li>
+                    <li>🔗 <a href="../agent-evaluation-and-safety.html">Agent Evaluation & Safety</a> - Learn to evaluate and secure agents</li>
+                    <li>🔗 <a href="../building-production-agent-systems.html">Production Agent Systems</a> - Deploy at scale</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💡 Share Your Project:</strong> Built something cool? Share it on Twitter/LinkedIn with #AIAgents and tag @Nebaz AI AcademySite!</p>
+                </div>
+            </section>
+
+            <div style="text-align: center; margin: 3rem 0; padding: 2rem; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); border-radius: 12px; color: white;">
+                <h2 style="color: white; margin-top: 0;">🎉 Congratulations!</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 1rem;">You've built an autonomous AI research assistant that can search, read, and synthesize information!</p>
+                <a href="../../../courses/ai-agents.html" style="display: inline-block; background: white; color: #078930; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1rem;">← Back to AI Agents Course</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

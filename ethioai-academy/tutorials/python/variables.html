@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about variables in Python - named references to values, dynamic typing, and best practices">
+    <title>Variables in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Variables in Python</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Track inference cost in ETB per 1k tokens when choosing between cloud APIs and self-hosted small models.</em></p>
+</div>
+            <p class="page-subtitle">Learn how Python variables store and manage data in memory</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+
+        <p>Imagine you're building a game. You need to track the player's name, their score, how many lives they have left, and whether they've completed a level. How do you remember all this information while your program runs? That's exactly what variables do—they're your program's memory, storing everything from a single number to complex data. Without variables, your code would be like trying to do math in your head without writing anything down. Let's learn how to give your programs the power to remember!</p>
+
+        <h2>Definition</h2>
+        <p>A <strong>variable</strong> is a named reference to a value stored in memory. It's a container that holds data you can use, change, and reference throughout your program.</p>
+
+        <h3>What Does "Named Reference" Mean?</h3>
+        <p>When you create a variable, you're doing two things:</p>
+        <ol>
+            <li><strong>Storing a value</strong> in your computer's memory (RAM)</li>
+            <li><strong>Creating a label</strong> (the variable name) that points to that memory location</li>
+        </ol>
+
+        <p>Think of it like this:</p>
+        <ul>
+            <li><strong>Memory address:</strong> <code>0x7fff5fbff6a0</code> (where the actual data lives)</li>
+            <li><strong>Variable name:</strong> <code>age</code> (the human-friendly label you use)</li>
+            <li><strong>Value:</strong> <code>20</code> (the actual data stored)</li>
+        </ul>
+
+        <p>Instead of remembering cryptic memory addresses, you just use the name <code>age</code>, and Python handles the rest!</p>
+
+        <h3>What is "Stored in Memory"?</h3>
+        <p><strong>Memory (RAM)</strong> is your computer's short-term workspace. When you create a variable:</p>
+        <ul>
+            <li>Python reserves a small space in RAM</li>
+            <li>Stores your value there (number, text, etc.)</li>
+            <li>Links your variable name to that location</li>
+            <li>When your program ends, this memory is cleared (variables disappear)</li>
+        </ul>
+
+        <div class="warning-box">
+            <p><strong>⚠️ Important:</strong> Variables only exist while your program is running. They're temporary storage, not permanent files.</p>
+        </div>
+
+        <h3>Python's Dynamic Typing</h3>
+        <p>Unlike languages like C++ or Java where you must declare types (<code>int age = 20;</code>), Python <strong>infers</strong> the type automatically:</p>
+
+        <pre><code class="language-python">birr = 520          # Python sees 520 and thinks "that's an integer"
+student = "Abebe"  # Python sees quotes and thinks "that's a string"
+price = 49.99       # Python sees a decimal and thinks "that's a float"
+is_enrolled = True  # Python sees True and thinks "that's a boolean"</code></pre>
+
+        <p>You don't tell Python "this is an integer"—Python figures it out. This is called <strong>dynamic typing</strong> and makes Python beginner-friendly!</p>
+
+        <h2>Analogy</h2>
+        <p>A variable is like a <strong>labeled jar in your kitchen</strong>.</p>
+        <ul>
+            <li>The <strong>label</strong> is the variable name (e.g., "sugar")</li>
+            <li>The <strong>contents</strong> are the value (e.g., 2 cups of sugar)</li>
+            <li>You can <strong>check</strong> what's inside anytime (print the variable)</li>
+            <li>You can <strong>empty and refill</strong> it with something new (reassign the variable)</li>
+            <li>You can have many jars with different labels</li>
+        </ul>
+
+        <p>Just like you wouldn't label a jar <code>jar number 3</code> when you could call it <code>sugar</code>, you give variables meaningful names that describe what they hold.</p>
+
+        <h2>Visual (Mental Model)</h2>
+        <pre><code>Memory Representation:
+
+Variable Name    Arrow    Value         Type
+─────────────    ─────    ─────────    ──────
+price           ──────►   19.99        float
+name            ──────►   "Aisha"      string (str)
+age             ──────►   20           integer (int)
+is_active       ──────►   True         boolean (bool)
+
+
+Assignment Flow:
+
+    Write             Python              Store in Memory
+     ↓                  ↓                       ↓
+age = 20    →    Interpret: int    →    RAM: age → 20</code></pre>
+
+        <h2>Examples</h2>
+
+        <h3>Example 1: Basic Variable Creation (Simple)</h3>
+        <pre><code># Creating variables - Python assigns types automatically
+name = "Aisha"          # String (text)
+age = 20                # Integer (whole number)
+gpa = 3.8               # Float (decimal number)
+is_active = True        # Boolean (True/False)
+
+# Display all variables
+print(name, age, gpa, is_active)
+# Output: Aisha 20 3.8 True</code></pre>
+
+        <p><strong>What's happening:</strong></p>
+        <ul>
+            <li><code>=</code> is the <strong>assignment operator</strong> (stores value on right into variable on left)</li>
+            <li>Each variable gets its own type based on the value</li>
+            <li><code>print()</code> can display multiple values separated by spaces</li>
+        </ul>
+
+        <h3>Example 2: Variables Can Change (Intermediate)</h3>
+        <pre><code># Variables are called "variable" because they can vary (change)!
+
+score = 0
+print("Starting score:", score)  # Output: Starting score: 0
+
+score = 10  # Reassign - the old value (0) is replaced
+print("After level 1:", score)   # Output: After level 1: 10
+
+score = score + 5  # Use the current value to calculate a new one
+print("After bonus:", score)     # Output: After bonus: 15
+
+# You can even change the type (though usually you don't want to)
+score = "Game Over"
+print(score)  # Output: Game Over</code></pre>
+
+        <div class="info-box">
+            <p><strong>💡 Key insight:</strong> The <code>=</code> operator doesn't mean "equals" in math. It means "assign the value on the right to the variable on the left."</p>
+        </div>
+
+        <h3>Example 3: Checking Variable Types (Intermediate)</h3>
+        <pre><code># Use type() to see what type Python assigned
+
+name = "Aisha"
+age = 20
+gpa = 3.8
+is_active = True
+
+print(type(name))       # Output: &lt;class 'str'&gt;
+print(type(age))        # Output: &lt;class 'int'&gt;
+print(type(gpa))        # Output: &lt;class 'float'&gt;
+print(type(is_active))  # Output: &lt;class 'bool'&gt;
+
+# Why does this matter? Different types have different capabilities
+print(age + 5)      # Output: 25 (math works on numbers)
+# print(name + 5)   # ❌ ERROR: can't add string and number
+print(name + "!")   # Output: Aisha! (can combine strings)</code></pre>
+
+        <h3>Example 4: Telebirr Payment Calculation (Ethiopian Context 🇪🇹)</h3>
+        <pre><code class="language-python"># Telebirr mobile money transaction example
+# Telebirr is Ethiopia's largest mobile money platform by Ethio Telecom
+
+# Sender information
+sender_name = "Abebe Girma"
+sender_phone = "+251911234567"
+
+# Transaction details
+amount_birr = 500.00          # Amount to send in Ethiopian Birr
+telebirr_fee_rate = 0.01      # 1% service fee
+max_fee = 15.00               # Fee capped at 15 ETB
+
+# Calculate fee
+calculated_fee = amount_birr * telebirr_fee_rate
+actual_fee = min(calculated_fee, max_fee)
+recipient_gets = amount_birr - actual_fee
+
+# Recipient
+recipient_name = "Tigist Bekele"
+recipient_phone = "+251922345678"
+
+# Display transaction summary
+print("=" * 45)
+print("     TELEBIRR TRANSACTION SUMMARY")
+print("=" * 45)
+print(f"Sender:        {sender_name} ({sender_phone})")
+print(f"Recipient:     {recipient_name} ({recipient_phone})")
+print(f"Amount Sent:   {amount_birr:.2f} ETB")
+print(f"Service Fee:   {actual_fee:.2f} ETB")
+print(f"Amount Received: {recipient_gets:.2f} ETB")
+print("=" * 45)
+
+# Output:
+# Sender:        Abebe Girma (+251911234567)
+# Recipient:     Tigist Bekele (+251922345678)
+# Amount Sent:   500.00 ETB
+# Service Fee:   5.00 ETB
+# Amount Received: 495.00 ETB</code></pre>
+
+        <div class="info-box">
+            <p><strong>💡 Ethiopian context:</strong> Telebirr, operated by Ethio Telecom, processes millions of transactions daily. Python is used to automate fee calculations, generate receipts, and analyze transaction patterns for fraud detection in systems like this.</p>
+        </div>
+
+        <h2>Hands-On: Ethiopian Student Information Program</h2>
+        <p>Let's practice creating variables with Ethiopian names, cities, and real-world context.</p>
+
+        <h3>Step 1: Create a New File</h3>
+        <ol>
+            <li>Open your <code>python-projects</code> folder (or create it on your Desktop)</li>
+            <li>Create a new file called <code>student_info.py</code></li>
+            <li>Open it in VS Code or any text editor</li>
+        </ol>
+
+        <h3>Step 2: Create Variables for Student Information</h3>
+        <pre><code class="language-python"># student_info.py - Store and display Ethiopian student information
+
+# Student personal details
+first_name = "Hiwot"               # Replace with your first name
+last_name = "Tadesse"              # Replace with your last name
+city = "Addis Ababa"               # Your city (Hawassa, Bahir Dar, Mekelle...)
+university = "Addis Ababa University"  # Your university
+year_of_birth = 2004               # Replace with your birth year
+current_year = 2026
+
+# Academic information
+field_of_study = "Computer Science"
+year_of_study = 2
+cgpa = 3.65
+
+# Calculate age
+age = current_year - year_of_birth
+
+# Display student profile
+print("=" * 45)
+print("    NEBAZ AI ACADEMY — STUDENT PROFILE")
+print("=" * 45)
+print(f"Name:          {first_name} {last_name}")
+print(f"City:          {city}")
+print(f"University:    {university}")
+print(f"Field:         {field_of_study}, Year {year_of_study}")
+print(f"CGPA:          {cgpa}")
+print(f"Age:           {age} years old")
+print("=" * 45)</code></pre>
+
+        <h3>Step 3: Run Your Program</h3>
+        <pre><code>python student_info.py</code></pre>
+
+        <h3>Step 4: Expected Output</h3>
+        <pre><code>==============================================
+    NEBAZ AI ACADEMY — STUDENT PROFILE
+==============================================
+Name:          Hiwot Tadesse
+City:          Addis Ababa
+University:    Addis Ababa University
+Field:         Computer Science, Year 2
+CGPA:          3.65
+Age:           22 years old
+==============================================</code></pre>
+
+        <h2>Common Mistakes</h2>
+
+        <h3>Mistake 1: Using Spaces in Variable Names</h3>
+        <p><strong>Problem:</strong> Variable names cannot contain spaces.</p>
+        <pre><code># ❌ WRONG:
+first name = "Aisha"
+# SyntaxError: invalid syntax
+
+# ✅ CORRECT:
+first_name = "Aisha"  # Use underscores (snake_case)
+firstName = "Aisha"   # Or camelCase (less common in Python)</code></pre>
+
+        <div class="warning-box">
+            <p><strong>⚠️ Prevention tip:</strong> Always use <code>snake_case</code> for variable names in Python: <code>user_score</code>, <code>total_price</code>, <code>is_active</code>.</p>
+        </div>
+
+        <h3>Mistake 2: Case Sensitivity</h3>
+        <p><strong>Problem:</strong> Python treats <code>Name</code>, <code>name</code>, and <code>NAME</code> as three different variables.</p>
+        <pre><code>name = "Aisha"
+Name = "Bob"
+NAME = "Charlie"
+
+print(name)  # Output: Aisha
+print(Name)  # Output: Bob
+print(NAME)  # Output: Charlie
+
+# These are three separate variables!</code></pre>
+
+        <h3>Mistake 3: Using Reserved Keywords</h3>
+        <p><strong>Problem:</strong> You can't name variables after Python's built-in words.</p>
+        <pre><code># ❌ WRONG - These are Python keywords:
+for = 10      # SyntaxError
+if = 20       # SyntaxError
+class = 30    # SyntaxError
+print = 40    # ⚠️ This "works" but breaks print()!
+
+# ✅ CORRECT - Add extra context:
+for_loop_count = 10
+if_condition = 20
+class_name = 30
+print_count = 40</code></pre>
+
+        <h2>Mini-Project: Ethiopian Coffee Export Price Calculator 🇪🇹☕</h2>
+        <p><strong>Goal:</strong> Build a program that calculates coffee export prices using real Ethiopian coffee grades and pricing variables.</p>
+
+        <h3>Project Requirements:</h3>
+        <ul>
+            <li>✅ Store coffee grade, weight, and base price as variables</li>
+            <li>✅ Apply export tax and shipping cost calculations</li>
+            <li>✅ Display a formatted export invoice in Birr and USD</li>
+            <li>✅ Use f-strings for the output</li>
+        </ul>
+
+        <h3>Complete Implementation</h3>
+        <pre><code class="language-python"># coffee_export.py - Ethiopian Coffee Export Price Calculator
+# Ethiopia is the birthplace of coffee & one of the world's top exporters
+
+# Coffee details (Ethiopian Commodity Exchange grades)
+coffee_grade = "Yirgacheffe Grade 1"
+exporter_name = "Kebede Alemu Trading PLC"
+weight_kg = 60                    # One standard coffee bag
+base_price_per_kg_usd = 4.50      # International market price
+
+# Costs and rates
+exchange_rate = 57.5              # 1 USD = 57.5 ETB (approximate)
+export_tax_rate = 0.08            # 8% export tax
+shipping_cost_usd = 120.0         # Freight from Djibouti port
+dry_milling_usd = 0.30            # Per kg processing
+
+# Calculations
+base_total_usd = base_price_per_kg_usd * weight_kg
+dry_milling_total = dry_milling_usd * weight_kg
+export_tax = base_total_usd * export_tax_rate
+total_cost_usd = base_total_usd + dry_milling_total + shipping_cost_usd + export_tax
+total_cost_birr = total_cost_usd * exchange_rate
+profit_usd = base_total_usd - export_tax - dry_milling_total - (shipping_cost_usd / 2)
+
+# Display invoice
+print("=" * 50)
+print("   ETHIOPIAN COFFEE EXPORT INVOICE")
+print("=" * 50)
+print(f"Exporter:       {exporter_name}")
+print(f"Grade:          {coffee_grade}")
+print(f"Weight:         {weight_kg} kg")
+print(f"Base Price:     ${base_price_per_kg_usd:.2f}/kg")
+print(f"Base Total:     ${base_total_usd:.2f}")
+print(f"Dry Milling:    ${dry_milling_total:.2f}")
+print(f"Export Tax:     ${export_tax:.2f} (8%)")
+print(f"Shipping:       ${shipping_cost_usd:.2f}")
+print("-" * 50)
+print(f"TOTAL (USD):    ${total_cost_usd:.2f}")
+print(f"TOTAL (ETB):    {total_cost_birr:,.2f} Birr")
+print(f"Est. Profit:    ${profit_usd:.2f}")
+print("=" * 50)</code></pre>
+
+        <h2>Summary</h2>
+
+        <h3>Key Takeaways:</h3>
+        <ul>
+            <li><strong>Variables store values with names you choose</strong> — Instead of remembering complex memory addresses, use meaningful names like <code>user_score</code> or <code>product_price</code></li>
+            <li><strong>Use snake_case for naming</strong> — Python convention is <code>lowercase_with_underscores</code>, not <code>camelCase</code> or <code>PascalCase</code></li>
+            <li><strong>Types are inferred automatically</strong> — You don't declare types; Python figures them out from the value you assign</li>
+            <li><strong>Variables are mutable</strong> — You can change a variable's value anytime by reassigning it</li>
+            <li><strong>The <code>=</code> operator assigns, not equals</strong> — Think "store the value on the right into the variable on the left"</li>
+        </ul>
+
+        <h3>Variable Naming Best Practices:</h3>
+        <p><strong>✅ DO:</strong></p>
+        <ul>
+            <li>Use descriptive names: <code>user_score</code> not <code>us</code></li>
+            <li>Use <code>snake_case</code>: <code>first_name</code> not <code>firstName</code></li>
+            <li>Start with lowercase letters</li>
+            <li>Use plurals for collections: <code>users</code>, <code>scores</code></li>
+            <li>Be consistent throughout your code</li>
+        </ul>
+
+        <p><strong>❌ DON'T:</strong></p>
+        <ul>
+            <li>Use single letters (except in loops: <code>i</code>, <code>j</code>)</li>
+            <li>Use reserved keywords: <code>for</code>, <code>class</code>, <code>if</code></li>
+            <li>Start with numbers: <code>1st_place</code></li>
+            <li>Use special characters: <code>user@name</code>, <code>total$</code></li>
+            <li>Be vague: <code>x</code>, <code>temp</code>, <code>data</code> (unless context is clear)</li>
+        </ul>
+
+        <div class="info-box">
+            <p><strong>💡 Remember:</strong> Variables are the building blocks of programming. Every program you write will use them. The better you name them, the easier your code is to read and maintain. Don't rush—take time to choose good names! 🐍</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Variables in Python</h2>
+                <p class="quiz-description">Answer these questions to check your understanding of Python variables</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. Which of the following is a valid variable name in Python?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">2cool_name</div>
+                    <div class="quiz-option" data-correct="true">user_name</div>
+                    <div class="quiz-option" data-correct="false">user-name</div>
+                    <div class="quiz-option" data-correct="false">class</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What will happen when you run this code: <code>x = 5</code> then <code>x = "hello"</code>?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Python will throw an error</div>
+                    <div class="quiz-option" data-correct="true">x will now store the string "hello"</div>
+                    <div class="quiz-option" data-correct="false">x will store both 5 and "hello"</div>
+                    <div class="quiz-option" data-correct="false">The first assignment will be ignored</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What naming convention is recommended for Python variables?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">camelCase (e.g., userName)</div>
+                    <div class="quiz-option" data-correct="true">snake_case (e.g., user_name)</div>
+                    <div class="quiz-option" data-correct="false">PascalCase (e.g., UserName)</div>
+                    <div class="quiz-option" data-correct="false">kebab-case (e.g., user-name)</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. In Python, do you need to declare the type of a variable before using it?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Yes, always</div>
+                    <div class="quiz-option" data-correct="true">No, Python is dynamically typed</div>
+                    <div class="quiz-option" data-correct="false">Only for numbers</div>
+                    <div class="quiz-option" data-correct="false">Only for strings</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="about-python.html" class="btn btn-secondary">← Previous: About Python</a>
+                <a href="data_types.html" class="btn btn-primary">Next: Data Types →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master transfer learning and fine-tuning. Use pre-trained models to solve your problems efficiently with minimal data.">
+    <meta name="keywords" content="transfer learning, fine-tuning, pre-trained models, deep learning, ImageNet, BERT">
+    <title>Transfer Learning & Fine-tuning - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="transfer-learning-and-fine-tuning.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Transfer Learning</span>
+            </div>
+            <h1>Transfer Learning & Fine-tuning</h1>
+            <p class="tutorial-intro">Master the practical superpower of deep learning. Use pre-trained models to achieve great results with minimal time and data</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 6</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Why Transfer Learning? The Practical Superpower</h2>
+                
+                <p>
+                    Imagine training a neural network from scratch: you'd need millions of labeled examples, weeks of GPU time, and thousands of dollars in cloud costs. <strong>Transfer learning</strong> changes everything—leverage models pre-trained on massive datasets and achieve state-of-the-art results with just hundreds of examples in hours.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 The Core Idea:</strong> Knowledge learned from one task <strong>transfers</strong> to another. A model trained to recognize 1,000 object categories has learned general features (edges, textures, patterns) that work for <em>any</em> visual task—not just those 1,000 categories!</p>
+                </div>
+
+                <h3>The Economics: Training from Scratch vs Transfer Learning</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Training from Scratch</strong><br><br>
+                        <strong>Data needed:</strong> 1M+ labeled examples<br>
+                        <strong>Training time:</strong> Days to weeks<br>
+                        <strong>Compute cost:</strong> $1,000-$10,000+<br>
+                        <strong>Hardware:</strong> Multiple high-end GPUs<br>
+                        <strong>Expertise:</strong> Advanced ML engineering<br>
+                        <strong>Success rate:</strong> High risk of poor results<br><br>
+                        <em>Example: Training ResNet-50 on ImageNet takes 29 hours on 8× V100 GPUs!</em>
+                    </div>
+                    <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 6px;">
+                        <strong>✅ Transfer Learning</strong><br><br>
+                        <strong>Data needed:</strong> 100-1,000 examples<br>
+                        <strong>Training time:</strong> Minutes to hours<br>
+                        <strong>Compute cost:</strong> $0-$50<br>
+                        <strong>Hardware:</strong> Laptop CPU or single GPU<br>
+                        <strong>Expertise:</strong> Basic PyTorch/TensorFlow<br>
+                        <strong>Success rate:</strong> High (proven architectures)<br><br>
+                        <em>Example: Fine-tune pre-trained ResNet-50 on new task in 30 minutes on free Colab!</em>
+                    </div>
+                </div>
+
+                <h3>Real-World Success Stories</h3>
+                <div class="example-box">
+                    <strong>🏥 Medical Imaging:</strong> Dermatology startup used transfer learning (ImageNet → skin lesions) to match dermatologist accuracy with just 2,000 images. Training from scratch would need 100,000+ images.<br><br>
+
+                    <strong>🐶 Dog Breed Classification:</strong> Stanford's dog breed classifier achieved 87% accuracy using transfer learning with 20,000 images. From scratch would need 1M+ images and months of training.<br><br>
+
+                    <strong>📱 Mobile App Deployment:</strong> Indie developer built plant disease detector using MobileNetV2 transfer learning, trained on laptop in 2 hours. No cloud costs, deployable to smartphones.<br><br>
+
+                    <strong>🌾 Agriculture:</strong> Farmers use transfer learning models for crop disease detection with 500 labeled images per disease. Traditional ML would need 50,000+ images per class.
+                </div>
+
+                <h3>What Gets Transferred?</h3>
+                <p>
+                    Pre-trained models have learned hierarchical features that generalize across tasks:
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Computer Vision (ImageNet pre-training):</strong><br><br>
+                    <strong>Early layers:</strong> Edges, corners, colors, basic shapes<br>
+                    → <em>Universal! Work for any image task</em><br><br>
+                    
+                    <strong>Middle layers:</strong> Textures, patterns, simple object parts (eyes, wheels, petals)<br>
+                    → <em>Highly transferable across domains</em><br><br>
+                    
+                    <strong>Late layers:</strong> High-level features specific to ImageNet classes<br>
+                    → <em>These we replace or fine-tune for new task</em><br><br>
+
+                    <strong>Natural Language Processing (Wikipedia/Books pre-training):</strong><br><br>
+                    <strong>Early layers:</strong> Token embeddings, basic syntax, word relationships<br>
+                    → <em>Universal language understanding</em><br><br>
+                    
+                    <strong>Middle layers:</strong> Grammar, sentence structure, semantics<br>
+                    → <em>Transfer to any text task</em><br><br>
+                    
+                    <strong>Late layers:</strong> Task-specific patterns (e.g., question-answer matching)<br>
+                    → <em>Adapted during fine-tuning</em>
+                </div>
+
+                <h3>When Does Transfer Learning Work?</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Strong Transfer</h3>
+                        <p><strong>Similar domains:</strong> ImageNet → other natural images, BERT → other English text</p>
+                        <p><strong>Examples:</strong><br>• Medical X-rays (similar to natural photos)<br>• Sentiment analysis (similar to BERT's text)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚠️</div>
+                        <h3>Moderate Transfer</h3>
+                        <p><strong>Different but related:</strong> Photos → satellite images, English → other languages</p>
+                        <p><strong>Examples:</strong><br>• Aerial imagery<br>• Multilingual NLP</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Weak Transfer</h3>
+                        <p><strong>Very different domains:</strong> Photos → audio spectrograms, English → genomic sequences</p>
+                        <p><strong>Strategy:</strong> Still try—even weak transfer beats random initialization!</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>🎯 Bottom Line:</strong> Transfer learning is the <strong>#1 practical technique</strong> in deep learning. It's how Netflix, Spotify, Google Photos, and thousands of startups build AI with limited resources. Master this, and you can build production systems!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📚 Pre-trained Model Zoo: Your Starting Point</h2>
+                
+                <div class="info-box">
+                    <p><strong>💡 What's Pre-trained?</strong> A pre-trained model is a neural network that researchers trained on massive datasets (ImageNet's 14M images, Wikipedia's 2.5B words) using thousands of GPU-hours. They share the weights publicly so <strong>you don't have to repeat this expensive work</strong>!</p>
+                    <p style="margin-top: 0.75rem;"><strong>Think of it like:</strong> Using a scientific calculator instead of deriving calculus from scratch. The hard work is done—you focus on your problem.</p>
+                </div>
+
+                <h3>Computer Vision Models</h3>
+                <p>
+                    Most vision models are pre-trained on <strong>ImageNet</strong> (14 million images, 1,000 categories). They've learned to recognize objects, textures, scenes—ready to adapt to your task.
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Model</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Parameters</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Accuracy</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Speed</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>ResNet-50</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">25M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">76%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Fast</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Great baseline, proven reliability</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>ResNet-101/152</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">44M/60M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">78%/79%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Medium</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">When accuracy matters more than speed</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>EfficientNet-B0</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">5M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">77%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Very Fast</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Mobile/edge deployment, best efficiency</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>EfficientNet-B7</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">66M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">84%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Slow</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Maximum accuracy, research</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>MobileNetV2</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">3.5M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">72%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Very Fast</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Mobile apps, lightweight, real-time</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Vision Transformer (ViT)</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">86M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">85%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Medium</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">State-of-the-art, large datasets</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Inception-v3</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">24M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">78%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Medium</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Multi-scale features, good default</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Natural Language Processing Models</h3>
+                <p>
+                    NLP models are pre-trained on billions of words from books, Wikipedia, web crawls. They understand grammar, semantics, world knowledge—ready for your text task.
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #10b981; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Model</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Parameters</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Type</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>BERT-base</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">110M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sentiment, classification, NER, Q&A</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>BERT-large</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">340M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">When accuracy is critical, more compute</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>RoBERTa</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">125M/355M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Improved BERT, better performance</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>DistilBERT</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">66M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">40% smaller, 60% faster, 95% performance</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>GPT-2</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">117M-1.5B</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Decoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Text generation, completion, chat</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>T5-small/base/large</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">60M-770M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Enc-Dec</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Translation, summarization, Q&A</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>ALBERT</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">12M-235M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Encoder</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Lightweight BERT alternative</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Quick Selection Guide</h3>
+                <div class="example-box">
+                    <strong>🎯 Choose Your Model:</strong><br><br>
+                    
+                    <strong>For Computer Vision:</strong><br>
+                    • <strong>Starting out?</strong> → ResNet-50 (tried and true)<br>
+                    • <strong>Need speed/mobile?</strong> → MobileNetV2 or EfficientNet-B0<br>
+                    • <strong>Maximum accuracy?</strong> → EfficientNet-B7 or ViT<br>
+                    • <strong>Good balance?</strong> → EfficientNet-B3 or ResNet-101<br><br>
+
+                    <strong>For Natural Language Processing:</strong><br>
+                    • <strong>Classification/NER/Q&A?</strong> → BERT-base or RoBERTa<br>
+                    • <strong>Text generation?</strong> → GPT-2 (or GPT-3 via API)<br>
+                    • <strong>Translation/summarization?</strong> → T5<br>
+                    • <strong>Limited compute?</strong> → DistilBERT or ALBERT<br>
+                    • <strong>Maximum performance?</strong> → BERT-large or RoBERTa-large
+                </div>
+
+                <h3>Where to Find Pre-trained Models</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🤗</div>
+                        <h3>Hugging Face Hub</h3>
+                        <p><strong>hub.huggingface.co</strong></p>
+                        <p>100,000+ models for NLP, vision, audio</p>
+                        <p>One-line loading with transformers library</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔥</div>
+                        <h3>PyTorch Hub</h3>
+                        <p><strong>pytorch.org/hub</strong></p>
+                        <p>Curated models from top research labs</p>
+                        <p>Easy integration with PyTorch</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>TensorFlow Hub</h3>
+                        <p><strong>tfhub.dev</strong></p>
+                        <p>TensorFlow/Keras ready models</p>
+                        <p>Vision, text, audio, video</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Model Zoos</h3>
+                        <p><strong>TIMM, OpenMMLab</strong></p>
+                        <p>Specialized collections (vision, detection)</p>
+                        <p>State-of-the-art implementations</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ Pro Tip:</strong> Don't overthink model choice! ResNet-50 or BERT-base work great for 90% of tasks. Start simple, upgrade only if needed. The pre-trained weights matter way more than model architecture differences.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Two Transfer Learning Strategies</h2>
+                
+                <p>
+                    There are two main approaches to transfer learning, each with different tradeoffs. Choose based on your data size and similarity to the pre-training domain.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">❄️</div>
+                        <h3>1. Feature Extraction (Frozen)</h3>
+                        <p><strong>Strategy:</strong> Freeze pre-trained layers, train only new classifier on top</p>
+                        <p><strong>Speed:</strong> Fast (few parameters to train)</p>
+                        <p><strong>Data needs:</strong> 100-1,000 examples</p>
+                        <p><strong>When:</strong> Small dataset, similar domain</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔥</div>
+                        <h3>2. Fine-tuning (Unfrozen)</h3>
+                        <p><strong>Strategy:</strong> Unfreeze layers, train all with very low learning rate</p>
+                        <p><strong>Speed:</strong> Slower (all parameters update)</p>
+                        <p><strong>Data needs:</strong> 1,000-10,000+ examples</p>
+                        <p><strong>When:</strong> Larger dataset, different domain</p>
+                    </div>
+                </div>
+
+                <h3>Decision Tree: Which Strategy?</h3>
+                <div style=\"background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;\">\n                    <strong>Question 1: How much data do you have?</strong><br>\n                    • <strong>&lt; 500 examples:</strong> Feature extraction only (risk of overfitting)<br>\n                    • <strong>500-2,000 examples:</strong> Try feature extraction first, then fine-tune top layers<br>\n                    • <strong>2,000-10,000 examples:</strong> Fine-tune top 25% of layers<br>\n                    • <strong>&gt; 10,000 examples:</strong> Fine-tune all layers (or most of them)<br><br>\n\n                    <strong>Question 2: How similar is your task to ImageNet/Wikipedia?</strong><br>\n                    • <strong>Very similar (e.g., ImageNet → dogs/cats):</strong> Feature extraction works great<br>\n                    • <strong>Moderately similar (e.g., photos → medical images):</strong> Fine-tune top layers<br>\n                    • <strong>Different (e.g., photos → satellite images):</strong> Fine-tune more layers<br>\n                    • <strong>Very different (e.g., photos → audio spectrograms):</strong> Fine-tune all, or consider training from scratch\n                </div>\n\n                <h3>Strategy 1: Feature Extraction (Frozen Backbone)</h3>\n                <p>\n                    Use the pre-trained model as a <strong>fixed feature extractor</strong>. The convolutional base extracts features, your new classifier learns to map them to your classes.\n                </p>\n\n                <div class=\"info-box\">\n                    <p><strong>💡 Intuition:</strong> Imagine using a pre-trained model as a \"smart image-to-feature converter.\" It turns raw images into rich 2048-dimensional feature vectors. You just train a simple classifier on top of these features\u2014much easier than learning from pixels!</p>\n                </div>\n\n                <pre><code class=\"language-python\"># ============ FEATURE EXTRACTION: COMPLETE EXAMPLE ============\nimport tensorflow as tf\nfrom tensorflow.keras.applications import ResNet50\nfrom tensorflow.keras import layers, models\nimport numpy as np\n\n# Step 1: Load pre-trained ResNet50 (without top classification layer)\nbase_model = ResNet50(\n    weights='imagenet',        # Use ImageNet weights\n    include_top=False,         # Remove final dense layers\n    input_shape=(224, 224, 3)  # Standard ImageNet size\n)\n\n# Step 2: FREEZE the base model (critical!)\nbase_model.trainable = False\n\nprint(f\"Base model has {len(base_model.layers)} layers\")\nprint(f\"Trainable: {base_model.trainable}\")  # Should be False\n\n# Step 3: Build new model with custom classifier\nmodel = models.Sequential([\n    # Pre-trained feature extractor\n    base_model,\n    \n    # Global pooling: (7, 7, 2048) → (2048,)\n    layers.GlobalAveragePooling2D(),\n    \n    # Optional: add dense layer for more capacity\n    layers.Dense(256, activation='relu'),\n    layers.BatchNormalization(),\n    layers.Dropout(0.5),  # Prevent overfitting\n    \n    # Final classification layer (YOUR classes)\n    layers.Dense(10, activation='softmax')  # 10 classes example\n])\n\n# Step 4: Compile with standard settings\nmodel.compile(\n    optimizer='adam',  # Can use higher LR since base is frozen\n    loss='categorical_crossentropy',\n    metrics=['accuracy']\n)\n\nprint(model.summary())\n\n# Count parameters\ntrainable_params = sum([tf.size(w).numpy() for w in model.trainable_weights])\nprint(f\"\\nTrainable parameters: {trainable_params:,}\")  # Only ~0.5M (classifier only)\n\n# Step 5: Train (FAST! Only training classifier)\nhistory = model.fit(\n    train_dataset,\n    epochs=10,\n    validation_data=val_dataset,\n    callbacks=[\n        tf.keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True)\n    ]\n)\n\n# Step 6: Evaluate\ntest_loss, test_acc = model.evaluate(test_dataset)\nprint(f\"Test accuracy: {test_acc:.4f}\")</code></pre>\n\n                <div class=\"example-box\">\n                    <strong>🎯 Feature Extraction Results:</strong><br><br>\n                    <strong>Pros:</strong><br>\n                    ✅ Very fast training (minutes, not hours)<br>\n                    ✅ Works with tiny datasets (100-500 examples)<br>\n                    ✅ Low risk of overfitting<br>\n                    ✅ Can train on CPU<br>\n                    ✅ Stable, predictable results<br><br>\n\n                    <strong>Cons:</strong><br>\n                    ❌ Lower ceiling on accuracy<br>\n                    ❌ Can't adapt low-level features<br>\n                    ❌ Less effective for very different domains<br><br>\n\n                    <strong>Typical accuracy gain:</strong> 70-85% accuracy on most tasks with 500-1000 examples<br>\n                    <strong>vs From scratch:</strong> 40-50% accuracy with same data\n                </div>\n\n                <h3>Strategy 2: Fine-tuning (Unfrozen Backbone)</h3>\n                <p>\n                    <strong>Unfreeze</strong> some or all pre-trained layers and train with a <strong>very low learning rate</strong>. This allows the model to adapt pre-trained features to your specific domain.\n                </p>\n\n                <div class=\"warning-box\">\n                    <p><strong>⚠️ Critical Rule:</strong> When fine-tuning, ALWAYS use learning rate <strong>10-100x lower</strong> than training from scratch (e.g., 1e-5 instead of 1e-3). High learning rates will destroy the pre-trained weights!</p>\n                </div>\n\n                <pre><code class=\"language-python\"># ============ FINE-TUNING: COMPLETE EXAMPLE ============\nimport tensorflow as tf\nfrom tensorflow.keras.applications import ResNet50\nfrom tensorflow.keras import layers, models\n\n# Step 1: Start with feature extraction model (from previous section)\nbase_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))\nbase_model.trainable = False\n\nmodel = models.Sequential([\n    base_model,\n    layers.GlobalAveragePooling2D(),\n    layers.Dense(256, activation='relu'),\n    layers.Dropout(0.5),\n    layers.Dense(10, activation='softmax')\n])\n\nmodel.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])\n\n# Train classifier first (feature extraction phase)\nprint(\"Phase 1: Training classifier only...\")\nhistory1 = model.fit(train_dataset, epochs=10, validation_data=val_dataset)\n\n# Step 2: UNFREEZE base model for fine-tuning\nbase_model.trainable = True\n\nprint(f\"\\nBase model has {len(base_model.layers)} layers\")\n\n# Option A: Unfreeze ALL layers\n# (Use when you have 10,000+ examples)\nfor layer in base_model.layers:\n    layer.trainable = True\n\n# Option B: Unfreeze only TOP layers (RECOMMENDED)\n# (Use when you have 1,000-10,000 examples)\nfor layer in base_model.layers[:-30]:  # Freeze first 145 layers, unfreeze last 30\n    layer.trainable = False\nfor layer in base_model.layers[-30:]:\n    layer.trainable = True\n\nprint(f\"Trainable layers: {sum([layer.trainable for layer in base_model.layers])}\")\n\n# Step 3: Recompile with VERY LOW learning rate (critical!)\nmodel.compile(\n    optimizer=tf.keras.optimizers.Adam(learning_rate=1e-5),  # 100x lower!\n    loss='categorical_crossentropy',\n    metrics=['accuracy']\n)\n\n# Step 4: Fine-tune with careful monitoring\nprint(\"Phase 2: Fine-tuning top layers...\")\nhistory2 = model.fit(\n    train_dataset,\n    epochs=20,\n    validation_data=val_dataset,\n    callbacks=[\n        # Stop if validation loss increases (overfitting)\n        tf.keras.callbacks.EarlyStopping(\n            monitor='val_loss',\n            patience=5,\n            restore_best_weights=True\n        ),\n        # Reduce LR if plateau\n        tf.keras.callbacks.ReduceLROnPlateau(\n            monitor='val_loss',\n            factor=0.5,\n            patience=3,\n            min_lr=1e-7\n        )\n    ]\n)\n\n# Step 5: Evaluate\ntest_loss, test_acc = model.evaluate(test_dataset)\nprint(f\"\\nFinal test accuracy: {test_acc:.4f}\")</code></pre>\n\n                <h3>Progressive Fine-tuning Strategy</h3>\n                <p>\n                    For best results, fine-tune in stages: classifier → top layers → more layers. This prevents destroying pre-trained weights.\n                </p>\n\n                <div style=\"background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;\">\n                    <strong>Recommended Fine-tuning Schedule:</strong><br><br>\n                    \n                    <strong>Stage 1:</strong> Feature Extraction (Epochs 1-10)<br>\n                    • Freeze: Entire base model<br>\n                    • Train: Only classifier head<br>\n                    • Learning rate: 1e-3 (standard)<br>\n                    • Goal: Get classifier to reasonable accuracy<br><br>\n\n                    <strong>Stage 2:</strong> Fine-tune Top Block (Epochs 11-20)<br>\n                    • Unfreeze: Last 10-20 layers<br>\n                    • Learning rate: 1e-4 (10x lower)<br>\n                    • Goal: Adapt high-level features<br><br>\n\n                    <strong>Stage 3:</strong> Fine-tune More (Epochs 21-30, optional)<br>\n                    • Unfreeze: Last 30-50 layers<br>\n                    • Learning rate: 1e-5 (100x lower)<br>\n                    • Goal: Squeeze out final accuracy points<br><br>\n\n                    <strong>Rule of thumb:</strong> Each stage should improve validation accuracy by 1-5%. Stop when val accuracy plateaus!\n                </div>\n\n                <h3>Fine-tuning Results & Expectations</h3>\n                <div class=\"example-box\">\n                    <strong>📊 Typical Improvements:</strong><br><br>\n                    \n                    <strong>Feature Extraction Baseline:</strong> 82% accuracy<br>\n                    <strong>+ Fine-tune top 20 layers:</strong> 87% accuracy (+5%)<br>\n                    <strong>+ Fine-tune top 50 layers:</strong> 89% accuracy (+2%)<br>\n                    <strong>+ Fine-tune all layers:</strong> 90% accuracy (+1%)<br><br>\n\n                    <strong>Diminishing returns:</strong> Each stage gives less improvement. Stop when gain &lt; 1% (not worth the time).<br><br>\n\n                    <strong>Training time:</strong><br>\n                    • Feature extraction: 10 min (frozen backbone)<br>\n                    • Fine-tune 20 layers: 30 min<br>\n                    • Fine-tune 50 layers: 60 min<br>\n                    • Fine-tune all layers: 2 hours\n                </div>\n\n                <div class=\"success-box\">\n                    <p><strong>✅ Golden Rules for Fine-tuning:</strong></p>\n                    <ul style=\"margin-top: 0.75rem; line-height: 2;\">\n                        <li>🎓 <strong>Always start with feature extraction</strong> (train classifier first)</li>\n                        <li>🐌 <strong>Use 10-100x lower learning rate</strong> (1e-5 typical)</li>\n                        <li>🎯 <strong>Unfreeze progressively</strong> (top layers first, then deeper)</li>\n                        <li>👀 <strong>Monitor validation loss closely</strong> (stop if it increases)</li>\n                        <li>💾 <strong>Save best weights</strong> (use EarlyStopping with restore_best_weights)</li>\n                        <li>⏱️ <strong>Be patient</strong> (fine-tuning takes 5-10x longer than feature extraction)</li>\n                    </ul>\n                </div>\n            </section>"}, 
+</invoke>
+
+            <section class="content-section">
+                <h2>🤖 NLP Transfer Learning with Transformers</h2>
+                
+                <p>
+                    NLP transfer learning has revolutionized text tasks. Pre-trained models like BERT understand language deeply from billions of words. You fine-tune them on your specific task with just hundreds of examples.
+                </p>
+
+                <h3>Complete BERT Fine-tuning Pipeline</h3>
+                <pre><code class="language-python"># ============ COMPLETE NLP TRANSFER LEARNING ============
+from transformers import (
+    AutoTokenizer, AutoModelForSequenceClassification,
+    Trainer, TrainingArguments, DataCollatorWithPadding
+)
+from datasets import load_dataset, Dataset
+import numpy as np
+from sklearn.metrics import accuracy_score, f1_score
+import torch
+
+# Step 1: Load pre-trained model and tokenizer
+model_name = "bert-base-uncased"  # 110M parameters, trained on Wikipedia+BookCorpus
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name,
+    num_labels=2  # Binary classification (positive/negative)
+)
+
+print(f"Model has {model.num_parameters():,} parameters")
+print(f"Fine-tuning only classification head? {False}")  # We'll fine-tune ALL layers
+
+# Step 2: Prepare your dataset
+# Example: Sentiment analysis on IMDB reviews
+train_texts = [
+    "This movie was fantastic! Loved every minute.",
+    "Terrible film, complete waste of time.",
+    "Absolutely brilliant performances all around.",
+    # ... your texts ...
+]
+train_labels = [1, 0, 1, ...]  # 1 = positive, 0 = negative
+
+val_texts = ["Pretty good movie, would recommend.", ...]
+val_labels = [1, ...]
+
+# Step 3: Tokenization (CRITICAL step in NLP)
+def tokenize_function(examples):
+    return tokenizer(
+        examples['text'],
+        padding='max_length',    # Pad to max length
+        truncation=True,         # Truncate if too long
+        max_length=128,          # BERT max is 512, but 128 is often enough
+        return_tensors='pt'      # Return PyTorch tensors
+    )
+
+# Convert to Hugging Face Dataset format
+train_dataset = Dataset.from_dict({'text': train_texts, 'label': train_labels})
+val_dataset = Dataset.from_dict({'text': val_texts, 'label': val_labels})
+
+# Apply tokenization
+train_dataset = train_dataset.map(tokenize_function, batched=True)
+val_dataset = val_dataset.map(tokenize_function, batched=True)
+
+# Step 4: Define training configuration
+training_args = TrainingArguments(
+    output_dir='./results',
+    
+    # Training hyperparameters
+    num_train_epochs=3,                    # Usually 2-4 epochs for fine-tuning
+    per_device_train_batch_size=16,        # Adjust based on GPU memory
+    per_device_eval_batch_size=32,
+    learning_rate=2e-5,                    # CRITICAL: Very low LR (typical: 2e-5 to 5e-5)
+    weight_decay=0.01,                     # L2 regularization
+    
+    # Evaluation & logging
+    evaluation_strategy="epoch",           # Evaluate after each epoch
+    save_strategy="epoch",
+    logging_steps=100,
+    load_best_model_at_end=True,
+    metric_for_best_model="accuracy",
+    
+    # Optimization
+    warmup_steps=500,                      # Gradual warmup of learning rate
+    fp16=torch.cuda.is_available(),        # Mixed precision training (faster)
+    
+    # Other
+    report_to="none",                      # Disable W&B/TensorBoard
+    seed=42
+)
+
+# Step 5: Define evaluation metrics
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    predictions = np.argmax(predictions, axis=1)
+    
+    return {
+        'accuracy': accuracy_score(labels, predictions),
+        'f1': f1_score(labels, predictions, average='weighted')
+    }
+
+# Step 6: Create Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+    eval_dataset=val_dataset,
+    compute_metrics=compute_metrics,
+    data_collator=DataCollatorWithPadding(tokenizer=tokenizer)
+)
+
+# Step 7: Train!
+print("\n========== Fine-tuning BERT ==========\n")
+trainer.train()
+
+# Step 8: Evaluate
+print("\n========== Evaluation ==========\n")
+eval_results = trainer.evaluate()
+print(f"Test Accuracy: {eval_results['eval_accuracy']:.4f}")
+print(f"Test F1: {eval_results['eval_f1']:.4f}")
+
+# Step 9: Save model
+model.save_pretrained('./fine_tuned_bert')
+tokenizer.save_pretrained('./fine_tuned_bert')
+
+# Step 10: Inference on new text
+def predict(text):
+    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+    outputs = model(**inputs)
+    probs = torch.nn.functional.softmax(outputs.logits, dim=-1)
+    prediction = torch.argmax(probs, dim=-1).item()
+    confidence = probs[0][prediction].item()
+    
+    return "positive" if prediction == 1 else "negative", confidence
+
+text = "This movie exceeded all my expectations!"
+label, conf = predict(text)
+print(f"\nText: {text}")
+print(f"Prediction: {label} (confidence: {conf:.2%})")</code></pre>
+
+                <h3>Different NLP Tasks with Transfer Learning</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>1. Text Classification (Sentiment, Topic, Intent)</strong><br>
+                    • Model: <code>AutoModelForSequenceClassification</code><br>
+                    • Examples: Sentiment analysis, spam detection, topic classification<br>
+                    • Typical data: 500-5,000 labeled texts<br><br>
+
+                    <strong>2. Named Entity Recognition (NER)</strong><br>
+                    • Model: <code>AutoModelForTokenClassification</code><br>
+                    • Examples: Extract names, locations, dates from text<br>
+                    • Typical data: 1,000-10,000 annotated sentences<br><br>
+
+                    <strong>3. Question Answering</strong><br>
+                    • Model: <code>AutoModelForQuestionAnswering</code><br>
+                    • Examples: Extract answers from context paragraphs<br>
+                    • Typical data: 1,000-5,000 question-context-answer triples<br><br>
+
+                    <strong>4. Text Generation</strong><br>
+                    • Model: <code>AutoModelForCausalLM</code> (GPT-2, GPT-3)<br>
+                    • Examples: Story writing, dialogue, code generation<br>
+                    • Typical data: 10,000-100,000 examples<br><br>
+
+                    <strong>5. Translation/Summarization</strong><br>
+                    • Model: <code>AutoModelForSeq2SeqLM</code> (T5, BART)<br>
+                    • Examples: Language translation, text summarization<br>
+                    • Typical data: 10,000-50,000 pairs
+                </div>
+
+                <div class="example-box">
+                    <strong>📊 NLP Transfer Learning Results:</strong><br><br>
+                    
+                    <strong>Sentiment Analysis (500 examples):</strong><br>
+                    • BERT fine-tuned: 89% accuracy (3 epochs, 5 min training)<br>
+                    • From scratch (LSTM): 72% accuracy (20 epochs, 30 min training)<br>
+                    • Improvement: +17% accuracy, 6x faster<br><br>
+
+                    <strong>Named Entity Recognition (1,000 sentences):</strong><br>
+                    • BERT fine-tuned: 92% F1 score<br>
+                    • From scratch (BiLSTM-CRF): 78% F1 score<br>
+                    • Improvement: +14% F1<br><br>
+
+                    <strong>Key insight:</strong> Transfer learning is EVEN MORE powerful for NLP than vision, since language understanding requires massive amounts of world knowledge that pre-training provides.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💡 Best Practices & Common Pitfalls</h2>
+                
+                <h3>Golden Rules for Transfer Learning Success</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎓</div>
+                        <h3>1. Always Start Simple</h3>
+                        <p>Begin with feature extraction (frozen base). Only move to fine-tuning if you need the extra accuracy and have enough data (1,000+ examples).</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🐌</div>
+                        <h3>2. Use Very Low Learning Rates</h3>
+                        <p><strong>Critical:</strong> 1e-5 to 5e-5 for fine-tuning (100x lower than training from scratch). High LR destroys pre-trained weights!</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>3. Unfreeze Progressively</h3>
+                        <p>Start with top layers, gradually unfreeze more if needed. Never unfreeze everything at once with a small dataset.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">👀</div>
+                        <h3>4. Monitor Validation Loss</h3>
+                        <p>Stop training when validation loss increases (overfitting). Use EarlyStopping with restore_best_weights=True.</p>
+                    </div>
+                </div>
+
+                <h3>Learning Rate Selection Guide</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;">
+                    <strong>Recommended Learning Rates:</strong><br><br>
+                    
+                    <strong>Feature Extraction (frozen base):</strong><br>
+                    • Classifier head: <code>1e-3</code> (0.001) - standard Adam LR<br>
+                    • Can use higher LR since base is frozen<br><br>
+
+                    <strong>Fine-tuning (unfrozen base):</strong><br>
+                    • Top 10-20 layers: <code>1e-4</code> (0.0001) - 10x lower<br>
+                    • Top 30-50 layers: <code>1e-5</code> (0.00001) - 100x lower<br>
+                    • All layers: <code>1e-5 to 5e-5</code> - very conservative<br><br>
+
+                    <strong>Layer-wise learning rates (advanced):</strong><br>
+                    • Early layers: <code>1e-6</code> (barely change)<br>
+                    • Middle layers: <code>1e-5</code><br>
+                    • Top layers: <code>1e-4</code><br>
+                    • Classifier head: <code>1e-3</code> (can change more)<br><br>
+
+                    <strong>Rule of thumb:</strong> If training is unstable or accuracy drops, your LR is too high. Divide by 10.
+                </div>
+
+                <h3>Common Mistakes & Solutions</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">❌ Mistake</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">⚠️ Symptoms</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">✅ Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Learning rate too high</strong><br>(e.g., 1e-3 for fine-tuning)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Loss explodes<br>• Accuracy drops<br>• NaN values</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Use <code>1e-5</code> or lower. Pre-trained weights are delicate!</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Unfreezing too early</strong><br>(before classifier converges)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Training unstable<br>• Poor final accuracy<br>• Weights corrupted</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Always train classifier first (10+ epochs) before unfreezing any layers</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Too much fine-tuning</strong><br>(unfreezing all layers with small dataset)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Perfect train accuracy<br>• Poor val accuracy<br>• Overfitting</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Freeze more layers. With &lt;5K examples, unfreeze max 20% of layers</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Wrong input size</strong><br>(e.g., 128×128 for model trained on 224×224)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Lower accuracy than expected<br>• Shape errors</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Always resize to model's expected input (224×224 for most vision models)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>No data augmentation</strong><br>(with small dataset)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Overfitting quickly<br>• Large train/val gap<br>• Poor generalization</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Use aggressive augmentation: rotation, flips, crops, color jitter</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Ignoring validation loss</strong><br>(training too long)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Val loss increases<br>• Train loss decreases<br>• Overfitting</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Use EarlyStopping(patience=5, restore_best_weights=True)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Debugging Checklist</h3>
+                <div class="warning-box">
+                    <p><strong>⚠️ Training Not Working? Check These:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✓ <strong>Base model is frozen?</strong> Check <code>base_model.trainable = False</code></li>
+                        <li>✓ <strong>Learning rate low enough?</strong> Should be 1e-5 or lower for fine-tuning</li>
+                        <li>✓ <strong>Input preprocessing correct?</strong> Use same normalization as pre-training (ImageNet: mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])</li>
+                        <li>✓ <strong>Batch size reasonable?</strong> Typical: 16-32 (smaller for larger models)</li>
+                        <li>✓ <strong>Enough data?</strong> Minimum 100 examples per class for feature extraction</li>
+                        <li>✓ <strong>Balanced classes?</strong> Imbalanced data needs class weights or oversampling</li>
+                        <li>✓ <strong>Validation split separate?</strong> Never use validation data in training!</li>
+                    </ul>
+                </div>
+
+                <h3>Performance Optimization Tips</h3>
+                <div class="success-box">
+                    <p><strong>🚀 Speed Up Training:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>💾 <strong>Use smaller models first:</strong> MobileNetV2 trains 3x faster than ResNet50 with similar accuracy</li>
+                        <li>🔢 <strong>Mixed precision training:</strong> Use <code>fp16=True</code> in Transformers or <code>mixed_precision</code> in TensorFlow (1.5-2x speedup)</li>
+                        <li>📦 <strong>Increase batch size:</strong> Max out GPU memory for faster training (but not so large that it hurts accuracy)</li>
+                        <li>🔄 <strong>Reduce input size:</strong> Try 128×128 or 160×160 instead of 224×224 (only if accuracy stays good)</li>
+                        <li>⚡ <strong>Use data pipeline optimization:</strong> <code>tf.data.Dataset.prefetch()</code>, <code>num_workers</code> in PyTorch DataLoader</li>
+                        <li>🎯 <strong>Feature extraction first:</strong> Get 80% of final accuracy in 10% of the time</li>
+                    </ul>
+                </div>
+
+                <h3>When NOT to Use Transfer Learning</h3>
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <strong>⚠️ Consider Training from Scratch When:</strong><br><br>
+                    
+                    1. <strong>Completely different domain:</strong> E.g., medical microscopy images (very different from ImageNet natural photos)<br>
+                    2. <strong>Different input modality:</strong> E.g., using ResNet (trained on RGB images) for audio spectrograms or thermal images<br>
+                    3. <strong>Massive dataset:</strong> If you have 1M+ labeled examples, from-scratch training might match or beat transfer learning<br>
+                    4. <strong>Unique architecture needs:</strong> E.g., real-time video processing requiring custom lightweight architecture<br>
+                    5. <strong>Very specific features:</strong> E.g., detecting subtle manufacturing defects that ImageNet features don't capture<br><br>
+
+                    <strong>Rule of thumb:</strong> Try transfer learning FIRST. It works 90% of the time. Only train from scratch if transfer learning demonstrably fails.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Key Takeaways</h2>
+                
+                <h3>Core Concepts Review</h3>
+                <div class="cards-grid">
+                    <div class="info-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <div class="card-icon">🎓</div>
+                        <h3 style="color: white;">Transfer Learning</h3>
+                        <p>Use knowledge from one task to solve another. Pre-trained models encode general patterns (edges, textures, grammar) that transfer across domains.</p>
+                        <p><strong>Key insight:</strong> Don't start from scratch—stand on the shoulders of giants!</p>
+                    </div>
+
+                    <div class="info-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                        <div class="card-icon">❄️</div>
+                        <h3 style="color: white;">Feature Extraction</h3>
+                        <p>Freeze pre-trained model, train only new classifier on top. Fast, works with tiny datasets (100-1,000 examples), gets you 80% of the way there.</p>
+                        <p><strong>Key insight:</strong> When to use: Small dataset or similar to pre-training domain</p>
+                    </div>
+
+                    <div class="info-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                        <div class="card-icon">🔥</div>
+                        <h3 style="color: white;">Fine-tuning</h3>
+                        <p>Unfreeze layers, train with VERY low learning rate (1e-5). Adapts pre-trained features to your domain for maximum accuracy. Needs more data (1,000-10,000+ examples).</p>
+                        <p><strong>Key insight:</strong> Progressive unfreezing + low LR = best results</p>
+                    </div>
+
+                    <div class="info-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white;">
+                        <div class="card-icon">🚀</div>
+                        <h3 style="color: white;">Model Selection</h3>
+                        <p>Vision: ResNet-50 (general), MobileNetV2 (mobile), EfficientNet (max accuracy). NLP: BERT (classification), GPT-2 (generation), T5 (seq2seq).</p>
+                        <p><strong>Key insight:</strong> Start with popular baseline, optimize later if needed</p>
+                    </div>
+                </div>
+
+                <h3>Decision Tree: Your Transfer Learning Strategy</h3>
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <strong style="font-size: 1.1em; color: #078930;">🎯 Follow This Decision Path:</strong><br><br>
+                    
+                    <strong>START HERE:</strong> How much labeled data do you have?<br><br>
+                    
+                    <div style="margin-left: 1.5rem;">
+                        <strong>A. &lt; 500 examples per class:</strong><br>
+                        → Use <strong>Feature Extraction only</strong><br>
+                        → Freeze entire base model<br>
+                        → Expect: 70-85% accuracy in 10-20 minutes<br>
+                        → If accuracy insufficient: Collect more data or use heavy data augmentation<br><br>
+                        
+                        <strong>B. 500-5,000 examples per class:</strong><br>
+                        → Start with <strong>Feature Extraction</strong> (10 epochs)<br>
+                        → Then <strong>Fine-tune top 10-20 layers</strong> (20 epochs, LR=1e-5)<br>
+                        → Expect: 85-92% accuracy in 30-60 minutes<br>
+                        → If accuracy insufficient: Fine-tune more layers progressively<br><br>
+                        
+                        <strong>C. 5,000-50,000 examples per class:</strong><br>
+                        → Feature Extraction first (10 epochs)<br>
+                        → <strong>Fine-tune top 50% of layers</strong> (30 epochs, LR=1e-5)<br>
+                        → Expect: 90-95% accuracy in 1-3 hours<br>
+                        → Can fine-tune all layers if needed<br><br>
+                        
+                        <strong>D. &gt; 50,000 examples per class:</strong><br>
+                        → Try transfer learning first (usually still wins)<br>
+                        → Can fine-tune ALL layers or even train from scratch<br>
+                        → Consider if your domain is very different from pre-training<br>
+                    </div>
+                    <br>
+                    
+                    <strong>THEN ASK:</strong> How similar is your task to ImageNet (vision) / Wikipedia (NLP)?<br><br>
+                    
+                    <div style="margin-left: 1.5rem;">
+                        <strong>Very Similar</strong> (e.g., ImageNet → dog breeds):<br>
+                        → Feature extraction often sufficient<br>
+                        → Expect strong results immediately<br><br>
+                        
+                        <strong>Moderately Similar</strong> (e.g., photos → medical images):<br>
+                        → Feature extraction + fine-tune top layers<br>
+                        → Most common scenario<br><br>
+                        
+                        <strong>Different</strong> (e.g., natural photos → satellite images):<br>
+                        → Fine-tune many/all layers with low LR<br>
+                        → Consider domain-specific pre-trained models if available<br><br>
+                        
+                        <strong>Very Different</strong> (e.g., RGB images → thermal/medical microscopy):<br>
+                        → Try transfer learning first (might still help!)<br>
+                        → If fails, consider training from scratch or finding domain-specific pre-trained model
+                    </div>
+                </div>
+
+                <h3>Mental Model: The Transfer Learning Ladder</h3>
+                <div class="info-box" style="background: linear-gradient(to right, #eff6ff, #ecfdf5);">
+                    <p><strong>💡 Climb the ladder based on your needs:</strong></p>
+                    <table style="width: 100%; margin-top: 1rem;">
+                        <tr>
+                            <td style="padding: 0.5rem; width: 40%;"><strong>🪜 Rung 1: Feature Extraction</strong></td>
+                            <td style="padding: 0.5rem;">Fastest, least data, 70-85% accuracy, 10 min training</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;"><strong>🪜 Rung 2: Fine-tune Top 20 Layers</strong></td>
+                            <td style="padding: 0.5rem;">Balanced, moderate data, 85-90% accuracy, 30 min training</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;"><strong>🪜 Rung 3: Fine-tune Top 50 Layers</strong></td>
+                            <td style="padding: 0.5rem;">Better accuracy, more data needed, 90-93% accuracy, 1 hour training</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;"><strong>🪜 Rung 4: Fine-tune All Layers</strong></td>
+                            <td style="padding: 0.5rem;">Maximum accuracy, lots of data, 93-95% accuracy, 2-3 hours training</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem;"><strong>🪜 Rung 5: Train from Scratch</strong></td>
+                            <td style="padding: 0.5rem;">Rarely needed, massive data, 95%+ accuracy, days of training</td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 1rem;"><strong>Strategy:</strong> Start at Rung 1. Climb only if you need more accuracy AND have the data/time. Most projects stop at Rung 2 or 3!</p>
+                </div>
+
+                <h3>Quick Reference: Vision vs NLP Transfer Learning</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Aspect</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Computer Vision</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">NLP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Pre-training data</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">ImageNet (1.4M images)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Wikipedia + Books (16GB text)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Popular models</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">ResNet-50, EfficientNet, ViT</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">BERT, GPT-2, RoBERTa, T5</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Min data for transfer</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100-500 images</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100-1,000 texts</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Typical fine-tuning LR</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">1e-5 to 5e-5</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">2e-5 to 5e-5</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Training time</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">10-60 min (feature extraction)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">5-30 min (feature extraction)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Data augmentation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Essential: rotation, flip, crop, color jitter</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Optional: back-translation, synonym replacement</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Transfer strength</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Strong for natural images, weaker for medical/satellite</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Very strong across most text tasks</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Practice Projects</h3>
+                <div class="cards-grid">
+                    <div class="example-box">
+                        <strong>🖼️ Project 1: Custom Image Classifier</strong><br>
+                        <strong>Task:</strong> Build a classifier for your own image dataset (e.g., plant species, product types, defect detection)<br>
+                        <strong>Dataset:</strong> 50-100 images per class (collect yourself or use Kaggle)<br>
+                        <strong>Approach:</strong> Feature extraction with ResNet-50, aggressive augmentation<br>
+                        <strong>Goal:</strong> Achieve 80%+ accuracy<br>
+                        <strong>Extensions:</strong> Try fine-tuning top layers, compare different base models (MobileNetV2, EfficientNet)
+                    </div>
+
+                    <div class="example-box">
+                        <strong>📝 Project 2: Sentiment Analyzer</strong><br>
+                        <strong>Task:</strong> Fine-tune BERT on product reviews (Amazon, Yelp, etc.)<br>
+                        <strong>Dataset:</strong> 1,000-5,000 labeled reviews (positive/negative/neutral)<br>
+                        <strong>Approach:</strong> Fine-tune BERT-base with Hugging Face Transformers<br>
+                        <strong>Goal:</strong> Beat simple baselines (naive Bayes, LSTM) by 10%+<br>
+                        <strong>Extensions:</strong> Try RoBERTa, DistilBERT; analyze what model learned with SHAP
+                    </div>
+
+                    <div class="example-box">
+                        <strong>🏥 Project 3: Medical Image Transfer Learning</strong><br>
+                        <strong>Task:</strong> Classify chest X-rays or skin lesions<br>
+                        <strong>Dataset:</strong> Public medical datasets (NIH ChestX-ray14, HAM10000)<br>
+                        <strong>Approach:</strong> Feature extraction → progressive fine-tuning<br>
+                        <strong>Goal:</strong> Match published benchmarks<br>
+                        <strong>Extensions:</strong> Try ImageNet vs medical-specific pre-trained models (CheXNet), interpret predictions with Grad-CAM
+                    </div>
+
+                    <div class="example-box">
+                        <strong>🤖 Project 4: Build a Question-Answering System</strong><br>
+                        <strong>Task:</strong> Extract answers from context paragraphs<br>
+                        <strong>Dataset:</strong> SQuAD dataset or create custom domain Q&A dataset<br>
+                        <strong>Approach:</strong> Fine-tune BERT for question answering (AutoModelForQuestionAnswering)<br>
+                        <strong>Goal:</strong> 70%+ exact match accuracy<br>
+                        <strong>Extensions:</strong> Deploy as web API, add retrieval component for multi-document QA
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations!</strong> You've mastered transfer learning—the most practical technique in deep learning!</p>
+                    <p style="margin-top: 1rem;">
+                        <strong>Key achievement:</strong> You can now build production-quality models with limited data and compute. This skill alone makes you effective at 90% of real-world deep learning projects.
+                    </p>
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the final Deep Learning tutorial, <strong>Generative Models & GANs</strong>, we'll shift from classification to creation—learning how to generate new images, text, and data with deep learning!
+                </p>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem;">
+                    <strong style="font-size: 1.2em;">🚀 Your Transfer Learning Toolkit:</strong><br><br>
+                    ✅ Understand when and why transfer learning works<br>
+                    ✅ Choose between feature extraction and fine-tuning<br>
+                    ✅ Select appropriate pre-trained models for vision and NLP<br>
+                    ✅ Implement complete transfer learning pipelines in TensorFlow and PyTorch<br>
+                    ✅ Debug common issues and optimize performance<br>
+                    ✅ Deploy transfer learning models to production<br><br>
+                    <strong>You're now equipped to build state-of-the-art models efficiently!</strong>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of transfer learning and fine-tuning!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="C">
+                        <h4>1. What is the main idea behind transfer learning?</h4>
+                        <div class="quiz-option" data-value="A">A) Training a model from scratch on a small dataset</div>
+                        <div class="quiz-option" data-value="B">B) Using multiple models in an ensemble</div>
+                        <div class="quiz-option" data-value="C">C) Leveraging knowledge from a pretrained model for a new task</div>
+                        <div class="quiz-option" data-value="D">D) Transferring data between domains</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>2. In fine-tuning, what layers are typically updated?</h4>
+                        <div class="quiz-option" data-value="A">A) Only the input layer</div>
+                        <div class="quiz-option" data-value="B">B) The final layers and optionally some earlier layers</div>
+                        <div class="quiz-option" data-value="C">C) Only the batch normalization layers</div>
+                        <div class="quiz-option" data-value="D">D) None, weights remain frozen</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is feature extraction in the context of transfer learning?</h4>
+                        <div class="quiz-option" data-value="A">A) Using a pretrained model as a fixed feature extractor without updating weights</div>
+                        <div class="quiz-option" data-value="B">B) Extracting features manually from images</div>
+                        <div class="quiz-option" data-value="C">C) Training only the convolutional layers</div>
+                        <div class="quiz-option" data-value="D">D) Removing unnecessary features from the model</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. When is transfer learning most beneficial?</h4>
+                        <div class="quiz-option" data-value="A">A) When you have unlimited training data</div>
+                        <div class="quiz-option" data-value="B">B) When the task is completely unrelated to any existing models</div>
+                        <div class="quiz-option" data-value="C">C) When computational resources are unlimited</div>
+                        <div class="quiz-option" data-value="D">D) When you have limited data and similar tasks exist</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>5. What is domain adaptation?</h4>
+                        <div class="quiz-option" data-value="A">A) Adapting a model to run on different hardware</div>
+                        <div class="quiz-option" data-value="B">B) Training separate models for each domain</div>
+                        <div class="quiz-option" data-value="C">C) Transferring knowledge from a source domain to a different target domain</div>
+                        <div class="quiz-option" data-value="D">D) Creating synthetic training data</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="attention-and-transformers.html" class="btn btn-secondary">← Previous: Attention & Transformers</a>
+                <a href="generative-models-and-gans.html" class="btn btn-primary">Next: Generative Models →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

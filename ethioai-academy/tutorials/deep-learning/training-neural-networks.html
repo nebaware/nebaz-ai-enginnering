@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master neural network training. Learn optimizers, loss functions, gradient descent, and techniques to train networks effectively and avoid overfitting.">
+    <meta name="keywords" content="training neural networks, optimizers, gradient descent, loss functions, backpropagation, overfitting">
+    <title>Training Neural Networks - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="training-neural-networks.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Training Neural Networks</span>
+            </div>
+            <h1>Training Neural Networks</h1>
+            <p class="tutorial-intro">Master optimizers, loss functions, and proven techniques to train neural networks effectively while avoiding common pitfalls</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Training Neural Networks: The Learning Process</h2>
+                
+                <p>
+                    Training a neural network is fundamentally an <strong>optimization problem</strong>: we have a network with random weights, and we need to find the weight values that minimize prediction error. This iterative process combines forward propagation (making predictions), loss calculation (measuring error), backpropagation (computing gradients), and weight updates (learning).
+                </p>
+
+                <div class="info-box">
+                    <h3>The Training Cycle</h3>
+                    <p style="font-size: 1.05rem; line-height: 1.9; margin-top: 1rem;">
+                        <strong>1. Initialize:</strong> Start with random weights<br>
+                        <strong>2. Forward Pass:</strong> Feed batch through network → get predictions<br>
+                        <strong>3. Calculate Loss:</strong> Compare predictions to true labels → quantify error<br>
+                        <strong>4. Backward Pass:</strong> Compute gradients (how each weight affects loss)<br>
+                        <strong>5. Update Weights:</strong> Adjust weights using optimizer (gradient descent)<br>
+                        <strong>6. Repeat:</strong> Process next batch, continue for many epochs until convergence
+                    </p>
+                </div>
+
+                <h3>What Makes Training Successful?</h3>
+                <p>
+                    Training is successful when your network learns to <strong>generalize</strong> — it performs well on data it hasn't seen before, not just memorizing the training set. This requires balancing three key elements:
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Right Loss Function</h3>
+                        <p>Measures error appropriately for your task. Regression needs MSE, classification needs cross-entropy.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚙️</div>
+                        <h3>Effective Optimizer</h3>
+                        <p>Updates weights efficiently. Modern optimizers like Adam adapt learning rates automatically.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Good Hyperparameters</h3>
+                        <p>Learning rate, batch size, epochs — these control how learning happens.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Regularization</h3>
+                        <p>Prevents overfitting. Dropout, weight decay, early stopping keep models generalizable.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <strong>⚠️ Common Misconception:</strong> Training is NOT about perfect accuracy on training data. It's about learning patterns that generalize to new data. 100% training accuracy often means overfitting!
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Loss Functions: Quantifying Error</h2>
+                
+                <p>
+                    A <strong>loss function</strong> (also called cost function or objective function) measures how far your network's predictions are from the true values. It's a single number that quantifies "wrongness" — lower values mean better predictions. During training, the optimizer tries to minimize this loss by adjusting weights.
+                </p>
+
+                <div class="info-box">
+                    <strong>Key Insight:</strong> The choice of loss function is critical. Using the wrong loss function can make your network learn the wrong thing or fail to learn at all. The loss must match your task's objective.
+                </div>
+
+                <h3>Loss Functions for Regression</h3>
+
+                <h4>1. Mean Squared Error (MSE) - Most Popular</h4>
+                <p><strong>Formula:</strong> MSE = (1/n) Σ (y<sub>true</sub> - y<sub>pred</sub>)²</p>
+                <p><strong>What it does:</strong> Squares the difference between prediction and truth, then averages across all samples.</p>
+
+                <ul>
+                    <li>✅ Smooth and differentiable - great for gradient descent</li>
+                    <li>✅ Penalizes large errors heavily (error of 2 is 4× worse than error of 1)</li>
+                    <li>❌ Sensitive to outliers - one huge error can dominate</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>📈 Example: House Price Prediction</strong><br><br>
+                    True prices: [$200k, $300k, $400k]<br>
+                    Predicted: [$210k, $290k, $420k]<br>
+                    Errors: [10k, -10k, 20k]<br>
+                    Squared errors: [100M, 100M, 400M]<br>
+                    <strong>MSE = (100M + 100M + 400M) / 3 = 200M</strong><br>
+                    <strong>RMSE = √(200M) ≈ $14,142</strong> (more interpretable!)
+                </div>
+
+                <h4>2. Mean Absolute Error (MAE) - Robust to Outliers</h4>
+                <p><strong>Formula:</strong> MAE = (1/n) Σ |y<sub>true</sub> - y<sub>pred</sub>|</p>
+                <p>Takes absolute value of errors, then averages. Linear penalty for all errors.</p>
+                <ul>
+                    <li>✅ Robust to outliers - errors scale linearly</li>
+                    <li>✅ Interpretable - average error in same units as target</li>
+                    <li>❌ Not differentiable at 0 - can cause optimization issues</li>
+                </ul>
+
+                <h3>Loss Functions for Classification</h3>
+
+                <h4>3. Binary Cross-Entropy (Log Loss)</h4>
+                <p><strong>Formula:</strong> BCE = -(1/n) Σ [y·log(p) + (1-y)·log(1-p)]</p>
+                <p>Where: y = true label (0 or 1), p = predicted probability</p>
+
+                <p><strong>Why this formula?</strong> It comes from maximum likelihood estimation. We want to maximize the probability of correct predictions, which equals minimizing negative log probability.</p>
+
+                <ul>
+                    <li>✅ Penalizes confident wrong predictions heavily</li>
+                    <li>✅ Works with sigmoid output - perfect mathematical pairing</li>
+                    <li>✅ Smooth gradients for gradient descent</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>🎯 Example: Spam Classification</strong><br><br>
+                    <strong>Case 1 - Confident and Correct:</strong><br>
+                    True label: 1 (spam), Predicted: 0.95<br>
+                    Loss = -log(0.95) ≈ <strong>0.051</strong> ✅ Low!<br><br>
+
+                    <strong>Case 2 - Confident but Wrong:</strong><br>
+                    True label: 1 (spam), Predicted: 0.05<br>
+                    Loss = -log(0.05) ≈ <strong>2.996</strong> ❌ High penalty!<br><br>
+
+                    <strong>Case 3 - Uncertain:</strong><br>
+                    True label: 1 (spam), Predicted: 0.50<br>
+                    Loss = -log(0.50) ≈ <strong>0.693</strong> 😐 Medium
+                </div>
+
+                <h4>4. Categorical Cross-Entropy - Multi-Class</h4>
+                <p><strong>Formula:</strong> CCE = -(1/n) Σ<sub>samples</sub> Σ<sub>classes</sub> y<sub>c</sub>·log(p<sub>c</sub>)</p>
+                <p>Where: y<sub>c</sub> = 1 if sample is class c, else 0 (one-hot encoding)</p>
+
+                <ul>
+                    <li>✅ Works with softmax output - perfect for multi-class</li>
+                    <li>✅ Probabilistic interpretation based on maximum likelihood</li>
+                    <li>⚠️ Requires one-hot encoding: [0,1,0,0] not just class index</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>🖼️ Example: Image Classification (cat, dog, bird)</strong><br><br>
+                    True label: dog → One-hot: [0, 1, 0]<br>
+                    Predictions: [0.1, 0.8, 0.1] (80% confident it's dog)<br>
+                    Loss = -log(0.8) ≈ <strong>0.223</strong> ✅ Good!<br><br>
+
+                    If predictions were [0.4, 0.3, 0.3] (confused):<br>
+                    Loss = -log(0.3) ≈ <strong>1.204</strong> ❌ Higher - network uncertain
+                </div>
+
+                <h3>Comparison Table</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Loss Function</th>
+                            <th>Task Type</th>
+                            <th>Output Activation</th>
+                            <th>Key Property</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>MSE</strong></td>
+                            <td>Regression</td>
+                            <td>Linear / None</td>
+                            <td>Penalizes large errors heavily</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MAE</strong></td>
+                            <td>Regression</td>
+                            <td>Linear / None</td>
+                            <td>Robust to outliers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Binary Cross-Entropy</strong></td>
+                            <td>Binary Classification</td>
+                            <td>Sigmoid</td>
+                            <td>Probabilistic, smooth gradients</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Categorical Cross-Entropy</strong></td>
+                            <td>Multi-Class</td>
+                            <td>Softmax</td>
+                            <td>One-hot encoded labels</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sparse Categorical CE</strong></td>
+                            <td>Multi-Class</td>
+                            <td>Softmax</td>
+                            <td>Integer labels (memory efficient)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Implementation</h3>
+                <pre><code class="language-python">import tensorflow as tf
+
+# ============ REGRESSION ============
+model_regression = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(10,)),
+    tf.keras.layers.Dense(1)  # No activation for regression
+])
+model_regression.compile(optimizer='adam', loss='mse', metrics=['mae'])
+
+# ============ BINARY CLASSIFICATION ============
+model_binary = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(100,)),
+    tf.keras.layers.Dense(1, activation='sigmoid')  # Sigmoid for binary
+])
+model_binary.compile(optimizer='adam', loss='binary_crossentropy', 
+                     metrics=['accuracy'])
+
+# ============ MULTI-CLASS CLASSIFICATION ============
+model_multiclass = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(784,)),
+    tf.keras.layers.Dense(10, activation='softmax')  # Softmax
+])
+model_multiclass.compile(optimizer='adam', 
+                         loss='categorical_crossentropy',  # One-hot labels
+                         metrics=['accuracy'])
+
+# Or use sparse version for integer labels
+model_sparse = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(784,)),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+model_sparse.compile(optimizer='adam',
+                    loss='sparse_categorical_crossentropy',  # Integer labels
+                    metrics=['accuracy'])
+
+# ============ CUSTOM LOSS ============
+def custom_mse(y_true, y_pred):
+    return tf.reduce_mean(tf.square(y_true - y_pred))
+
+model.compile(optimizer='adam', loss=custom_mse)</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Quick Decision Guide:</strong>
+                    <ul style="margin-top: 1rem; line-height: 1.9;">
+                        <li><strong>Predicting continuous values?</strong> → MSE or MAE</li>
+                        <li><strong>Binary choice (yes/no)?</strong> → Binary Cross-Entropy + Sigmoid</li>
+                        <li><strong>Multiple categories?</strong> → Categorical Cross-Entropy + Softmax</li>
+                        <li><strong>Got outliers?</strong> → MAE or Huber Loss</li>
+                        <li><strong>Many classes (1000+)?</strong> → Sparse Categorical Cross-Entropy</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ Optimizers: How Networks Learn</h2>
+                
+                <p>
+                    Optimizers determine <strong>HOW to update weights</strong> based on calculated gradients. After backpropagation computes gradients, the optimizer decides how much to change each weight. Different optimizers use different strategies, from simple gradient descent to sophisticated adaptive methods.
+                </p>
+
+                <h3>The Core Update Rule</h3>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #078930; margin: 1rem 0;">
+                    <strong>Basic Gradient Descent:</strong><br>
+                    <div style="font-family: monospace; font-size: 1.1rem; margin: 1rem 0;">
+                        w<sub>new</sub> = w<sub>old</sub> - learning_rate × gradient
+                    </div>
+                    Move weights in the <em>opposite</em> direction of the gradient (downhill)
+                </div>
+
+                <p>
+                    The <strong>learning rate</strong> controls step size. Too small → slow learning. Too large → overshooting and instability. Modern optimizers adapt the learning rate automatically.
+                </p>
+
+                <h3>Common Optimizers</h3>
+
+                <h4>1. SGD (Stochastic Gradient Descent) - The Foundation</h4>
+                <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Update Rule:</strong> w = w - lr × ∇w<br>
+                    <strong>Key Idea:</strong> Update weights in direction opposite to gradient
+                </div>
+
+                <p><strong>Properties:</strong></p>
+                <ul>
+                    <li>✅ Simple and easy to understand</li>
+                    <li>✅ Memory efficient - no extra storage needed</li>
+                    <li>✅ Proven convergence guarantees (under right conditions)</li>
+                    <li>❌ Slow convergence - especially in "ravines"</li>
+                    <li>❌ Same learning rate for all parameters</li>
+                    <li>❌ Can get stuck in local minima</li>
+                    <li>❌ Requires careful learning rate tuning</li>
+                </ul>
+
+                <p><strong>When to use:</strong> When you need deterministic results or have limited memory. Often used with momentum (SGD + Momentum).</p>
+
+                <h4>2. SGD with Momentum - Accelerated Learning</h4>
+                <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Update Rule:</strong><br>
+                    v = β × v + ∇w  (accumulate velocity)<br>
+                    w = w - lr × v  (update with velocity)<br>
+                    <strong>Key Idea:</strong> Build up "velocity" in consistent directions, dampen oscillations
+                </div>
+
+                <p><strong>Properties:</strong></p>
+                <ul>
+                    <li>✅ Faster convergence than vanilla SGD</li>
+                    <li>✅ Reduces oscillations in steep dimensions</li>
+                    <li>✅ Can escape shallow local minima (momentum carries it through)</li>
+                    <li>✅ Typical β = 0.9 (90% of previous velocity retained)</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Analogy:</strong> Imagine a ball rolling down a hill. Momentum means it doesn't just move in the direction of the current slope — it accumulates speed. This helps it roll through small bumps and move faster in consistent downhill directions.
+                </div>
+
+                <h4>3. RMSprop - Adaptive Learning Rates</h4>
+                <div style="background: #e0e7ff; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Update Rule:</strong><br>
+                    s = β × s + (1-β) × (∇w)²  (exponential average of squared gradients)<br>
+                    w = w - lr × ∇w / √(s + ε)  (adapt learning rate per parameter)<br>
+                    <strong>Key Idea:</strong> Divide learning rate by running average of gradient magnitudes
+                </div>
+
+                <p><strong>Properties:</strong></p>
+                <ul>
+                    <li>✅ Adapts learning rate for each parameter individually</li>
+                    <li>✅ Works well with non-stationary objectives</li>
+                    <li>✅ Good for RNNs and online learning</li>
+                    <li>✅ Parameters with large gradients get smaller learning rates (stabilizes)</li>
+                </ul>
+
+                <p><strong>When to use:</strong> RNNs, non-stationary problems, or when gradients vary widely across parameters.</p>
+
+                <h4>4. Adam (Adaptive Moment Estimation) ⭐ Most Popular</h4>
+                <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Update Rule (simplified):</strong><br>
+                    m = β₁ × m + (1-β₁) × ∇w  (momentum, first moment)<br>
+                    v = β₂ × v + (1-β₂) × (∇w)²  (RMSprop, second moment)<br>
+                    w = w - lr × m / (√v + ε)  (combine both!)<br>
+                    <strong>Key Idea:</strong> Combines momentum + adaptive learning rates
+                </div>
+
+                <p><strong>Why Adam is the Default:</strong></p>
+                <ul>
+                    <li>✅ <strong>Adaptive per-parameter learning rates:</strong> Automatically adjusts step size</li>
+                    <li>✅ <strong>Momentum for acceleration:</strong> Fast convergence</li>
+                    <li>✅ <strong>Bias correction:</strong> Accurate estimates in early iterations</li>
+                    <li>✅ <strong>Works well with default settings:</strong> lr=0.001, β₁=0.9, β₂=0.999</li>
+                    <li>✅ <strong>Robust to hyperparameter choice:</strong> Forgiving configuration</li>
+                    <li>✅ <strong>Good for sparse gradients:</strong> NLP and recommender systems</li>
+                </ul>
+
+                <p><strong>Trade-offs:</strong></p>
+                <ul>
+                    <li>❌ More memory (stores m and v for each parameter)</li>
+                    <li>❌ Can sometimes converge to worse solutions than SGD (in some cases)</li>
+                    <li>❌ May need learning rate decay for best final performance</li>
+                </ul>
+
+                <div class="example-box">
+                    <strong>Real-world tip:</strong> Start with Adam (lr=0.001). If training is unstable or you need the absolute best final accuracy, try SGD with momentum (lr=0.01, momentum=0.9) with learning rate scheduling.
+                </div>
+
+                <h4>5. AdamW - Adam with Weight Decay</h4>
+                <p>
+                    Adam with proper weight decay (L2 regularization). Fixes a subtle issue in original Adam where weight decay and L2 regularization aren't equivalent. <strong>Recommended for modern transformer models.</strong>
+                </p>
+
+                <h3>Optimizer Comparison Table</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Optimizer</th>
+                            <th>Speed</th>
+                            <th>Memory</th>
+                            <th>Tuning Required</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SGD</strong></td>
+                            <td>Slow</td>
+                            <td>Low</td>
+                            <td>High</td>
+                            <td>When final accuracy matters most</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SGD + Momentum</strong></td>
+                            <td>Medium</td>
+                            <td>Low</td>
+                            <td>Medium</td>
+                            <td>CNNs with proper tuning</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RMSprop</strong></td>
+                            <td>Fast</td>
+                            <td>Medium</td>
+                            <td>Low</td>
+                            <td>RNNs, non-stationary problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adam</strong></td>
+                            <td>Fast</td>
+                            <td>Medium</td>
+                            <td>Very Low</td>
+                            <td>Default choice, most problems</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AdamW</strong></td>
+                            <td>Fast</td>
+                            <td>Medium</td>
+                            <td>Very Low</td>
+                            <td>Transformers, large models</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Learning Rate: The Most Important Hyperparameter</h3>
+                <p>
+                    Learning rate controls step size. Getting it right is crucial:
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <strong>Too Small (lr = 0.00001)</strong><br>
+                        🐌 Extremely slow learning<br>
+                        May not converge in reasonable time
+                    </div>
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <strong>Just Right (lr = 0.001)</strong><br>
+                        ✅ Steady progress<br>
+                        Smooth loss curve
+                    </div>
+                    <div style="background: #fee2e2; padding: 1rem; border-radius: 8px; text-align: center;">
+                        <strong>Too Large (lr = 1.0)</strong><br>
+                        💥 Loss explodes or oscillates<br>
+                        NaN values, no learning
+                    </div>
+                </div>
+
+                <h3>Learning Rate Schedules</h3>
+                <p>
+                    Often beneficial to <strong>decrease learning rate over time</strong> — start with large steps for fast progress, then small steps for fine-tuning:
+                </p>
+
+                <ul>
+                    <li><strong>Step Decay:</strong> Reduce by factor (e.g., ÷10) every N epochs</li>
+                    <li><strong>Exponential Decay:</strong> Multiply by 0.95-0.99 every epoch</li>
+                    <li><strong>Cosine Annealing:</strong> Smooth decay following cosine curve</li>
+                    <li><strong>Reduce on Plateau:</strong> Reduce when validation loss stops improving</li>
+                </ul>
+
+                <h3>Implementation</h3>
+                <pre><code class="language-python">import tensorflow as tf
+
+# ============ BASIC OPTIMIZERS ============
+# Adam (default choice)
+model.compile(optimizer='adam', loss='categorical_crossentropy')
+
+# SGD with custom learning rate
+model.compile(
+    optimizer=tf.keras.optimizers.SGD(learning_rate=0.01),
+    loss='categorical_crossentropy'
+)
+
+# SGD with momentum
+model.compile(
+    optimizer=tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+    loss='categorical_crossentropy'
+)
+
+# Adam with custom parameters
+optimizer = tf.keras.optimizers.Adam(
+    learning_rate=0.001,
+    beta_1=0.9,      # Momentum
+    beta_2=0.999,    # RMSprop
+    epsilon=1e-7
+)
+model.compile(optimizer=optimizer, loss='categorical_crossentropy')
+
+# ============ LEARNING RATE SCHEDULES ============
+# Step decay
+def scheduler(epoch, lr):
+    if epoch > 0 and epoch % 10 == 0:
+        return lr * 0.5  # Halve every 10 epochs
+    return lr
+
+lr_callback = tf.keras.callbacks.LearningRateScheduler(scheduler)
+
+# Reduce on plateau
+reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.5,      # Multiply LR by 0.5
+    patience=3,      # After 3 epochs of no improvement
+    min_lr=1e-7
+)
+
+# Exponential decay
+lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+    initial_learning_rate=0.01,
+    decay_steps=1000,
+    decay_rate=0.96
+)
+optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+
+# Train with callbacks
+model.fit(X_train, y_train, epochs=50, 
+         callbacks=[reduce_lr], validation_split=0.2)
+
+# ============ COMPARING OPTIMIZERS ============
+optimizers_to_test = {
+    'sgd': tf.keras.optimizers.SGD(learning_rate=0.01),
+    'sgd_momentum': tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+    'adam': tf.keras.optimizers.Adam(learning_rate=0.001),
+    'rmsprop': tf.keras.optimizers.RMSprop(learning_rate=0.001)
+}
+
+for name, opt in optimizers_to_test.items():
+    model = create_model()  # Your model creation function
+    model.compile(optimizer=opt, loss='categorical_crossentropy', 
+                 metrics=['accuracy'])
+    history = model.fit(X_train, y_train, epochs=20, verbose=0)
+    print(f"{name}: Final loss = {history.history['loss'][-1]:.4f}")</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Quick Recommendation:</strong><br><br>
+                    <strong>Starting out?</strong> Use Adam with lr=0.001. It works well for 90% of problems.<br><br>
+                    <strong>Need best accuracy?</strong> Try SGD with momentum (lr=0.01, momentum=0.9) + learning rate decay. Requires more tuning but often achieves slightly better final results.<br><br>
+                    <strong>Training transformers?</strong> Use AdamW with cosine learning rate schedule.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📈 The Training Process: Epochs, Batches, and Monitoring</h2>
+                
+                <h3>Understanding Training Terminology</h3>
+
+                <h4>Epoch</h4>
+                <p>
+                    An <strong>epoch</strong> is one complete pass through the entire training dataset. If you have 10,000 training examples and train for 50 epochs, the network has seen all 10,000 examples 50 times.
+                </p>
+                <ul>
+                    <li>Too few epochs → Underfitting (network hasn't learned enough)</li>
+                    <li>Too many epochs → Overfitting (network memorizes training data)</li>
+                    <li>Typical range: 10-200 epochs depending on dataset size and complexity</li>
+                </ul>
+
+                <h4>Batch and Batch Size</h4>
+                <p>
+                    Instead of processing all examples at once or one at a time, we process them in <strong>batches</strong> — small groups of examples. Batch size is how many examples in each batch.
+                </p>
+
+                <div class="info-box">
+                    <h3>Why Use Batches?</h3>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li><strong>Memory Efficiency:</strong> Can't fit all data in GPU memory at once</li>
+                        <li><strong>Computational Efficiency:</strong> GPUs are optimized for matrix operations on batches</li>
+                        <li><strong>Gradient Stability:</strong> Averaging gradients over a batch reduces noise</li>
+                        <li><strong>Generalization:</strong> Some noise in gradient estimates helps avoid overfitting</li>
+                    </ul>
+                </div>
+
+                <h4>Iterations and Steps</h4>
+                <p>
+                    An <strong>iteration</strong> (or step) is one weight update. The number of iterations per epoch depends on batch size:
+                </p>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Formula:</strong> iterations_per_epoch = total_samples / batch_size<br><br>
+                    <strong>Example:</strong> 10,000 samples with batch_size=32<br>
+                    Iterations per epoch = 10,000 / 32 ≈ 313 iterations<br>
+                    For 50 epochs: 313 × 50 = 15,650 total weight updates
+                </div>
+
+                <h3>Choosing Batch Size</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+                        <strong>Small (8-32)</strong><br><br>
+                        ✅ More weight updates per epoch<br>
+                        ✅ Regularization effect (noisy gradients)<br>
+                        ✅ Better generalization<br>
+                        ❌ Slower training<br>
+                        ❌ Less GPU utilization
+                    </div>
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px;">
+                        <strong>Medium (32-128)</strong><br><br>
+                        ✅ Good balance<br>
+                        ✅ Standard choice<br>
+                        ✅ Stable gradients<br>
+                        ✅ Efficient GPU use<br>
+                        <strong>← Recommended</strong>
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px;">
+                        <strong>Large (256-1024)</strong><br><br>
+                        ✅ Faster training<br>
+                        ✅ Maximum GPU utilization<br>
+                        ❌ May need higher learning rate<br>
+                        ❌ Can reduce generalization<br>
+                        ❌ More memory required
+                    </div>
+                </div>
+
+                <p><strong>Rule of thumb:</strong> Start with batch_size=32. Increase if training is slow and you have GPU memory. Decrease if you run out of memory.</p>
+
+                <h3>Validation Split</h3>
+                <p>
+                    Always hold out some data for <strong>validation</strong> to monitor whether the model generalizes or overfits:
+                </p>
+                <ul>
+                    <li><strong>Training set (70-80%):</strong> Used to update weights</li>
+                    <li><strong>Validation set (10-20%):</strong> Check performance during training (no weight updates)</li>
+                    <li><strong>Test set (10-20%):</strong> Final evaluation after training complete</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>Critical:</strong> Never use test set during training! It must remain completely unseen until final evaluation. Using it for hyperparameter tuning = cheating = overfitting to test set.
+                </div>
+
+                <h3>Monitoring Training</h3>
+                <p>
+                    Track both training and validation metrics to understand what's happening:
+                </p>
+
+                <div class="example-box">
+                    <strong>Healthy Training:</strong><br>
+                    Training loss: 0.5 → 0.3 → 0.2 → 0.15 (decreasing)<br>
+                    Validation loss: 0.52 → 0.32 → 0.22 → 0.17 (decreasing, close to train)<br>
+                    <strong>✅ Good generalization!</strong>
+                </div>
+
+                <div class="example-box">
+                    <strong>Overfitting:</strong><br>
+                    Training loss: 0.5 → 0.3 → 0.1 → 0.05 (still decreasing)<br>
+                    Validation loss: 0.52 → 0.35 → 0.40 → 0.50 (increasing!)<br>
+                    <strong>❌ Memorizing training data!</strong>
+                </div>
+
+                <div class="example-box">
+                    <strong>Underfitting:</strong><br>
+                    Training loss: 0.8 → 0.75 → 0.73 → 0.72 (high, plateauing)<br>
+                    Validation loss: 0.82 → 0.77 → 0.75 → 0.74 (also high)<br>
+                    <strong>❌ Not learning enough! Need more capacity or training.</strong>
+                </div>
+
+                <h3>Implementation</h3>
+                <pre><code class="language-python">import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Prepare data
+X_train = np.random.randn(10000, 20)  # 10k samples, 20 features
+y_train = (X_train[:, 0] + X_train[:, 1] > 0).astype(int)  # Binary labels
+
+# Build model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(20,)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Compile
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train with validation split
+history = model.fit(
+    X_train, y_train,
+    epochs=50,                # 50 complete passes
+    batch_size=32,            # 32 samples per batch
+    validation_split=0.2,     # 20% for validation
+    verbose=1                 # Print progress
+)
+
+# ============ VISUALIZE TRAINING ============
+plt.figure(figsize=(12, 4))
+
+# Plot loss
+plt.subplot(1, 2, 1)
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.title('Loss Over Time')
+
+# Plot accuracy
+plt.subplot(1, 2, 2)
+plt.plot(history.history['accuracy'], label='Training Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.title('Accuracy Over Time')
+
+plt.tight_layout()
+plt.show()
+
+# ============ BATCH SIZE COMPARISON ============
+batch_sizes = [8, 32, 128, 512]
+results = {}
+
+for bs in batch_sizes:
+    model = create_model()  # Reset model
+    model.compile(optimizer='adam', loss='binary_crossentropy', 
+                 metrics=['accuracy'])
+    
+    history = model.fit(X_train, y_train, 
+                       batch_size=bs, 
+                       epochs=20, 
+                       validation_split=0.2, 
+                       verbose=0)
+    
+    results[bs] = {
+        'val_acc': history.history['val_accuracy'][-1],
+        'time': history.history['time_per_epoch']
+    }
+    
+    print(f"Batch size {bs}: Val Acc = {results[bs]['val_acc']:.4f}")
+
+# ============ SEPARATE VALIDATION SET ============
+# More control than validation_split
+from sklearn.model_selection import train_test_split
+
+X_train, X_val, y_train, y_val = train_test_split(
+    X_train, y_train, 
+    test_size=0.2,     # 20% validation
+    random_state=42,
+    stratify=y_train   # Keep class balance
+)
+
+history = model.fit(
+    X_train, y_train,
+    epochs=50,
+    batch_size=32,
+    validation_data=(X_val, y_val)  # Explicit validation set
+)
+
+# ============ MONITORING WITH CALLBACKS ============
+# TensorBoard for advanced visualization
+tensorboard_callback = tf.keras.callbacks.TensorBoard(
+    log_dir='./logs',
+    histogram_freq=1
+)
+
+# Model checkpoint (save best model)
+checkpoint = tf.keras.callbacks.ModelCheckpoint(
+    'best_model.h5',
+    monitor='val_accuracy',
+    save_best_only=True,
+    verbose=1
+)
+
+# Custom callback for printing
+class PrintProgress(tf.keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        if epoch % 10 == 0:
+            print(f"\\nEpoch {epoch}: "
+                  f"loss={logs['loss']:.4f}, "
+                  f"val_loss={logs['val_loss']:.4f}")
+
+history = model.fit(
+    X_train, y_train,
+    epochs=100,
+    batch_size=32,
+    validation_split=0.2,
+    callbacks=[tensorboard_callback, checkpoint, PrintProgress()]
+)
+
+# Launch TensorBoard: tensorboard --logdir=./logs</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Best Practices:</strong>
+                    <ul style="margin-top: 1rem; line-height: 1.9;">
+                        <li><strong>Always use validation:</strong> validation_split=0.2 or separate validation set</li>
+                        <li><strong>Plot training curves:</strong> Visualize loss and metrics every time</li>
+                        <li><strong>Standard batch size:</strong> Start with 32, adjust if needed</li>
+                        <li><strong>Enough epochs:</strong> Train until validation loss plateaus (then stop)</li>
+                        <li><strong>Use callbacks:</strong> Early stopping, checkpoints, learning rate schedules</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Overfitting & Regularization: Keeping Models Generalizable</h2>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ The Overfitting Problem:</strong> Your network achieves 99% accuracy on training data but only 70% on new data. It has <strong>memorized</strong> the training examples instead of learning generalizable patterns. This is overfitting — the #1 problem in deep learning.</p>
+                </div>
+
+                <h3>Understanding Overfitting vs. Underfitting</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fee2e2; padding: 1.25rem; border-radius: 8px;">
+                        <strong>❌ Underfitting</strong><br><br>
+                        <strong>Problem:</strong> Model too simple<br>
+                        <strong>Symptom:</strong> Both train and val accuracy low<br>
+                        <strong>Example:</strong> Train: 65%, Val: 63%<br>
+                        <strong>Fix:</strong> More layers, more neurons, train longer
+                    </div>
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>✅ Good Fit</strong><br><br>
+                        <strong>State:</strong> Model complexity just right<br>
+                        <strong>Symptom:</strong> Train and val close and high<br>
+                        <strong>Example:</strong> Train: 92%, Val: 90%<br>
+                        <strong>Goal:</strong> This is what we want!
+                    </div>
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px;">
+                        <strong>⚠️ Overfitting</strong><br><br>
+                        <strong>Problem:</strong> Model memorizes training data<br>
+                        <strong>Symptom:</strong> Large train-val gap<br>
+                        <strong>Example:</strong> Train: 98%, Val: 72%<br>
+                        <strong>Fix:</strong> Regularization techniques
+                    </div>
+                </div>
+
+                <h3>Detecting Overfitting</h3>
+                <p><strong>Clear signs your model is overfitting:</strong></p>
+                <ul>
+                    <li>✗ Training loss keeps decreasing, validation loss increases</li>
+                    <li>✗ Large gap: Training accuracy 95%+, Validation accuracy 70%</li>
+                    <li>✗ Validation metrics get worse as training continues</li>
+                    <li>✗ Model performs poorly on real-world data</li>
+                    <li>✗ Weights become very large</li>
+                </ul>
+
+                <h3>Regularization Techniques</h3>
+
+                <h4>1. Get More Data 📚 (Best Solution)</h4>
+                <p>
+                    More training examples = harder to memorize. If possible, this is the most effective solution. Options:
+                </p>
+                <ul>
+                    <li><strong>Collect more real data:</strong> The gold standard</li>
+                    <li><strong>Data augmentation:</strong> Create variations (flip, rotate, crop images; synonym replacement for text)</li>
+                    <li><strong>Synthetic data:</strong> Generate artificial examples</li>
+                    <li><strong>Transfer learning:</strong> Pre-train on large dataset, fine-tune on small dataset</li>
+                </ul>
+
+                <h4>2. Dropout 📉 (Most Popular)</h4>
+                <p>
+                    During training, randomly \"turn off\" a percentage of neurons in each forward pass. This prevents neurons from co-adapting (relying too much on each other) and forces the network to learn robust features.
+                </p>
+
+                <div style=\"background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;\">
+                    <strong>How it works:</strong><br>
+                    With dropout_rate=0.3, each neuron has 30% chance of being set to 0 in each training iteration.<br>
+                    At test time, dropout is disabled and all neurons are active (outputs scaled appropriately).
+                </div>
+
+                <p><strong>Benefits:</strong></p>
+                <ul>
+                    <li>✅ Trains an ensemble of networks (each forward pass = different subnet)</li>
+                    <li>✅ Prevents co-adaptation of neurons</li>
+                    <li>✅ Acts as strong regularizer</li>
+                    <li>✅ Easy to implement</li>
+                </ul>
+
+                <p><strong>Best practices:</strong></p>
+                <ul>
+                    <li>Start with dropout_rate=0.2 to 0.5 for Dense layers</li>
+                    <li>Lower rates (0.1-0.2) for convolutional layers</li>
+                    <li>Typically applied after Dense layers, not after output layer</li>
+                    <li>Can make training slower (need more epochs)</li>
+                </ul>
+
+                <h4>3. L1 and L2 Regularization (Weight Decay) ⚖️</h4>
+                <p>
+                    Add a penalty term to the loss function that discourages large weights. This keeps the model simpler by preventing weights from growing too large.
+                </p>
+
+                <div style=\"background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;\">
+                    <strong>L2 Regularization (Ridge):</strong><br>
+                    Loss = Original_Loss + λ × Σ(weights²)<br>
+                    Penalty grows quadratically with weight size.<br><br>
+                    
+                    <strong>L1 Regularization (Lasso):</strong><br>
+                    Loss = Original_Loss + λ × Σ|weights|<br>
+                    Penalty grows linearly. Encourages sparsity (many weights → 0).
+                </div>
+
+                <p><strong>L2 vs L1:</strong></p>
+                <ul>
+                    <li><strong>L2 (more common):</strong> Smoothly shrinks all weights. No weights become exactly 0.</li>
+                    <li><strong>L1:</strong> Can zero out weights → sparse models (feature selection).</li>
+                    <li><strong>λ (lambda):</strong> Regularization strength. Typical values: 0.0001 to 0.01.</li>
+                </ul>
+
+                <h4>4. Early Stopping 🛑 (Simplest)</h4>
+                <p>
+                    Monitor validation loss during training. Stop when it stops improving (plateaus or increases), even if training loss still decreases.
+                </p>
+
+                <div style=\"background: #d1fae5; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;\">
+                    <strong>Parameters:</strong><br>
+                    <strong>monitor:</strong> Metric to watch (usually 'val_loss')<br>
+                    <strong>patience:</strong> How many epochs to wait for improvement (e.g., 5)<br>
+                    <strong>restore_best_weights:</strong> Revert to best model (recommended!)
+                </div>
+
+                <p><strong>Why it works:</strong> The point where validation loss is lowest is the sweet spot — model has learned patterns but hasn't overfit yet.</p>
+
+                <h4>5. Batch Normalization (Indirect Regularization)</h4>
+                <p>
+                    Normalizes layer inputs during training. Primary purpose is stabilizing training, but has mild regularization effect.
+                </p>
+
+                <h4>6. Reduce Model Complexity</h4>
+                <ul>
+                    <li>Fewer layers (reduce depth)</li>
+                    <li>Fewer neurons per layer (reduce width)</li>
+                    <li>Simpler architecture overall</li>
+                </ul>
+                <p><strong>Trade-off:</strong> Too simple → underfitting. Find the right balance.</p>
+
+                <h3>Comprehensive Implementation</h3>
+                <pre><code class=\"language-python\">import tensorflow as tf
+from tensorflow.keras import layers, regularizers
+
+# ============ MODEL WITH ALL REGULARIZATION TECHNIQUES ============
+model = tf.keras.Sequential([
+    # Input layer
+    layers.Dense(128, activation='relu', input_shape=(20,),
+                kernel_regularizer=regularizers.l2(0.001),  # L2 penalty
+                bias_regularizer=regularizers.l2(0.001)),
+    
+    layers.BatchNormalization(),  # Normalize activations
+    layers.Dropout(0.3),          # Dropout 30% of neurons
+    
+    # Hidden layer
+    layers.Dense(64, activation='relu',
+                kernel_regularizer=regularizers.l2(0.001)),
+    layers.BatchNormalization(),
+    layers.Dropout(0.3),
+    
+    # Hidden layer
+    layers.Dense(32, activation='relu',
+                kernel_regularizer=regularizers.l2(0.001)),
+    layers.Dropout(0.2),          # Lower dropout for smaller layer
+    
+    # Output layer (no dropout here!)
+    layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# ============ TRAINING WITH EARLY STOPPING ============
+early_stop = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss',           # Watch validation loss
+    patience=10,                  # Wait 10 epochs
+    restore_best_weights=True,    # Revert to best model
+    verbose=1
+)
+
+# Also save best model
+checkpoint = tf.keras.callbacks.ModelCheckpoint(
+    'best_model.h5',
+    monitor='val_accuracy',
+    save_best_only=True
+)
+
+history = model.fit(
+    X_train, y_train,
+    epochs=200,                   # Set high, early stopping will stop earlier
+    batch_size=32,
+    validation_split=0.2,
+    callbacks=[early_stop, checkpoint],
+    verbose=1
+)
+
+print(f\"Training stopped at epoch {len(history.history['loss'])}\")
+
+# ============ COMPARING REGULARIZATION STRATEGIES ============
+import matplotlib.pyplot as plt
+
+strategies = {
+    'No Regularization': lambda: tf.keras.Sequential([
+        layers.Dense(128, activation='relu', input_shape=(20,)),
+        layers.Dense(64, activation='relu'),
+        layers.Dense(1, activation='sigmoid')
+    ]),
+    
+    'Dropout Only': lambda: tf.keras.Sequential([
+        layers.Dense(128, activation='relu', input_shape=(20,)),
+        layers.Dropout(0.5),
+        layers.Dense(64, activation='relu'),
+        layers.Dropout(0.5),
+        layers.Dense(1, activation='sigmoid')
+    ]),
+    
+    'L2 Only': lambda: tf.keras.Sequential([
+        layers.Dense(128, activation='relu', input_shape=(20,),
+                    kernel_regularizer=regularizers.l2(0.01)),
+        layers.Dense(64, activation='relu',
+                    kernel_regularizer=regularizers.l2(0.01)),
+        layers.Dense(1, activation='sigmoid')
+    ]),
+    
+    'Combined': lambda: tf.keras.Sequential([
+        layers.Dense(128, activation='relu', input_shape=(20,),
+                    kernel_regularizer=regularizers.l2(0.001)),
+        layers.Dropout(0.3),
+        layers.Dense(64, activation='relu',
+                    kernel_regularizer=regularizers.l2(0.001)),
+        layers.Dropout(0.3),
+        layers.Dense(1, activation='sigmoid')
+    ])
+}
+
+results = {}
+for name, model_fn in strategies.items():
+    model = model_fn()
+    model.compile(optimizer='adam', loss='binary_crossentropy', 
+                 metrics=['accuracy'])
+    
+    history = model.fit(X_train, y_train, epochs=50, batch_size=32,
+                       validation_split=0.2, verbose=0)
+    
+    results[name] = history
+    
+    # Calculate overfitting gap
+    train_acc = history.history['accuracy'][-1]
+    val_acc = history.history['val_accuracy'][-1]
+    gap = train_acc - val_acc
+    
+    print(f\"{name}:\")
+    print(f\"  Train Acc: {train_acc:.4f}, Val Acc: {val_acc:.4f}, Gap: {gap:.4f}\")
+
+# ============ L1 vs L2 REGULARIZATION ============
+# L1 for sparsity (feature selection)
+model_l1 = tf.keras.Sequential([
+    layers.Dense(100, activation='relu', input_shape=(50,),
+                kernel_regularizer=regularizers.l1(0.001)),
+    layers.Dense(1, activation='sigmoid')
+])
+
+# L2 for smooth weight shrinkage
+model_l2 = tf.keras.Sequential([
+    layers.Dense(100, activation='relu', input_shape=(50,),
+                kernel_regularizer=regularizers.l2(0.001)),
+    layers.Dense(1, activation='sigmoid')
+])
+
+# ============ DATA AUGMENTATION (for images) ============
+data_augmentation = tf.keras.Sequential([
+    layers.RandomFlip(\"horizontal\"),
+    layers.RandomRotation(0.1),
+    layers.RandomZoom(0.1),
+    layers.RandomContrast(0.1)
+])
+
+# Add to beginning of model
+model_with_aug = tf.keras.Sequential([
+    data_augmentation,  # Apply augmentation
+    layers.Conv2D(32, 3, activation='relu'),
+    # ... rest of model
+])</code></pre>
+
+                <h3>Choosing the Right Regularization</h3>
+                <div class=\"success-box\">
+                    <strong>💡 Recommended Strategy:</strong>
+                    <ol style=\"margin-top: 1rem; line-height: 2;\">
+                        <li><strong>Start simple:</strong> Train without regularization to establish baseline</li>
+                        <li><strong>Detect overfitting:</strong> If train-val gap > 10%, need regularization</li>
+                        <li><strong>Add dropout first:</strong> dropout_rate=0.3-0.5, easiest and most effective</li>
+                        <li><strong>Add early stopping:</strong> patience=5-10, always recommended</li>
+                        <li><strong>Try L2 if needed:</strong> λ=0.0001-0.01, combine with dropout</li>
+                        <li><strong>Get more data:</strong> If still overfitting, data augmentation or collect more</li>
+                        <li><strong>Reduce model size:</strong> Last resort if above doesn't help</li>
+                    </ol>
+                </div>
+
+                <div class=\"warning-box\">
+                    <strong>Common Mistakes:</strong>
+                    <ul style=\"margin-top: 0.75rem; line-height: 1.8;\">
+                        <li>❌ Using regularization when model is underfitting (makes it worse!)</li>
+                        <li>❌ Too aggressive regularization (dropout > 0.7, L2 > 0.1)</li>
+                        <li>❌ Not using validation set to monitor overfitting</li>
+                        <li>❌ Optimizing on test set instead of validation set</li>
+                        <li>❌ Forgetting to disable dropout during inference/testing</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 What You've Learned</h2>
+                
+                <p>Congratulations! You now understand the complete training process for neural networks. Let's consolidate what you've mastered:</p>
+
+                <h3>Core Concepts Mastered</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Loss Functions</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>MSE for regression tasks</li>
+                            <li>MAE for outlier-robust regression</li>
+                            <li>Binary Cross-Entropy for binary classification</li>
+                            <li>Categorical Cross-Entropy for multi-class</li>
+                            <li>How to choose the right loss</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚙️</div>
+                        <h3>Optimizers</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>SGD: Simple but reliable</li>
+                            <li>Adam: Default choice (momentum + adaptive LR)</li>
+                            <li>Learning rate importance</li>
+                            <li>Learning rate schedules</li>
+                            <li>When to use each optimizer</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Training Process</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>Epochs, batches, iterations</li>
+                            <li>Choosing batch size</li>
+                            <li>Train/validation/test splits</li>
+                            <li>Monitoring training progress</li>
+                            <li>When to stop training</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Regularization</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>Detecting overfitting</li>
+                            <li>Dropout technique</li>
+                            <li>L1/L2 weight penalties</li>
+                            <li>Early stopping strategy</li>
+                            <li>When and how to regularize</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Key Mental Models</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>🧠 Remember these intuitions:</strong></p>
+                    <ul style="line-height: 2;">
+                        <li><strong>Training = Optimization:</strong> We're searching for weights that minimize loss</li>
+                        <li><strong>Loss = Error Measure:</strong> How bad the predictions are</li>
+                        <li><strong>Optimizer = Search Algorithm:</strong> How we navigate the loss landscape</li>
+                        <li><strong>Learning Rate = Step Size:</strong> Too small = slow, too large = unstable</li>
+                        <li><strong>Overfitting = Memorization:</strong> Model knows answers, doesn't understand patterns</li>
+                        <li><strong>Validation Set = Reality Check:</strong> How well we actually generalize</li>
+                    </ul>
+                </div>
+
+                <h3>Common Issues & Solutions</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Problem</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Symptoms</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #ddd;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Loss not decreasing</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Flat loss, no improvement</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Increase learning rate, check data, simplify model</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Loss exploding (NaN)</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Loss becomes infinity or NaN</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Decrease learning rate (try 0.001 or 0.0001)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Overfitting</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Train 95%, Val 70%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Dropout, more data, L2 regularization, early stopping</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Underfitting</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Both train and val low (< 80%)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">More layers/neurons, train longer, remove regularization</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Training too slow</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Takes hours per epoch</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Increase batch size, use GPU, simplify model</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Unstable training</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Loss oscillates wildly</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Decrease learning rate, use batch normalization, smaller batch size</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Your Training Checklist</h3>
+                <div class="success-box">
+                    <strong>✅ Before Training:</strong>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>[ ] Data is normalized/standardized</li>
+                        <li>[ ] Train/val/test split done (never touch test set!)</li>
+                        <li>[ ] Loss function matches task (MSE for regression, CE for classification)</li>
+                        <li>[ ] Model architecture is reasonable (not too simple, not too complex)</li>
+                    </ul>
+                    
+                    <strong style="display: block; margin-top: 1.5rem;">✅ During Training:</strong>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>[ ] Monitor both train AND validation metrics</li>
+                        <li>[ ] Plot loss curves to visualize progress</li>
+                        <li>[ ] Use early stopping to prevent overfitting</li>
+                        <li>[ ] Save best model based on validation performance</li>
+                    </ul>
+                    
+                    <strong style="display: block; margin-top: 1.5rem;">✅ After Training:</strong>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>[ ] Evaluate on test set (once!)</li>
+                        <li>[ ] Check for overfitting (train-val gap < 5-10%)</li>
+                        <li>[ ] Analyze mistakes (confusion matrix, error analysis)</li>
+                        <li>[ ] Test on real-world data if possible</li>
+                    </ul>
+                </div>
+
+                <h3>Next Steps: Practice Projects</h3>
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="info-card">
+                        <div class="card-icon">🏠</div>
+                        <h3>Beginner: House Price Prediction</h3>
+                        <p><strong>Dataset:</strong> Kaggle House Prices<br>
+                        <strong>Task:</strong> Regression<br>
+                        <strong>Try:</strong> Compare MSE vs MAE loss, test different optimizers, experiment with layer sizes</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌸</div>
+                        <h3>Beginner: Iris Classification</h3>
+                        <p><strong>Dataset:</strong> Iris dataset (built-in)<br>
+                        <strong>Task:</strong> Multi-class classification<br>
+                        <strong>Try:</strong> Categorical cross-entropy, monitor overfitting, use dropout</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💳</div>
+                        <h3>Intermediate: Credit Card Fraud</h3>
+                        <p><strong>Dataset:</strong> Kaggle Credit Card Fraud<br>
+                        <strong>Task:</strong> Imbalanced binary classification<br>
+                        <strong>Try:</strong> Handle class imbalance, use different regularization, tune learning rate</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Intermediate: Text Classification</h3>
+                        <p><strong>Dataset:</strong> IMDB movie reviews<br>
+                        <strong>Task:</strong> Sentiment analysis<br>
+                        <strong>Try:</strong> Embeddings + Dense layers, experiment with dropout rates, early stopping</p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <p><strong>💡 Pro Tip:</strong> Start with default settings (Adam optimizer, learning_rate=0.001, batch_size=32, dropout=0.3) and only change things if you have a specific problem to solve. Most of the time, defaults work great!</p>
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Convolutional Neural Networks (CNNs)</strong>, we'll learn specialized architectures for processing images and build powerful computer vision models!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Excellent Work!</strong> You now have a solid foundation in training neural networks. Continue to the next tutorial to learn about CNNs for image processing!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Training Neural Networks!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="C">
+                        <h4>1. What is the purpose of a loss function?</h4>
+                        <div class="quiz-option" data-value="A">A) To add layers to the network</div>
+                        <div class="quiz-option" data-value="B">B) To normalize inputs</div>
+                        <div class="quiz-option" data-value="C">C) To measure how far predictions are from actual values</div>
+                        <div class="quiz-option" data-value="D">D) To speed up training</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>2. What is gradient descent?</h4>
+                        <div class="quiz-option" data-value="A">A) A type of neural network</div>
+                        <div class="quiz-option" data-value="B">B) An optimization algorithm that minimizes loss by updating weights</div>
+                        <div class="quiz-option" data-value="C">C) A data preprocessing technique</div>
+                        <div class="quiz-option" data-value="D">D) An activation function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>3. What is overfitting?</h4>
+                        <div class="quiz-option" data-value="A">A) Training too slowly</div>
+                        <div class="quiz-option" data-value="B">B) Using too few layers</div>
+                        <div class="quiz-option" data-value="C">C) Having too much training data</div>
+                        <div class="quiz-option" data-value="D">D) Model performs well on training data but poorly on test data</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>4. What is dropout in neural networks?</h4>
+                        <div class="quiz-option" data-value="A">A) Randomly deactivating neurons during training to prevent overfitting</div>
+                        <div class="quiz-option" data-value="B">B) Removing all neurons</div>
+                        <div class="quiz-option" data-value="C">C) Stopping training early</div>
+                        <div class="quiz-option" data-value="D">D) A type of loss function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. Why is batch normalization useful?</h4>
+                        <div class="quiz-option" data-value="A">A) It reduces model size</div>
+                        <div class="quiz-option" data-value="B">B) It normalizes layer inputs, stabilizing and speeding up training</div>
+                        <div class="quiz-option" data-value="C">C) It removes the need for activation functions</div>
+                        <div class="quiz-option" data-value="D">D) It eliminates overfitting completely</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="neural-networks-fundamentals.html" class="btn btn-secondary">← Previous: Neural Networks Fundamentals</a>
+                <a href="convolutional-neural-networks.html" class="btn btn-primary">Next: Convolutional Neural Networks →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

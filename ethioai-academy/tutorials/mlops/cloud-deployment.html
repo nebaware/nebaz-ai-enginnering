@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Deploy ML models to AWS SageMaker, Google Cloud AI Platform, and Azure ML. Learn serverless ML with Lambda, cloud-native deployment, and cost optimization for production machine learning.">
+    <meta name="keywords" content="cloud deployment, AWS SageMaker, Google Cloud AI, Azure ML, serverless ML, Lambda functions, cloud ML, model deployment, cost optimization, cloud infrastructure">
+    <title>Cloud Deployment - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="cloud-deployment.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Cloud Deployment</span>
+            </div>
+            <h1>Cloud Deployment</h1>
+            <p class="tutorial-intro">Deploy ML models to AWS SageMaker, Google Cloud AI Platform, Azure ML. Master serverless ML and cost optimization strategies</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 6</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>☁️ Why Cloud Deployment?</h2>
+                <p>
+                    You've containerized your ML model with Docker. Now you need to deploy it to production where millions of users can access it. Running on your laptop isn't an option. A single server won't handle the traffic. You need scalability, reliability, and global reach.
+                </p>
+                <p>
+                    <strong>Cloud platforms solve this</strong> by providing managed infrastructure, automatic scaling, load balancing, monitoring, and deployment tools specifically designed for ML workloads.
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Auto-Scaling</h3>
+                        <p>Handle traffic spikes automatically - scale from 10 to 10,000 requests/second</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🌍</div>
+                        <h3>Global Reach</h3>
+                        <p>Deploy to multiple regions for low latency worldwide</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Reliability</h3>
+                        <p>99.99% uptime SLAs with automatic failover</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Cost Efficiency</h3>
+                        <p>Pay only for what you use - no idle server costs</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Cloud Complexity:</strong> While powerful, cloud platforms have steep learning curves. This tutorial focuses on practical deployment patterns you'll actually use in production.</p>
+                </div>
+            </section>
+
+            <!-- Platform Comparison -->
+            <section class="content-section" id="platform-comparison">
+                <h2>🏢 Cloud Platform Comparison</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>AWS SageMaker</th>
+                            <th>Google Cloud AI</th>
+                            <th>Azure ML</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Market Share</strong></td>
+                            <td>✅ #1 (32%)</td>
+                            <td>#3 (10%)</td>
+                            <td>#2 (23%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ML Services</strong></td>
+                            <td>Most comprehensive</td>
+                            <td>✅ TensorFlow native</td>
+                            <td>Best for .NET</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ease of Use</strong></td>
+                            <td>Moderate</td>
+                            <td>✅ Easiest</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pricing</strong></td>
+                            <td>Competitive</td>
+                            <td>✅ Cheapest compute</td>
+                            <td>Competitive</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPU Options</strong></td>
+                            <td>✅ Most variety</td>
+                            <td>TPU available</td>
+                            <td>Good variety</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Enterprise</strong></td>
+                            <td>✅ Most mature</td>
+                            <td>Strong</td>
+                            <td>✅ Best MS integration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deployment Speed</strong></td>
+                            <td>Fast</td>
+                            <td>✅ Fastest</td>
+                            <td>Fast</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p><strong>💡 Which to Choose?</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>AWS:</strong> If you need maximum flexibility and already use AWS</li>
+                        <li><strong>Google Cloud:</strong> If you use TensorFlow or want simplicity</li>
+                        <li><strong>Azure:</strong> If you're in the Microsoft ecosystem</li>
+                        <li><strong>Multi-cloud:</strong> Abstract with Kubernetes for portability</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- AWS SageMaker -->
+            <section class="content-section" id="aws-sagemaker">
+                <h2>🟠 AWS SageMaker Deployment</h2>
+                
+                <h3>What is SageMaker?</h3>
+                <p>
+                    Amazon SageMaker is a fully managed ML platform that handles training, tuning, and deployment. It supports any framework (scikit-learn, PyTorch, TensorFlow, XGBoost).
+                </p>
+
+                <h3>Deployment Options</h3>
+                <ol>
+                    <li><strong>Real-time endpoints:</strong> Persistent, low-latency predictions</li>
+                    <li><strong>Batch transform:</strong> Process large datasets offline</li>
+                    <li><strong>Serverless inference:</strong> Auto-scaling, pay-per-invocation</li>
+                    <li><strong>Asynchronous inference:</strong> Long-running, queued requests</li>
+                </ol>
+
+                <h3>Deploying a Scikit-learn Model</h3>
+                <pre><code class="language-python">"""
+Deploy sklearn model to SageMaker
+"""
+import sagemaker
+from sagemaker.sklearn import SKLearnModel
+from sagemaker.predictor import Predictor
+import boto3
+import joblib
+
+# 1. Save model with entry point script
+# model.py (inference script)
+"""
+import joblib
+import numpy as np
+
+def model_fn(model_dir):
+    '''Load model from directory'''
+    model = joblib.load(f'{model_dir}/model.joblib')
+    return model
+
+def predict_fn(input_data, model):
+    '''Make predictions'''
+    return model.predict(input_data)
+"""
+
+# 2. Upload model to S3
+session = sagemaker.Session()
+bucket = session.default_bucket()
+
+# Upload model artifact
+model_data = session.upload_data(
+    path='model.tar.gz',  # tar.gz with model.joblib and model.py
+    bucket=bucket,
+    key_prefix='sklearn-model'
+)
+
+# 3. Create SageMaker model
+sklearn_model = SKLearnModel(
+    model_data=model_data,
+    role='arn:aws:iam::YOUR_ACCOUNT:role/SageMakerRole',
+    entry_point='model.py',
+    framework_version='1.0-1',
+    py_version='py3'
+)
+
+# 4. Deploy to endpoint
+predictor = sklearn_model.deploy(
+    initial_instance_count=1,
+    instance_type='ml.m5.large',
+    endpoint_name='iris-classifier'
+)
+
+# 5. Make predictions
+import numpy as np
+data = np.array([[5.1, 3.5, 1.4, 0.2]])
+prediction = predictor.predict(data)
+print(f"Prediction: {prediction}")
+
+# 6. Clean up (delete endpoint to stop billing!)
+predictor.delete_endpoint()</code></pre>
+
+                <h3>Deploying Docker Container to SageMaker</h3>
+                <pre><code class="language-python">"""
+Deploy custom Docker container to SageMaker
+"""
+import sagemaker
+from sagemaker.model import Model
+from sagemaker.predictor import Predictor
+
+# 1. Build and push Docker image to ECR
+"""
+# Build image
+docker build -t ml-api:latest .
+
+# Tag for ECR
+docker tag ml-api:latest \
+  123456789.dkr.ecr.us-east-1.amazonaws.com/ml-api:latest
+
+# Login to ECR
+aws ecr get-login-password --region us-east-1 | \
+  docker login --username AWS --password-stdin \
+  123456789.dkr.ecr.us-east-1.amazonaws.com
+
+# Push image
+docker push 123456789.dkr.ecr.us-east-1.amazonaws.com/ml-api:latest
+"""
+
+# 2. Create SageMaker model from container
+model = Model(
+    image_uri='123456789.dkr.ecr.us-east-1.amazonaws.com/ml-api:latest',
+    model_data='s3://bucket/model.tar.gz',  # Optional
+    role='arn:aws:iam::YOUR_ACCOUNT:role/SageMakerRole'
+)
+
+# 3. Deploy
+predictor = model.deploy(
+    initial_instance_count=1,
+    instance_type='ml.g4dn.xlarge',  # GPU instance
+    endpoint_name='ml-api-gpu'
+)
+
+# 4. Invoke endpoint
+response = predictor.predict({
+    "sepal_length": 5.1,
+    "sepal_width": 3.5,
+    "petal_length": 1.4,
+    "petal_width": 0.2
+})
+
+print(response)</code></pre>
+
+                <h3>Serverless Inference (Cost-Optimized)</h3>
+                <pre><code class="language-python">from sagemaker.serverless import ServerlessInferenceConfig
+
+# Deploy with serverless config
+predictor = sklearn_model.deploy(
+    serverless_inference_config=ServerlessInferenceConfig(
+        memory_size_in_mb=2048,  # 1GB - 6GB
+        max_concurrency=10       # Max concurrent invocations
+    )
+)
+
+# Automatically scales to zero when not in use!
+# Pay only per invocation</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ SageMaker Benefits:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Automatic scaling and load balancing</li>
+                        <li>Built-in A/B testing and traffic routing</li>
+                        <li>Model monitoring and drift detection</li>
+                        <li>One-click rollback to previous versions</li>
+                        <li>Integration with AWS ecosystem</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Google Cloud -->
+            <section class="content-section" id="google-cloud">
+                <h2>🔵 Google Cloud AI Platform</h2>
+                
+                <h3>Vertex AI Overview</h3>
+                <p>
+                    Vertex AI is Google's unified ML platform. It's particularly strong for TensorFlow models and offers TPU acceleration.
+                </p>
+
+                <h3>Deploying to Vertex AI</h3>
+                <pre><code class="language-python">"""
+Deploy model to Google Cloud Vertex AI
+"""
+from google.cloud import aiplatform
+
+# Initialize
+aiplatform.init(
+    project='your-project-id',
+    location='us-central1'
+)
+
+# 1. Upload model to Google Cloud Storage
+# gsutil cp model.joblib gs://your-bucket/models/
+
+# 2. Create model
+model = aiplatform.Model.upload(
+    display_name='iris-classifier',
+    artifact_uri='gs://your-bucket/models/',
+    serving_container_image_uri='us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.0-24:latest'
+)
+
+# 3. Deploy to endpoint
+endpoint = model.deploy(
+    machine_type='n1-standard-2',
+    min_replica_count=1,
+    max_replica_count=5,
+    traffic_split={'0': 100}  # 100% traffic to this version
+)
+
+# 4. Make prediction
+prediction = endpoint.predict(
+    instances=[[5.1, 3.5, 1.4, 0.2]]
+)
+print(prediction.predictions)
+
+# 5. Update with new model version (A/B testing)
+new_model = aiplatform.Model.upload(
+    display_name='iris-classifier-v2',
+    artifact_uri='gs://your-bucket/models-v2/'
+)
+
+# Deploy alongside existing model
+endpoint.deploy(
+    model=new_model,
+    traffic_split={'0': 80, '1': 20}  # 80% old, 20% new
+)</code></pre>
+
+                <h3>Deploying Custom Container</h3>
+                <pre><code class="language-bash"># 1. Build and push to Google Container Registry
+gcloud builds submit --tag gcr.io/your-project/ml-api:v1
+
+# 2. Create custom prediction container
+# Must respond to health checks and prediction requests</code></pre>
+
+                <pre><code class="language-python"># prediction.py (FastAPI app for Vertex AI)
+from fastapi import FastAPI, Request
+import joblib
+import numpy as np
+
+app = FastAPI()
+model = joblib.load('model.joblib')
+
+# Health check (required by Vertex AI)
+@app.get('/health')
+def health():
+    return {'status': 'healthy'}
+
+# Prediction endpoint (required format)
+@app.post('/predict')
+async def predict(request: Request):
+    data = await request.json()
+    instances = np.array(data['instances'])
+    predictions = model.predict(instances)
+    return {'predictions': predictions.tolist()}
+
+# Run with: uvicorn prediction:app --host 0.0.0.0 --port 8080</code></pre>
+
+                <pre><code class="language-python"># Deploy custom container
+from google.cloud import aiplatform
+
+model = aiplatform.Model.upload(
+    display_name='custom-ml-api',
+    serving_container_image_uri='gcr.io/your-project/ml-api:v1',
+    serving_container_predict_route='/predict',
+    serving_container_health_route='/health',
+    serving_container_ports=[8080]
+)
+
+endpoint = model.deploy(machine_type='n1-standard-4')</code></pre>
+
+                <h3>Batch Predictions</h3>
+                <pre><code class="language-python"># Process large datasets offline
+batch_prediction_job = model.batch_predict(
+    job_display_name='iris-batch-prediction',
+    gcs_source='gs://your-bucket/input-data.csv',
+    gcs_destination_prefix='gs://your-bucket/predictions/',
+    machine_type='n1-standard-4',
+    starting_replica_count=5,
+    max_replica_count=10
+)
+
+# Wait for completion
+batch_prediction_job.wait()
+print(f"Output: {batch_prediction_job.output_info}")</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Google Cloud Advantages:</strong> Simplest deployment process, excellent documentation, TPU support for deep learning, tight integration with TensorFlow, and generous free tier.</p>
+                </div>
+            </section>
+
+            <!-- Azure ML -->
+            <section class="content-section" id="azure-ml">
+                <h2>🔷 Azure Machine Learning</h2>
+                
+                <h3>Azure ML Service Overview</h3>
+                <p>
+                    Azure ML provides enterprise-grade ML lifecycle management with strong integration into Microsoft ecosystem.
+                </p>
+
+                <h3>Deploying to Azure ML</h3>
+                <pre><code class="language-python">"""
+Deploy model to Azure ML
+"""
+from azureml.core import Workspace, Model, Environment
+from azureml.core.model import InferenceConfig
+from azureml.core.webservice import AciWebservice
+
+# 1. Connect to workspace
+ws = Workspace.from_config()
+
+# 2. Register model
+model = Model.register(
+    workspace=ws,
+    model_name='iris-classifier',
+    model_path='model.joblib',
+    description='Iris classification model'
+)
+
+# 3. Create inference environment
+env = Environment.from_conda_specification(
+    name='sklearn-env',
+    file_path='conda_env.yml'
+)
+
+# 4. Create scoring script
+"""
+# score.py
+import json
+import joblib
+import numpy as np
+from azureml.core.model import Model
+
+def init():
+    global model
+    model_path = Model.get_model_path('iris-classifier')
+    model = joblib.load(model_path)
+
+def run(raw_data):
+    data = json.loads(raw_data)
+    input_data = np.array(data['data'])
+    predictions = model.predict(input_data)
+    return predictions.tolist()
+"""
+
+# 5. Configure inference
+inference_config = InferenceConfig(
+    entry_script='score.py',
+    environment=env
+)
+
+# 6. Deploy to Azure Container Instances (dev/test)
+aci_config = AciWebservice.deploy_configuration(
+    cpu_cores=1,
+    memory_gb=1,
+    auth_enabled=True
+)
+
+service = Model.deploy(
+    workspace=ws,
+    name='iris-classifier-service',
+    models=[model],
+    inference_config=inference_config,
+    deployment_config=aci_config
+)
+
+service.wait_for_deployment(show_output=True)
+
+# 7. Get scoring URI
+print(f"Scoring URI: {service.scoring_uri}")
+
+# 8. Test endpoint
+import requests
+headers = {'Content-Type': 'application/json'}
+data = {'data': [[5.1, 3.5, 1.4, 0.2]]}
+
+response = requests.post(
+    service.scoring_uri,
+    json=data,
+    headers=headers
+)
+print(response.json())</code></pre>
+
+                <h3>Deploy to Azure Kubernetes Service (Production)</h3>
+                <pre><code class="language-python">from azureml.core.webservice import AksWebservice
+from azureml.core.compute import AksCompute, ComputeTarget
+
+# 1. Create or attach to AKS cluster
+aks_name = 'ml-aks-cluster'
+
+if aks_name not in ws.compute_targets:
+    # Create new AKS cluster
+    prov_config = AksCompute.provisioning_configuration(
+        agent_count=3,
+        vm_size='Standard_D3_v2',
+        location='eastus'
+    )
+    
+    aks_target = ComputeTarget.create(
+        workspace=ws,
+        name=aks_name,
+        provisioning_configuration=prov_config
+    )
+    aks_target.wait_for_completion(show_output=True)
+else:
+    aks_target = ws.compute_targets[aks_name]
+
+# 2. Configure deployment
+aks_config = AksWebservice.deploy_configuration(
+    autoscale_enabled=True,
+    autoscale_min_replicas=2,
+    autoscale_max_replicas=10,
+    cpu_cores=2,
+    memory_gb=4,
+    auth_enabled=True,
+    enable_app_insights=True  # Monitoring
+)
+
+# 3. Deploy
+service = Model.deploy(
+    workspace=ws,
+    name='iris-classifier-aks',
+    models=[model],
+    inference_config=inference_config,
+    deployment_config=aks_config,
+    deployment_target=aks_target
+)
+
+service.wait_for_deployment(show_output=True)</code></pre>
+
+                <h3>Managed Online Endpoints (Recommended)</h3>
+                <pre><code class="language-python">from azure.ai.ml import MLClient
+from azure.ai.ml.entities import ManagedOnlineEndpoint, ManagedOnlineDeployment
+
+# New Azure ML SDK v2 approach
+ml_client = MLClient.from_config()
+
+# Create endpoint
+endpoint = ManagedOnlineEndpoint(
+    name='iris-endpoint',
+    description='Iris classification endpoint'
+)
+ml_client.online_endpoints.begin_create_or_update(endpoint)
+
+# Create deployment
+deployment = ManagedOnlineDeployment(
+    name='blue',
+    endpoint_name='iris-endpoint',
+    model=model,
+    instance_type='Standard_DS2_v2',
+    instance_count=2
+)
+ml_client.online_deployments.begin_create_or_update(deployment)
+
+# Set 100% traffic to this deployment
+endpoint.traffic = {'blue': 100}
+ml_client.online_endpoints.begin_create_or_update(endpoint)</code></pre>
+            </section>
+
+            <!-- Serverless ML -->
+            <section class="content-section" id="serverless">
+                <h2>⚡ Serverless ML Deployment</h2>
+                
+                <h3>When to Use Serverless</h3>
+                <ul>
+                    <li><strong>Sporadic traffic:</strong> Requests come in bursts</li>
+                    <li><strong>Cost-sensitive:</strong> Don't want idle server costs</li>
+                    <li><strong>Simple models:</strong> Fast inference (&lt; 30 seconds)</li>
+                    <li><strong>Auto-scaling:</strong> Unpredictable load patterns</li>
+                </ul>
+
+                <h3>AWS Lambda with Container</h3>
+                <pre><code class="language-dockerfile"># Dockerfile for Lambda
+FROM public.ecr.aws/lambda/python:3.10
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy model and code
+COPY model.joblib .
+COPY lambda_function.py .
+
+# Lambda handler
+CMD ["lambda_function.handler"]</code></pre>
+
+                <pre><code class="language-python"># lambda_function.py
+import json
+import joblib
+import numpy as np
+
+# Load model once (cold start)
+model = joblib.load('model.joblib')
+
+def handler(event, context):
+    """AWS Lambda handler"""
+    try:
+        # Parse input
+        body = json.loads(event['body'])
+        features = np.array([body['features']])
+        
+        # Predict
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'prediction': int(prediction),
+                'confidence': float(max(probabilities))
+            })
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }</code></pre>
+
+                <pre><code class="language-bash"># Deploy to Lambda
+# 1. Build and push to ECR
+docker build -t ml-lambda .
+docker tag ml-lambda:latest 123456789.dkr.ecr.us-east-1.amazonaws.com/ml-lambda:latest
+docker push 123456789.dkr.ecr.us-east-1.amazonaws.com/ml-lambda:latest
+
+# 2. Create Lambda function via AWS CLI
+aws lambda create-function \
+  --function-name ml-predictor \
+  --package-type Image \
+  --code ImageUri=123456789.dkr.ecr.us-east-1.amazonaws.com/ml-lambda:latest \
+  --role arn:aws:iam::123456789:role/lambda-execution-role \
+  --timeout 30 \
+  --memory-size 1024
+
+# 3. Create API Gateway trigger (via console or CLI)</code></pre>
+
+                <h3>Lambda Performance Optimization</h3>
+                <pre><code class="language-python"># Optimize cold starts
+import sys
+sys.path.insert(0, '/opt/python')  # Lambda layers
+
+# Use Lambda layers for heavy dependencies
+# Layer 1: numpy, scipy (shared across functions)
+# Layer 2: scikit-learn
+# Function code: just your model and handler
+
+# Provisioned concurrency (keeps instances warm)
+# aws lambda put-provisioned-concurrency-config \
+#   --function-name ml-predictor \
+#   --provisioned-concurrent-executions 5</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Serverless Limitations:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>15-minute maximum execution time (Lambda)</li>
+                        <li>Cold start latency (500ms - 5s)</li>
+                        <li>Memory limits (up to 10GB Lambda)</li>
+                        <li>No GPU support</li>
+                        <li>Not cost-effective for constant high traffic</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Cost Optimization -->
+            <section class="content-section" id="cost-optimization">
+                <h2>💰 Cost Optimization Strategies</h2>
+                
+                <h3>1. Right-Sizing Instances</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Instance Type</th>
+                            <th>Use Case</th>
+                            <th>Cost (AWS/month)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>t3.medium</td>
+                            <td>Dev/test, low traffic</td>
+                            <td>$30</td>
+                        </tr>
+                        <tr>
+                            <td>m5.large</td>
+                            <td>Production, CPU models</td>
+                            <td>$70</td>
+                        </tr>
+                        <tr>
+                            <td>c5.xlarge</td>
+                            <td>Compute-intensive</td>
+                            <td>$125</td>
+                        </tr>
+                        <tr>
+                            <td>g4dn.xlarge</td>
+                            <td>GPU inference</td>
+                            <td>$390</td>
+                        </tr>
+                        <tr>
+                            <td>p3.2xlarge</td>
+                            <td>Heavy GPU workloads</td>
+                            <td>$2,200</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Auto-Scaling Configuration</h3>
+                <pre><code class="language-python"># AWS SageMaker auto-scaling
+import boto3
+
+client = boto3.client('application-autoscaling')
+
+# Register scalable target
+client.register_scalable_target(
+    ServiceNamespace='sagemaker',
+    ResourceId=f'endpoint/iris-classifier/variant/AllTraffic',
+    ScalableDimension='sagemaker:variant:DesiredInstanceCount',
+    MinCapacity=1,
+    MaxCapacity=10
+)
+
+# Target tracking scaling policy
+client.put_scaling_policy(
+    PolicyName='scale-on-invocations',
+    ServiceNamespace='sagemaker',
+    ResourceId=f'endpoint/iris-classifier/variant/AllTraffic',
+    ScalableDimension='sagemaker:variant:DesiredInstanceCount',
+    PolicyType='TargetTrackingScaling',
+    TargetTrackingScalingPolicyConfiguration={
+        'TargetValue': 1000.0,  # Target 1000 invocations per instance
+        'PredefinedMetricSpecification': {
+            'PredefinedMetricType': 'SageMakerVariantInvocationsPerInstance'
+        },
+        'ScaleInCooldown': 300,
+        'ScaleOutCooldown': 60
+    }
+)</code></pre>
+
+                <h3>3. Spot Instances for Batch Workloads</h3>
+                <pre><code class="language-python"># Use spot instances (up to 90% cheaper!)
+from sagemaker.tensorflow import TensorFlow
+
+estimator = TensorFlow(
+    entry_point='train.py',
+    instance_type='ml.p3.2xlarge',
+    instance_count=4,
+    use_spot_instances=True,  # Enable spot
+    max_wait=7200,            # Max wait time
+    max_run=3600              # Max training time
+)
+
+estimator.fit()  # Will use spot instances when available</code></pre>
+
+                <h3>4. Model Optimization Techniques</h3>
+                <pre><code class="language-python"># Quantization (reduce model size & speed up)
+import tensorflow as tf
+
+# Convert to TensorFlow Lite with quantization
+converter = tf.lite.TFLiteConverter.from_saved_model('model/')
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+tflite_model = converter.convert()
+
+# Result: 4x smaller model, 2-3x faster inference
+
+# PyTorch quantization
+import torch
+
+model = torch.load('model.pth')
+model.eval()
+
+# Dynamic quantization
+quantized_model = torch.quantization.quantize_dynamic(
+    model,
+    {torch.nn.Linear},
+    dtype=torch.qint8
+)
+
+# 4x smaller, similar accuracy</code></pre>
+
+                <h3>5. Caching Strategies</h3>
+                <pre><code class="language-python"># Redis caching (prevent redundant predictions)
+import redis
+import hashlib
+import json
+
+redis_client = redis.from_url('redis://cache:6379')
+
+def predict_with_cache(features):
+    # Create cache key
+    key = hashlib.md5(str(features).encode()).hexdigest()
+    
+    # Check cache
+    cached = redis_client.get(f'pred:{key}')
+    if cached:
+        return json.loads(cached)
+    
+    # Make prediction
+    result = model.predict(features)
+    
+    # Cache for 1 hour
+    redis_client.setex(f'pred:{key}', 3600, json.dumps(result))
+    
+    return result
+
+# Can reduce costs by 50%+ for repeated queries!</code></pre>
+
+                <h3>Cost Monitoring</h3>
+                <pre><code class="language-python"># AWS Cost Explorer API
+import boto3
+from datetime import datetime, timedelta
+
+ce = boto3.client('ce')
+
+# Get costs for SageMaker
+response = ce.get_cost_and_usage(
+    TimePeriod={
+        'Start': (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d'),
+        'End': datetime.now().strftime('%Y-%m-%d')
+    },
+    Granularity='DAILY',
+    Metrics=['UnblendedCost'],
+    Filter={
+        'Dimensions': {
+            'Key': 'SERVICE',
+            'Values': ['Amazon SageMaker']
+        }
+    }
+)
+
+for result in response['ResultsByTime']:
+    print(f"{result['TimePeriod']['Start']}: ${result['Total']['UnblendedCost']['Amount']}")</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered cloud deployment for ML models:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🟠</div>
+                        <h3>AWS SageMaker</h3>
+                        <p>Most comprehensive platform with serverless and real-time options</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔵</div>
+                        <h3>Google Cloud</h3>
+                        <p>Simplest deployment with TPU support</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔷</div>
+                        <h3>Azure ML</h3>
+                        <p>Enterprise features with Microsoft integration</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Serverless</h3>
+                        <p>Cost-effective for sporadic workloads</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Cost Optimization</h3>
+                        <p>Right-sizing, auto-scaling, caching, quantization</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Monitoring</h3>
+                        <p>Track costs and performance continuously</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Choose cloud provider based on your tech stack and requirements</li>
+                    <li>Use managed services (SageMaker, Vertex AI) for easier deployment</li>
+                    <li>Implement auto-scaling to handle traffic spikes</li>
+                    <li>Consider serverless for sporadic workloads</li>
+                    <li>Optimize costs with spot instances, caching, and quantization</li>
+                    <li>Monitor costs continuously - cloud bills can surprise you</li>
+                    <li>Start small, scale based on actual traffic patterns</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your models are in the cloud! Next, you'll learn model serving frameworks like BentoML and TorchServe for production-grade inference at scale, with advanced features like A/B testing and canary deployments.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What's the main advantage of using managed ML platforms like SageMaker over deploying containers yourself?</strong></p>
+                    <div class="quiz-option" data-value="a">They're always cheaper</div>
+                    <div class="quiz-option" data-value="b">They're faster</div>
+                    <div class="quiz-option" data-value="c">They handle auto-scaling, monitoring, and deployment infrastructure automatically</div>
+                    <div class="quiz-option" data-value="d">They're more secure</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: When should you use serverless inference (like AWS Lambda)?</strong></p>
+                    <div class="quiz-option" data-value="a">For all ML deployments always</div>
+                    <div class="quiz-option" data-value="b">For sporadic traffic, cost-sensitive applications with fast inference times</div>
+                    <div class="quiz-option" data-value="c">For GPU-intensive workloads</div>
+                    <div class="quiz-option" data-value="d">For long-running batch jobs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: Which cloud platform is generally best for TensorFlow models?</strong></p>
+                    <div class="quiz-option" data-value="a">Google Cloud (Vertex AI) - native TensorFlow support and TPUs</div>
+                    <div class="quiz-option" data-value="b">AWS always</div>
+                    <div class="quiz-option" data-value="c">Azure for everything</div>
+                    <div class="quiz-option" data-value="d">They're all exactly the same</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What's a good cost optimization strategy for ML inference?</strong></p>
+                    <div class="quiz-option" data-value="a">Always use the largest instances</div>
+                    <div class="quiz-option" data-value="b">Never use auto-scaling</div>
+                    <div class="quiz-option" data-value="c">Deploy to all regions</div>
+                    <div class="quiz-option" data-value="d">Implement caching, use auto-scaling, consider spot instances for batch jobs, and quantize models</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What's the purpose of A/B testing in model deployment?</strong></p>
+                    <div class="quiz-option" data-value="a">To make deployment faster</div>
+                    <div class="quiz-option" data-value="b">To reduce costs</div>
+                    <div class="quiz-option" data-value="c">To gradually roll out new model versions and compare performance with the old version</div>
+                    <div class="quiz-option" data-value="d">To test different cloud providers</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="containerization-docker.html">← Previous: Containerization with Docker</a>
+                <a href="model-serving-scale.html">Next: Model Serving at Scale →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

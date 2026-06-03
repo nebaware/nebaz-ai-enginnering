@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master feature scaling techniques: standardization, min-max scaling, robust scaling, and normalization. Learn which algorithms need scaling and when to apply each method.">
+    <title>Feature Scaling & Normalization - Feature Engineering Tutorial - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../index.html" class="nav-brand">
+                <span class="gradient-text">🤖 Nebaz AI Academy</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../courses/feature-engineering.html">Feature Engineering</a></li>
+                <li><a href="../../index.html#courses">All Courses</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="breadcrumb" style="margin-bottom: 1rem;">
+                <a href="../../index.html" style="color: rgba(255,255,255,0.8);">Home</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <a href="../../courses/feature-engineering.html" style="color: rgba(255,255,255,0.8);">Feature Engineering</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <span style="color: white;">Feature Scaling & Normalization</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">
+                ⚖️ Feature Scaling & Normalization
+            </h1>
+            <p style="font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto;">
+                Transform features to comparable scales for better model performance
+            </p>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; font-size: 0.95rem;">
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    📚 Tutorial 3 of 8
+                </span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    ⏱️ 60 minutes
+                </span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    📊 Intermediate
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        
+        <!-- Introduction -->
+        <section>
+            <p>Imagine training a machine learning model to predict house prices using features like <strong>square footage (2000 sqft)</strong> and <strong>number of bedrooms (3)</strong>. The model might think square footage is 667 times more important simply because the numbers are larger! This is where feature scaling comes in—it ensures all features contribute proportionally to the model's learning process.</p>
+
+            <div class="info-box">
+                <h4>🎯 What You'll Learn</h4>
+                <ul>
+                    <li>Why feature scaling is critical for many ML algorithms</li>
+                    <li>Four essential scaling techniques: Standardization, Min-Max, Robust, and Normalization</li>
+                    <li>Which algorithms require scaling and which don't</li>
+                    <li>How to prevent data leakage when scaling</li>
+                    <li>Building scalable preprocessing pipelines</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Why Feature Scaling Matters -->
+        <section>
+            <h2>Why Feature Scaling Matters</h2>
+            
+            <h3>The Scale Problem</h3>
+            
+            <p>Consider this dataset for house price prediction:</p>
+
+<pre><code class="language-python">import pandas as pd
+
+df = pd.DataFrame({
+    'square_feet': [1500, 2000, 1200, 2500],
+    'bedrooms': [3, 4, 2, 4],
+    'age_years': [10, 5, 15, 3],
+    'price': [300000, 400000, 250000, 450000]
+})
+
+print(df.describe())
+
+#        square_feet  bedrooms  age_years     price
+# mean       1800.0       3.25       8.25  350000.0
+# std         561.1       0.96       5.38   87677.9
+# min        1200.0       2.00       3.00  250000.0
+# max        2500.0       4.00      15.00  450000.0
+
+# Problem: Features on vastly different scales!
+# - square_feet: 1200 to 2500 (range: 1300)
+# - bedrooms: 2 to 4 (range: 2)
+# - age_years: 3 to 15 (range: 12)
+</code></pre>
+
+            <h3>Impact on Different Algorithms</h3>
+
+            <div class="warning-box">
+                <h4>⚠️ Distance-Based Algorithms (Highly Affected)</h4>
+                <p><strong>K-Nearest Neighbors (KNN), K-Means, SVM:</strong> These algorithms calculate distances between points. Features with larger scales dominate the distance calculation.</p>
+<pre><code class="language-python"># Without scaling: Euclidean distance dominated by square_feet
+# House A: [1500 sqft, 3 bed]
+# House B: [1600 sqft, 4 bed]
+
+# Distance = sqrt((1600-1500)² + (4-3)²)
+#          = sqrt(10000 + 1)
+#          = sqrt(10001) ≈ 100.005
+
+# Bedroom difference (1) is negligible compared to sqft difference (100)!
+</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ Gradient-Based Algorithms (Moderately Affected)</h4>
+                <p><strong>Linear Regression, Logistic Regression, Neural Networks:</strong> Features on different scales cause uneven gradients, leading to slower convergence and zigzagging optimization paths.</p>
+<pre><code class="language-python"># Without scaling, gradient descent struggles:
+# - Large feature values → large gradients → overshooting
+# - Small feature values → small gradients → slow learning
+# Result: Requires many more iterations to converge
+</code></pre>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ Tree-Based Algorithms (Not Affected)</h4>
+                <p><strong>Decision Trees, Random Forests, XGBoost:</strong> These algorithms split data based on thresholds, not distances. Feature scales don't matter.</p>
+<pre><code class="language-python"># Tree-based models ask: "Is square_feet > 1800?"
+# They don't care if it's 1800 or 0.8 (scaled)
+# Splitting logic works regardless of scale
+</code></pre>
+            </div>
+
+            <h3>Demonstration: Scaling Impact on KNN</h3>
+
+<pre><code class="language-python">from sklearn.neighbors import KNeighborsClassifier
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+import numpy as np
+
+# Create synthetic dataset with features on different scales
+X, y = make_classification(n_samples=1000, n_features=2, n_redundant=0, 
+                           n_informative=2, random_state=42)
+
+# Scale one feature to be 1000x larger
+X[:, 0] = X[:, 0] * 1000
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Test WITHOUT scaling
+knn_unscaled = KNeighborsClassifier(n_neighbors=5)
+knn_unscaled.fit(X_train, y_train)
+score_unscaled = knn_unscaled.score(X_test, y_test)
+
+# Test WITH scaling
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+knn_scaled = KNeighborsClassifier(n_neighbors=5)
+knn_scaled.fit(X_train_scaled, y_train)
+score_scaled = knn_scaled.score(X_test_scaled, y_test)
+
+print(f"KNN Accuracy WITHOUT scaling: {score_unscaled:.4f}")
+print(f"KNN Accuracy WITH scaling:    {score_scaled:.4f}")
+print(f"Improvement: {(score_scaled - score_unscaled) * 100:.2f}%")
+
+# Typical output:
+# KNN Accuracy WITHOUT scaling: 0.7533
+# KNN Accuracy WITH scaling:    0.9267
+# Improvement: 17.34%
+</code></pre>
+        </section>
+
+        <!-- Method 1: Standardization (Z-Score Normalization) -->
+        <section>
+            <h2>Method 1: Standardization (Z-Score Normalization)</h2>
+            
+            <p><strong>Best for:</strong> Most algorithms (especially those assuming normally distributed data)</p>
+            
+            <p>Standardization transforms features to have <strong>mean = 0</strong> and <strong>standard deviation = 1</strong>. Also called "Z-score normalization."</p>
+
+            <h3>The Formula</h3>
+
+<pre><code class="language-python"># For each feature value x:
+# z = (x - mean) / standard_deviation
+
+# Example:
+# Feature values: [1, 2, 3, 4, 5]
+# Mean = 3, Std = 1.414
+
+# Standardized:
+# (1-3)/1.414 = -1.41
+# (2-3)/1.414 = -0.71
+# (3-3)/1.414 =  0.00
+# (4-3)/1.414 =  0.71
+# (5-3)/1.414 =  1.41
+</code></pre>
+
+            <h3>Implementation with Scikit-learn</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+import numpy as np
+import pandas as pd
+
+# Sample data
+data = np.array([[1, 2000, 3],
+                 [2, 1500, 2],
+                 [3, 2500, 4],
+                 [4, 1800, 3]])
+
+df = pd.DataFrame(data, columns=['age', 'square_feet', 'bedrooms'])
+print("Original data:")
+print(df)
+print("\nStatistics:")
+print(df.describe())
+
+# Create and fit scaler
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(df)
+
+# Convert back to DataFrame
+df_scaled = pd.DataFrame(scaled_data, columns=df.columns)
+print("\nStandardized data:")
+print(df_scaled)
+print("\nStandardized statistics:")
+print(df_scaled.describe())
+
+# Output shows:
+# - Mean ≈ 0 for all features
+# - Std = 1 for all features
+
+# Access scaling parameters
+print("\nScaling parameters:")
+print(f"Means: {scaler.mean_}")
+print(f"Standard deviations: {scaler.scale_}")
+</code></pre>
+
+            <h3>Properties of Standardization</h3>
+
+            <div class="info-box">
+                <h4>📊 Key Characteristics</h4>
+                <ul>
+                    <li><strong>Output range:</strong> Unbounded (typically -3 to +3 for most data)</li>
+                    <li><strong>Preserves outliers:</strong> They remain outliers, just scaled</li>
+                    <li><strong>Assumes normality:</strong> Works best when data is roughly normally distributed</li>
+                    <li><strong>Center and scale:</strong> Centers around 0, scales by standard deviation</li>
+                </ul>
+            </div>
+
+            <h3>When to Use Standardization</h3>
+
+            <p><strong>✅ Use when:</strong></p>
+            <ul>
+                <li>Working with algorithms that assume normally distributed features (Logistic Regression, SVM, Neural Networks)</li>
+                <li>Features have different units (meters vs kilometers, dollars vs millions)</li>
+                <li>You want to preserve outlier information</li>
+                <li>PCA or other techniques that are sensitive to variance</li>
+            </ul>
+
+            <p><strong>❌ Avoid when:</strong></p>
+            <ul>
+                <li>Data has extreme outliers (use Robust Scaling instead)</li>
+                <li>You need values in a specific range like [0, 1] (use Min-Max instead)</li>
+                <li>Using tree-based models only (scaling not needed)</li>
+            </ul>
+        </section>
+
+        <!-- Method 2: Min-Max Scaling (Normalization) -->
+        <section>
+            <h2>Method 2: Min-Max Scaling</h2>
+            
+            <p><strong>Best for:</strong> When you need values in a specific bounded range</p>
+            
+            <p>Min-Max scaling transforms features to a fixed range, typically <strong>[0, 1]</strong>. Also called "normalization" (though this term can be ambiguous).</p>
+
+            <h3>The Formula</h3>
+
+<pre><code class="language-python"># For each feature value x:
+# x_scaled = (x - min) / (max - min)
+
+# This maps:
+# - minimum value → 0
+# - maximum value → 1
+# - everything else → proportionally between 0 and 1
+
+# Example:
+# Feature values: [10, 20, 30, 40, 50]
+# Min = 10, Max = 50
+
+# Scaled:
+# (10-10)/(50-10) = 0.00
+# (20-10)/(50-10) = 0.25
+# (30-10)/(50-10) = 0.50
+# (40-10)/(50-10) = 0.75
+# (50-10)/(50-10) = 1.00
+</code></pre>
+
+            <h3>Implementation</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+import pandas as pd
+
+# Sample data
+data = pd.DataFrame({
+    'age': [25, 30, 35, 40, 45],
+    'salary': [50000, 60000, 70000, 80000, 90000],
+    'experience': [1, 3, 5, 7, 10]
+})
+
+print("Original data:")
+print(data)
+
+# Create Min-Max scaler (default range [0, 1])
+scaler = MinMaxScaler()
+scaled_data = scaler.fit_transform(data)
+
+df_scaled = pd.DataFrame(scaled_data, columns=data.columns)
+print("\nMin-Max scaled data [0, 1]:")
+print(df_scaled)
+
+# Custom range: scale to [-1, 1]
+scaler_custom = MinMaxScaler(feature_range=(-1, 1))
+scaled_custom = scaler_custom.fit_transform(data)
+
+df_custom = pd.DataFrame(scaled_custom, columns=data.columns)
+print("\nMin-Max scaled data [-1, 1]:")
+print(df_custom)
+
+# Verify ranges
+print("\nVerification:")
+print(f"Min values: {df_scaled.min().values}")  # All 0.0
+print(f"Max values: {df_scaled.max().values}")  # All 1.0
+</code></pre>
+
+            <h3>Handling New Data</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import MinMaxScaler
+
+# Training data
+train_data = pd.DataFrame({
+    'temperature': [20, 25, 30, 35, 40]
+})
+
+# Fit scaler on training data
+scaler = MinMaxScaler()
+scaler.fit(train_data)
+
+print(f"Training min: {scaler.data_min_}")  # [20.]
+print(f"Training max: {scaler.data_max_}")  # [40.]
+
+# Transform training data
+train_scaled = scaler.transform(train_data)
+print("\nTraining data scaled:")
+print(train_scaled.ravel())  # [0.0, 0.25, 0.5, 0.75, 1.0]
+
+# New test data (includes values outside training range!)
+test_data = pd.DataFrame({
+    'temperature': [15, 22, 45]  # 15 < min, 45 > max
+})
+
+# Transform test data using same scaler
+test_scaled = scaler.transform(test_data)
+print("\nTest data scaled:")
+print(test_scaled.ravel())
+
+# Output:
+# [-0.25, 0.1, 1.25]
+# Note: Values can be outside [0,1] for out-of-range data!
+# 15 → -0.25 (below training min)
+# 45 → 1.25 (above training max)
+</code></pre>
+
+            <div class="warning-box">
+                <h4>⚠️ Sensitive to Outliers</h4>
+                <p>Min-Max scaling is highly sensitive to outliers. A single extreme value can compress all other values into a tiny range:</p>
+<pre><code class="language-python"># Example: One outlier ruins scaling
+data = [10, 20, 30, 40, 1000]  # 1000 is outlier
+
+# After Min-Max scaling [0, 1]:
+# 10   → 0.000
+# 20   → 0.010
+# 30   → 0.020
+# 40   → 0.030
+# 1000 → 1.000
+
+# All normal values compressed to 0.00-0.03 range!
+</code></pre>
+            </div>
+
+            <h3>When to Use Min-Max Scaling</h3>
+
+            <p><strong>✅ Use when:</strong></p>
+            <ul>
+                <li>You need features in a specific bounded range (e.g., [0, 1] for neural network inputs)</li>
+                <li>Data doesn't have significant outliers</li>
+                <li>Working with image data (pixel values 0-255 → 0-1)</li>
+                <li>Algorithm performs better with bounded inputs (e.g., neural networks with sigmoid/tanh)</li>
+            </ul>
+
+            <p><strong>❌ Avoid when:</strong></p>
+            <ul>
+                <li>Data contains outliers (use Robust Scaling)</li>
+                <li>Distribution is heavily skewed</li>
+                <li>You'll receive test data that might exceed training min/max</li>
+            </ul>
+        </section>
+
+        <!-- Method 3: Robust Scaling -->
+        <section>
+            <h2>Method 3: Robust Scaling</h2>
+            
+            <p><strong>Best for:</strong> Data with outliers</p>
+            
+            <p>Robust scaling uses statistics that are resistant to outliers: <strong>median</strong> and <strong>interquartile range (IQR)</strong> instead of mean and standard deviation.</p>
+
+            <h3>The Formula</h3>
+
+<pre><code class="language-python"># For each feature value x:
+# x_scaled = (x - median) / IQR
+
+# Where:
+# - median = 50th percentile (Q2)
+# - IQR = Q3 - Q1 (75th percentile - 25th percentile)
+
+# Example:
+# Data: [1, 2, 3, 4, 5, 100]  # 100 is outlier
+# Q1 = 2, Median = 3.5, Q3 = 5
+# IQR = 5 - 2 = 3
+
+# Scaled:
+# (1-3.5)/3    = -0.83
+# (2-3.5)/3    = -0.50
+# (3-3.5)/3    = -0.17
+# (4-3.5)/3    =  0.17
+# (5-3.5)/3    =  0.50
+# (100-3.5)/3  =  32.17  # Outlier still far, but doesn't compress others
+</code></pre>
+
+            <h3>Implementation</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import RobustScaler
+import numpy as np
+import pandas as pd
+
+# Data with outliers
+data = pd.DataFrame({
+    'salary': [50000, 55000, 60000, 65000, 70000, 500000],  # Last value is outlier
+    'age': [25, 28, 30, 32, 35, 40]
+})
+
+print("Original data:")
+print(data)
+print("\nStatistics:")
+print(data.describe())
+
+# Standard Scaler (for comparison)
+from sklearn.preprocessing import StandardScaler
+std_scaler = StandardScaler()
+std_scaled = std_scaler.fit_transform(data)
+df_std = pd.DataFrame(std_scaled, columns=data.columns)
+
+# Robust Scaler
+robust_scaler = RobustScaler()
+robust_scaled = robust_scaler.fit_transform(data)
+df_robust = pd.DataFrame(robust_scaled, columns=data.columns)
+
+print("\nStandardScaler (affected by outlier):")
+print(df_std['salary'].describe())
+
+print("\nRobustScaler (resistant to outlier):")
+print(df_robust['salary'].describe())
+
+# Compare outlier impact
+print("\nOutlier scaling comparison:")
+print(f"StandardScaler: salary[5] = {df_std['salary'].iloc[5]:.2f}")
+print(f"RobustScaler:   salary[5] = {df_robust['salary'].iloc[5]:.2f}")
+
+# StandardScaler: outlier might be ~2-3 std devs
+# RobustScaler: outlier in terms of IQRs (more interpretable)
+</code></pre>
+
+            <h3>Comparison: Robust vs Standard Scaling</h3>
+
+<pre><code class="language-python">import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler, RobustScaler
+import numpy as np
+
+# Create data with outliers
+np.random.seed(42)
+normal_data = np.random.normal(100, 15, 95)
+outliers = np.array([300, 350, 400, 450, 500])
+data = np.concatenate([normal_data, outliers]).reshape(-1, 1)
+
+# Apply both scalers
+std_scaler = StandardScaler()
+robust_scaler = RobustScaler()
+
+data_std = std_scaler.fit_transform(data)
+data_robust = robust_scaler.fit_transform(data)
+
+# Compare results
+print("Original data range:", data.min(), "to", data.max())
+print("\nStandardScaler:")
+print(f"  Normal data range: {data_std[:95].min():.2f} to {data_std[:95].max():.2f}")
+print(f"  Outliers range: {data_std[95:].min():.2f} to {data_std[95:].max():.2f}")
+
+print("\nRobustScaler:")
+print(f"  Normal data range: {data_robust[:95].min():.2f} to {data_robust[:95].max():.2f}")
+print(f"  Outliers range: {data_robust[95:].min():.2f} to {data_robust[95:].max():.2f}")
+
+# RobustScaler keeps normal data in a more reasonable range
+# while still flagging outliers as extreme
+</code></pre>
+
+            <h3>When to Use Robust Scaling</h3>
+
+            <p><strong>✅ Use when:</strong></p>
+            <ul>
+                <li>Data contains outliers that you want to preserve but not let dominate</li>
+                <li>Distribution is skewed</li>
+                <li>You want scaling that's resistant to extreme values</li>
+                <li>Financial data, sensor data, or any domain with natural outliers</li>
+            </ul>
+
+            <p><strong>❌ Avoid when:</strong></p>
+            <ul>
+                <li>Data is clean with no outliers (StandardScaler is simpler)</li>
+                <li>You need a specific bounded range (use MinMaxScaler)</li>
+                <li>Outliers are actually errors that should be removed first</li>
+            </ul>
+        </section>
+
+        <!-- Method 4: Normalization (L2) -->
+        <section>
+            <h2>Method 4: Normalization (L1, L2)</h2>
+            
+            <p><strong>Best for:</strong> Text processing, when direction matters more than magnitude</p>
+            
+            <p>Normalization scales individual <strong>samples (rows)</strong> to have unit norm, not features (columns). It's about making vectors have length 1.</p>
+
+            <h3>The Concept</h3>
+
+<pre><code class="language-python"># L2 Normalization (Euclidean norm)
+# For each sample (row) x = [x1, x2, ..., xn]:
+# x_normalized = x / ||x||₂
+# where ||x||₂ = sqrt(x1² + x2² + ... + xn²)
+
+# L1 Normalization (Manhattan norm)
+# x_normalized = x / ||x||₁
+# where ||x||₁ = |x1| + |x2| + ... + |xn|
+
+# Example with L2:
+# Sample: [3, 4]
+# L2 norm = sqrt(3² + 4²) = sqrt(9 + 16) = 5
+# Normalized: [3/5, 4/5] = [0.6, 0.8]
+# Verify: sqrt(0.6² + 0.8²) = sqrt(0.36 + 0.64) = 1.0 ✓
+</code></pre>
+
+            <h3>Implementation</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import Normalizer
+import numpy as np
+
+# Sample data (each row is a sample)
+data = np.array([
+    [3, 4],      # Sample 1
+    [1, 1],      # Sample 2
+    [5, 12]      # Sample 3
+])
+
+print("Original data:")
+print(data)
+
+# Calculate L2 norms manually
+l2_norms = np.sqrt((data ** 2).sum(axis=1))
+print("\nL2 norms per sample:")
+print(l2_norms)  # [5.0, 1.414, 13.0]
+
+# L2 Normalization
+normalizer_l2 = Normalizer(norm='l2')
+data_l2 = normalizer_l2.fit_transform(data)
+
+print("\nL2 normalized:")
+print(data_l2)
+
+# Verify: each row should have norm = 1
+l2_norms_after = np.sqrt((data_l2 ** 2).sum(axis=1))
+print("\nL2 norms after normalization:")
+print(l2_norms_after)  # All approximately 1.0
+
+# L1 Normalization
+normalizer_l1 = Normalizer(norm='l1')
+data_l1 = normalizer_l1.fit_transform(data)
+
+print("\nL1 normalized:")
+print(data_l1)
+
+# For L1: each row sums to 1
+l1_sums = np.abs(data_l1).sum(axis=1)
+print("\nL1 sums after normalization:")
+print(l1_sums)  # All 1.0
+</code></pre>
+
+            <h3>Use Case: Text Processing (TF-IDF)</h3>
+
+<pre><code class="language-python">from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import Normalizer
+
+# Documents
+documents = [
+    "machine learning is awesome",
+    "deep learning requires GPUs",
+    "machine learning and deep learning"
+]
+
+# TF-IDF vectorization
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+print("TF-IDF matrix shape:", tfidf_matrix.shape)
+print("\nFeature names:", vectorizer.get_feature_names_out())
+
+# TF-IDF already applies L2 normalization by default!
+print("\nRow norms (should be 1.0):")
+import numpy as np
+for i in range(tfidf_matrix.shape[0]):
+    row_norm = np.sqrt(tfidf_matrix[i].multiply(tfidf_matrix[i]).sum())
+    print(f"Document {i+1}: {row_norm:.4f}")
+
+# Each document vector has unit length
+# This means cosine similarity = dot product
+# Useful for comparing document similarity!
+</code></pre>
+
+            <h3>Normalization vs Standardization</h3>
+
+            <div class="info-box">
+                <h4>🔄 Key Differences</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Aspect</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Standardization</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Normalization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Operates on</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Features (columns)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Samples (rows)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Goal</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Mean=0, Std=1</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Vector length=1</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Use case</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Make features comparable</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Make samples comparable</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Best for</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Most ML algorithms</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Text, cosine similarity</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>When to Use Normalization</h3>
+
+            <p><strong>✅ Use when:</strong></p>
+            <ul>
+                <li>Working with text data (TF-IDF, word embeddings)</li>
+                <li>Using cosine similarity or dot products</li>
+                <li>Direction of data matters more than magnitude</li>
+                <li>Building recommendation systems</li>
+            </ul>
+
+            <p><strong>❌ Avoid when:</strong></p>
+            <ul>
+                <li>You need to standardize features across samples (use StandardScaler)</li>
+                <li>Magnitude information is important</li>
+                <li>Working with typical tabular data</li>
+            </ul>
+        </section>
+
+        <!-- Preventing Data Leakage -->
+        <section>
+            <h2>Preventing Data Leakage in Scaling</h2>
+            
+            <div class="warning-box">
+                <h4>⚠️ Critical: Fit Only on Training Data!</h4>
+                <p>The most common mistake in feature scaling is fitting the scaler on the entire dataset (train + test). This causes <strong>data leakage</strong> because the test set influences the scaling parameters.</p>
+            </div>
+
+            <h3>Wrong Way (Data Leakage)</h3>
+
+<pre><code class="language-python"># ❌ WRONG: Fitting on all data
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+X = df[features]
+y = df['target']
+
+# BAD: Scale entire dataset first
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # ← Uses test data statistics!
+
+# Then split
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42
+)
+
+# Problem: Test set statistics influenced training data scaling
+# Model has indirectly "seen" test data distribution
+</code></pre>
+
+            <h3>Right Way (No Leakage)</h3>
+
+<pre><code class="language-python"># ✅ RIGHT: Split first, then fit on training only
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+
+X = df[features]
+y = df['target']
+
+# GOOD: Split first
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Fit scaler on training data only
+scaler = StandardScaler()
+scaler.fit(X_train)  # ← Learn parameters from training only
+
+# Transform both sets using training parameters
+X_train_scaled = scaler.transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Now test set is truly "unseen"
+</code></pre>
+
+            <h3>Using Pipelines (Recommended)</h3>
+
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_val_score
+
+# Create pipeline (handles fit/transform automatically)
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', LogisticRegression())
+])
+
+# Cross-validation with pipeline
+# Pipeline ensures scaling is done correctly in each fold
+scores = cross_val_score(pipeline, X, y, cv=5, scoring='accuracy')
+
+print(f"Cross-validation scores: {scores}")
+print(f"Mean accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
+
+# Pipeline automatically:
+# 1. Fits scaler on training folds
+# 2. Transforms training folds
+# 3. Transforms validation fold (using training stats)
+# No leakage!
+</code></pre>
+
+            <h3>Cross-Validation Leakage Example</h3>
+
+<pre><code class="language-python">from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+# Create sample data
+np.random.seed(42)
+X = np.random.randn(1000, 20)
+y = (X[:, 0] + X[:, 1] > 0).astype(int)
+
+# ❌ WRONG: Scale before cross-validation
+scaler = StandardScaler()
+X_scaled_wrong = scaler.fit_transform(X)  # All data
+model_wrong = LogisticRegression()
+scores_wrong = cross_val_score(model_wrong, X_scaled_wrong, y, cv=5)
+
+# ✅ RIGHT: Use pipeline for cross-validation
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', LogisticRegression())
+])
+scores_right = cross_val_score(pipeline, X, y, cv=5)
+
+print("Wrong way (with leakage):")
+print(f"  Mean accuracy: {scores_wrong.mean():.4f}")
+print("\nRight way (no leakage):")
+print(f"  Mean accuracy: {scores_right.mean():.4f}")
+
+# Wrong way often shows inflated scores due to leakage
+</code></pre>
+        </section>
+
+        <!-- Choosing the Right Scaling Method -->
+        <section>
+            <h2>Choosing the Right Scaling Method</h2>
+            
+            <div class="info-box">
+                <h4>📊 Decision Flowchart</h4>
+                <ol>
+                    <li><strong>Are you using tree-based models only?</strong>
+                        <ul><li>YES → No scaling needed</li></ul>
+                    </li>
+                    <li><strong>Is your data text/documents?</strong>
+                        <ul><li>YES → L2 Normalization (often built into TF-IDF)</li></ul>
+                    </li>
+                    <li><strong>Does your data have significant outliers?</strong>
+                        <ul><li>YES → Robust Scaling</li></ul>
+                    </li>
+                    <li><strong>Do you need bounded range [0,1]?</strong>
+                        <ul><li>YES → Min-Max Scaling</li></ul>
+                    </li>
+                    <li><strong>Otherwise:</strong>
+                        <ul><li>Use Standardization (default choice)</li></ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>Algorithm-Specific Requirements</h3>
+
+<pre><code class="language-python"># Summary table
+import pandas as pd
+
+scaling_guide = pd.DataFrame({
+    'Algorithm': [
+        'Linear/Logistic Regression',
+        'SVM',
+        'K-Nearest Neighbors',
+        'K-Means Clustering',
+        'Neural Networks',
+        'PCA',
+        'Decision Trees',
+        'Random Forest',
+        'XGBoost/LightGBM',
+        'Naive Bayes'
+    ],
+    'Needs Scaling': [
+        'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes',
+        'No', 'No', 'No', 'Depends'
+    ],
+    'Recommended Method': [
+        'StandardScaler',
+        'StandardScaler',
+        'StandardScaler or MinMaxScaler',
+        'StandardScaler',
+        'MinMaxScaler or StandardScaler',
+        'StandardScaler',
+        'None',
+        'None',
+        'None',
+        'MinMaxScaler (for continuous features)'
+    ]
+})
+
+print(scaling_guide.to_string(index=False))
+</code></pre>
+
+            <h3>Practical Comparison</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+import numpy as np
+import pandas as pd
+
+# Create test data with outliers
+np.random.seed(42)
+data = pd.DataFrame({
+    'normal': np.random.normal(100, 15, 100),
+    'with_outlier': list(np.random.normal(100, 15, 95)) + [500, 600, 700, 800, 900]
+})
+
+# Apply all scalers
+scalers = {
+    'Original': None,
+    'StandardScaler': StandardScaler(),
+    'MinMaxScaler': MinMaxScaler(),
+    'RobustScaler': RobustScaler()
+}
+
+results = {}
+for name, scaler in scalers.items():
+    if scaler is None:
+        results[name] = data
+    else:
+        scaled = scaler.fit_transform(data)
+        results[name] = pd.DataFrame(scaled, columns=data.columns)
+
+# Compare statistics
+print("Comparison of scaling methods:\n")
+for name, df in results.items():
+    print(f"{name}:")
+    print(df.describe()[['normal', 'with_outlier']].loc[['mean', 'std', 'min', 'max']])
+    print()
+
+# Key observations:
+# - StandardScaler: Mean ≈ 0, std = 1 for both
+# - MinMaxScaler: Both in [0, 1], but outliers compress normal data
+# - RobustScaler: Resistant to outliers in 'with_outlier' column
+</code></pre>
+        </section>
+
+        <!-- Production Pipeline -->
+        <section>
+            <h2>Building a Complete Preprocessing Pipeline</h2>
+
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+import pandas as pd
+import numpy as np
+
+# Sample dataset
+np.random.seed(42)
+df = pd.DataFrame({
+    'age': np.random.randint(18, 80, 1000),
+    'salary': np.random.normal(60000, 20000, 1000),
+    'credit_score': np.random.randint(300, 850, 1000),
+    'num_loans': np.random.randint(0, 5, 1000),
+    'debt': np.concatenate([
+        np.random.normal(10000, 5000, 950),
+        np.random.normal(100000, 20000, 50)  # Some with high debt (outliers)
+    ]),
+    'approved': np.random.binomial(1, 0.6, 1000)
+})
+
+# Add some missing values
+df.loc[np.random.choice(df.index, 50), 'salary'] = np.nan
+df.loc[np.random.choice(df.index, 30), 'debt'] = np.nan
+
+print("Dataset shape:", df.shape)
+print("\nMissing values:")
+print(df.isnull().sum())
+
+# Define feature groups
+standard_features = ['age', 'salary', 'credit_score']
+minmax_features = ['num_loans']
+robust_features = ['debt']  # Has outliers
+
+# Create preprocessing pipeline
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('standard', Pipeline([
+            ('imputer', SimpleImputer(strategy='mean')),
+            ('scaler', StandardScaler())
+        ]), standard_features),
+        
+        ('minmax', Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', MinMaxScaler())
+        ]), minmax_features),
+        
+        ('robust', Pipeline([
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', RobustScaler())
+        ]), robust_features)
+    ]
+)
+
+# Split data
+X = df.drop('approved', axis=1)
+y = df['approved']
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Create full pipeline with model
+full_pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('classifier', LogisticRegression(random_state=42))
+])
+
+# Train
+full_pipeline.fit(X_train, y_train)
+
+# Evaluate
+train_score = full_pipeline.score(X_train, y_train)
+test_score = full_pipeline.score(X_test, y_test)
+
+print(f"\nTraining accuracy: {train_score:.4f}")
+print(f"Test accuracy: {test_score:.4f}")
+
+# Save pipeline
+import joblib
+joblib.dump(full_pipeline, 'preprocessing_pipeline.pkl')
+
+# Load and use
+loaded_pipeline = joblib.load('preprocessing_pipeline.pkl')
+new_data = pd.DataFrame({
+    'age': [35],
+    'salary': [75000],
+    'credit_score': [720],
+    'num_loans': [2],
+    'debt': [15000]
+})
+prediction = loaded_pipeline.predict(new_data)
+print(f"\nPrediction for new data: {prediction[0]}")
+</code></pre>
+        </section>
+
+        <!-- Quiz -->
+        <section>
+            <h2>🧠 Knowledge Check</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="b">
+                    <h4>Question 1: Which algorithms are most affected by unscaled features?</h4>
+                    <div class="quiz-option" data-value="a">Decision Trees and Random Forests</div>
+                    <div class="quiz-option" data-value="b">K-Nearest Neighbors and SVM</div>
+                    <div class="quiz-option" data-value="c">XGBoost and LightGBM</div>
+                    <div class="quiz-option" data-value="d">All algorithms equally</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <h4>Question 2: What does StandardScaler transform features to?</h4>
+                    <div class="quiz-option" data-value="a">Mean = 0, Standard Deviation = 1</div>
+                    <div class="quiz-option" data-value="b">Range [0, 1]</div>
+                    <div class="quiz-option" data-value="c">Range [-1, 1]</div>
+                    <div class="quiz-option" data-value="d">Median = 0, IQR = 1</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 3: When should you use RobustScaler instead of StandardScaler?</h4>
+                    <div class="quiz-option" data-value="a">When you need values in range [0, 1]</div>
+                    <div class="quiz-option" data-value="b">When working with tree-based models</div>
+                    <div class="quiz-option" data-value="c">When your data contains significant outliers</div>
+                    <div class="quiz-option" data-value="d">When working with text data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <h4>Question 4: What's the main risk of MinMaxScaler?</h4>
+                    <div class="quiz-option" data-value="a">It doesn't work with neural networks</div>
+                    <div class="quiz-option" data-value="b">It's too slow for large datasets</div>
+                    <div class="quiz-option" data-value="c">It only works with positive values</div>
+                    <div class="quiz-option" data-value="d">It's highly sensitive to outliers which can compress normal values</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <h4>Question 5: When should you fit the scaler?</h4>
+                    <div class="quiz-option" data-value="a">Only on training data, then transform both train and test</div>
+                    <div class="quiz-option" data-value="b">On the entire dataset before splitting</div>
+                    <div class="quiz-option" data-value="c">Separately on training and test data</div>
+                    <div class="quiz-option" data-value="d">It doesn't matter as long as you scale</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <h4>Question 6: What does L2 normalization do?</h4>
+                    <div class="quiz-option" data-value="a">Scales features to have mean 0</div>
+                    <div class="quiz-option" data-value="b">Scales each sample (row) to have unit length</div>
+                    <div class="quiz-option" data-value="c">Scales features to range [0, 1]</div>
+                    <div class="quiz-option" data-value="d">Removes outliers from the data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 7: Which scaling method is best for neural network input layers?</h4>
+                    <div class="quiz-option" data-value="a">No scaling needed</div>
+                    <div class="quiz-option" data-value="b">RobustScaler only</div>
+                    <div class="quiz-option" data-value="c">MinMaxScaler or StandardScaler</div>
+                    <div class="quiz-option" data-value="d">L2 Normalization</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <h4>Question 8: Why don't Decision Trees need feature scaling?</h4>
+                    <div class="quiz-option" data-value="a">They automatically scale features internally</div>
+                    <div class="quiz-option" data-value="b">They only work with categorical features</div>
+                    <div class="quiz-option" data-value="c">They're too slow to handle scaled data</div>
+                    <div class="quiz-option" data-value="d">They split based on thresholds, not distances, so scale doesn't matter</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Exercises -->
+        <section>
+            <h2>💻 Practice Exercises</h2>
+
+            <div class="info-box">
+                <h4>Exercise 1: Impact of Scaling on KNN</h4>
+                <p>Compare KNN performance with and without scaling:</p>
+<pre><code class="language-python">from sklearn.datasets import load_wine
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+# Load wine dataset
+wine = load_wine()
+X, y = wine.data, wine.target
+
+# TODO:
+# 1. Split into train/test (80/20)
+# 2. Train KNN (k=5) without scaling
+# 3. Train KNN with StandardScaler
+# 4. Compare test accuracies
+# 5. Try different values of k (3, 5, 7, 10)
+# 6. Plot accuracy vs k for scaled and unscaled
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 2: Scaling Method Comparison</h4>
+                <p>Compare all scaling methods on data with outliers:</p>
+<pre><code class="language-python">import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+
+# Create data with outliers
+np.random.seed(42)
+normal_data = np.random.normal(50, 10, 95)
+outliers = [150, 200, 250, 300, 350]
+data = np.concatenate([normal_data, outliers]).reshape(-1, 1)
+
+# TODO:
+# 1. Apply StandardScaler, MinMaxScaler, RobustScaler
+# 2. For each method, calculate:
+#    - Range of normal data (indices 0:95)
+#    - Range of outliers (indices 95:100)
+# 3. Visualize with box plots or histograms
+# 4. Which method best preserves normal data range?
+# 5. Which method is most affected by outliers?
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 3: Preventing Data Leakage</h4>
+                <p>Fix this leaky preprocessing code:</p>
+<pre><code class="language-python"># WRONG implementation with leakage
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegression
+
+# Scale entire dataset
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Leakage!
+
+# Cross-validation
+model = LogisticRegression()
+scores = cross_val_score(model, X_scaled, y, cv=5)
+
+# TODO:
+# 1. Identify the data leakage problem
+# 2. Fix it using Pipeline
+# 3. Compare scores before and after fix
+# 4. Explain why scores might differ
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 4: Multi-Feature Scaling Pipeline</h4>
+                <p>Build a pipeline with different scalers for different feature types:</p>
+<pre><code class="language-python"># Dataset features:
+# - age: normal distribution, no outliers → StandardScaler
+# - salary: has outliers → RobustScaler  
+# - num_transactions: bounded [0, 100] → MinMaxScaler
+# - credit_score: normal, range [300-850] → StandardScaler
+
+# TODO:
+# 1. Create ColumnTransformer with appropriate scalers
+# 2. Build Pipeline with preprocessor + classifier
+# 3. Evaluate with cross-validation
+# 4. Compare to using StandardScaler for all features
+# 5. Save and load the pipeline
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 5: Neural Network Scaling</h4>
+                <p>Compare scaling methods for neural networks:</p>
+<pre><code class="language-python">from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+# TODO:
+# 1. Load or create a classification dataset
+# 2. Train neural network with no scaling
+# 3. Train with StandardScaler
+# 4. Train with MinMaxScaler
+# 5. Compare:
+#    - Training convergence speed (n_iter_)
+#    - Final accuracy
+#    - Loss curves
+# 6. Which scaling method works best for neural networks?
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+            <h2>📝 Summary</h2>
+            
+            <p>Feature scaling is essential for many machine learning algorithms to perform optimally:</p>
+
+            <div class="success-box">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>StandardScaler (Z-score):</strong> Most common method. Transforms to mean=0, std=1. Use for most algorithms that aren't tree-based. Best when data is roughly normally distributed.</li>
+                    
+                    <li><strong>MinMaxScaler:</strong> Scales to bounded range [0,1] or custom range. Good for neural networks. Highly sensitive to outliers—avoid if data has extreme values.</li>
+                    
+                    <li><strong>RobustScaler:</strong> Uses median and IQR instead of mean and std. Resistant to outliers. Best choice when data contains significant outliers you want to preserve.</li>
+                    
+                    <li><strong>Normalizer (L1/L2):</strong> Scales individual samples to unit norm, not features. Used for text data, cosine similarity, and when direction matters more than magnitude.</li>
+                    
+                    <li><strong>Prevention of Data Leakage:</strong> ALWAYS fit scalers on training data only, then transform both train and test. Use Pipeline for automatic handling.</li>
+                    
+                    <li><strong>Algorithm Requirements:</strong> Distance-based (KNN, SVM, K-Means) and gradient-based (Linear models, Neural Nets) algorithms need scaling. Tree-based models (RF, XGBoost) don't.</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Quick Reference</h4>
+                <ul>
+                    <li><strong>Default choice:</strong> StandardScaler</li>
+                    <li><strong>Have outliers?</strong> RobustScaler</li>
+                    <li><strong>Need [0,1] range?</strong> MinMaxScaler</li>
+                    <li><strong>Text data?</strong> L2 Normalization</li>
+                    <li><strong>Trees only?</strong> No scaling needed</li>
+                </ul>
+            </div>
+
+            <p>Next tutorial, we'll explore <strong>Feature Extraction & Creation</strong>—generating new features from existing ones. See you there! 🚀</p>
+        </section>
+
+        <!-- Navigation -->
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; text-align: center;">
+            <h3 style="color: white; margin-bottom: 1rem;">🎯 Ready for the Next Challenge?</h3>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Continue your feature engineering journey</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="encoding-categorical.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">
+                    ← Previous: Encoding Categorical
+                </a>
+                <a href="../../courses/feature-engineering.html" class="btn" style="background: white; color: #667eea;">
+                    📚 Course Hub
+                </a>
+                <a href="#" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; opacity: 0.5; cursor: not-allowed;">
+                    Next: Feature Extraction →
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nebaz AI Academy</h3>
+                    <p>Master AI, Machine Learning, and Python through hands-on tutorials.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../../index.html">Home</a></li>
+                        <li><a href="../../index.html#courses">All Courses</a></li>
+                        <li><a href="../../courses/feature-engineering.html">Feature Engineering</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://scikit-learn.org/stable/modules/preprocessing.html" target="_blank">Scikit-learn Preprocessing</a></li>
+                        <li><a href="https://scikit-learn.org/stable/auto_examples/preprocessing/plot_all_scaling.html" target="_blank">Scaling Comparison</a></li>
+                        <li><a href="https://numpy.org/doc/stable/" target="_blank">NumPy Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nebaz AI Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

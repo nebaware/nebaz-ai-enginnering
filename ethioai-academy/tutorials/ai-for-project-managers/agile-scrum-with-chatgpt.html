@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 3: Agile & Scrum with ChatGPT | AI for Project Managers</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link rel="stylesheet" href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- Tutorial-specific styles -->
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            color: #334155;
+            margin-bottom: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .tutorial-content p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #475569;
+            margin-bottom: 1.5rem;
+        }
+
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+
+        .tutorial-content li {
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .tutorial-content strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .tutorial-content code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+
+        .tutorial-content pre {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .tutorial-content pre code {
+            background: none;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 4px solid #078930;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .info-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p {
+            margin-bottom: 0.75rem;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+        }
+
+        .warning-box h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid #10b981;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+
+        .success-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .content-section h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tutorial-nav {
+                flex-direction: column;
+            }
+
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="quiz-option" data-value="B">B) By generating agendas and capturing action items</div>
+                    <div class="quiz-option" data-value="C">C) By eliminating all meetings</div>
+                    <div class="quiz-option" data-value="D">D) AI has no role in Agile</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="C">
+                    <h4>2. What can AI help with during sprint planning?</h4>
+                    <div class="quiz-option" data-value="A">A) Making all team decisions</div>
+                    <div class="quiz-option" data-value="B">B) Eliminating backlog refinement</div>
+                    <div class="quiz-option" data-value="C">C) Breaking down user stories and estimating effort</div>
+                    <div class="quiz-option" data-value="D">D) Replacing team collaboration</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How can AI assist with retrospectives?</h4>
+                    <div class="quiz-option" data-value="A">A) Analyzing feedback patterns and suggesting improvements</div>
+                    <div class="quiz-option" data-value="B">B) Eliminating need for team input</div>
+                    <div class="quiz-option" data-value="C">C) Making all improvement decisions</div>
+                    <div class="quiz-option" data-value="D">D) Retrospectives don't need AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What should be considered when using AI in Agile?</h4>
+                    <div class="quiz-option" data-value="A">A) AI should control all Agile processes</div>
+                    <div class="quiz-option" data-value="B">B) Team collaboration is no longer needed</div>
+                    <div class="quiz-option" data-value="C">C) AI replaces Agile principles</div>
+                    <div class="quiz-option" data-value="D">D) AI supports but doesn't replace human collaboration</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. How can AI improve daily standups?</h4>
+                    <div class="quiz-option" data-value="A">A) By replacing face-to-face communication</div>
+                    <div class="quiz-option" data-value="B">B) By summarizing updates and tracking blockers</div>
+                    <div class="quiz-option" data-value="C">C) By eliminating standups entirely</div>
+                    <div class="quiz-option" data-value="D">D) Standups don't benefit from AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="project-planning-with-ai.html" class="prev">← Tutorial 2: Project Planning with AI</a>
+            <a href="stakeholder-communication.html" class="next">Module 4: Stakeholder Communication →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-plaintext.min.html"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

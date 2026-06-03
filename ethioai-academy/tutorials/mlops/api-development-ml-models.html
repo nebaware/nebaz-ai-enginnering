@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build production-ready ML APIs with FastAPI. Learn request validation, async predictions, health checks, authentication, rate limiting, and monitoring for serving machine learning models.">
+    <meta name="keywords" content="FastAPI, ML API, model serving, async predictions, API authentication, rate limiting, health checks, production ML, REST API, model deployment">
+    <title>API Development for ML Models - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="api-development-ml-models.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>API Development for ML Models</span>
+            </div>
+            <h1>API Development for ML Models</h1>
+            <p class="tutorial-intro">Build production-ready ML APIs with FastAPI: request validation, async predictions, health checks, authentication, rate limiting, and monitoring</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 4</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🎯 From Model to API</h2>
+                <p>
+                    You've trained a model, packaged it properly, and now you need to deploy it. But how do users actually access your model's predictions? How do you handle thousands of concurrent requests? How do you prevent abuse? How do you monitor what's happening in production?
+                </p>
+                <p>
+                    The answer is <strong>building a production-ready API</strong> - a web service that wraps your ML model and makes it accessible to applications, users, and other services.
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Common Problems with Poor API Design:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>API crashes when users send malformed data</li>
+                        <li>Can't handle more than 10 requests per second</li>
+                        <li>No way to know if the service is healthy</li>
+                        <li>Users abuse the API with spam requests</li>
+                        <li>Can't debug production issues (no logging)</li>
+                        <li>Security vulnerabilities allow unauthorized access</li>
+                    </ul>
+                </div>
+
+                <p>
+                    In this tutorial, you'll learn how to build a robust ML API using <strong>FastAPI</strong> - the modern, high-performance Python framework designed for production APIs.
+                </p>
+            </section>
+
+            <!-- Why FastAPI -->
+            <section class="content-section" id="why-fastapi">
+                <h2>⚡ Why FastAPI for ML Models?</h2>
+                
+                <p>
+                    FastAPI has become the de facto standard for ML model serving in Python. Here's why:
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Performance</h3>
+                        <p>One of the fastest Python frameworks (comparable to Node.js and Go). Built on Starlette and Pydantic.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Type Safety</h3>
+                        <p>Automatic request validation using Python type hints. Catches errors before they reach your model.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📚</div>
+                        <h3>Auto Documentation</h3>
+                        <p>Generates interactive API docs (Swagger UI) automatically from your code.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Async Support</h3>
+                        <p>Handle thousands of concurrent requests efficiently with async/await.</p>
+                    </div>
+                </div>
+
+                <h3>FastAPI vs Alternatives</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>FastAPI</th>
+                            <th>Flask</th>
+                            <th>Django REST</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Performance</strong></td>
+                            <td>✅ Very Fast</td>
+                            <td>Slow</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Async Support</strong></td>
+                            <td>✅ Native</td>
+                            <td>Limited</td>
+                            <td>Added in 3.1</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Request Validation</strong></td>
+                            <td>✅ Automatic</td>
+                            <td>Manual</td>
+                            <td>Manual (serializers)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Auto Documentation</strong></td>
+                            <td>✅ Built-in</td>
+                            <td>Requires extensions</td>
+                            <td>Requires setup</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Type Hints</strong></td>
+                            <td>✅ Core feature</td>
+                            <td>Optional</td>
+                            <td>Optional</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Curve</strong></td>
+                            <td>Easy</td>
+                            <td>✅ Easiest</td>
+                            <td>Steep</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>✅ ML APIs, Microservices</td>
+                            <td>Quick prototypes</td>
+                            <td>Full web apps</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Basic FastAPI Setup -->
+            <section class="content-section" id="basic-setup">
+                <h2>🏗️ Building Your First ML API</h2>
+                
+                <h3>Installation</h3>
+                <pre><code class="language-bash"># Install FastAPI and ASGI server
+pip install fastapi uvicorn[standard]
+
+# Install ML dependencies
+pip install scikit-learn joblib pydantic numpy</code></pre>
+
+                <h3>Minimal ML API</h3>
+                <pre><code class="language-python">"""
+Minimal FastAPI ML Prediction Service
+File: app.py
+"""
+from fastapi import FastAPI
+from pydantic import BaseModel
+import joblib
+import numpy as np
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Iris Classifier API",
+    description="ML model for predicting iris species",
+    version="1.0.0"
+)
+
+# Load model at startup
+model = joblib.load('iris_model.joblib')
+
+# Define request schema
+class PredictionRequest(BaseModel):
+    sepal_length: float
+    sepal_width: float
+    petal_length: float
+    petal_width: float
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "sepal_length": 5.1,
+                "sepal_width": 3.5,
+                "petal_length": 1.4,
+                "petal_width": 0.2
+            }
+        }
+
+# Define response schema
+class PredictionResponse(BaseModel):
+    prediction: int
+    species: str
+    confidence: float
+
+# Prediction endpoint
+@app.post("/predict", response_model=PredictionResponse)
+def predict(request: PredictionRequest):
+    """Make a prediction on iris features"""
+    # Convert to numpy array
+    features = np.array([[
+        request.sepal_length,
+        request.sepal_width,
+        request.petal_length,
+        request.petal_width
+    ]])
+    
+    # Get prediction and probability
+    prediction = model.predict(features)[0]
+    probabilities = model.predict_proba(features)[0]
+    confidence = float(max(probabilities))
+    
+    # Map to species name
+    species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+    species = species_map[prediction]
+    
+    return {
+        "prediction": int(prediction),
+        "species": species,
+        "confidence": confidence
+    }
+
+# Health check endpoint
+@app.get("/health")
+def health():
+    """Check if service is healthy"""
+    return {"status": "healthy"}
+
+# Root endpoint
+@app.get("/")
+def root():
+    """API information"""
+    return {
+        "name": "Iris Classifier API",
+        "version": "1.0.0",
+        "endpoints": ["/predict", "/health", "/docs"]
+    }</code></pre>
+
+                <h3>Running the API</h3>
+                <pre><code class="language-bash"># Start the server
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
+# Server starts at http://localhost:8000
+# Auto docs at http://localhost:8000/docs
+# Alternative docs at http://localhost:8000/redoc</code></pre>
+
+                <h3>Testing Your API</h3>
+                <pre><code class="language-bash"># Test with curl
+curl -X POST "http://localhost:8000/predict" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "sepal_length": 5.1,
+       "sepal_width": 3.5,
+       "petal_length": 1.4,
+       "petal_width": 0.2
+     }'
+
+# Response:
+# {
+#   "prediction": 0,
+#   "species": "setosa",
+#   "confidence": 0.99
+# }</code></pre>
+
+                <pre><code class="language-python"># Test with Python requests
+import requests
+
+response = requests.post(
+    "http://localhost:8000/predict",
+    json={
+        "sepal_length": 5.1,
+        "sepal_width": 3.5,
+        "petal_length": 1.4,
+        "petal_width": 0.2
+    }
+)
+
+print(response.json())
+# {'prediction': 0, 'species': 'setosa', 'confidence': 0.99}</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ What You Get For Free:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Interactive API documentation at /docs</li>
+                        <li>Request validation (rejects invalid data automatically)</li>
+                        <li>JSON schema for requests/responses</li>
+                        <li>Type safety with Python type hints</li>
+                        <li>Automatic error messages</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Request Validation -->
+            <section class="content-section" id="request-validation">
+                <h2>✅ Advanced Request Validation</h2>
+                
+                <p>
+                    FastAPI's validation powered by Pydantic ensures data quality before it reaches your model.
+                </p>
+
+                <h3>Adding Constraints</h3>
+                <pre><code class="language-python">from pydantic import BaseModel, Field, validator
+from typing import List
+
+class PredictionRequest(BaseModel):
+    sepal_length: float = Field(
+        ..., 
+        gt=0, 
+        lt=10, 
+        description="Sepal length in cm"
+    )
+    sepal_width: float = Field(
+        ..., 
+        gt=0, 
+        lt=10, 
+        description="Sepal width in cm"
+    )
+    petal_length: float = Field(
+        ..., 
+        gt=0, 
+        lt=10, 
+        description="Petal length in cm"
+    )
+    petal_width: float = Field(
+        ..., 
+        gt=0, 
+        lt=10, 
+        description="Petal width in cm"
+    )
+    
+    # Custom validator
+    @validator('sepal_length', 'sepal_width', 'petal_length', 'petal_width')
+    def check_reasonable_values(cls, v):
+        if v > 15:
+            raise ValueError('Value seems unrealistically high')
+        return v
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "sepal_length": 5.1,
+                "sepal_width": 3.5,
+                "petal_length": 1.4,
+                "petal_width": 0.2
+            }
+        }
+
+# Batch prediction request
+class BatchPredictionRequest(BaseModel):
+    instances: List[PredictionRequest] = Field(
+        ..., 
+        max_items=100, 
+        description="Maximum 100 predictions per request"
+    )
+
+@app.post("/predict/batch")
+def predict_batch(request: BatchPredictionRequest):
+    """Handle multiple predictions in one request"""
+    predictions = []
+    
+    for instance in request.instances:
+        features = np.array([[
+            instance.sepal_length,
+            instance.sepal_width,
+            instance.petal_length,
+            instance.petal_width
+        ]])
+        
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        
+        predictions.append({
+            "prediction": int(prediction),
+            "confidence": float(max(probabilities))
+        })
+    
+    return {"predictions": predictions, "count": len(predictions)}</code></pre>
+
+                <h3>Error Handling</h3>
+                <pre><code class="language-python">from fastapi import HTTPException, status
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+
+# Custom exception handler
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    """Custom validation error messages"""
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "error": "Invalid input",
+            "details": exc.errors(),
+            "message": "Please check your input values"
+        }
+    )
+
+# Custom prediction error
+class PredictionError(Exception):
+    pass
+
+@app.exception_handler(PredictionError)
+async def prediction_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "error": "Prediction failed",
+            "message": str(exc)
+        }
+    )
+
+# Updated prediction endpoint with error handling
+@app.post("/predict", response_model=PredictionResponse)
+def predict(request: PredictionRequest):
+    try:
+        features = np.array([[
+            request.sepal_length,
+            request.sepal_width,
+            request.petal_length,
+            request.petal_width
+        ]])
+        
+        # Check for NaN or Inf
+        if not np.isfinite(features).all():
+            raise PredictionError("Input contains invalid values (NaN or Inf)")
+        
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        
+        species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+        
+        return {
+            "prediction": int(prediction),
+            "species": species_map[prediction],
+            "confidence": float(max(probabilities))
+        }
+        
+    except Exception as e:
+        raise PredictionError(f"Model prediction failed: {str(e)}")</code></pre>
+            </section>
+
+            <!-- Async Predictions -->
+            <section class="content-section" id="async-predictions">
+                <h2>⚡ Async Predictions for Scale</h2>
+                
+                <p>
+                    Async endpoints allow your API to handle thousands of concurrent requests efficiently.
+                </p>
+
+                <h3>When to Use Async</h3>
+                <ul>
+                    <li><strong>I/O-bound operations:</strong> Database queries, file operations, external API calls</li>
+                    <li><strong>Multiple models:</strong> Loading different models or running ensemble predictions</li>
+                    <li><strong>Pre/post-processing:</strong> Async image downloads, data fetching</li>
+                    <li><strong>High concurrency:</strong> Serving many users simultaneously</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💡 Note:</strong> Pure NumPy/scikit-learn computations don't benefit from async (they're CPU-bound). Use async for I/O operations around predictions.</p>
+                </div>
+
+                <h3>Async Endpoint Example</h3>
+                <pre><code class="language-python">import asyncio
+from fastapi import BackgroundTasks
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Async prediction with preprocessing
+@app.post("/predict/async")
+async def predict_async(request: PredictionRequest, background_tasks: BackgroundTasks):
+    """Async prediction with background logging"""
+    
+    # Simulate async preprocessing (e.g., fetching data from DB)
+    await asyncio.sleep(0.01)  # Replace with actual async I/O
+    
+    # Synchronous model prediction (CPU-bound)
+    features = np.array([[
+        request.sepal_length,
+        request.sepal_width,
+        request.petal_length,
+        request.petal_width
+    ]])
+    
+    prediction = model.predict(features)[0]
+    probabilities = model.predict_proba(features)[0]
+    
+    species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+    result = {
+        "prediction": int(prediction),
+        "species": species_map[prediction],
+        "confidence": float(max(probabilities))
+    }
+    
+    # Log in background (doesn't block response)
+    background_tasks.add_task(
+        log_prediction,
+        request=request,
+        result=result
+    )
+    
+    return result
+
+def log_prediction(request, result):
+    """Background task for logging"""
+    logger.info(f"Prediction: {result['species']} (confidence: {result['confidence']:.2f})")
+
+# Async batch processing
+@app.post("/predict/batch/async")
+async def predict_batch_async(request: BatchPredictionRequest):
+    """Process multiple predictions concurrently"""
+    
+    async def predict_single(instance):
+        # Simulate async preprocessing
+        await asyncio.sleep(0.01)
+        
+        features = np.array([[
+            instance.sepal_length,
+            instance.sepal_width,
+            instance.petal_length,
+            instance.petal_width
+        ]])
+        
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        
+        return {
+            "prediction": int(prediction),
+            "confidence": float(max(probabilities))
+        }
+    
+    # Process all predictions concurrently
+    tasks = [predict_single(instance) for instance in request.instances]
+    predictions = await asyncio.gather(*tasks)
+    
+    return {"predictions": predictions, "count": len(predictions)}</code></pre>
+
+                <h3>Load Testing Async Performance</h3>
+                <pre><code class="language-bash"># Install load testing tool
+pip install locust
+
+# Run load test
+locust -f load_test.py --host http://localhost:8000</code></pre>
+
+                <pre><code class="language-python"># load_test.py
+from locust import HttpUser, task, between
+
+class MLAPIUser(HttpUser):
+    wait_time = between(1, 3)
+    
+    @task
+    def predict(self):
+        self.client.post("/predict", json={
+            "sepal_length": 5.1,
+            "sepal_width": 3.5,
+            "petal_length": 1.4,
+            "petal_width": 0.2
+        })</code></pre>
+            </section>
+
+            <!-- Health Checks & Monitoring -->
+            <section class="content-section" id="health-monitoring">
+                <h2>🏥 Health Checks & Monitoring</h2>
+                
+                <p>
+                    Production APIs need comprehensive health checks and monitoring to ensure reliability.
+                </p>
+
+                <h3>Comprehensive Health Checks</h3>
+                <pre><code class="language-python">from datetime import datetime
+from typing import Dict, Any
+import psutil
+import os
+
+# Startup time
+startup_time = datetime.now()
+
+@app.get("/health")
+def health_check():
+    """Basic health check"""
+    return {"status": "healthy"}
+
+@app.get("/health/detailed")
+def detailed_health_check() -> Dict[str, Any]:
+    """Detailed health check with system info"""
+    
+    # Check model is loaded
+    model_loaded = model is not None
+    
+    # System metrics
+    memory = psutil.virtual_memory()
+    cpu_percent = psutil.cpu_percent(interval=1)
+    
+    # Uptime
+    uptime = (datetime.now() - startup_time).total_seconds()
+    
+    return {
+        "status": "healthy" if model_loaded else "unhealthy",
+        "timestamp": datetime.now().isoformat(),
+        "uptime_seconds": uptime,
+        "model": {
+            "loaded": model_loaded,
+            "type": type(model).__name__ if model_loaded else None
+        },
+        "system": {
+            "cpu_percent": cpu_percent,
+            "memory_percent": memory.percent,
+            "memory_available_mb": memory.available / (1024 * 1024)
+        },
+        "process": {
+            "pid": os.getpid(),
+            "threads": psutil.Process().num_threads()
+        }
+    }
+
+@app.get("/health/ready")
+def readiness_check():
+    """Kubernetes readiness probe"""
+    # Check if service can handle requests
+    if model is None:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "not ready", "reason": "model not loaded"}
+        )
+    return {"status": "ready"}
+
+@app.get("/health/live")
+def liveness_check():
+    """Kubernetes liveness probe"""
+    # Check if service is alive (simple check)
+    return {"status": "alive"}</code></pre>
+
+                <h3>Request Metrics</h3>
+                <pre><code class="language-python">from collections import defaultdict
+from time import time
+from functools import wraps
+
+# Simple in-memory metrics (use Prometheus in production)
+metrics = {
+    "total_requests": 0,
+    "total_predictions": 0,
+    "total_errors": 0,
+    "prediction_times": [],
+    "endpoint_counts": defaultdict(int)
+}
+
+# Middleware for tracking requests
+@app.middleware("http")
+async def track_requests(request, call_next):
+    start_time = time()
+    metrics["total_requests"] += 1
+    
+    response = await call_next(request)
+    
+    process_time = time() - start_time
+    metrics["endpoint_counts"][request.url.path] += 1
+    
+    # Add custom header
+    response.headers["X-Process-Time"] = str(process_time)
+    
+    return response
+
+# Metrics endpoint
+@app.get("/metrics")
+def get_metrics():
+    """Get API metrics"""
+    avg_prediction_time = (
+        sum(metrics["prediction_times"]) / len(metrics["prediction_times"])
+        if metrics["prediction_times"] else 0
+    )
+    
+    return {
+        "total_requests": metrics["total_requests"],
+        "total_predictions": metrics["total_predictions"],
+        "total_errors": metrics["total_errors"],
+        "average_prediction_time_ms": avg_prediction_time * 1000,
+        "endpoints": dict(metrics["endpoint_counts"])
+    }
+
+# Updated predict endpoint with metrics
+@app.post("/predict", response_model=PredictionResponse)
+def predict_with_metrics(request: PredictionRequest):
+    start_time = time()
+    
+    try:
+        features = np.array([[
+            request.sepal_length,
+            request.sepal_width,
+            request.petal_length,
+            request.petal_width
+        ]])
+        
+        prediction = model.predict(features)[0]
+        probabilities = model.predict_proba(features)[0]
+        
+        species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+        
+        # Track metrics
+        metrics["total_predictions"] += 1
+        metrics["prediction_times"].append(time() - start_time)
+        
+        # Keep only last 1000 times
+        if len(metrics["prediction_times"]) > 1000:
+            metrics["prediction_times"] = metrics["prediction_times"][-1000:]
+        
+        return {
+            "prediction": int(prediction),
+            "species": species_map[prediction],
+            "confidence": float(max(probabilities))
+        }
+        
+    except Exception as e:
+        metrics["total_errors"] += 1
+        raise HTTPException(status_code=500, detail=str(e))</code></pre>
+            </section>
+
+            <!-- Authentication & Rate Limiting -->
+            <section class="content-section" id="auth-rate-limiting">
+                <h2>🔒 Authentication & Rate Limiting</h2>
+                
+                <h3>API Key Authentication</h3>
+                <pre><code class="language-python">from fastapi import Security, HTTPException, status
+from fastapi.security import APIKeyHeader
+from typing import Optional
+
+# API key configuration
+API_KEY_NAME = "X-API-Key"
+api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
+
+# In production, store in database or environment
+VALID_API_KEYS = {
+    "dev_key_12345": {"name": "Development", "tier": "free"},
+    "prod_key_67890": {"name": "Production", "tier": "premium"}
+}
+
+async def get_api_key(api_key: str = Security(api_key_header)) -> dict:
+    """Validate API key"""
+    if api_key is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing API Key"
+        )
+    
+    if api_key not in VALID_API_KEYS:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API Key"
+        )
+    
+    return VALID_API_KEYS[api_key]
+
+# Protected endpoint
+@app.post("/predict/protected")
+def predict_protected(
+    request: PredictionRequest,
+    api_key_info: dict = Security(get_api_key)
+):
+    """Prediction endpoint with authentication"""
+    
+    # Different behavior based on tier
+    if api_key_info["tier"] == "free":
+        # Could add limits for free tier
+        pass
+    
+    features = np.array([[
+        request.sepal_length,
+        request.sepal_width,
+        request.petal_length,
+        request.petal_width
+    ]])
+    
+    prediction = model.predict(features)[0]
+    probabilities = model.predict_proba(features)[0]
+    
+    species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+    
+    return {
+        "prediction": int(prediction),
+        "species": species_map[prediction],
+        "confidence": float(max(probabilities)),
+        "tier": api_key_info["tier"]
+    }</code></pre>
+
+                <h3>Rate Limiting</h3>
+                <pre><code class="language-python">from fastapi import Request
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Rate limited endpoint
+@app.post("/predict/limited")
+@limiter.limit("10/minute")  # 10 requests per minute
+async def predict_rate_limited(
+    request: Request,
+    prediction_request: PredictionRequest
+):
+    """Prediction with rate limiting"""
+    
+    features = np.array([[
+        prediction_request.sepal_length,
+        prediction_request.sepal_width,
+        prediction_request.petal_length,
+        prediction_request.petal_width
+    ]])
+    
+    prediction = model.predict(features)[0]
+    probabilities = model.predict_proba(features)[0]
+    
+    species_map = {0: 'setosa', 1: 'versicolor', 2: 'virginica'}
+    
+    return {
+        "prediction": int(prediction),
+        "species": species_map[prediction],
+        "confidence": float(max(probabilities))
+    }
+
+# Tiered rate limiting
+@app.post("/predict/tiered")
+@limiter.limit("100/minute")  # Global limit
+async def predict_tiered(
+    request: Request,
+    prediction_request: PredictionRequest,
+    api_key_info: dict = Security(get_api_key)
+):
+    """Rate limiting based on API tier"""
+    
+    # Premium users get higher limits (implemented in limiter config)
+    if api_key_info["tier"] == "premium":
+        # Premium logic
+        pass
+    
+    # Prediction logic...
+    return {"status": "success"}</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Production Rate Limiting:</strong> For production, use Redis-backed rate limiting (slowapi with Redis) instead of in-memory limits, so rate limits persist across server restarts and work with multiple instances.</p>
+                </div>
+            </section>
+
+            <!-- Production Best Practices -->
+            <section class="content-section" id="best-practices">
+                <h2>✅ Production Best Practices</h2>
+                
+                <h3>1. Proper Project Structure</h3>
+                <pre><code class="language-bash">ml-api/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI app
+│   ├── models.py            # Pydantic models
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── predictions.py   # Prediction endpoints
+│   │   ├── health.py        # Health endpoints
+│   │   └── auth.py          # Authentication
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py        # Configuration
+│   │   └── security.py      # Security utilities
+│   └── ml/
+│       ├── __init__.py
+│       ├── model.py         # Model loading/inference
+│       └── preprocessing.py # Data preprocessing
+├── models/                  # Serialized models
+│   └── iris_model.joblib
+├── tests/
+│   ├── __init__.py
+│   ├── test_api.py
+│   └── test_predictions.py
+├── requirements.txt
+├── Dockerfile
+└── README.md</code></pre>
+
+                <h3>2. Configuration Management</h3>
+                <pre><code class="language-python"># app/core/config.py
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+
+class Settings(BaseSettings):
+    app_name: str = "ML API"
+    app_version: str = "1.0.0"
+    
+    # Model settings
+    model_path: str = "models/iris_model.joblib"
+    max_batch_size: int = 100
+    
+    # API settings
+    api_prefix: str = "/api/v1"
+    enable_auth: bool = True
+    
+    # Rate limiting
+    rate_limit_per_minute: int = 60
+    
+    # Monitoring
+    enable_metrics: bool = True
+    log_level: str = "INFO"
+    
+    class Config:
+        env_file = ".env"
+
+@lru_cache()
+def get_settings():
+    return Settings()
+
+# Usage in main.py
+from app.core.config import get_settings
+
+settings = get_settings()
+app = FastAPI(title=settings.app_name, version=settings.app_version)</code></pre>
+
+                <h3>3. Logging</h3>
+                <pre><code class="language-python">import logging
+from logging.handlers import RotatingFileHandler
+import sys
+
+def setup_logging():
+    """Configure application logging"""
+    
+    # Create logger
+    logger = logging.getLogger("ml_api")
+    logger.setLevel(logging.INFO)
+    
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_format = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    console_handler.setFormatter(console_format)
+    
+    # File handler with rotation
+    file_handler = RotatingFileHandler(
+        'logs/api.log',
+        maxBytes=10485760,  # 10MB
+        backupCount=5
+    )
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(console_format)
+    
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+    
+    return logger
+
+logger = setup_logging()
+
+# Usage in endpoints
+@app.post("/predict")
+def predict(request: PredictionRequest):
+    logger.info(f"Received prediction request: {request.dict()}")
+    # ... prediction logic
+    logger.info(f"Prediction completed: {result}")
+    return result</code></pre>
+
+                <h3>4. Testing</h3>
+                <pre><code class="language-python"># tests/test_api.py
+from fastapi.testclient import TestClient
+from app.main import app
+
+client = TestClient(app)
+
+def test_health_check():
+    """Test health endpoint"""
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+def test_prediction():
+    """Test prediction endpoint"""
+    response = client.post(
+        "/predict",
+        json={
+            "sepal_length": 5.1,
+            "sepal_width": 3.5,
+            "petal_length": 1.4,
+            "petal_width": 0.2
+        }
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert "prediction" in data
+    assert "species" in data
+    assert "confidence" in data
+    assert 0 <= data["confidence"] <= 1
+
+def test_invalid_input():
+    """Test validation"""
+    response = client.post(
+        "/predict",
+        json={
+            "sepal_length": -1,  # Invalid: negative
+            "sepal_width": 3.5,
+            "petal_length": 1.4,
+            "petal_width": 0.2
+        }
+    )
+    assert response.status_code == 422  # Validation error</code></pre>
+
+                <h3>5. CORS Configuration</h3>
+                <pre><code class="language-python">from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://yourfrontend.com"],  # Specific origins in production
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've learned how to build production-ready ML APIs with FastAPI:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>FastAPI Basics</h3>
+                        <p>High-performance framework with automatic validation and documentation</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Request Validation</h3>
+                        <p>Type-safe requests with Pydantic models and custom validators</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Async Support</h3>
+                        <p>Handle thousands of concurrent requests efficiently</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🏥</div>
+                        <h3>Health Checks</h3>
+                        <p>Comprehensive monitoring and metrics for production</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔒</div>
+                        <h3>Security</h3>
+                        <p>API key authentication and rate limiting</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Best Practices</h3>
+                        <p>Proper structure, logging, testing, and configuration</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>FastAPI is the best choice for ML model serving in Python</li>
+                    <li>Use Pydantic models for automatic request validation</li>
+                    <li>Implement async endpoints for I/O-bound operations</li>
+                    <li>Add comprehensive health checks and monitoring</li>
+                    <li>Protect your API with authentication and rate limiting</li>
+                    <li>Follow production best practices (logging, testing, CORS)</li>
+                    <li>Always test your API before deploying to production</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your API is ready, but how do you package it for deployment? The next tutorial covers containerization with Docker - creating consistent, portable environments for your ML services.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main advantage of FastAPI over Flask for ML model serving?</strong></p>
+                    <div class="quiz-option" data-value="a">It's easier to learn</div>
+                    <div class="quiz-option" data-value="b">It has more features</div>
+                    <div class="quiz-option" data-value="c">It provides automatic request validation, async support, and much better performance</div>
+                    <div class="quiz-option" data-value="d">It's older and more stable</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does Pydantic provide in FastAPI?</strong></p>
+                    <div class="quiz-option" data-value="a">Database connections</div>
+                    <div class="quiz-option" data-value="b">Automatic data validation using Python type hints</div>
+                    <div class="quiz-option" data-value="c">Authentication</div>
+                    <div class="quiz-option" data-value="d">Load balancing</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: When should you use async endpoints in FastAPI?</strong></p>
+                    <div class="quiz-option" data-value="a">For I/O-bound operations like database queries or external API calls</div>
+                    <div class="quiz-option" data-value="b">For all endpoints always</div>
+                    <div class="quiz-option" data-value="c">Only for batch predictions</div>
+                    <div class="quiz-option" data-value="d">Never, sync is always better</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What's the purpose of the /health/ready endpoint in Kubernetes?</strong></p>
+                    <div class="quiz-option" data-value="a">To restart the container</div>
+                    <div class="quiz-option" data-value="b">To check memory usage</div>
+                    <div class="quiz-option" data-value="c">To test authentication</div>
+                    <div class="quiz-option" data-value="d">To indicate when the service is ready to accept traffic</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q5: Why is rate limiting important for ML APIs?</strong></p>
+                    <div class="quiz-option" data-value="a">To make the API faster</div>
+                    <div class="quiz-option" data-value="b">To prevent abuse, control costs, and ensure fair resource usage across users</div>
+                    <div class="quiz-option" data-value="c">To improve model accuracy</div>
+                    <div class="quiz-option" data-value="d">To enable caching</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="model-packaging-serialization.html">← Previous: Model Packaging & Serialization</a>
+                <a href="containerization-docker.html">Next: Containerization with Docker →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

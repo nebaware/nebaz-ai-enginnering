@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master visual AI testing with computer vision. Learn screenshot comparison, perceptual diff algorithms, Applitools integration, and custom OpenCV solutions.">
+    <title>Tutorial 4: Visual AI Testing & Computer Vision - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-nav .next:hover {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge intermediate">Intermediate</div>
+            <h1 class="page-title">Visual AI Testing & Computer Vision</h1>
+            <p class="page-subtitle">Use computer vision to detect layout bugs, visual regressions, and UI inconsistencies that traditional tests miss</p>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>A button shifts 3 pixels left. The footer overlaps content on mobile. A font color changes from #333 to #444. Traditional Selenium tests pass—they found the elements, clicked the buttons. But your users see broken UIs. Welcome to the world of visual bugs: the silent killers of user experience that functional tests completely miss.</p>
+
+        <p>In this tutorial, you'll learn to use computer vision and AI to catch visual regressions automatically. You'll build tools that "see" like humans, comparing screenshots pixel-by-pixel and detecting even subtle layout shifts that would take hours to spot manually.</p>
+
+        <h2>Why Visual Testing?</h2>
+        
+        <p>Functional tests verify <strong>behavior</strong>. Visual tests verify <strong>appearance</strong>. Both are critical:</p>
+
+        <table style="width:100%; border-collapse: collapse; margin: 1.5rem 0;">
+            <thead>
+                <tr style="background-color: #f1f5f9;">
+                    <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">What Functional Tests Catch</th>
+                    <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">What Visual Tests Catch</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Button is clickable</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Button is invisible (white on white)</td>
+                </tr>
+                <tr style="background-color: #f9fafb;">
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Form submits successfully</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Submit button is hidden behind modal</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Text is present on page</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Text overflows container, is cut off</td>
+                </tr>
+                <tr style="background-color: #f9fafb;">
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Image loads</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Image is broken/distorted</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Menu expands</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Menu items overlap each other</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-box">
+            <p>💡 <strong>Industry Data:</strong> Studies show that 60-70% of bugs reported by users are visual issues that automated functional tests missed. Visual testing closes this gap.</p>
+        </div>
+
+        <h2>Understanding Computer Vision for Testing</h2>
+
+        <p>Visual AI testing uses computer vision algorithms to:</p>
+
+        <ul>
+            <li><strong>Pixel-by-pixel comparison:</strong> Detect any visual change, even 1-pixel shifts</li>
+            <li><strong>Perceptual diff:</strong> Compare images the way humans do, ignoring minor anti-aliasing</li>
+            <li><strong>Layout detection:</strong> Verify element positions and spacing using AI</li>
+            <li><strong>Smart matching:</strong> Handle dynamic content (ads, dates, user-specific data)</li>
+            <li><strong>Cross-browser testing:</strong> Catch rendering differences across browsers</li>
+        </ul>
+
+        <h3>Perceptual Diff vs Pixel Diff</h3>
+
+        <pre><code class="language-python"># Pixel-perfect comparison - TOO STRICT
+# Fails on 1-pixel anti-aliasing differences
+diff = (screenshot1 == screenshot2).all()
+
+# Perceptual diff - SMART
+# Ignores minor rendering differences, catches real issues
+perceptual_diff = calculate_structural_similarity(screenshot1, screenshot2)
+# Only flag if similarity < 95%
+</code></pre>
+
+        <h2>Setting Up Visual Testing Environment</h2>
+
+        <p>Install the required libraries:</p>
+
+        <pre><code class="language-bash"># Install computer vision libraries
+pip install opencv-python pillow numpy scikit-image selenium
+
+# For advanced visual AI (optional)
+pip install pixelmatch imagehash
+</code></pre>
+
+        <h2>Building a Basic Visual Testing Framework</h2>
+
+        <p>Let's start with a simple screenshot comparison tool:</p>
+
+        <pre><code class="language-python">import cv2
+import numpy as np
+from PIL import Image
+from skimage.metrics import structural_similarity as ssim
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import os
+
+class VisualTester:
+    """
+    Visual regression testing using computer vision
+    """
+    
+    def __init__(self, baseline_dir='baseline_screenshots', 
+                 test_dir='test_screenshots', 
+                 diff_dir='diff_screenshots',
+                 threshold=0.95):
+        """
+        Args:
+            baseline_dir: Folder with baseline (correct) screenshots
+            test_dir: Folder with test screenshots to compare
+            diff_dir: Folder to save difference images
+            threshold: SSIM threshold (0-1). Below this = visual regression
+        """
+        self.baseline_dir = baseline_dir
+        self.test_dir = test_dir
+        self.diff_dir = diff_dir
+        self.threshold = threshold
+        
+        # Create directories if they don't exist
+        os.makedirs(baseline_dir, exist_ok=True)
+        os.makedirs(test_dir, exist_ok=True)
+        os.makedirs(diff_dir, exist_ok=True)
+    
+    def capture_screenshot(self, driver, name, is_baseline=False):
+        """
+        Capture screenshot and save to appropriate directory
+        """
+        target_dir = self.baseline_dir if is_baseline else self.test_dir
+        filepath = os.path.join(target_dir, f"{name}.png")
+        
+        driver.save_screenshot(filepath)
+        print(f"📸 Captured screenshot: {filepath}")
+        
+        return filepath
+    
+    def compare_screenshots(self, name):
+        """
+        Compare baseline and test screenshots using SSIM
+        Returns similarity score and highlights differences
+        """
+        baseline_path = os.path.join(self.baseline_dir, f"{name}.png")
+        test_path = os.path.join(self.test_dir, f"{name}.png")
+        
+        if not os.path.exists(baseline_path):
+            print(f"⚠️ No baseline found for {name}. Creating new baseline.")
+            return None
+        
+        if not os.path.exists(test_path):
+            print(f"❌ Test screenshot not found: {test_path}")
+            return None
+        
+        # Load images
+        baseline_img = cv2.imread(baseline_path)
+        test_img = cv2.imread(test_path)
+        
+        # Convert to grayscale for comparison
+        baseline_gray = cv2.cvtColor(baseline_img, cv2.COLOR_BGR2GRAY)
+        test_gray = cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+        
+        # Resize if dimensions don't match (e.g., dynamic content changed height)
+        if baseline_gray.shape != test_gray.shape:
+            print(f"⚠️ Image dimensions differ - resizing")
+            test_gray = cv2.resize(test_gray, 
+                                   (baseline_gray.shape[1], baseline_gray.shape[0]))
+            test_img = cv2.resize(test_img, 
+                                  (baseline_img.shape[1], baseline_img.shape[0]))
+        
+        # Calculate Structural Similarity Index (SSIM)
+        # Returns score (0-1) and difference image
+        score, diff = ssim(baseline_gray, test_gray, full=True)
+        diff = (diff * 255).astype("uint8")
+        
+        print(f"📊 Visual similarity: {score*100:.2f}%")
+        
+        # If similarity is below threshold, highlight differences
+        if score < self.threshold:
+            print(f"❌ VISUAL REGRESSION DETECTED! (threshold: {self.threshold*100:.0f}%)")
+            self._highlight_differences(baseline_img, test_img, diff, name)
+            return {
+                'passed': False,
+                'similarity': score,
+                'threshold': self.threshold
+            }
+        else:
+            print(f"✅ Visual test passed")
+            return {
+                'passed': True,
+                'similarity': score,
+                'threshold': self.threshold
+            }
+    
+    def _highlight_differences(self, baseline_img, test_img, diff, name):
+        """
+        Create a visual diff image highlighting what changed
+        """
+        # Threshold the difference image
+        thresh = cv2.threshold(diff, 0, 255, 
+                               cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+        
+        # Find contours of differences
+        contours = cv2.findContours(thresh.copy(), 
+                                     cv2.RETR_EXTERNAL, 
+                                     cv2.CHAIN_APPROX_SIMPLE)
+        contours = contours[0] if len(contours) == 2 else contours[1]
+        
+        # Draw rectangles around differences on test image
+        diff_img = test_img.copy()
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > 40:  # Ignore tiny differences
+                x, y, w, h = cv2.boundingRect(contour)
+                cv2.rectangle(diff_img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        
+        # Create side-by-side comparison
+        comparison = np.hstack([baseline_img, test_img, 
+                                cv2.cvtColor(diff, cv2.COLOR_GRAY2BGR)])
+        
+        # Add labels
+        cv2.putText(comparison, "BASELINE", (10, 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.putText(comparison, "TEST", (baseline_img.shape[1] + 10, 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.putText(comparison, "DIFF", (baseline_img.shape[1]*2 + 10, 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        
+        # Save difference image
+        diff_path = os.path.join(self.diff_dir, f"{name}_diff.png")
+        cv2.imwrite(diff_path, comparison)
+        print(f"💾 Difference image saved: {diff_path}")
+        
+        # Also save highlighted version
+        highlight_path = os.path.join(self.diff_dir, f"{name}_highlighted.png")
+        cv2.imwrite(highlight_path, diff_img)
+        print(f"💾 Highlighted image saved: {highlight_path}")
+</code></pre>
+
+        <h3>Using the Visual Tester</h3>
+
+        <pre><code class="language-python">from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize visual tester
+visual_tester = VisualTester(threshold=0.95)
+
+# Set up Selenium
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+driver.set_window_size(1920, 1080)  # Consistent viewport
+
+try:
+    # Navigate to page
+    driver.get("https://www.saucedemo.com")
+    
+    # First run: Create baseline
+    # visual_tester.capture_screenshot(driver, "login_page", is_baseline=True)
+    
+    # Subsequent runs: Compare against baseline
+    visual_tester.capture_screenshot(driver, "login_page", is_baseline=False)
+    result = visual_tester.compare_screenshots("login_page")
+    
+    if result and not result['passed']:
+        print(f"⚠️ Visual regression detected!")
+        print(f"   Similarity: {result['similarity']*100:.2f}%")
+        print(f"   Check diff images in {visual_tester.diff_dir}/")
+    
+finally:
+    driver.quit()
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Result:</strong> You now have a working visual regression testing framework! It captures screenshots, compares them using SSIM, and highlights exactly what changed.</p>
+        </div>
+
+        <h2>Advanced: Ignoring Dynamic Content</h2>
+
+        <p>Real websites have dynamic content (dates, ads, personalized data). Let's handle that:</p>
+
+        <pre><code class="language-python">from PIL import Image, ImageDraw
+
+class SmartVisualTester(VisualTester):
+    """
+    Visual tester with ability to ignore dynamic regions
+    """
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ignore_regions = {}  # {screenshot_name: [list of regions]}
+    
+    def add_ignore_region(self, screenshot_name, x, y, width, height):
+        """
+        Define regions to ignore during comparison
+        (e.g., ads, timestamps, user avatars)
+        
+        Args:
+            screenshot_name: Name of the screenshot
+            x, y: Top-left coordinates
+            width, height: Size of region to ignore
+        """
+        if screenshot_name not in self.ignore_regions:
+            self.ignore_regions[screenshot_name] = []
+        
+        self.ignore_regions[screenshot_name].append({
+            'x': x, 'y': y, 'width': width, 'height': height
+        })
+        
+        print(f"📌 Added ignore region: ({x}, {y}, {width}, {height})")
+    
+    def _mask_ignore_regions(self, img_path, screenshot_name):
+        """
+        Mask out ignore regions with neutral color
+        """
+        if screenshot_name not in self.ignore_regions:
+            return
+        
+        img = Image.open(img_path)
+        draw = ImageDraw.Draw(img)
+        
+        for region in self.ignore_regions[screenshot_name]:
+            # Fill region with gray
+            draw.rectangle(
+                [region['x'], region['y'], 
+                 region['x'] + region['width'], 
+                 region['y'] + region['height']],
+                fill=(128, 128, 128)
+            )
+        
+        img.save(img_path)
+    
+    def compare_screenshots(self, name):
+        """
+        Override to mask regions before comparison
+        """
+        baseline_path = os.path.join(self.baseline_dir, f"{name}.png")
+        test_path = os.path.join(self.test_dir, f"{name}.png")
+        
+        if not os.path.exists(baseline_path) or not os.path.exists(test_path):
+            return super().compare_screenshots(name)
+        
+        # Create masked copies for comparison
+        baseline_masked = baseline_path.replace('.png', '_masked.png')
+        test_masked = test_path.replace('.png', '_masked.png')
+        
+        import shutil
+        shutil.copy(baseline_path, baseline_masked)
+        shutil.copy(test_path, test_masked)
+        
+        # Apply masks
+        self._mask_ignore_regions(baseline_masked, name)
+        self._mask_ignore_regions(test_masked, name)
+        
+        # Compare masked versions
+        result = super().compare_screenshots(name)
+        
+        # Clean up masked copies
+        os.remove(baseline_masked)
+        os.remove(test_masked)
+        
+        return result
+
+# Usage: Ignore dynamic timestamp
+smart_tester = SmartVisualTester(threshold=0.95)
+
+# Ignore timestamp region (top-right corner, 150x30 pixels)
+smart_tester.add_ignore_region("dashboard", x=1770, y=10, width=150, height=30)
+
+# Ignore ads (right sidebar, 300x600 pixels)
+smart_tester.add_ignore_region("homepage", x=1600, y=100, width=300, height=600)
+</code></pre>
+
+        <h2>Integrating with Applitools (Cloud Visual AI)</h2>
+
+        <p>For production-grade visual testing, Applitools uses advanced AI to handle dynamic content automatically:</p>
+
+        <pre><code class="language-bash"># Install Applitools SDK
+pip install eyes-selenium
+</code></pre>
+
+        <pre><code class="language-python">from selenium import webdriver
+from applitools.selenium import Eyes, Target, BatchInfo
+
+# Initialize Applitools Eyes
+eyes = Eyes()
+eyes.api_key = 'YOUR_APPLITOOLS_API_KEY'  # Get from applitools.com
+
+# Set batch info for grouping tests
+batch = BatchInfo("Visual Regression Suite")
+eyes.batch = batch
+
+driver = webdriver.Chrome()
+
+try:
+    # Start visual test
+    eyes.open(driver, 
+              app_name="My Web App",
+              test_name="Login Page Visual Test",
+              viewport_size={'width': 1920, 'height': 1080})
+    
+    # Navigate to page
+    driver.get("https://www.saucedemo.com")
+    
+    # Check full page
+    eyes.check_window("Login Page - Full")
+    
+    # Check specific region
+    from selenium.webdriver.common.by import By
+    username_field = driver.find_element(By.ID, "user-name")
+    eyes.check_region(username_field, "Username Field")
+    
+    # Close test (compares with baseline)
+    results = eyes.close(throw_exception=False)
+    
+    if results.is_passed:
+        print("✅ Visual test passed!")
+    else:
+        print("❌ Visual differences detected!")
+        print(f"   View results: {results.url}")
+    
+finally:
+    eyes.abort_if_not_closed()
+    driver.quit()
+</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Applitools AI:</strong> Uses Visual AI to automatically ignore dynamic content, handle responsive layouts, and detect meaningful visual bugs. It's like having a QA engineer who can see and compare thousands of screenshots in seconds.</p>
+        </div>
+
+        <h2>Cross-Browser Visual Testing</h2>
+
+        <p>Visual bugs often appear only in specific browsers. Let's test across browsers:</p>
+
+        <pre><code class="language-python">from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.edge.service import Service as EdgeService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
+class CrossBrowserVisualTester:
+    """
+    Run visual tests across multiple browsers
+    """
+    
+    def __init__(self, baseline_browser='chrome'):
+        self.baseline_browser = baseline_browser
+        self.visual_tester = VisualTester()
+    
+    def get_driver(self, browser_name):
+        """Get WebDriver for specified browser"""
+        if browser_name == 'chrome':
+            return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        elif browser_name == 'firefox':
+            return webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+        elif browser_name == 'edge':
+            return webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
+        else:
+            raise ValueError(f"Unsupported browser: {browser_name}")
+    
+    def test_across_browsers(self, url, page_name, browsers=['chrome', 'firefox', 'edge']):
+        """
+        Test visual consistency across browsers
+        """
+        results = {}
+        
+        for browser in browsers:
+            print(f"\n{'='*60}")
+            print(f"Testing in {browser.upper()}")
+            print('='*60)
+            
+            driver = self.get_driver(browser)
+            driver.set_window_size(1920, 1080)
+            
+            try:
+                driver.get(url)
+                
+                # Wait for page load
+                driver.implicitly_wait(3)
+                
+                # Capture screenshot
+                screenshot_name = f"{page_name}_{browser}"
+                
+                if browser == self.baseline_browser:
+                    # This is the baseline
+                    self.visual_tester.capture_screenshot(
+                        driver, screenshot_name, is_baseline=True
+                    )
+                    results[browser] = {'status': 'baseline'}
+                else:
+                    # Compare against baseline
+                    self.visual_tester.capture_screenshot(
+                        driver, screenshot_name, is_baseline=False
+                    )
+                    
+                    # Compare with baseline browser
+                    baseline_name = f"{page_name}_{self.baseline_browser}"
+                    result = self._compare_browsers(baseline_name, screenshot_name)
+                    results[browser] = result
+                
+            finally:
+                driver.quit()
+        
+        self._print_summary(results)
+        return results
+    
+    def _compare_browsers(self, baseline_name, test_name):
+        """Compare screenshots from different browsers"""
+        result = self.visual_tester.compare_screenshots(test_name)
+        return result
+    
+    def _print_summary(self, results):
+        """Print test summary"""
+        print("\n" + "="*60)
+        print("CROSS-BROWSER VISUAL TEST SUMMARY")
+        print("="*60)
+        
+        for browser, result in results.items():
+            if result.get('status') == 'baseline':
+                print(f"✅ {browser.upper()}: BASELINE")
+            elif result.get('passed'):
+                print(f"✅ {browser.upper()}: PASSED ({result['similarity']*100:.1f}% match)")
+            else:
+                print(f"❌ {browser.upper()}: FAILED ({result['similarity']*100:.1f}% match)")
+
+# Usage
+cross_browser_tester = CrossBrowserVisualTester(baseline_browser='chrome')
+
+results = cross_browser_tester.test_across_browsers(
+    url="https://www.saucedemo.com",
+    page_name="login",
+    browsers=['chrome', 'firefox', 'edge']
+)
+</code></pre>
+
+        <h2>Responsive Layout Testing</h2>
+
+        <p>Test how your UI looks across different screen sizes:</p>
+
+        <pre><code class="language-python">class ResponsiveVisualTester:
+    """
+    Test visual layout across different viewport sizes
+    """
+    
+    def __init__(self):
+        self.visual_tester = VisualTester()
+        self.viewports = {
+            'mobile': (375, 667),      # iPhone SE
+            'tablet': (768, 1024),      # iPad
+            'laptop': (1366, 768),      # Standard laptop
+            'desktop': (1920, 1080)     # Full HD
+        }
+    
+    def test_responsive_layout(self, url, page_name):
+        """
+        Test page across different viewport sizes
+        """
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+        
+        results = {}
+        
+        try:
+            for device, (width, height) in self.viewports.items():
+                print(f"\n📱 Testing {device} ({width}x{height})")
+                
+                driver.set_window_size(width, height)
+                driver.get(url)
+                driver.implicitly_wait(2)
+                
+                # Capture screenshot
+                screenshot_name = f"{page_name}_{device}"
+                
+                # First run: create baseline
+                # self.visual_tester.capture_screenshot(
+                #     driver, screenshot_name, is_baseline=True
+                # )
+                
+                # Subsequent runs: compare
+                self.visual_tester.capture_screenshot(
+                    driver, screenshot_name, is_baseline=False
+                )
+                
+                result = self.visual_tester.compare_screenshots(screenshot_name)
+                results[device] = result
+        
+        finally:
+            driver.quit()
+        
+        self._print_responsive_summary(results)
+        return results
+    
+    def _print_responsive_summary(self, results):
+        """Print responsive test summary"""
+        print("\n" + "="*60)
+        print("RESPONSIVE LAYOUT TEST SUMMARY")
+        print("="*60)
+        
+        for device, result in results.items():
+            if result and result.get('passed'):
+                print(f"✅ {device.upper()}: PASSED")
+            elif result:
+                print(f"❌ {device.upper()}: FAILED (Layout regression)")
+            else:
+                print(f"⚠️ {device.upper()}: NO BASELINE")
+
+# Usage
+responsive_tester = ResponsiveVisualTester()
+responsive_tester.test_responsive_layout(
+    url="https://www.saucedemo.com",
+    page_name="login"
+)
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Responsive Testing:</strong> Now you can automatically detect layout bugs on mobile, tablet, and desktop—no manual testing required!</p>
+        </div>
+
+        <h2>Integrating Visual Tests into CI/CD</h2>
+
+        <pre><code class="language-yaml"># .github/workflows/visual-testing.yml
+name: Visual Regression Testing
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install selenium opencv-python pillow numpy scikit-image
+        pip install webdriver-manager
+    
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@latest
+    
+    - name: Download baseline screenshots
+      run: |
+        # Download from artifact storage or S3
+        aws s3 sync s3://my-bucket/baselines ./baseline_screenshots
+    
+    - name: Run visual tests
+      run: |
+        python visual_tests.py
+    
+    - name: Upload diff images
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: visual-diffs
+        path: diff_screenshots/
+    
+    - name: Comment on PR with results
+      if: failure()
+      uses: actions/github-script@v5
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '⚠️ Visual regressions detected! Check the artifacts for diff images.'
+          });
+</code></pre>
+
+        <h2>Best Practices for Visual Testing</h2>
+
+        <ol>
+            <li><strong>Set consistent viewport sizes:</strong> Always test with the same screen resolution</li>
+            <li><strong>Wait for animations:</strong> Use explicit waits to ensure page is fully loaded</li>
+            <li><strong>Handle dynamic content:</strong> Mask timestamps, ads, personalized content</li>
+            <li><strong>Use perceptual diff (SSIM):</strong> Pixel-perfect comparison is too brittle</li>
+            <li><strong>Test critical pages only:</strong> Don't screenshot every page—focus on key user journeys</li>
+            <li><strong>Update baselines carefully:</strong> Review differences before accepting new baseline</li>
+            <li><strong>Combine with functional tests:</strong> Visual + functional = comprehensive coverage</li>
+            <li><strong>Test across browsers:</strong> CSS rendering differs between Chrome, Firefox, Safari</li>
+        </ol>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Common Pitfall:</strong> Visual tests can be flaky if you don't wait for page to stabilize. Always add waits for animations, lazy-loaded images, and dynamic content to finish loading.</p>
+        </div>
+
+        <h2>When to Use Visual Testing</h2>
+
+        <p><strong>Ideal for:</strong></p>
+        <ul>
+            <li>E-commerce product pages (layout is critical for conversion)</li>
+            <li>Marketing landing pages (brand consistency matters)</li>
+            <li>Dashboards and data visualizations (charts must render correctly)</li>
+            <li>Responsive design validation (mobile vs desktop)</li>
+            <li>Cross-browser compatibility (Chrome vs Firefox vs Safari)</li>
+        </ul>
+
+        <p><strong>Not ideal for:</strong></p>
+        <ul>
+            <li>Highly dynamic content that changes constantly</li>
+            <li>Pages with lots of user-generated content</li>
+            <li>Tests that need to verify logic/behavior (use functional tests)</li>
+        </ul>
+
+        <h2>Practice Exercise</h2>
+
+        <p><strong>Challenge:</strong> Build a complete visual testing suite that:</p>
+        <ol>
+            <li>Tests 3 pages of a website (e.g., homepage, product page, checkout)</li>
+            <li>Captures baselines for desktop and mobile viewports</li>
+            <li>Compares new screenshots against baselines using SSIM</li>
+            <li>Ignores dynamic regions (timestamps, ads)</li>
+            <li>Generates HTML report with side-by-side comparisons</li>
+        </ol>
+
+        <p><strong>Bonus:</strong> Integrate with Applitools or Percy for AI-powered visual testing!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+            <li>Visual testing catches layout bugs that functional tests miss (60-70% of user-reported issues)</li>
+            <li>SSIM (Structural Similarity Index) is better than pixel-perfect comparison</li>
+            <li>Smart masking of dynamic regions prevents false positives</li>
+            <li>Cross-browser testing reveals rendering inconsistencies</li>
+            <li>Responsive layout testing ensures mobile UX quality</li>
+            <li>Applitools/Percy use Visual AI to handle dynamic content automatically</li>
+            <li>Integrate visual tests into CI/CD to catch regressions before production</li>
+        </ul>
+
+        <h2>What's Next?</h2>
+
+        <p>In the next tutorial, <strong>Intelligent Test Case Generation</strong>, you'll learn to use NLP and GPT models to automatically generate test cases from requirements. You'll explore:</p>
+        <ul>
+            <li>Converting user stories to test scenarios</li>
+            <li>Using OpenAI GPT for test generation</li>
+            <li>Automated test script creation</li>
+            <li>Edge case discovery with AI</li>
+        </ul>
+
+        <div class="success-box">
+            <p>✅ <strong>Tutorial Complete!</strong> You now have the tools to catch visual regressions automatically—your users will thank you for the pixel-perfect UIs!</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Visual AI Testing</h2>
+                <p class="quiz-description">Check your understanding of computer vision for testing</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What percentage of user-reported bugs are visual issues that functional tests miss?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">20-30%</div>
+                    <div class="quiz-option" data-correct="false">40-50%</div>
+                    <div class="quiz-option" data-correct="true">60-70%</div>
+                    <div class="quiz-option" data-correct="false">80-90%</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What is SSIM and why is it better than pixel-perfect comparison?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">A faster algorithm that compares fewer pixels</div>
+                    <div class="quiz-option" data-correct="true">Structural Similarity Index that compares images perceptually, ignoring minor rendering differences</div>
+                    <div class="quiz-option" data-correct="false">A color-based comparison that only checks RGB values</div>
+                    <div class="quiz-option" data-correct="false">A machine learning model trained on images</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. How should you handle dynamic content like timestamps or ads in visual testing?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Skip visual testing for pages with dynamic content</div>
+                    <div class="quiz-option" data-correct="false">Use only pixel-perfect comparison</div>
+                    <div class="quiz-option" data-correct="true">Mask/ignore those regions so they don't cause false positives</div>
+                    <div class="quiz-option" data-correct="false">Disable the dynamic content before testing</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What is the primary benefit of using Applitools or Percy for visual testing?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">They are completely free</div>
+                    <div class="quiz-option" data-correct="true">They use Visual AI to automatically handle dynamic content and reduce false positives</div>
+                    <div class="quiz-option" data-correct="false">They only work with Chrome browser</div>
+                    <div class="quiz-option" data-correct="false">They don't require any code</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+        
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="bug-prediction.html" class="prev">← Previous: Bug Prediction with ML</a>
+            <a href="test-generation.html" class="next">Next: Intelligent Test Generation →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

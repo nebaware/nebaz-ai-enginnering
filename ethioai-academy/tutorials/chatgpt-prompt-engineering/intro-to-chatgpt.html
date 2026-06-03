@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Introduction to ChatGPT - Learn what it is, how it works, capabilities, limitations, and get started with your first prompts.">
+    <title>Tutorial 1: Introduction to ChatGPT - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .conversation-analogy {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px solid #078930;
+        }
+        
+        .chat-demo {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+        
+        .chat-message {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .chat-message:last-child {
+            border-bottom: none;
+        }
+        
+        .message-user {
+            background: #f8fafc;
+        }
+        
+        .message-label {
+            font-weight: 700;
+            color: #078930;
+            margin-bottom: 0.5rem;
+        }
+        
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .capability-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #078930;
+        }
+        
+        .capability-icon {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .capability-title {
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+        
+        .limitations-list {
+            background: #fef2f2;
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+            margin: 2rem 0;
+        }
+        
+        .limitations-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .limitations-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+        
+        .limitations-list li::before {
+            content: "⚠️";
+            flex-shrink: 0;
+        }
+        
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #1e293b;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 1</span>
+            </div>
+            <h1>Tutorial 1: Introduction to ChatGPT</h1>
+            <p class="tutorial-intro">Understanding what ChatGPT is, how it works, and getting started</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Certificate Motivation Banner -->
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all 9 modules to earn your Free Prompt Engineering Certificate</strong><br>
+                    <span style="font-size: 0.95rem; opacity: 0.9;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You type: <em>"Explain quantum physics like I'm 5."</em></p>
+                <p>Seconds later, you get a clear, creative explanation comparing quantum particles to invisible friends who can be in two places at once.</p>
+                
+                <p><strong>That's ChatGPT</strong> — an AI that can write, explain, brainstorm, code, analyze, and converse like a knowledgeable (if occasionally overconfident) assistant. It's the tool that made "AI" go from tech buzzword to daily productivity booster for millions.</p>
+                
+                <div class="success-box">
+                    <p><strong>💡 By the end of this module, you'll:</strong></p>
+                    <ul>
+                        <li>Understand what ChatGPT is and how it works (simplified)</li>
+                        <li>Know its capabilities and critical limitations</li>
+                        <li>Write your first effective prompts</li>
+                        <li>Identify 10+ use cases for your life/work</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- What is ChatGPT -->
+            <section class="content-section">
+                <h2>🤖 What is ChatGPT?</h2>
+                
+                <div class="conversation-analogy">
+                    <h3 style="text-align: center; margin-bottom: 1rem;">💬 The "Ultra-Smart Autocomplete" Analogy</h3>
+                    <p style="font-size: 1.125rem; line-height: 1.8;">Imagine autocomplete on your phone — but instead of predicting the next <em>word</em>, ChatGPT predicts the next <strong>thousands of words</strong> that would make sense in a conversation. It's been trained on vast amounts of text from the internet, books, and websites, learning patterns of how humans write and respond.</p>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Key insight:</strong> ChatGPT doesn't "know" things like humans do. It doesn't have beliefs or understanding. It's incredibly good at <em>pattern matching</em> — predicting what text would logically come next based on billions of examples.</p>
+                </div>
+                
+                <h3>The Technical (But Accessible) Explanation</h3>
+                
+                <p><strong>ChatGPT = Chat Generative Pre-trained Transformer</strong></p>
+                <ul>
+                    <li><strong>Chat:</strong> Designed for conversations (vs single-response AI)</li>
+                    <li><strong>Generative:</strong> Creates new text (doesn't just retrieve stored answers)</li>
+                    <li><strong>Pre-trained:</strong> Learned from massive datasets before you use it</li>
+                    <li><strong>Transformer:</strong> The AI architecture that enables it to understand context</li>
+                </ul>
+                
+                <div class="info-box">
+                    <p><strong>How it works (simplified 3-step process):</strong></p>
+                    <ol>
+                        <li><strong>Input:</strong> You write a prompt (question, instruction, request)</li>
+                        <li><strong>Processing:</strong> ChatGPT analyzes your prompt + conversation history, predicts what words would best respond</li>
+                        <li><strong>Output:</strong> Generates text one token (~word) at a time, creating coherent responses</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- ChatGPT Evolution -->
+            <section class="content-section">
+                <h2>📊 ChatGPT Versions: What's the Difference?</h2>
+                
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Released</th>
+                                <th>Key Features</th>
+                                <th>Best For</th>
+                                <th>Access</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>GPT-3.5</strong></td>
+                                <td>Nov 2022</td>
+                                <td>Original ChatGPT. Fast, conversational. Text-only.</td>
+                                <td>Simple queries, learning</td>
+                                <td>✅ Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPT-4</strong></td>
+                                <td>Mar 2023</td>
+                                <td>More accurate, nuanced. Better reasoning.</td>
+                                <td>Complex analysis, accuracy</td>
+                                <td>💰 Plus ($20/mo)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPT-4o</strong></td>
+                                <td>May 2024</td>
+                                <td>Multimodal (text, images, audio). 2x faster than GPT-4.</td>
+                                <td>Vision tasks, speed</td>
+                                <td>✅ Free (limited)<br>💰 Plus (unlimited)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPT-4o-mini</strong></td>
+                                <td>Jul 2024</td>
+                                <td>Lightweight, 60% cheaper. Fast responses. Still multimodal.</td>
+                                <td>High-volume, cost-sensitive</td>
+                                <td>💰 API only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>o1/o1-mini</strong></td>
+                                <td>Sep 2024</td>
+                                <td>Deep reasoning model. "Thinks" before answering. PhD-level.</td>
+                                <td>Math, coding, research</td>
+                                <td>💰 Plus</td>
+                            </tr>
+                            <tr>
+                                <td><strong>o3 (Coming)</strong></td>
+                                <td>2025</td>
+                                <td>Next-gen reasoning. Even stronger on complex problems.</td>
+                                <td>Advanced research, science</td>
+                                <td>💰 TBD</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Model Selection Guide (2025):</strong></p>
+                    <ul>
+                        <li><strong>GPT-3.5 (free):</strong> Perfect for learning prompt engineering, simple everyday tasks</li>
+                        <li><strong>GPT-4o:</strong> Best all-around model. Fast, multimodal, handles 98% of tasks</li>
+                        <li><strong>GPT-4o-mini:</strong> API use when cost matters more than peak quality</li>
+                        <li><strong>o1 models:</strong> When you need deep reasoning for math, code, science, research</li>
+                        <li><strong>Alternatives:</strong> Claude 3.5 Sonnet (Anthropic), Gemini 1.5 Pro (Google), Copilot (Microsoft)</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box" style="margin-top: 2rem;">
+                    <p><strong>🚀 What's New in 2025?</strong></p>
+                    <ul>
+                        <li><strong>Vision:</strong> Upload images, charts, screenshots—ChatGPT can see and analyze</li>
+                        <li><strong>Voice Mode:</strong> Speak naturally with real-time AI conversation</li>
+                        <li><strong>Custom GPTs:</strong> Create specialized AI assistants with specific knowledge</li>
+                        <li><strong>Canvas Mode:</strong> Collaborative workspace for writing and coding</li>
+                        <li><strong>Advanced Data Analysis:</strong> Upload files, analyze data, create visualizations</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Capabilities -->
+            <section class="content-section">
+                <h2>⚡ What Can ChatGPT Do?</h2>
+                
+                <div class="capabilities-grid">
+                    <div class="capability-card">
+                        <div class="capability-icon">✍️</div>
+                        <h3 class="capability-title">Writing & Editing</h3>
+                        <p>Blog posts, emails, essays, scripts, poetry, stories. Grammar checks, rewrites, tone adjustments.</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon">💻</div>
+                        <h3 class="capability-title">Coding</h3>
+                        <p>Write, debug, explain, and optimize code in Python, JavaScript, SQL, and 50+ languages.</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon">📚</div>
+                        <h3 class="capability-title">Learning & Research</h3>
+                        <p>Explain complex topics, summarize articles, create study guides, answer questions.</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon">💡</div>
+                        <h3 class="capability-title">Brainstorming</h3>
+                        <p>Generate ideas, explore perspectives, creative problem-solving, "what if" scenarios.</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon">📊</div>
+                        <h3 class="capability-title">Data Analysis</h3>
+                        <p>Interpret data, create formulas, explain statistics, suggest visualizations.</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon">🌐</div>
+                        <h3 class="capability-title">Translation</h3>
+                        <p>Translate between languages, explain cultural nuances, localize content.</p>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <h3>Real-World Example: From Vague to Valuable</h3>
+                    
+                    <div class="chat-demo">
+                        <div class="chat-header">ChatGPT Conversation</div>
+                        <div class="chat-message message-user">
+                            <div class="message-label">You:</div>
+                            <p>"Help me write an email."</p>
+                        </div>
+                        <div class="chat-message">
+                            <div class="message-label">ChatGPT:</div>
+                            <p>"I'd be happy to help! Could you provide more details? Who is the recipient, what's the purpose, and what tone would you like?"</p>
+                        </div>
+                        <div class="chat-message message-user">
+                            <div class="message-label">You:</div>
+                            <p>"Email to my boss requesting a meeting to discuss a promotion. Professional but confident tone."</p>
+                        </div>
+                        <div class="chat-message">
+                            <div class="message-label">ChatGPT:</div>
+                            <p style="background: #f8fafc; padding: 1rem; border-radius: 8px; font-style: italic;">
+                                Subject: Request for Meeting – Career Development Discussion<br><br>
+                                
+                                Hi [Boss's Name],<br><br>
+                                
+                                I hope this message finds you well. I wanted to reach out to request a meeting at your earliest convenience to discuss my career trajectory and potential growth opportunities within the team.<br><br>
+                                
+                                Over the past [timeframe], I've taken on [specific responsibilities], achieved [key results], and would appreciate the chance to explore how I can continue contributing at a higher level.<br><br>
+                                
+                                Would you have 30 minutes available in the coming week? I'm flexible with timing and happy to work around your schedule.<br><br>
+                                
+                                Thank you for considering this request. I look forward to our conversation.<br><br>
+                                
+                                Best regards,<br>
+                                [Your Name]
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Notice:</strong> When you provide <em>specificity</em> (recipient, purpose, tone), ChatGPT delivers useful, tailored output.</p>
+                </div>
+            </section>
+
+            <!-- Multimodal Capabilities -->
+            <section class="content-section">
+                <h2>👁️ Multimodal Magic: ChatGPT Can See & Hear (2024-2025)</h2>
+                
+                <p>ChatGPT is no longer text-only. With GPT-4o, you can now work with images, voice, and complex documents.</p>
+                
+                <div class="capabilities-grid" style="margin-top: 2rem;">
+                    <div class="capability-card" data-color="blue">
+                        <div class="capability-icon">📸</div>
+                        <h3 class="capability-title">Vision: Image Analysis</h3>
+                        <p><strong>Upload images and ask questions about them</strong></p>
+                        <ul style="margin-top: 0.5rem; font-size: 0.95rem;">
+                            <li>Extract data from charts and graphs</li>
+                            <li>Get UI/UX design feedback on screenshots</li>
+                            <li>Analyze documents, receipts, forms</li>
+                            <li>Identify objects, text, and patterns</li>
+                            <li>Solve visual math problems</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="capability-card" data-color="purple">
+                        <div class="capability-icon">🎙️</div>
+                        <h3 class="capability-title">Voice Mode</h3>
+                        <p><strong>Speak naturally with AI conversation</strong></p>
+                        <ul style="margin-top: 0.5rem; font-size: 0.95rem;">
+                            <li>Real-time voice conversations</li>
+                            <li>Natural interruptions and pauses</li>
+                            <li>Practice language learning</li>
+                            <li>Hands-free while driving/cooking</li>
+                            <li>Brainstorm ideas verbally</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="capability-card" data-color="teal">
+                        <div class="capability-icon">📄</div>
+                        <h3 class="capability-title">Document Analysis</h3>
+                        <p><strong>Upload PDFs, spreadsheets, and data files</strong></p>
+                        <ul style="margin-top: 0.5rem; font-size: 0.95rem;">
+                            <li>Analyze contracts and reports</li>
+                            <li>Extract insights from data files</li>
+                            <li>Create visualizations from CSVs</li>
+                            <li>Summarize lengthy documents</li>
+                            <li>Answer questions about uploaded content</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="info-box" style="margin-top: 2rem;">
+                    <h3>Example: Vision in Action</h3>
+                    <p><strong>Scenario:</strong> You upload a screenshot of a sales dashboard.</p>
+                    
+                    <div class="prompt-example" style="margin-top: 1rem;">
+[Upload: Sales dashboard image]
+
+Analyze this dashboard and:
+1. Identify the 3 key metrics shown
+2. What trends look concerning?
+3. Suggest 2 actionable improvements
+
+Focus specifically on Q4 performance.
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>ChatGPT can:</strong> Read the chart labels, extract numbers, identify trends, and provide strategic recommendations—all from an image.</p>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Vision Limitations:</strong></p>
+                    <ul>
+                        <li>Cannot identify specific people (privacy protection)</li>
+                        <li>May misread blurry or low-quality images</li>
+                        <li>Cannot access embedded links or metadata</li>
+                        <li>Works best with clear, well-lit, high-resolution images</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Limitations -->
+            <section class="content-section">
+                <h2>🚨 Critical Limitations: What ChatGPT Can't Do</h2>
+                
+                <div class="limitations-list">
+                    <h3 style="color: #ef4444; margin-bottom: 1rem;">Important: Always Verify ChatGPT's Output</h3>
+                    <ul>
+                        <li><strong>Hallucinations:</strong> ChatGPT confidently makes up facts, statistics, citations, and sources. It will fabricate research papers that don't exist.</li>
+                        <li><strong>No real-time data:</strong> Training data has a cutoff date (GPT-4: April 2023, GPT-4o: Oct 2023). It doesn't know today's news unless you use web browsing mode.</li>
+                        <li><strong>No understanding:</strong> It predicts text patterns, doesn't "comprehend" meaning. Can sound smart while being completely wrong.</li>
+                        <li><strong>Bias:</strong> Reflects biases in training data — can produce stereotypical, offensive, or culturally insensitive content.</li>
+                        <li><strong>No memory across sessions:</strong> Each new chat is blank slate (unless you use custom instructions or GPT memory feature).</li>
+                        <li><strong>Math struggles:</strong> Better with GPT-4, but can still make calculation errors. Use code interpreter for complex math.</li>
+                        <li><strong>No personal data access:</strong> Can't access your files, emails, calendar unless explicitly shared (privacy feature, not bug).</li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ The Golden Rule:</strong> Treat ChatGPT like a smart intern — useful for drafts and ideas, but <strong>always fact-check, verify sources, and apply your judgment</strong>. Never blindly trust medical, legal, or financial advice.</p>
+                </div>
+            </section>
+
+            <!-- Getting Started -->
+            <section class="content-section">
+                <h2>🚀 Getting Started with ChatGPT</h2>
+                
+                <div class="success-box">
+                    <h3>Step-by-Step: Your First ChatGPT Session</h3>
+                    
+                    <ol style="line-height: 2;">
+                        <li><strong>Create account:</strong> Go to <a href="https://chat.openai.com/" target="_blank" style="color: #078930;">chat.openai.com</a>, sign up with email or Google</li>
+                        <li><strong>Choose model:</strong> Free users get GPT-3.5 (perfect for learning). Plus users can select GPT-4</li>
+                        <li><strong>Start a new chat:</strong> Click "+ New chat" in sidebar</li>
+                        <li><strong>Write your first prompt:</strong> Try: <em>"Explain photosynthesis in 3 sentences using an analogy."</em></li>
+                        <li><strong>Iterate:</strong> Not satisfied? Follow up: <em>"Make it simpler"</em> or <em>"Add more detail about chlorophyll"</em></li>
+                    </ol>
+                    
+                    <h4 style="margin-top: 1.5rem;">5 Starter Prompts to Try Right Now:</h4>
+                    <ol>
+                        <li><strong>Learning:</strong> "Explain [complex topic] using simple analogies and examples."</li>
+                        <li><strong>Writing:</strong> "Write a professional email declining a meeting invitation politely."</li>
+                        <li><strong>Creativity:</strong> "Generate 10 unique gift ideas for a book-loving friend under $50."</li>
+                        <li><strong>Problem-solving:</strong> "I need to organize a team offsite for 15 people. What should I consider?"</li>
+                        <li><strong>Code:</strong> "Write a Python function that checks if a string is a palindrome."</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Use Cases -->
+            <section class="content-section">
+                <h2>💼 10 Real-World Use Cases</h2>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <h3 style="margin-bottom: 1rem;">Where ChatGPT Shines in Daily Life</h3>
+                    
+                    <ol style="line-height: 2.5;">
+                        <li><strong>Email drafting:</strong> Professional responses in seconds</li>
+                        <li><strong>Learning accelerator:</strong> Explain any concept at your level</li>
+                        <li><strong>Coding assistant:</strong> Write, debug, explain code</li>
+                        <li><strong>Content creation:</strong> Blog outlines, social media posts, scripts</li>
+                        <li><strong>Brainstorming partner:</strong> Generate ideas for projects, names, strategies</li>
+                        <li><strong>Document summarization:</strong> Extract key points from long texts</li>
+                        <li><strong>Language translation:</strong> Translate + explain cultural context</li>
+                        <li><strong>Interview prep:</strong> Practice questions, get feedback</li>
+                        <li><strong>Recipe modification:</strong> Adapt recipes for dietary needs</li>
+                        <li><strong>Travel planning:</strong> Itineraries, packing lists, local tips</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Your First Prompts</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Challenge: Test ChatGPT Across 5 Categories</h3>
+                    
+                    <p><strong>Task:</strong> Go to chat.openai.com and try these prompts. Observe the quality of responses.</p>
+                    
+                    <ol style="margin-top: 1rem; line-height: 2;">
+                        <li><strong>Explanation:</strong> "Explain blockchain technology to someone who's never heard of it."</li>
+                        <li><strong>Creative writing:</strong> "Write a 50-word microstory about a robot learning to paint."</li>
+                        <li><strong>Problem-solving:</strong> "I have eggs, cheese, and bread. Suggest 3 breakfast recipes."</li>
+                        <li><strong>Analysis:</strong> "What are the pros and cons of remote work vs office work?"</li>
+                        <li><strong>Iterative refinement:</strong> Pick any response above and say: "Make it more concise" or "Add more examples"</li>
+                    </ol>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Reflection questions:</strong></p>
+                    <ul>
+                        <li>Which response impressed you most? Why?</li>
+                        <li>Did any response feel generic or unhelpful?</li>
+                        <li>How could you rephrase prompts to get better results?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What does "GPT" stand for in ChatGPT?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">General Purpose Technology</div>
+                            <div class="quiz-option" data-value="b">Generative Pre-trained Transformer</div>
+                            <div class="quiz-option" data-value="c">Global Predictive Text</div>
+                            <div class="quiz-option" data-value="d">Great Prompt Tool</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 2: What's ChatGPT's most critical limitation?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It hallucinates facts and confidently makes up sources</div>
+                            <div class="quiz-option" data-value="b">It can't write any code</div>
+                            <div class="quiz-option" data-value="c">It only works in English</div>
+                            <div class="quiz-option" data-value="d">It's too slow to be useful</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 3: How does ChatGPT generate responses?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It searches Google and copies answers</div>
+                            <div class="quiz-option" data-value="b">It has a database of pre-written responses</div>
+                            <div class="quiz-option" data-value="c">It predicts the next words based on patterns learned from training data</div>
+                            <div class="quiz-option" data-value="d">Humans write every response in real-time</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What's the difference between GPT-3.5 and GPT-4?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">No difference, just marketing names</div>
+                            <div class="quiz-option" data-value="b">GPT-4 is more accurate, handles images, and has better reasoning</div>
+                            <div class="quiz-option" data-value="c">GPT-4 is free, GPT-3.5 costs money</div>
+                            <div class="quiz-option" data-value="d">GPT-4 only works for coding</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the best way to use ChatGPT?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Trust everything it says without verification</div>
+                            <div class="quiz-option" data-value="b">Only use it for entertainment, never work</div>
+                            <div class="quiz-option" data-value="c">Treat it like a smart intern: useful for drafts, but always verify facts</div>
+                            <div class="quiz-option" data-value="d">Avoid it because AI is dangerous</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommended Resources -->
+            <section style="background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 3rem 0; border: 2px solid #078930;">
+                <h2 style="color: #065f46; margin-top: 0;">🚀 Level Up Your ChatGPT Experience</h2>
+                <p style="font-size: 1.1rem; color: #065f46; line-height: 1.7; margin-bottom: 1.5rem;">
+                    Ready to unlock ChatGPT's full potential? Here are the tools and resources that will take you from beginner to power user:
+                </p>
+
+                <!-- ChatGPT Plus -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">⚡</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">ChatGPT Plus - GPT-4 Access</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">OpenAI | $20/month</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Essential for serious users:</strong> Unlock GPT-4, GPT-4o, and o1 models for advanced reasoning. Get faster response times, priority access during peak hours, and early access to new features like vision and voice capabilities.
+                    </p>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border-left: 3px solid #078930; margin-bottom: 1rem;">
+                        <p style="margin: 0; color: #334155; font-size: 0.95rem;"><strong>💡 Why upgrade:</strong> GPT-4 is significantly smarter for complex tasks like coding, analysis, and creative writing. If you're investing time in this course, the $20/month pays for itself in productivity gains.</p>
+                    </div>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>GPT-4o:</strong> 2x faster responses, better at reasoning</li>
+                        <li><strong>Vision:</strong> Analyze images, charts, screenshots</li>
+                        <li><strong>Voice Mode:</strong> Natural conversations with AI</li>
+                        <li><strong>Custom GPTs:</strong> Build personalized AI assistants</li>
+                    </ul>
+                    <a href="https://chat.openai.com/c/plus" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Upgrade to ChatGPT Plus →
+                    </a>
+                </div>
+
+                <!-- Book Recommendation -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">📚</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">The AI Revolution Book Bundle</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Amazon | Starting at ₹499</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Deepen your understanding:</strong> Go beyond tutorials with comprehensive books on AI, ChatGPT, and the future of work. Perfect for understanding the bigger picture while you master the technical skills.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <div style="padding: 0.75rem; background: #f8fafc; border-radius: 6px;">
+                            <p style="margin: 0; font-weight: 600; color: #334155;">📖 "AI Superpowers"</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #64748b;">Kai-Fu Lee • ₹599</p>
+                        </div>
+                        <div style="padding: 0.75rem; background: #f8fafc; border-radius: 6px;">
+                            <p style="margin: 0; font-weight: 600; color: #334155;">📖 "Life 3.0"</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #64748b;">Max Tegmark • ₹699</p>
+                        </div>
+                    </div>
+                    <a href="https://www.amazon.in/s?k=chatgpt+artificial+intelligence+books" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Browse AI Books on Amazon →
+                    </a>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Master Prompt Engineering</h2>
+                
+                <p>You understand what ChatGPT is and what it can do. Now it's time to learn <strong>how to communicate with it effectively</strong>. The difference between "meh" and "wow" outputs is all in how you craft your prompts.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Tutorial 2:</strong> Learn the anatomy of excellent prompts — clarity, specificity, context, examples. Master the iterative refinement process that separates beginners from power users.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="../../courses/chatgpt-prompt-engineering.html" class="prev">← Back to Course</a>
+                    <a href="prompt-engineering-fundamentals.html" class="next">Module 2: Prompt Fundamentals →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

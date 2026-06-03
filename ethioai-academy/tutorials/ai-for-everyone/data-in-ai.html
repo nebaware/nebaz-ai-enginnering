@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand why data is the fuel for AI. Learn about data quality, quantity, collection methods, and how AI learns from data.">
+    <title>Tutorial 7: The Role of Data in AI - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .fuel-analogy {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .fuel-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .fuel-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid;
+        }
+        
+        .bad-data-card {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+        
+        .good-data-card {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .data-types-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .data-type-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #078930;
+        }
+        
+        .data-type-card h3 {
+            color: #078930;
+            margin-bottom: 0.75rem;
+        }
+        
+        .examples-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .example-tag {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .quality-factors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .quality-factor {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .factor-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .factor-label {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pipeline-flow {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .flow-arrow {
+            text-align: center;
+            color: #078930;
+            font-size: 1.5rem;
+        }
+        
+        .real-example-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px solid #078930;
+        }
+        
+        .example-title {
+            color: #078930;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .fuel-analogy {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 7</span>
+            </div>
+            <h1>Tutorial 7: The Role of Data in AI</h1>
+            <p class="tutorial-intro">Data is the fuel that powers AI — understand why quality matters more than quantity</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You've learned what AI can do. Now let's understand <strong>how it actually works</strong> — and it all starts with data.</p>
+                
+                <p>AI without data is like a car without fuel, a phone without battery, or a brain without memories. <strong>Data is everything</strong>. The difference between a mediocre AI and a world-class AI isn't the algorithm — it's the quality and quantity of data it learned from.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Data Truth:</strong> Andrew Ng (former Google Brain lead) famously said: "AI is the new electricity, but data is the new oil." Just as oil powered the industrial revolution, data powers the AI revolution.</p>
+                </div>
+            </section>
+
+            <!-- The Fuel Analogy -->
+            <section class="content-section">
+                <h2>⛽ Data: The Fuel for AI Engines</h2>
+                
+                <div class="fuel-analogy">
+                    <div class="fuel-card">
+                        <div class="fuel-icon">🚗</div>
+                        <h3>Car Engine</h3>
+                        <p><strong>Fuel:</strong> Gasoline</p>
+                        <p><strong>Bad fuel:</strong> Engine knocks, poor performance</p>
+                        <p><strong>No fuel:</strong> Car won't start</p>
+                    </div>
+                    
+                    <div class="fuel-card">
+                        <div class="fuel-icon">🤖</div>
+                        <h3>AI Engine</h3>
+                        <p><strong>Fuel:</strong> Data</p>
+                        <p><strong>Bad data:</strong> Inaccurate predictions, biased results</p>
+                        <p><strong>No data:</strong> AI can't learn anything</p>
+                    </div>
+                </div>
+                
+                <p>Just like <strong>premium fuel makes a car run better</strong>, high-quality data makes AI perform better. You can have the most sophisticated AI algorithm in the world, but if you feed it garbage data, you get garbage predictions.</p>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Principle:</strong> "Garbage In, Garbage Out" (GIGO). AI quality is directly tied to data quality. A simple algorithm + excellent data beats a complex algorithm + poor data every time.</p>
+                </div>
+            </section>
+
+            <!-- Quality vs Quantity -->
+            <section class="content-section">
+                <h2>⚖️ Quality vs. Quantity: The Data Debate</h2>
+                
+                <p>There's a common misconception: <strong>"More data = better AI."</strong> The truth? <strong>Quality beats quantity</strong> — but you need both.</p>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card bad-data-card">
+                        <h3>❌ 1 Million Bad Examples</h3>
+                        <ul>
+                            <li>Blurry medical images</li>
+                            <li>Mislabeled data</li>
+                            <li>Duplicate entries</li>
+                            <li>Biased samples</li>
+                            <li>Incomplete information</li>
+                        </ul>
+                        <p><strong>Result:</strong> AI learns wrong patterns, makes dangerous errors</p>
+                    </div>
+                    
+                    <div class="comparison-card good-data-card">
+                        <h3>✅ 10,000 Quality Examples</h3>
+                        <ul>
+                            <li>Clear, high-resolution images</li>
+                            <li>Accurately labeled</li>
+                            <li>Diverse, representative samples</li>
+                            <li>Verified by experts</li>
+                            <li>Complete information</li>
+                        </ul>
+                        <p><strong>Result:</strong> AI learns correct patterns, makes reliable predictions</p>
+                    </div>
+                </div>
+                
+                <div class="quality-factors">
+                    <div class="quality-factor">
+                        <div class="factor-icon">✓</div>
+                        <div class="factor-label">Accuracy</div>
+                        <p>Data reflects reality correctly</p>
+                    </div>
+                    
+                    <div class="quality-factor">
+                        <div class="factor-icon">🎯</div>
+                        <div class="factor-label">Relevance</div>
+                        <p>Data relates to the problem</p>
+                    </div>
+                    
+                    <div class="quality-factor">
+                        <div class="factor-icon">📊</div>
+                        <div class="factor-label">Completeness</div>
+                        <p>No missing critical fields</p>
+                    </div>
+                    
+                    <div class="quality-factor">
+                        <div class="factor-icon">🔄</div>
+                        <div class="factor-label">Consistency</div>
+                        <p>Same format throughout</p>
+                    </div>
+                    
+                    <div class="quality-factor">
+                        <div class="factor-icon">⏱️</div>
+                        <div class="factor-label">Timeliness</div>
+                        <p>Up-to-date information</p>
+                    </div>
+                    
+                    <div class="quality-factor">
+                        <div class="factor-icon">🌍</div>
+                        <div class="factor-label">Diversity</div>
+                        <p>Represents all scenarios</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Types of Data -->
+            <section class="content-section">
+                <h2>📂 Types of Data AI Learns From</h2>
+                
+                <div class="data-types-grid">
+                    <div class="data-type-card">
+                        <h3>1. Structured Data (Tables)</h3>
+                        <p>Organized in rows and columns, like spreadsheets or databases.</p>
+                        <div class="examples-list">
+                            <span class="example-tag">Customer records</span>
+                            <span class="example-tag">Sales transactions</span>
+                            <span class="example-tag">Stock prices</span>
+                            <span class="example-tag">Sensor readings</span>
+                        </div>
+                        <p style="margin-top: 1rem;"><strong>AI use:</strong> Predicting house prices, fraud detection, customer churn</p>
+                    </div>
+                    
+                    <div class="data-type-card">
+                        <h3>2. Text Data (Language)</h3>
+                        <p>Written content from documents, messages, reviews, or social media.</p>
+                        <div class="examples-list">
+                            <span class="example-tag">Customer reviews</span>
+                            <span class="example-tag">News articles</span>
+                            <span class="example-tag">Emails</span>
+                            <span class="example-tag">Chat logs</span>
+                        </div>
+                        <p style="margin-top: 1rem;"><strong>AI use:</strong> Sentiment analysis, chatbots, translation, spam filters</p>
+                    </div>
+                    
+                    <div class="data-type-card">
+                        <h3>3. Image Data (Vision)</h3>
+                        <p>Photos, medical scans, satellite imagery, or security footage.</p>
+                        <div class="examples-list">
+                            <span class="example-tag">X-rays</span>
+                            <span class="example-tag">Product photos</span>
+                            <span class="example-tag">Facial recognition</span>
+                            <span class="example-tag">Self-driving car cameras</span>
+                        </div>
+                        <p style="margin-top: 1rem;"><strong>AI use:</strong> Medical diagnosis, facial recognition, quality control</p>
+                    </div>
+                    
+                    <div class="data-type-card">
+                        <h3>4. Audio Data (Sound)</h3>
+                        <p>Voice recordings, music, environmental sounds.</p>
+                        <div class="examples-list">
+                            <span class="example-tag">Voice commands</span>
+                            <span class="example-tag">Music tracks</span>
+                            <span class="example-tag">Call center recordings</span>
+                            <span class="example-tag">Podcast audio</span>
+                        </div>
+                        <p style="margin-top: 1rem;"><strong>AI use:</strong> Siri/Alexa, music recognition, transcription services</p>
+                    </div>
+                    
+                    <div class="data-type-card">
+                        <h3>5. Video Data (Motion)</h3>
+                        <p>Sequential frames combining image and audio.</p>
+                        <div class="examples-list">
+                            <span class="example-tag">Security cameras</span>
+                            <span class="example-tag">Sports footage</span>
+                            <span class="example-tag">YouTube videos</span>
+                            <span class="example-tag">Medical procedures</span>
+                        </div>
+                        <p style="margin-top: 1rem;"><strong>AI use:</strong> Activity recognition, automated video editing, surveillance</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Pipeline -->
+            <section class="content-section">
+                <h2>🔄 The Data Journey: From Raw to Ready</h2>
+                
+                <p>Data doesn't come perfect out of the box. It goes through a <strong>data pipeline</strong> before AI can learn from it:</p>
+                
+                <div class="pipeline-flow">
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="step-number">1</div>
+                            <div>
+                                <strong>Collection</strong>
+                                <p>Gather data from sources (databases, sensors, user interactions)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-arrow">↓</div>
+                        
+                        <div class="flow-step">
+                            <div class="step-number">2</div>
+                            <div>
+                                <strong>Cleaning</strong>
+                                <p>Remove errors, duplicates, missing values, outliers</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-arrow">↓</div>
+                        
+                        <div class="flow-step">
+                            <div class="step-number">3</div>
+                            <div>
+                                <strong>Labeling</strong>
+                                <p>Add correct answers (e.g., "this image is a cat")</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-arrow">↓</div>
+                        
+                        <div class="flow-step">
+                            <div class="step-number">4</div>
+                            <div>
+                                <strong>Transformation</strong>
+                                <p>Convert data into format AI can process (normalization, encoding)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flow-arrow">↓</div>
+                        
+                        <div class="flow-step">
+                            <div class="step-number">5</div>
+                            <div>
+                                <strong>Splitting</strong>
+                                <p>Divide into training (80%), validation (10%), test (10%) sets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ The 80/20 Rule:</strong> Data scientists spend 80% of their time preparing data and only 20% building AI models. Data preparation is the most time-consuming but critical step.</p>
+                </div>
+            </section>
+
+            <!-- Real Examples -->
+            <section class="content-section">
+                <h2>🎯 Real-World Data Examples</h2>
+                
+                <div class="real-example-box">
+                    <div class="example-title">🚗 Example 1: Self-Driving Cars (Tesla)</div>
+                    <p><strong>Data needed:</strong></p>
+                    <ul>
+                        <li>3+ billion miles of driving footage (cameras, sensors)</li>
+                        <li>Labeled objects: cars, pedestrians, traffic signs, lane markings</li>
+                        <li>Weather conditions: rain, snow, fog, night driving</li>
+                        <li>Edge cases: accidents, construction zones, unusual situations</li>
+                    </ul>
+                    <p><strong>Why so much?</strong> AI must learn to handle every possible scenario before it's safe.</p>
+                    <p><strong>Result:</strong> Tesla Autopilot improves with every car on the road sharing data.</p>
+                </div>
+                
+                <div class="real-example-box">
+                    <div class="example-title">🎵 Example 2: Spotify Recommendations</div>
+                    <p><strong>Data collected:</strong></p>
+                    <ul>
+                        <li>Your listening history (every song, skip, replay)</li>
+                        <li>Time of day you listen to each genre</li>
+                        <li>Similar users' preferences</li>
+                        <li>Song audio features (tempo, energy, mood)</li>
+                        <li>Playlist patterns</li>
+                    </ul>
+                    <p><strong>How it works:</strong> AI finds patterns like "people who listen to Artist A at 6pm also like Artist B"</p>
+                    <p><strong>Result:</strong> 75% of listening comes from AI recommendations, not search.</p>
+                </div>
+
+                <!-- Did You Know Callout -->
+                <div class="info-box" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; margin: 2rem 0;">
+                    <p style="margin: 0; font-size: 1.05rem; line-height: 1.7;">
+                        <strong style="color: #92400e;">🧮 Did You Know?</strong> A single hour of driving data from one Tesla generates about <strong>5 GB of information</strong> — roughly the size of an HD movie. With millions of Teslas on the road, that's petabytes of training data flowing in daily!
+                    </p>
+                </div>
+                
+                <div class="real-example-box">
+                    <div class="example-title">🏥 Example 3: Cancer Detection AI</div>
+                    <p><strong>Data required:</strong></p>
+                    <ul>
+                        <li>100,000+ medical images (X-rays, MRIs, CT scans)</li>
+                        <li>Expert labels: "cancer present" vs "healthy tissue"</li>
+                        <li>Patient demographics and history</li>
+                        <li>Multiple angles and resolutions</li>
+                        <li>Diverse patient population (different ages, races)</li>
+                    </ul>
+                    <p><strong>Challenge:</strong> Must be 99%+ accurate — false negatives cost lives</p>
+                    <p><strong>Result:</strong> AI detects 6% more cancers than radiologists alone.</p>
+                </div>
+            </section>
+
+            <!-- Common Mistake -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistake: "More Data Always = Better AI"</h2>
+                
+                <div class="warning-box">
+                    <h3>The Misconception</h3>
+                    <p>"I'll just collect as much data as possible, and my AI will automatically be great."</p>
+                    
+                    <h3>The Reality</h3>
+                    <p>More data only helps if it's:</p>
+                    <ul>
+                        <li>✅ <strong>Relevant:</strong> Related to the problem you're solving</li>
+                        <li>✅ <strong>Diverse:</strong> Represents all real-world scenarios</li>
+                        <li>✅ <strong>Accurate:</strong> Correctly labeled and error-free</li>
+                        <li>✅ <strong>Recent:</strong> Up-to-date (old data can mislead)</li>
+                    </ul>
+                    
+                    <p><strong>Cautionary tale:</strong> Amazon's hiring AI (2018) was trained on 10 years of resume data — but the data was biased (mostly male engineers). Result? AI discriminated against women. Amazon scrapped the project.</p>
+                    
+                    <p><strong>Lesson:</strong> Biased data → Biased AI. Quality and representativeness matter more than volume.</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Evaluate Data Quality</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Scenario: Build a Restaurant Recommendation AI</h3>
+                    
+                    <p><strong>Your task:</strong> You have two datasets. Which one will produce better AI?</p>
+                    
+                    <h4>Dataset A:</h4>
+                    <ul>
+                        <li>1 million restaurant reviews</li>
+                        <li>All from 2015-2018 (7+ years old)</li>
+                        <li>90% from New York and San Francisco only</li>
+                        <li>Many duplicate reviews</li>
+                        <li>No verification if reviewer actually visited</li>
+                    </ul>
+                    
+                    <h4>Dataset B:</h4>
+                    <ul>
+                        <li>100,000 restaurant reviews</li>
+                        <li>From last 12 months (current)</li>
+                        <li>Geographic diversity across 50+ cities</li>
+                        <li>Verified visits (receipt confirmation)</li>
+                        <li>Detailed ratings (food, service, ambiance, value)</li>
+                    </ul>
+                    
+                    <p><strong>Questions to answer:</strong></p>
+                    <ol>
+                        <li>Which dataset would you choose? Why?</li>
+                        <li>What problems could Dataset A cause?</li>
+                        <li>What additional data would make Dataset B even better?</li>
+                        <li>How would you handle restaurants that opened recently (no reviews yet)?</li>
+                    </ol>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Think like a data scientist:</strong> Always ask "Is this data representative of the real-world problem I'm solving?" If not, your AI will fail in production.</p>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Design a Data Collection Strategy</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Challenge: Plan Data for Your Own AI Project</h3>
+                    
+                    <p><strong>Pick one problem to solve with AI:</strong></p>
+                    <ul>
+                        <li>Predict student exam scores based on study habits</li>
+                        <li>Recommend movies based on viewing history</li>
+                        <li>Detect spam emails</li>
+                        <li>Identify plant diseases from leaf photos</li>
+                        <li>Or create your own problem!</li>
+                    </ul>
+                    
+                    <p><strong>Design your data strategy by answering:</strong></p>
+                    <ol>
+                        <li><strong>What data do you need?</strong>
+                            <br><em>Example: For student scores → study hours, sleep, attendance, previous grades</em>
+                        </li>
+                        <li><strong>Where will you get this data?</strong>
+                            <br><em>Example: School records, student surveys, learning management systems</em>
+                        </li>
+                        <li><strong>How much data is enough?</strong>
+                            <br><em>Example: 1,000 students minimum for reliable patterns</em>
+                        </li>
+                        <li><strong>What quality issues might arise?</strong>
+                            <br><em>Example: Students lying on surveys, missing attendance records</em>
+                        </li>
+                        <li><strong>How will you label the data?</strong>
+                            <br><em>Example: Actual exam scores = labels</em>
+                        </li>
+                        <li><strong>What biases could creep in?</strong>
+                            <br><em>Example: Only surveying high-achievers, excluding certain demographics</em>
+                        </li>
+                        <li><strong>How will you keep data updated?</strong>
+                            <br><em>Example: Collect new data each semester</em>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Data Powers Everything</h2>
+                
+                <ul>
+                    <li>✅ <strong>Data is AI fuel</strong> — quality and quantity both matter</li>
+                    <li>✅ <strong>Quality beats quantity</strong> — 10K good examples > 1M bad examples</li>
+                    <li>✅ <strong>Six quality factors</strong> — accuracy, relevance, completeness, consistency, timeliness, diversity</li>
+                    <li>✅ <strong>Five data types</strong> — structured, text, image, audio, video</li>
+                    <li>✅ <strong>80% of AI work is data prep</strong> — collection, cleaning, labeling, transformation</li>
+                    <li>✅ <strong>Garbage in, garbage out</strong> — biased data creates biased AI</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> AI is only as good as its data. Before building any AI system, invest heavily in collecting diverse, accurate, representative data. The best algorithm with poor data will lose to a simple algorithm with excellent data.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What percentage of data science work is spent on data preparation?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">20%</div>
+                            <div class="quiz-option" data-value="b">80%</div>
+                            <div class="quiz-option" data-value="c">50%</div>
+                            <div class="quiz-option" data-value="d">5%</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: Which statement about data quality vs quantity is most accurate?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">More data always produces better AI</div>
+                            <div class="quiz-option" data-value="b">Data quality doesn't matter if you have enough volume</div>
+                            <div class="quiz-option" data-value="c">Quality matters more than quantity, but you need both</div>
+                            <div class="quiz-option" data-value="d">Quantity is irrelevant</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What happened with Amazon's hiring AI in 2018?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It discriminated against women due to biased training data</div>
+                            <div class="quiz-option" data-value="b">It worked perfectly and is still used today</div>
+                            <div class="quiz-option" data-value="c">It didn't have enough data</div>
+                            <div class="quiz-option" data-value="d">It was too expensive to operate</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: Which is NOT a key data quality factor?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Accuracy</div>
+                            <div class="quiz-option" data-value="b">Expensiveness</div>
+                            <div class="quiz-option" data-value="c">Relevance</div>
+                            <div class="quiz-option" data-value="d">Diversity</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: How does Spotify achieve 75% of listening from recommendations?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">By guessing randomly</div>
+                            <div class="quiz-option" data-value="b">By only using song titles</div>
+                            <div class="quiz-option" data-value="c">By analyzing listening patterns, time of day, similar users, and audio features</div>
+                            <div class="quiz-option" data-value="d">By asking users to fill out surveys</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transition Section -->
+            <section class="content-section" style="background: linear-gradient(135deg, #312e81 0%, #1e3a8a 100%); color: white; padding: 2rem; border-radius: 12px; text-align: center; margin: 2rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <h3 style="color: white; font-size: 1.5rem; margin: 0 0 0.5rem 0;">🎨 Time to Create!</h3>
+                <p style="color: #e0e7ff; font-size: 1.1rem; margin: 0; line-height: 1.6;">
+                    Now that you understand the 5 types of data, let's experience how different AIs use different data types to create amazing outputs.
+                </p>
+            </section>
+
+            <!-- Mini-Project -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: How AI Models Learn</h2>
+                
+                <p>Now that you understand data's critical role, let's explore <strong>how AI actually learns from that data</strong>. What does "training" mean? How do algorithms find patterns?</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Module 8:</strong> Discover the three types of machine learning (supervised, unsupervised, reinforcement) and see real examples of AI training in action.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="ai-in-healthcare.html" class="prev">← Module 6: AI in Healthcare</a>
+                    <a href="training-ai-models.html" class="next">Module 8: Training AI Models →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

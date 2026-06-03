@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Attention Is All You Need - The foundational transformer paper explained. Learn why attention mechanisms replaced RNNs.">
+    <meta name="keywords" content="attention mechanism, transformer architecture, attention is all you need, scaling dot-product attention">
+    <title>Attention Is All You Need | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Attention Is All You Need</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Attention Is All You Need</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 2</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟢 Beginner</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Understand the revolutionary 2017 paper that changed AI forever
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>The Paper That Changed Everything</h2>
+                <p>
+                    In June 2017, researchers at Google published "Attention Is All You Need" - one of the most impactful papers in AI history. Its core claim was radical: <strong>you don't need recurrence</strong>. Pure attention is sufficient for sequence modeling.
+                </p>
+                <div class="info-box">
+                    <strong>Historic Impact:</strong> This paper has been cited over 100,000 times and spawned BERT (2018), GPT-2 (2019), GPT-3 (2020), GPT-4 (2023), Claude, Llama, and every modern LLM. Understanding it is understanding modern AI.
+                </div>
+
+                <h3>The Revolutionary Context</h3>
+                <p>
+                    To appreciate how radical this paper was, consider the state of AI in 2016-2017:
+                </p>
+
+                <div style="background: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <h4 style="margin-top: 0;">State of the Art Before Transformers (2016)</h4>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li><strong>Machine Translation:</strong> LSTM Seq2Seq with attention (GNMT - Google Neural Machine Translation)</li>
+                        <li><strong>Text Generation:</strong> Character-level RNNs, word-level LSTMs</li>
+                        <li><strong>Speech Recognition:</strong> Deep RNN stacks with CTC loss</li>
+                        <li><strong>Training Time:</strong> Weeks to months on large GPU clusters</li>
+                        <li><strong>Sequence Length Limit:</strong> ~100-200 tokens (beyond this, quality degraded)</li>
+                        <li><strong>Parallelization:</strong> Limited to batch dimension only</li>
+                    </ul>
+                </div>
+
+                <h3>The Paper's Bold Claims</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <h4 style="margin-top: 0; color: #991b1b;">❌ Old Wisdom (2016)</h4>
+                        <ul style="font-size: 0.9rem; margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>"Recurrence is essential for sequences"</li>
+                            <li>"LSTMs are needed for long-range dependencies"</li>
+                            <li>"You must process sequences step-by-step"</li>
+                            <li>"Attention is a nice add-on to RNNs"</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">✅ Transformer Insight (2017)</h4>
+                        <ul style="font-size: 0.9rem; margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>"Attention is ALL you need"</li>
+                            <li>"No recurrence necessary"</li>
+                            <li>"Fully parallel processing"</li>
+                            <li>"Attention as the primary mechanism"</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>The Authors and Their Vision</h3>
+                <p>
+                    The paper was authored by eight researchers at Google Brain, Google Research, and University of Toronto:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Ashish Vaswani</strong> (lead author) - "The attention mechanism could replace recurrence"</li>
+                    <li><strong>Noam Shazeer</strong> - Pioneered many architectural innovations</li>
+                    <li><strong>Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin</strong></li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💡 Fun Fact:</strong> The paper title "Attention Is All You Need" was inspired by The Beatles song "All You Need Is Love". The authors wanted to convey that attention alone, without recurrence or convolutions, was sufficient for state-of-the-art results.</p>
+                </div>
+
+                <h3>The Impact Timeline</h3>
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p><strong>📅 June 2017:</strong> Paper published on arXiv</p>
+                    <p><strong>📅 December 2017:</strong> Accepted to NeurIPS (then NIPS) - awarded Best Paper</p>
+                    <p><strong>📅 October 2018:</strong> BERT released (transformer encoder for understanding)</p>
+                    <p><strong>📅 February 2019:</strong> GPT-2 released (transformer decoder for generation)</p>
+                    <p><strong>📅 June 2020:</strong> GPT-3 (175B parameters) - transformers scaled massively</p>
+                    <p><strong>📅 2021-2023:</strong> Transformer variants dominate all of AI (vision, audio, code, proteins)</p>
+                    <p><strong>📅 2023-2024:</strong> GPT-4, Claude 3, Gemini, Llama 3 - all built on transformer architecture</p>
+                    <p style="margin-top: 1rem; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border-left: 4px solid #078930;">
+                        <strong>🏆 Result:</strong> From zero to dominating AI in just 7 years. This is one of the fastest paradigm shifts in the history of computer science.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>The Core Insight: Attention Replaces Recurrence</h2>
+                <p>
+                    Instead of processing sequences step-by-step (like RNNs), transformers process all tokens at once using <strong>attention</strong> - a mechanism that learns which tokens are important for understanding each position.
+                </p>
+
+                <pre><code class="language-text">RNN Approach:
+h₁ = RNN(token₁, h₀)
+h₂ = RNN(token₂, h₁)  ← Must wait for h₁
+h₃ = RNN(token₃, h₂)  ← Must wait for h₂
+Sequential! ⏳
+
+Attention Approach:
+attention_weights = compute_attention(all_tokens)
+output = weighted_sum(all_tokens)  ← All at once! 🚀
+</code></pre>
+
+                <p>
+                    This simple change unlocked massive parallelization and better long-range learning.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>What is Attention? The Core Mechanism</h2>
+                <p>
+                    Attention is deceptively elegant: for each token, compute how important every other token is, then take a weighted average. This simple idea replaces the complex sequential processing of RNNs.
+                </p>
+
+                <h3>The Human Analogy</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p><strong>Intuition:</strong> When you read a sentence, your brain doesn't process each word in isolation. You dynamically focus on relevant words based on what you're trying to understand.</p>
+                    <p style="margin-top: 1rem; color: #666; font-size: 0.95rem;">
+                        <em>"The cat sat on the mat because it was comfortable."</em>
+                    </p>
+                    <p style="margin-top: 1rem;"><strong>Question: What does "it" refer to?</strong></p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Your brain <strong>attends</strong> to "cat" (likely referent)</li>
+                        <li>Considers "mat" (possible but less likely)</li>
+                        <li>Ignores "the", "on", "because", "was" (grammatical but uninformative)</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #065f46;"><strong>This selective focusing is what attention mechanisms formalize mathematically!</strong></p>
+                </div>
+
+                <h3>The Attention Process: 4 Steps</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <pre><code class="language-text">For each position i in the sequence:
+
+Step 1: Compute Similarity Scores
+    - Compare token i to ALL other tokens (including itself)
+    - Result: "How relevant is each token to understanding token i?"
+    - Output: Raw attention scores [score₁, score₂, ..., scoreₙ]
+
+Step 2: Normalize with Softmax
+    - Convert scores to probabilities (sum to 1)
+    - Output: Attention weights [weight₁, weight₂, ..., weightₙ]
+    - High weight = very relevant, Low weight = less relevant
+
+Step 3: Weighted Combination
+    - Take weighted sum of token representations
+    - Relevant tokens contribute more to the result
+    - Output: Context-aware representation
+
+Step 4: Apply to All Positions
+    - Repeat for every position simultaneously
+    - Fully parallelizable!
+    - Output: Entire sequence with context</code></pre>
+                </div>
+
+                <h3>Concrete Example: Pronoun Resolution</h3>
+                <p>
+                    Let's trace attention step-by-step for the sentence: <em>"Alice helped Bob because she cared"</em>
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <p><strong>Processing "she" (position 4):</strong></p>
+                    
+                    <p style="margin-top: 1rem;"><strong>Step 1: Compute Similarities</strong></p>
+                    <pre style="font-size: 0.85rem;"><code>Token     Similarity Score
+Alice     0.85  ← High (likely referent, female name)
+helped    0.12  ← Low (verb, not relevant)
+Bob       0.31  ← Medium (possible but name suggests male)
+because   0.03  ← Very low (connector word)
+she       0.45  ← Medium (self-reference)
+cared     0.18  ← Low (verb)</code></pre>
+
+                    <p style="margin-top: 1rem;"><strong>Step 2: Apply Softmax (normalize to probabilities)</strong></p>
+                    <pre style="font-size: 0.85rem;"><code>Token     Attention Weight
+Alice     0.62  ← Highest probability (62%)
+helped    0.05
+Bob       0.18
+because   0.01
+she       0.11
+cared     0.03
+Total:    1.00  ← Sums to 100%</code></pre>
+
+                    <p style="margin-top: 1rem;"><strong>Step 3: Weighted Combination</strong></p>
+                    <pre style="font-size: 0.85rem;"><code>representation("she") = 
+    0.62 × embedding("Alice") +
+    0.18 × embedding("Bob") +
+    0.11 × embedding("she") +
+    0.05 × embedding("helped") +
+    ... (small contributions from others)
+
+Result: "she" representation strongly influenced by "Alice"</code></pre>
+                </div>
+
+                <h3>Mathematical Formulation</h3>
+                <p>
+                    Here's the precise mathematical definition:
+                </p>
+
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <pre><code style="color: #065f46; font-size: 1.1rem;">Attention(Q, K, V) = softmax(QK^T / √d_k) V</code></pre>
+                    
+                    <p style="margin-top: 1.5rem; color: #065f46;"><strong>Breaking down each component:</strong></p>
+                    
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #065f46;">
+                        <li><strong>Q (Query):</strong> "What am I looking for?" - Representation of current token asking questions</li>
+                        <li><strong>K (Key):</strong> "What do I represent?" - Representation of all tokens being considered</li>
+                        <li><strong>V (Value):</strong> "What information do I carry?" - Actual content to be aggregated</li>
+                        <li><strong>QK^T:</strong> Dot product between queries and keys → similarity scores (matrix: seq_len × seq_len)</li>
+                        <li><strong>√d_k:</strong> Scaling factor (d_k = dimension) - prevents scores from getting too large</li>
+                        <li><strong>softmax(...):</strong> Convert scores to probabilities (each row sums to 1)</li>
+                        <li><strong>(...) V:</strong> Use probabilities as weights to combine values</li>
+                    </ul>
+
+                    <p style="margin-top: 1rem; padding: 1rem; background: rgba(30, 64, 175, 0.1); border-radius: 6px; font-size: 0.9rem;">
+                        <strong>🎯 Key Insight:</strong> Q, K, V are all learned linear projections of the input. The model learns what queries to ask, what keys to match, and what values to return. This is all trained end-to-end with backpropagation!
+                    </p>
+                </div>
+
+                <h3>Why Query, Key, Value?</h3>
+                <p>
+                    The Q, K, V terminology comes from information retrieval (like database queries):
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fff; border: 2px solid #078930; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #078930; margin-top: 0;">🔍 Query</h4>
+                        <p style="font-size: 0.9rem;">Like a search query: "Find me documents about cats"</p>
+                        <p style="font-size: 0.85rem; color: #666;">In attention: "What information do I need to understand this token?"</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #10b981; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #10b981; margin-top: 0;">🔑 Key</h4>
+                        <p style="font-size: 0.9rem;">Like document tags: "This document is about [animals, pets]"</p>
+                        <p style="font-size: 0.85rem; color: #666;">In attention: "What does this token represent?"</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #f59e0b; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #f59e0b; margin-top: 0;">💎 Value</h4>
+                        <p style="font-size: 0.9rem;">Like document content: "Here's the actual information"</p>
+                        <p style="font-size: 0.85rem; color: #666;">In attention: "What information does this token carry?"</p>
+                    </div>
+                </div>
+
+                <p>
+                    <strong>Database Analogy:</strong> Imagine searching a database where queries match against keys, and the best matches return their associated values. That's exactly what attention does, but learned and differentiable!
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Scaled Dot-Product Attention: The Implementation</h2>
+                <p>
+                    The paper introduced "Scaled Dot-Product Attention" - the specific attention variant that became the industry standard. Let's implement it from scratch and understand every detail.
+                </p>
+
+                <h3>Step-by-Step Implementation</h3>
+                <p>
+                    Here's a complete, production-quality implementation with detailed explanations:
+                </p>
+
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class ScaledDotProductAttention(nn.Module):
+    """
+    Scaled Dot-Product Attention from 'Attention Is All You Need'
+    
+    Formula: Attention(Q, K, V) = softmax(QK^T / √d_k) V
+    """
+    
+    def __init__(self, dropout=0.1):
+        super().__init__()
+        self.dropout = nn.Dropout(dropout)
+    
+    def forward(self, query, key, value, mask=None):
+        """
+        Args:
+            query: (batch, seq_len_q, d_k)
+            key:   (batch, seq_len_k, d_k)
+            value: (batch, seq_len_v, d_v)  where seq_len_v == seq_len_k
+            mask:  (batch, 1, seq_len_q, seq_len_k) - optional, for padding/causality
+        
+        Returns:
+            output: (batch, seq_len_q, d_v)
+            attention_weights: (batch, seq_len_q, seq_len_k)
+        """
+        
+        # Get dimension for scaling
+        d_k = query.size(-1)
+        
+        # Step 1: Compute attention scores (QK^T)
+        # Shape: (batch, seq_len_q, seq_len_k)
+        scores = torch.matmul(query, key.transpose(-2, -1))
+        
+        # Step 2: Scale by √d_k
+        # Why? Prevent dot products from getting too large
+        # (which would push softmax into regions with tiny gradients)
+        scores = scores / math.sqrt(d_k)
+        
+        # Step 3: Apply mask (if provided)
+        if mask is not None:
+            # Set masked positions to large negative value
+            # After softmax, these become ≈0
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        # Step 4: Apply softmax to get probabilities
+        # Each row sums to 1.0
+        attention_weights = F.softmax(scores, dim=-1)
+        
+        # Step 5: Apply dropout (optional, for regularization)
+        attention_weights = self.dropout(attention_weights)
+        
+        # Step 6: Multiply by values
+        # Shape: (batch, seq_len_q, d_v)
+        output = torch.matmul(attention_weights, value)
+        
+        return output, attention_weights
+
+# Example usage
+batch_size = 2
+seq_len = 4
+d_model = 512
+d_k = 64  # Typically d_model // num_heads
+
+# Create random Q, K, V matrices
+Q = torch.randn(batch_size, seq_len, d_k)
+K = torch.randn(batch_size, seq_len, d_k)
+V = torch.randn(batch_size, seq_len, d_k)
+
+# Apply attention
+attention = ScaledDotProductAttention()
+output, weights = attention(Q, K, V)
+
+print(f"Input Q shape:  {Q.shape}")      # torch.Size([2, 4, 64])
+print(f"Output shape:   {output.shape}")  # torch.Size([2, 4, 64])
+print(f"Weights shape:  {weights.shape}") # torch.Size([2, 4, 4])
+print(f"\nAttention weights (batch 0, first token):")
+print(weights[0, 0, :])  # Shows which tokens attended to
+# Example: tensor([0.32, 0.18, 0.41, 0.09]) - token 0 attends most to token 2</code></pre>
+
+                <h3>Understanding the Scaling Factor √d_k</h3>
+                <p>
+                    Why do we divide by √d_k? This is a crucial detail often overlooked:
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #f59e0b;">
+                    <h4 style="margin-top: 0;">⚠️ The Problem Without Scaling</h4>
+                    <p>Dot products between high-dimensional vectors can become very large:</p>
+                    <pre><code class="language-python"># Example: Why scaling matters
+import torch
+import torch.nn.functional as F
+
+d_k = 512  # High dimensional
+
+# Generate random unit-norm vectors
+q = torch.randn(1, d_k)
+k = torch.randn(1, d_k)
+
+# Compute dot product
+score = torch.matmul(q, k.T).item()
+print(f"Unscaled score: {score:.2f}")  # Often 15-30 in magnitude
+
+# Apply softmax
+softmax_input = torch.tensor([score, score * 0.5, score * 0.3])
+probs = F.softmax(softmax_input, dim=-1)
+print(f"Softmax probs: {probs}")
+# Result: tensor([0.9998, 0.0002, 0.0000])
+# Nearly all weight on first token - gradient ≈ 0!
+
+# With scaling
+scaled_score = score / (d_k ** 0.5)
+print(f"\nScaled score: {scaled_score:.2f}")  # Much smaller
+
+softmax_input_scaled = torch.tensor([scaled_score, scaled_score * 0.5, scaled_score * 0.3])
+probs_scaled = F.softmax(softmax_input_scaled, dim=-1)
+print(f"Softmax probs (scaled): {probs_scaled}")
+# Result: tensor([0.5763, 0.2719, 0.1518])
+# More balanced distribution - better gradients!</code></pre>
+
+                    <p style="margin-top: 1rem; color: #92400e;">
+                        <strong>🎯 Key Insight:</strong> Without scaling, large dot products push softmax into saturation regions where gradients vanish. Scaling by √d_k keeps scores in a reasonable range where gradients flow well.
+                    </p>
+                </div>
+
+                <h3>Mathematical Intuition for √d_k</h3>
+                <div style="background: #fff; border: 2px solid #078930; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Why specifically √d_k and not just d_k?</strong></p>
+                    
+                    <p style="margin-top: 1rem;">If Q and K have independent entries with mean 0 and variance 1:</p>
+                    <pre><code class="language-text">Dot product Q·K = Σ(q_i × k_i) for i=1 to d_k
+
+Expected value: E[Q·K] = 0 (since entries have mean 0)
+
+Variance: Var(Q·K) = Σ Var(q_i × k_i) = d_k
+
+Standard deviation: σ(Q·K) = √d_k</code></pre>
+
+                    <p style="margin-top: 1rem;">By dividing by √d_k, we normalize the dot product to have variance 1:</p>
+                    <pre><code class="language-text">σ(Q·K / √d_k) = σ(Q·K) / √d_k = √d_k / √d_k = 1</code></pre>
+
+                    <p style="margin-top: 1rem; padding: 1rem; background: #eff6ff; border-radius: 6px;">
+                        <strong>Result:</strong> Scaled dot products have consistent variance regardless of dimension, keeping softmax inputs in the optimal range for gradient flow.
+                    </p>
+                </div>
+
+                <h3>Complete Example: Processing a Real Sentence</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+# Sentence: "The cat sat on the mat"
+tokens = ["The", "cat", "sat", "on", "the", "mat"]
+seq_len = len(tokens)
+d_model = 8  # Small for illustration
+
+# Simulated token embeddings (normally from embedding layer)
+x = torch.randn(1, seq_len, d_model)
+
+# Create Q, K, V projections (learned linear layers)
+W_q = nn.Linear(d_model, d_model, bias=False)
+W_k = nn.Linear(d_model, d_model, bias=False)
+W_v = nn.Linear(d_model, d_model, bias=False)
+
+# Project inputs to Q, K, V
+Q = W_q(x)  # (1, 6, 8)
+K = W_k(x)  # (1, 6, 8)
+V = W_v(x)  # (1, 6, 8)
+
+# Compute attention
+d_k = d_model
+scores = torch.matmul(Q, K.transpose(-2, -1)) / (d_k ** 0.5)  # (1, 6, 6)
+attention_weights = F.softmax(scores, dim=-1)
+output = torch.matmul(attention_weights, V)  # (1, 6, 8)
+
+# Visualize attention for token 1 ("cat")
+print("Attention weights for 'cat' (token 1):")
+print("Token  | Attention")
+print("-------|----------")
+for i, token in enumerate(tokens):
+    weight = attention_weights[0, 1, i].item()
+    bar = "█" * int(weight * 50)
+    print(f"{token:6} | {weight:.3f} {bar}")
+
+# Example output:
+# Token  | Attention
+# -------|----------
+# The    | 0.142 ███████
+# cat    | 0.284 ██████████████
+# sat    | 0.198 ██████████
+# on     | 0.089 ████
+# the    | 0.125 ██████
+# mat    | 0.162 ████████</code></pre>
+
+                <h3>Attention Patterns: What Does the Model Learn?</h3>
+                <p>
+                    Attention weights reveal what the model considers important. Common patterns include:
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <h4 style="margin-top: 0;">🔍 Self-Attention</h4>
+                        <p style="font-size: 0.9rem;">Tokens attend to themselves (diagonal high in attention matrix)</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">Example: "running" attends to itself to maintain word identity</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0;">👥 Dependency Attention</h4>
+                        <p style="font-size: 0.9rem;">Tokens attend to syntactically related words</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">Example: Verbs attend to their subjects and objects</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h4 style="margin-top: 0;">🔗 Positional Attention</h4>
+                        <p style="font-size: 0.9rem;">Tokens attend to nearby positions</p>
+                        <p style="font-size: 0.85rem; color: #92400e;">Example: Words attend to immediate neighbors for local context</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <h4 style="margin-top: 0;">📚 Semantic Attention</h4>
+                        <p style="font-size: 0.9rem;">Tokens attend based on meaning</p>
+                        <p style="font-size: 0.85rem; color: #6b21a8;">Example: "king" attends to "queen", "throne", "crown"</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Attention Solves RNN Problems</h2>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <strong>✅ No Vanishing Gradients</strong>
+                        <p>Attention is one multiplication. Direct path from any token to any other. Gradients flow well.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Parallelizable</strong>
+                        <p>All tokens processed simultaneously. Scales efficiently to long sequences.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Long-Range Dependencies</strong>
+                        <p>Direct connections between distant tokens. No information lost through bottlenecks.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Flexible Context</strong>
+                        <p>Attention weights learned during training. Model learns what to focus on.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Multi-Head Attention: Multiple Perspectives</h2>
+                <p>
+                    Single attention is powerful, but the paper found that <strong>multiple attention heads</strong> work even better. Each head can learn different patterns.
+                </p>
+
+                <h3>The Intuition</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+                    <p><strong>Analogy:</strong> When understanding a sentence, humans consider multiple aspects simultaneously:</p>
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li><strong>Syntax Head:</strong> Which words are grammatically related?</li>
+                        <li><strong>Semantic Head:</strong> Which words have similar meanings?</li>
+                        <li><strong>Positional Head:</strong> Which nearby words provide context?</li>
+                        <li><strong>Referential Head:</strong> Which nouns do pronouns refer to?</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #475569;">Multi-head attention lets the model learn these different perspectives and combine them!</p>
+                </div>
+
+                <h3>How Multi-Head Attention Works</h3>
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+class MultiHeadAttention(nn.Module):
+    """
+    Multi-Head Attention from 'Attention Is All You Need'
+    
+    Key idea: Instead of one attention, run h parallel attention heads,
+    then concatenate and project the results.
+    """
+    
+    def __init__(self, d_model=512, num_heads=8, dropout=0.1):
+        super().__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads  # Dimension per head
+        
+        # Linear projections for Q, K, V (for all heads combined)
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        
+        # Output projection
+        self.W_o = nn.Linear(d_model, d_model)
+        
+        self.dropout = nn.Dropout(dropout)
+    
+    def split_heads(self, x):
+        """
+        Split the last dimension into (num_heads, d_k)
+        x: (batch, seq_len, d_model)
+        Returns: (batch, num_heads, seq_len, d_k)
+        """
+        batch_size, seq_len, d_model = x.size()
+        x = x.view(batch_size, seq_len, self.num_heads, self.d_k)
+        return x.transpose(1, 2)  # (batch, num_heads, seq_len, d_k)
+    
+    def combine_heads(self, x):
+        """
+        Combine heads back
+        x: (batch, num_heads, seq_len, d_k)
+        Returns: (batch, seq_len, d_model)
+        """
+        batch_size, num_heads, seq_len, d_k = x.size()
+        x = x.transpose(1, 2)  # (batch, seq_len, num_heads, d_k)
+        return x.contiguous().view(batch_size, seq_len, self.d_model)
+    
+    def forward(self, query, key, value, mask=None):
+        """
+        Args:
+            query, key, value: (batch, seq_len, d_model)
+            mask: (batch, 1, seq_len, seq_len) or None
+        
+        Returns:
+            output: (batch, seq_len, d_model)
+            attention_weights: (batch, num_heads, seq_len, seq_len)
+        """
+        batch_size = query.size(0)
+        
+        # 1. Linear projections
+        Q = self.W_q(query)  # (batch, seq_len, d_model)
+        K = self.W_k(key)
+        V = self.W_v(value)
+        
+        # 2. Split into multiple heads
+        Q = self.split_heads(Q)  # (batch, num_heads, seq_len, d_k)
+        K = self.split_heads(K)
+        V = self.split_heads(V)
+        
+        # 3. Scaled dot-product attention for each head
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / (self.d_k ** 0.5)
+        
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        attention_weights = F.softmax(scores, dim=-1)
+        attention_weights = self.dropout(attention_weights)
+        
+        # 4. Apply attention to values
+        context = torch.matmul(attention_weights, V)  # (batch, num_heads, seq_len, d_k)
+        
+        # 5. Concatenate heads
+        context = self.combine_heads(context)  # (batch, seq_len, d_model)
+        
+        # 6. Final linear projection
+        output = self.W_o(context)
+        
+        return output, attention_weights
+
+# Example usage
+batch_size = 2
+seq_len = 10
+d_model = 512
+num_heads = 8
+
+x = torch.randn(batch_size, seq_len, d_model)
+
+mha = MultiHeadAttention(d_model, num_heads)
+output, weights = mha(x, x, x)  # Self-attention
+
+print(f"Input shape:    {x.shape}")        # torch.Size([2, 10, 512])
+print(f"Output shape:   {output.shape}")   # torch.Size([2, 10, 512])
+print(f"Weights shape:  {weights.shape}")  # torch.Size([2, 8, 10, 10])
+#                                            # ↑ 8 heads, each with 10×10 attention matrix</code></pre>
+
+                <h3>Visualizing Different Attention Heads</h3>
+                <p>
+                    Research has shown that different heads learn different linguistic patterns:
+                </p>
+
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Example from BERT: Analyzing Attention Heads on "The cat sat on the mat"</strong></p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div style="background: #eff6ff; padding: 0.75rem; border-radius: 6px;">
+                            <strong style="color: #065f46;">Head 1: Syntax</strong>
+                            <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>sat → cat (subject)
+sat → mat (object)</code></pre>
+                        </div>
+                        
+                        <div style="background: #f0fdf4; padding: 0.75rem; border-radius: 6px;">
+                            <strong style="color: #15803d;">Head 2: Determiners</strong>
+                            <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>cat → The
+mat → the</code></pre>
+                        </div>
+                        
+                        <div style="background: #fefce8; padding: 0.75rem; border-radius: 6px;">
+                            <strong style="color: #854d0e;">Head 3: Positional</strong>
+                            <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>Each token → neighbors
+(local context)</code></pre>
+                        </div>
+                        
+                        <div style="background: #fef2f2; padding: 0.75rem; border-radius: 6px;">
+                            <strong style="color: #991b1b;">Head 4: Semantics</strong>
+                            <pre style="font-size: 0.8rem; margin-top: 0.5rem;"><code>cat → sat (action)
+cat → mat (location)</code></pre>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 6px; font-size: 0.9rem;">
+                        <strong>🎯 Key Finding:</strong> Different heads specialize! The model automatically learns to use different heads for different types of relationships. This emergent behavior wasn't explicitly programmed - it arose from training.
+                    </p>
+                </div>
+
+                <h3>Why Multiple Heads Help</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <h4 style="margin-top: 0;">❌ Single Head</h4>
+                        <ul style="font-size: 0.9rem; margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>One attention pattern</li>
+                            <li>Must compromise between different needs</li>
+                            <li>Limited expressiveness</li>
+                        </ul>
+                        <p style="font-size: 0.85rem; color: #991b1b; margin-top: 0.5rem;">Example: Can't simultaneously capture syntax AND semantics</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0;">✅ Multi-Head (8 heads)</h4>
+                        <ul style="font-size: 0.9rem; margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>8 different attention patterns</li>
+                            <li>Each head specializes</li>
+                            <li>Rich, diverse representations</li>
+                        </ul>
+                        <p style="font-size: 0.85rem; color: #065f46; margin-top: 0.5rem;">Example: Head 1=syntax, Head 2=semantics, Head 3=position, etc.</p>
+                    </div>
+                </div>
+
+                <p>
+                    <strong>Empirical Results:</strong> The original paper found 8 heads optimal for their setup. Modern models (GPT-4, Claude) use 96-128 heads with much larger dimensions!
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>The Complete Transformer Architecture</h2>
+                <p>
+                    The paper combined attention with several other key components to create the full transformer:
+                </p>
+
+                <h3>Architecture Overview</h3>
+                <pre><code class="language-text">TRANSFORMER ARCHITECTURE
+
+Input: "The cat sat on the mat"
+  ↓
+┌─────────────────────────────────────────────┐
+│ TOKEN EMBEDDINGS (learned lookup table)     │
+│ "The" → [0.12, -0.34, 0.56, ...]           │
+│ "cat" → [-0.23, 0.67, -0.12, ...]          │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│ + POSITIONAL ENCODING (position info)       │
+│ Position 0: [sin(...), cos(...), ...]      │
+│ Position 1: [sin(...), cos(...), ...]      │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│ ENCODER STACK (6 identical layers)          │
+│                                              │
+│ Layer 1:                                     │
+│  ┌──────────────────────────────────────┐  │
+│  │ Multi-Head Self-Attention            │  │
+│  │ (each token attends to all tokens)   │  │
+│  └──────────────────────────────────────┘  │
+│    ↓ + Residual & LayerNorm               │
+│  ┌──────────────────────────────────────┐  │
+│  │ Feed-Forward Network                 │  │
+│  │ FFN(x) = max(0, xW₁ + b₁)W₂ + b₂    │  │
+│  └──────────────────────────────────────┘  │
+│    ↓ + Residual & LayerNorm               │
+│                                              │
+│ Layers 2-6: (same structure)                │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│ DECODER STACK (6 identical layers)          │
+│                                              │
+│ Layer 1:                                     │
+│  ┌──────────────────────────────────────┐  │
+│  │ Masked Multi-Head Self-Attention     │  │
+│  │ (causal: can't see future tokens)    │  │
+│  └──────────────────────────────────────┘  │
+│    ↓ + Residual & LayerNorm               │
+│  ┌──────────────────────────────────────┐  │
+│  │ Multi-Head Cross-Attention           │  │
+│  │ (decoder attends to encoder)         │  │
+│  └──────────────────────────────────────┘  │
+│    ↓ + Residual & LayerNorm               │
+│  ┌──────────────────────────────────────┐  │
+│  │ Feed-Forward Network                 │  │
+│  └──────────────────────────────────────┘  │
+│    ↓ + Residual & LayerNorm               │
+│                                              │
+│ Layers 2-6: (same structure)                │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│ LINEAR + SOFTMAX                            │
+│ Project to vocabulary size (50K dims)       │
+│ Softmax → probability distribution          │
+└─────────────────────────────────────────────┘
+  ↓
+Output: Next token probabilities</code></pre>
+
+                <h3>Key Components Explained</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #fff; border: 2px solid #078930; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #078930; margin-top: 0;">🎯 Multi-Head Attention</h4>
+                        <p style="font-size: 0.9rem;">8 parallel attention heads learn different patterns (syntax, semantics, position, etc.)</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">Original paper: 8 heads, 64 dims each</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #10b981; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #10b981; margin-top: 0;">📍 Positional Encoding</h4>
+                        <p style="font-size: 0.9rem;">Sinusoidal functions encode position since attention is permutation-invariant</p>
+                        <p style="font-size: 0.85rem; color: #065f46;">PE(pos, 2i) = sin(pos/10000^(2i/d_model))</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #f59e0b; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #f59e0b; margin-top: 0;">🧠 Feed-Forward Network</h4>
+                        <p style="font-size: 0.9rem;">2-layer MLP applied to each position independently. Adds non-linearity and expressiveness</p>
+                        <p style="font-size: 0.85rem; color: #92400e;">FFN(x) = ReLU(xW₁ + b₁)W₂ + b₂</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #8b5cf6; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #8b5cf6; margin-top: 0;">🔗 Residual Connections</h4>
+                        <p style="font-size: 0.9rem;">Add input to output: y = x + Sublayer(x). Helps gradients flow through 12+ layers</p>
+                        <p style="font-size: 0.85rem; color: #6b21a8;">Essential for training deep networks</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #ec4899; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #ec4899; margin-top: 0;">📊 Layer Normalization</h4>
+                        <p style="font-size: 0.9rem;">Normalize activations to mean=0, var=1 within each layer. Stabilizes training</p>
+                        <p style="font-size: 0.85rem; color: #9f1239;">LN(x) = γ(x - μ)/σ + β</p>
+                    </div>
+
+                    <div style="background: #fff; border: 2px solid #0d9488; padding: 1rem; border-radius: 8px;">
+                        <h4 style="color: #0d9488; margin-top: 0;">🎭 Masked Attention</h4>
+                        <p style="font-size: 0.9rem;">In decoder, mask future positions so token i can only attend to positions ≤ i</p>
+                        <p style="font-size: 0.85rem; color: #0e7490;">Ensures autoregressive generation</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>But Attention Seems Expensive!</h2>
+                <p>
+                    You're right. Computing attention between all pairs of tokens is O(n²) - for long sequences, this seems costly:
+                </p>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <p><strong>⚠️ Concern:</strong> If sequence length is 1000, attention is 1000² = 1M operations</p>
+                    <p style="margin-top: 0.5rem; color: #92400e;">But modern GPUs excel at matrix operations. On GPU, this is faster than sequential processing!</p>
+                </div>
+
+                <p>
+                    Plus, there are workarounds:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Flash Attention:</strong> Algorithmic improvement (3-4x speedup)</li>
+                    <li><strong>Sparse Attention:</strong> Only attend to nearby tokens</li>
+                    <li><strong>Grouped Query Attention:</strong> Share attention heads across tokens</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>Why This Was Revolutionary</h2>
+                <p>
+                    Before transformers, sequence modeling was dominated by RNNs. The insight that <strong>you can remove recurrence entirely and still work better</strong> was counterintuitive and transformative.
+                </p>
+
+                <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 2rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p style="font-size: 1.1rem; margin: 0; color: #15803d;">
+                        <strong>Before (2016):</strong> RNN variants with tricks to handle sequences
+                    </p>
+                    <p style="margin-top: 1rem; color: #15803d;">
+                        <strong>After (2017):</strong> Pure attention, no recurrence needed
+                    </p>
+                    <p style="margin-top: 1rem; color: #15803d; font-size: 0.95rem;">
+                        <em>This paradigm shift enabled scaling to billions of parameters and unlocked modern AI.</em>
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Attention Mechanism:</strong> Learn which tokens are important for each position</li>
+                        <li><strong>Scaled Dot-Product:</strong> Core formula: softmax(QK^T/√d_k)V</li>
+                        <li><strong>Parallel Processing:</strong> All tokens processed simultaneously (vs RNN's sequential)</li>
+                        <li><strong>Long-Range Learning:</strong> Direct connections between distant tokens</li>
+                        <li><strong>Positional Encoding:</strong> Add position information since attention is permutation-invariant</li>
+                        <li><strong>Multi-Head Attention:</strong> Multiple attention perspectives combined</li>
+                        <li><strong>Historic Impact:</strong> This 2017 paper is the foundation of all modern LLMs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What was the key claim of the "Attention Is All You Need" paper?</strong></p>
+                    <div class="quiz-option" data-value="a">RNNs are sufficient for all tasks</div>
+                    <div class="quiz-option" data-value="b">Convolutions are better than attention</div>
+                    <div class="quiz-option" data-value="c">Self-attention alone can effectively model sequences without recurrence</div>
+                    <div class="quiz-option" data-value="d">Attention should only be used with RNNs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is the main advantage of the Transformer architecture?</strong></p>
+                    <div class="quiz-option" data-value="a">It uses less memory than RNNs</div>
+                    <div class="quiz-option" data-value="b">It can process all positions in parallel, enabling faster training</div>
+                    <div class="quiz-option" data-value="c">It doesn't require GPUs</div>
+                    <div class="quiz-option" data-value="d">It works only for short sequences</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What components make up a Transformer block?</strong></p>
+                    <div class="quiz-option" data-value="a">Only attention layers</div>
+                    <div class="quiz-option" data-value="b">Only feedforward layers</div>
+                    <div class="quiz-option" data-value="c">RNNs and attention</div>
+                    <div class="quiz-option" data-value="d">Self-attention, feedforward networks, and normalization layers</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: Why did the Transformer architecture revolutionize NLP?</strong></p>
+                    <div class="quiz-option" data-value="a">It enabled efficient training on much larger datasets due to parallelization</div>
+                    <div class="quiz-option" data-value="b">It eliminated the need for data</div>
+                    <div class="quiz-option" data-value="c">It made models smaller</div>
+                    <div class="quiz-option" data-value="d">It only works for translation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What year was the "Attention Is All You Need" paper published?</strong></p>
+                    <div class="quiz-option" data-value="a">2014</div>
+                    <div class="quiz-option" data-value="b">2015</div>
+                    <div class="quiz-option" data-value="c">2017</div>
+                    <div class="quiz-option" data-value="d">2020</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="the-problem-with-rnns.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: The Problem With RNNs</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="self-attention-mechanism.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Self-Attention Mechanism</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

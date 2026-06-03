@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand what intelligence really means in humans and machines. Learn to recognize AI in everyday life without technical jargon.">
+    <title>Tutorial 1: Understanding Intelligence (Human & Artificial) - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            opacity: 0.8;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.25rem;
+            margin-top: 2rem;
+        }
+        
+        .content-section h3 {
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .content-section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h3 {
+            color: #065f46;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box h3 {
+            color: #92400e;
+            margin-bottom: 0.75rem;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box h3 {
+            color: #065f46;
+            margin-bottom: 0.75rem;
+        }
+        
+        .success-box p {
+            color: #065f46;
+        }
+        
+        .next-tutorial {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header {
+                padding: 2rem 1rem;
+            }
+            
+            .tutorial-content {
+                padding: 1rem;
+            }
+            
+            .content-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .tutorial-meta-info {
+                gap: 1rem;
+            }
+        }
+        
+        /* Navigation buttons */
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .tutorial-nav a {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        .tutorial-nav .prev {
+            margin-right: auto;
+        }
+        
+        .tutorial-nav .next {
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 1</span>
+            </div>
+            <h1>Tutorial 1: Understanding Intelligence (Human & Artificial)</h1>
+            <p class="tutorial-intro">Learn what intelligence really means—both in humans and machines—without technical jargon</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Goal -->
+            <section class="content-section">
+                <h2>🎯 Goal</h2>
+                <p>
+                    By the end of this module, you'll understand what intelligence really means—both in humans and machines—without getting lost in mathematical formulas or technical jargon. You'll be able to recognize AI in your everyday life and understand the fundamental differences between how humans and machines think.
+                </p>
+            </section>
+
+            <!-- Hook -->
+            <section class="content-section">
+                <h2>🔥 A Puzzle About Intelligence</h2>
+                <p>
+                    Picture this: You wake up and groggily ask your phone, "What's the weather today?" It responds instantly with tomorrow's forecast. Later that evening, your cat is already waiting by the door at exactly 6 p.m., just like every other day, ready for dinner.
+                </p>
+                <p>
+                    Both your phone and your cat responded to patterns. Both seem to "know" something. But here's the question: <strong>Are they intelligent in the same way?</strong>
+                </p>
+                <p>
+                    This simple observation touches the heart of what artificial intelligence is all about. Before we can build machines that think, we need to ask: <strong>What does it actually mean to know something, to decide, and to learn?</strong>
+                </p>
+                <p>
+                    AI isn't magic—it begins with this exact curiosity about intelligence itself.
+                </p>
+            </section>
+
+            <!-- Definition -->
+            <section class="content-section">
+                <h2>📖 What is Artificial Intelligence?</h2>
+                
+                <div class="info-box">
+                    <h3>Definition</h3>
+                    <p>
+                        <strong>Artificial Intelligence (AI)</strong> is the science and practice of creating computer systems that can perform tasks normally requiring human intelligence.
+                    </p>
+                </div>
+
+                <p>These tasks include:</p>
+                <ul>
+                    <li>Understanding and generating human language</li>
+                    <li>Recognizing objects in images and videos</li>
+                    <li>Making predictions and decisions</li>
+                    <li>Learning from experience</li>
+                    <li>Solving complex problems</li>
+                </ul>
+
+                <p><strong>In the simplest terms:</strong> AI = Machines that Learn and Decide</p>
+
+                <p>
+                    But here's what makes it "artificial": Unlike human intelligence, which emerges from biological brains shaped by evolution, emotions, and consciousness, AI is intelligence created deliberately through code, data, and mathematics.
+                </p>
+            </section>
+
+            <!-- Analogy -->
+            <section class="content-section">
+                <h2>🧩 Analogy: The Swiss Army Knife of Problem-Solving</h2>
+                
+                <p>
+                    Think of AI as a <strong>Swiss Army knife for the mind</strong>. A physical Swiss Army knife has different tools—a blade, scissors, screwdriver, bottle opener—each designed for a specific job. You choose the right tool for the task at hand.
+                </p>
+
+                <p>Similarly, AI is a collection of specialized capabilities:</p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">👁️</div>
+                        <h3>Computer Vision</h3>
+                        <p>The "seeing" blade (recognizing faces in photos)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💬</div>
+                        <h3>Natural Language Processing</h3>
+                        <p>The "understanding language" tool (chatbots, translation)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎤</div>
+                        <h3>Speech Recognition</h3>
+                        <p>The "listening" function (voice assistants)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Machine Learning</h3>
+                        <p>The "learning from experience" mechanism (Netflix recommendations)</p>
+                    </div>
+                </div>
+
+                <p>
+                    Humans switch between these skills naturally and unconsciously. We see, speak, reason, and remember all at once. AI, on the other hand, builds digital versions of each skill separately, then combines them to solve problems.
+                </p>
+
+                <div class="warning-box">
+                    <h3>Key Insight</h3>
+                    <p>
+                        Just as you wouldn't use a bottle opener to cut bread, different AI tools are designed for different problems. Understanding which tool does what is essential to understanding AI.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Visual Comparison -->
+            <section class="content-section">
+                <h2>🖼️ Human Brain vs AI Brain</h2>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-card human">
+                        <h3>Human Brain 🧠</h3>
+                        <h4>Inputs:</h4>
+                        <ul>
+                            <li>Experience</li>
+                            <li>Emotions</li>
+                            <li>Intuition</li>
+                            <li>Culture</li>
+                            <li>Senses</li>
+                        </ul>
+                        <h4>Process:</h4>
+                        <p>Neurons, Synapses, Consciousness</p>
+                        <h4>Outputs:</h4>
+                        <ul>
+                            <li>Creative thinking</li>
+                            <li>Ethical judgment</li>
+                            <li>Emotional responses</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card ai">
+                        <h3>AI Brain 🤖</h3>
+                        <h4>Inputs:</h4>
+                        <ul>
+                            <li>Data</li>
+                            <li>Labeled examples</li>
+                            <li>Patterns</li>
+                        </ul>
+                        <h4>Process:</h4>
+                        <p>Algorithms, Mathematical models, Statistical patterns</p>
+                        <h4>Outputs:</h4>
+                        <ul>
+                            <li>Predictions</li>
+                            <li>Classifications</li>
+                            <li>Recommendations</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Key Difference</h3>
+                    <p>
+                        Humans learn from a few experiences and generalize broadly using context and emotion. AI needs thousands or millions of examples and finds statistical patterns without understanding meaning or feeling anything.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Real-World Example -->
+            <section class="content-section">
+                <h2>💡 Real-World Example: Netflix Knows What You'll Love (Or Does It?)</h2>
+                
+                <p>
+                    When you finish watching a series and Netflix immediately suggests three more shows, that's AI in action—specifically, a <strong>recommendation system</strong> powered by <strong>pattern recognition</strong>.
+                </p>
+
+                <h3>Here's what's happening behind the scenes:</h3>
+                <ol>
+                    <li>Netflix has data on millions of users: what they watched, when they paused, what they skipped, what they binged in one sitting</li>
+                    <li>It identifies patterns: "People who loved <em>Stranger Things</em> also watched <em>The Umbrella Academy</em> and <em>Dark</em>"</li>
+                    <li>It creates a mathematical model that predicts what you might enjoy based on your viewing history</li>
+                    <li>It ranks suggestions and shows you the top matches</li>
+                </ol>
+
+                <div class="warning-box">
+                    <h3>Important Reality Check</h3>
+                    <p>
+                        Netflix doesn't actually "understand" why you love sci-fi thrillers. It doesn't feel excitement about your Friday night binge session. It simply recognizes statistical patterns in behavior—yours and millions of others.
+                    </p>
+                    <p>
+                        This is a crucial distinction: <strong>AI predicts without understanding. It recognizes without experiencing.</strong>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🧪 Quick Demo: How AI Learns in Real-Time</h2>
+                
+                <div class="success-box">
+                    <h3>Goal</h3>
+                    <p>Experience firsthand what "training" an AI actually feels like, and see how machines learn to recognize patterns in just a few minutes.</p>
+                    <p><strong>Tool:</strong> Google Teachable Machine (free, no coding required)</p>
+                    <p><strong>Time:</strong> 10 minutes (guided warm-up)</p>
+                </div>
+
+                <h3>Step-by-Step Instructions:</h3>
+
+                <div class="tutorial-steps">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Open the tool</h4>
+                            <p>Navigate to <a href="https://teachablemachine.withgoogle.com/" target="_blank">https://teachablemachine.withgoogle.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Start a new project</h4>
+                            <p>Click "Get Started" → Choose "Image Project" → Select "Standard Image Model"</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Create two classes (categories)</h4>
+                            <ul>
+                                <li><strong>Class 1:</strong> Name it "Smile"</li>
+                                <li><strong>Class 2:</strong> Name it "Neutral"</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Gather training data</h4>
+                            <ul>
+                                <li>For "Smile": Hold down the webcam button and smile broadly. Capture 30-50 images while moving your head slightly</li>
+                                <li>For "Neutral": Repeat with a neutral expression (no smile)</li>
+                            </ul>
+                            <p><strong>Pro tip:</strong> Vary your position, lighting, and head angle for better results</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Train the model</h4>
+                            <p>Click the "Train Model" button. Watch the progress bars—this is the AI <strong>learning</strong> from your examples. It's analyzing the visual patterns that distinguish smiles from neutral faces.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Test your creation</h4>
+                            <p>Once training completes, the webcam preview will show live predictions. Smile and watch the confidence score for "Smile" jump up. Make a neutral face and see it switch.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>✅ Expected Output:</h3>
+                <p>You should see labels like:</p>
+                <ul>
+                    <li>"Smile – 95% Confidence"</li>
+                    <li>"Neutral – 87% Confidence"</li>
+                </ul>
+                <p>The model correctly identifies your expression most of the time (but not always—and that's normal).</p>
+
+                <h3>🤔 Reflection Questions:</h3>
+                <ul>
+                    <li>What happened when you tried an expression between smiling and neutral?</li>
+                    <li>Did the model ever make mistakes? Why might that happen?</li>
+                    <li>How might this same technology be used in the real world? (Think: unlocking phones, detecting emotions in customer service, etc.)</li>
+                </ul>
+            </section>
+
+            <!-- Visual Separator -->
+            <hr style="border: none; border-top: 3px solid #e2e8f0; margin: 3rem 0;">
+
+            <!-- Common Mistakes -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistakes (And How to Avoid Them)</h2>
+
+                <div class="misconception-item">
+                    <h4>Mistake #1: Over-trusting AI</h4>
+                    <p><strong>The misconception:</strong> "The AI got my smile right five times in a row, so it must be perfect!"</p>
+                    <p><strong>The reality:</strong> AI makes probabilistic predictions, not certain declarations. Just because it's correct now doesn't mean it will always be correct. Lighting changes, unusual angles, or expressions it hasn't seen before can throw it off.</p>
+                    <p><strong>The lesson:</strong> Always expect some margin of error. This is why AI shouldn't make high-stakes decisions alone (like medical diagnoses or loan approvals) without human oversight.</p>
+                </div>
+
+                <div class="misconception-item">
+                    <h4>Mistake #2: Using Tiny Datasets</h4>
+                    <p><strong>The misconception:</strong> "I captured 5 examples of each class—that should be enough, right?"</p>
+                    <p><strong>The reality:</strong> AI learns from patterns across many examples. Five images of your smile in the same room with the same lighting teaches very narrow patterns. The model might fail when you smile outdoors or in different lighting.</p>
+                    <p><strong>The lesson:</strong> Diversity matters more than quantity (though both help). Vary your examples: different backgrounds, lighting conditions, angles, and even different people if possible.</p>
+                </div>
+
+                <div class="misconception-item">
+                    <h4>Mistake #3: Confusing Automation with Intelligence</h4>
+                    <p><strong>The misconception:</strong> "My washing machine knows when clothes are clean—that's AI!"</p>
+                    <p><strong>The reality:</strong> Not everything automated is intelligent. A washing machine follows pre-programmed rules: "Run for 30 minutes, then stop." It doesn't learn or adapt. True AI learns from data and improves over time.</p>
+                    <p><strong>How to tell the difference:</strong></p>
+                    <ul>
+                        <li><strong>Automation:</strong> Pre-programmed rules, same behavior every time (thermostats, timers, automatic doors)</li>
+                        <li><strong>AI:</strong> Learns patterns from data, adapts to new situations (spam filters that improve, recommendation systems that personalize)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>🧱 Mini-Project: "AI in My Pocket"</h2>
+                
+                <div class="success-box">
+                    <h3>Objective</h3>
+                    <p>Discover and document all the AI systems you interact with in a single day—you'll be surprised how many there are.</p>
+                </div>
+
+                <h3>Instructions:</h3>
+
+                <h4>Step 1: Track Your Day</h4>
+                <p>From the moment you wake up until you go to bed, list every app, device, or digital service you use. Don't filter yet—just list everything.</p>
+                <p><em>Examples: Smartphone alarm, Google Maps, Spotify, Gmail, Instagram, Amazon, YouTube, smart speaker, fitness tracker, etc.</em></p>
+
+                <h4>Step 2: Research the AI</h4>
+                <p>For each item on your list, investigate: <em>How does this use AI?</em></p>
+                <p>Quick research tips:</p>
+                <ul>
+                    <li>Search "[App name] how AI works"</li>
+                    <li>Look for features like "recommended," "personalized," "smart," "auto," or "learn"</li>
+                    <li>Check the app's "About" or "Technology" pages</li>
+                </ul>
+
+                <h4>Step 3: Create Your AI Map</h4>
+                <p>Organize your findings in a table:</p>
+                
+                <table class="example-table">
+                    <thead>
+                        <tr>
+                            <th>App/Device</th>
+                            <th>AI Function</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spotify</td>
+                            <td>Music recommendations based on listening history and preferences</td>
+                        </tr>
+                        <tr>
+                            <td>Gmail</td>
+                            <td>Spam filtering; Smart Compose suggesting email text</td>
+                        </tr>
+                        <tr>
+                            <td>Google Maps</td>
+                            <td>Traffic prediction; optimal route calculation</td>
+                        </tr>
+                        <tr>
+                            <td>Instagram</td>
+                            <td>Content feed personalization; face filters; recommended posts</td>
+                        </tr>
+                        <tr>
+                            <td>Amazon</td>
+                            <td>Product recommendations; Alexa voice understanding</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Step 4: Critical Reflection</h4>
+                <p>Answer these questions in 3-5 sentences each:</p>
+                <ol>
+                    <li><strong>Which AI made your day significantly easier?</strong> Describe a specific moment.</li>
+                    <li><strong>Which AI could make mistakes that negatively affect you?</strong> What could go wrong?</li>
+                    <li><strong>Were you surprised by how much AI you use without realizing it?</strong></li>
+                    <li><strong>Do you feel more in control or less in control knowing AI is making these decisions?</strong></li>
+                </ol>
+
+                <div class="success-box">
+                    <h3>Expected Outcome</h3>
+                    <p>
+                        By the end of this project, you'll realize that AI isn't some distant future technology—it's already deeply woven into your daily routine. This awareness is the first step toward understanding, evaluating, and eventually creating AI systems yourself.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>🧭 Summary: Key Takeaways</h2>
+                
+                <div class="success-box">
+                    <h3>What You've Learned</h3>
+                    <ul class="takeaway-list">
+                        <li>✅ <strong>AI is machines mimicking human-like decision-making and learning</strong> – It's not magic—it's pattern recognition powered by data and mathematics</li>
+                        <li>✅ <strong>Intelligence can be viewed as the ability to recognize patterns and act on them</strong> – Humans do this with intuition and emotion; machines do it with statistics and algorithms</li>
+                        <li>✅ <strong>Real AI relies on data, not magic</strong> – The quality and diversity of training data determines how well AI performs. Garbage in, garbage out—biased data creates biased AI</li>
+                        <li>✅ <strong>Human intelligence adds emotion, context, and ethics</strong> – Machines can recognize your face but don't understand joy, grief, or morality. These human qualities are what AI still profoundly lacks</li>
+                        <li>✅ <strong>Curiosity about intelligence itself is the gateway to understanding all of AI</strong> – By questioning what it means to "know" or "understand," you're thinking like an AI researcher. This philosophical curiosity will guide you through every technical concept ahead</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What is the main difference between AI and simple automation?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">AI is faster than automation</div>
+                            <div class="quiz-option" data-value="b">AI learns from data and adapts, automation follows pre-programmed rules</div>
+                            <div class="quiz-option" data-value="c">AI is more expensive than automation</div>
+                            <div class="quiz-option" data-value="d">There is no difference</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: In the Swiss Army knife analogy, what does Machine Learning represent?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">The "seeing" blade for computer vision</div>
+                            <div class="quiz-option" data-value="b">The "understanding language" tool</div>
+                            <div class="quiz-option" data-value="c">The "learning from experience" mechanism</div>
+                            <div class="quiz-option" data-value="d">The "listening" function for speech</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What is the key difference between how humans and AI learn?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Humans learn from few experiences with emotion and context; AI needs millions of examples and finds statistical patterns</div>
+                            <div class="quiz-option" data-value="b">AI learns faster than humans in all situations</div>
+                            <div class="quiz-option" data-value="c">Humans cannot learn from data, only from experience</div>
+                            <div class="quiz-option" data-value="d">AI understands meaning better than humans</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: Why doesn't Netflix truly "understand" why you love certain shows?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Netflix doesn't have enough data about you</div>
+                            <div class="quiz-option" data-value="b">It recognizes statistical patterns without experiencing or feeling anything</div>
+                            <div class="quiz-option" data-value="c">Netflix uses random recommendations</div>
+                            <div class="quiz-option" data-value="d">The AI is not sophisticated enough</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the most important lesson from training a model with tiny datasets?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Small datasets always work better</div>
+                            <div class="quiz-option" data-value="b">AI doesn't need much data to learn</div>
+                            <div class="quiz-option" data-value="c">Diversity in training data matters more than quantity alone</div>
+                            <div class="quiz-option" data-value="d">You should never use small datasets</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transition to Capstone Project -->
+            <div style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 2rem; border-radius: 12px; margin: 3rem 0; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p style="font-size: 1.25rem; margin: 0; font-weight: 500;">
+                    ✨ Now that you've seen how AI training works, let's build a complete model you can actually show off.
+                </p>
+            </div>
+
+            <!-- Mini-Project Section -->
+            <section class="content-section" style="background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2.5rem; border-radius: 16px; margin: 3rem 0; border: 3px solid #0ea5e9; box-shadow: 0 8px 24px rgba(14, 165, 233, 0.2);">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                        🚀 FULL PROJECT #1
+                    </div>
+                    <h2 style="font-size: 2rem; margin-bottom: 0.75rem; color: #0c4a6e;">Build an AI That Plays Rock-Paper-Scissors</h2>
+                    <p style="font-size: 1.125rem; color: #475569;">
+                        Create a complete image recognition AI that can play rock-paper-scissors with you using your webcam—no coding required!
+                    </p>
+                </div>
+
+                <!-- Project Overview -->
+                <div class="info-box" style="background: white; border-left: 4px solid #10b981;">
+                    <h3 style="color: #059669;">🎯 What You'll Build</h3>
+                    <p style="color: #1e293b;">
+                        You'll create an AI that recognizes rock, paper, and scissors hand gestures using your webcam. This capstone project demonstrates how AI learns from examples—the same principle behind facial recognition, medical diagnosis, and self-driving cars. Unlike the quick demo earlier, this is a complete, shareable project you can add to your portfolio.
+                    </p>
+                </div>
+
+                <!-- Why This Matters -->
+                <div style="margin: 1.5rem 0;">
+                    <h3>💡 Why This Matters</h3>
+                    <ul style="color: #475569;">
+                        <li><strong>Experience AI training firsthand</strong> - Understand the learning process by doing it yourself</li>
+                        <li><strong>See how data quality affects AI</strong> - Notice how better training images create better results</li>
+                        <li><strong>No coding required</strong> - Perfect for complete beginners</li>
+                        <li><strong>Portfolio-worthy</strong> - Add your first AI project to your resume or LinkedIn</li>
+                    </ul>
+                </div>
+
+                <!-- Tool Required -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+                    <h3 style="margin-bottom: 1rem;">🛠️ Tool You'll Use</h3>
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <h4 style="color: #10b981; margin-bottom: 0.5rem;">Google Teachable Machine</h4>
+                            <p style="color: #64748b; margin-bottom: 0.75rem;">
+                                A free, web-based tool created by Google that lets anyone train AI models for images, sounds, and poses—no installation required.
+                            </p>
+                            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    ✓ 100% Free
+                                </span>
+                                <span style="background: #ecfdf5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    ⚡ No Installation
+                                </span>
+                                <span style="background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    🎓 Beginner-Friendly
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="https://teachablemachine.withgoogle.com/&amp;utm_medium=referral&amp;utm_campaign=ai-for-everyone&amp;utm_content=understanding-intelligence&amp;utm_term=teachable-machine" 
+                               target="_blank" 
+                               class="btn btn-primary"
+                               data-track-event="tool_click"
+                               data-track-type="tool"
+                               data-track-title="Teachable Machine"
+                               style="white-space: nowrap;">
+                                Open Teachable Machine →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step-by-Step Instructions -->
+                <div style="margin: 2rem 0;">
+                    <h3>📋 Step-by-Step Instructions</h3>
+                    
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #078930;">
+                        <h4 style="color: #065f46; margin-bottom: 0.75rem;">Step 1: Set Up Your Project (2 minutes)</h4>
+                        <ol style="color: #475569;">
+                            <li>Go to <a href="https://teachablemachine.withgoogle.com/" target="_blank" style="color: #078930; font-weight: 600;">teachablemachine.withgoogle.com</a></li>
+                            <li>Click "Get Started"</li>
+                            <li>Select "Image Project" → "Standard image model"</li>
+                            <li>You'll see three classes: rename them to "Rock", "Paper", "Scissors"</li>
+                        </ol>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #10b981;">
+                        <h4 style="color: #059669; margin-bottom: 0.75rem;">Step 2: Collect Training Data (3 minutes)</h4>
+                        <ol style="color: #475569;">
+                            <li>For "Rock" class: Click "Webcam" → Hold your fist in front of camera → Hold down "Hold to Record"</li>
+                            <li>Move your hand around slightly while recording (different angles help AI learn better)</li>
+                            <li>Record 30-50 images (takes ~20 seconds)</li>
+                            <li>Repeat for "Paper" (open hand) and "Scissors" (two fingers)</li>
+                        </ol>
+                        <div class="success-box" style="margin-top: 1rem;">
+                            <p><strong>Pro Tip:</strong> Vary your hand positions, distances, and angles. More diverse training data = smarter AI!</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #f59e0b;">
+                        <h4 style="color: #d97706; margin-bottom: 0.75rem;">Step 3: Train Your AI Model (2 minutes)</h4>
+                        <ol style="color: #475569;">
+                            <li>Click the big "Train Model" button</li>
+                            <li>Wait 10-30 seconds while AI learns from your images</li>
+                            <li>Watch the magic happen—this is machine learning in action!</li>
+                        </ol>
+                        <div class="info-box" style="margin-top: 1rem; border-left-color: #f59e0b; background: #fffbeb;">
+                            <p style="color: #92400e;"><strong>What's happening?</strong> The AI is analyzing patterns in your images, learning what makes a "rock" different from "paper" or "scissors". It's creating a mathematical model that can recognize these patterns in new images.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #8b5cf6;">
+                        <h4 style="color: #7c3aed; margin-bottom: 0.75rem;">Step 4: Test Your AI (3 minutes)</h4>
+                        <ol style="color: #475569;">
+                            <li>Look at the "Preview" panel on the right</li>
+                            <li>Show your hand gestures to the camera</li>
+                            <li>Watch as AI recognizes them in real-time with confidence percentages!</li>
+                            <li>Try different lighting, angles, and distances</li>
+                        </ol>
+                        <div class="success-box" style="margin-top: 1rem;">
+                            <p><strong>Experiment:</strong> What happens if you show a gesture you didn't train? How does the AI respond? This reveals how AI deals with uncertainty.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reflection Questions -->
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+                    <h3 style="color: #92400e;">🤔 Reflect on What You Just Did</h3>
+                    <p style="color: #78350f; margin-bottom: 1rem;">
+                        You just performed the core steps of building any AI system! Think about:
+                    </p>
+                    <ul style="color: #78350f;">
+                        <li><strong>Data Collection:</strong> You gathered training examples (images of hand gestures)</li>
+                        <li><strong>Training:</strong> The AI learned patterns from your data</li>
+                        <li><strong>Testing:</strong> You evaluated how well it performs on new gestures</li>
+                        <li><strong>Iteration:</strong> If it failed, you'd collect more/better data and retrain</li>
+                    </ul>
+                    <p style="color: #78350f; margin-top: 1rem;">
+                        <strong>This is exactly how facial recognition, medical diagnosis AI, and even ChatGPT work—just at a much larger scale!</strong>
+                    </p>
+                </div>
+
+                <!-- What to Do Next -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; border: 2px dashed #078930;">
+                    <h3 style="color: #065f46;">🎓 Challenge Yourself (Optional)</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">Ready to level up? Try these extensions:</p>
+                    <ul style="color: #475569;">
+                        <li><strong>Different objects:</strong> Train AI to recognize coffee mugs, books, or your face vs others</li>
+                        <li><strong>Export your model:</strong> Click "Export Model" to download and use it in websites/apps</li>
+                        <li><strong>Try audio:</strong> Create a sound classifier (clap vs snap vs whistle)</li>
+                        <li><strong>Share your project:</strong> Post on LinkedIn with #Nebaz AI Academy #MyFirstAI</li>
+                    </ul>
+                </div>
+
+                <!-- Share Achievement -->
+                <div style="text-align: center; margin-top: 2rem; padding: 2rem; background: white; border-radius: 12px;">
+                    <h3 style="margin-bottom: 1rem;">🎉 Completed Your First AI Project?</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">
+                        Share your achievement and inspire others!
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="https://twitter.com/intent/tweet?text=I%20just%20built%20my%20first%20AI%20model%20using%20Google%20Teachable%20Machine!%20%F0%9F%A4%96%20No%20coding%20required!%20%23Nebaz AI Academy%20%23MachineLearning%20%23AIForEveryone&amp;url=https://nebaz-ai.local" 
+                           target="_blank" 
+                           class="btn btn-secondary" 
+                           style="background: #1da1f2; color: white; border: none;">
+                            Share on Twitter →
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://nebaz-ai.local" 
+                           target="_blank" 
+                           class="btn btn-secondary" 
+                           style="background: #0077b5; color: white; border: none;">
+                            Share on LinkedIn →
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Looking Under the Hood</h2>
+                
+                <p>
+                    Now that you truly grasp <em>what</em> AI is and can recognize it in the wild, you're ready for the next question: <strong>How does it actually work?</strong>
+                </p>
+
+                <p>
+                    In Module 2, we'll peek under the hood and explore the fundamental building blocks that make AI possible—without drowning in mathematics. You'll learn about data, algorithms, and the learning process that transforms simple code into intelligent behavior.
+                </p>
+
+                <div class="warning-box">
+                    <h3>Before moving on, make sure you can answer these questions:</h3>
+                    <ul>
+                        <li>Can you explain AI to a friend in one sentence?</li>
+                        <li>Can you name three AI systems you used today?</li>
+                        <li>Do you understand the difference between automation and intelligence?</li>
+                    </ul>
+                </div>
+
+                <p>
+                    If yes—congratulations! You've taken your first real step into the world of artificial intelligence.
+                </p>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="../../courses/ai-for-everyone.html" class="prev">← Back to Course</a>
+                    <a href="how-does-ai-work.html" class="next">Next: Module 2 - How Does AI Work? →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

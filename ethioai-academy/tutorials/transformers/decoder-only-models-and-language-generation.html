@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Decoder-Only Models and Language Generation - Learn how models like GPT generate text through autoregressive generation, sampling, and temperature.">
+    <meta name="keywords" content="decoder-only models, GPT, autoregressive generation, temperature, top-k sampling, language generation">
+    <title>Decoder-Only Models & Language Generation | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">Decoder-Only Models & Language Generation</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">Decoder-Only Models & Language Generation</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 6</span>
+                    <span style="color: rgba(255,255,255,0.9);">🔴 Advanced</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Understand GPT, autoregressive generation, and the art of controlling model outputs
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>From Encoder-Decoder to Decoder-Only: The Paradigm Shift</h2>
+                <p>
+                    The original "Attention is All You Need" transformer (2017) used an encoder-decoder architecture for machine translation. But by 2018-2019, a fundamental shift occurred: modern large language models like GPT, Claude, LLaMA, and Mistral all use decoder-only architecture. This wasn't just a design preference - it was a discovery about how to build truly scalable AI systems.
+                </p>
+
+                <h3>The Evolution Timeline</h3>
+                <div style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #6b7280;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead style="background: #d1d5db;">
+                            <tr>
+                                <th style="padding: 0.75rem; text-align: left;">Year</th>
+                                <th style="padding: 0.75rem; text-align: left;">Model</th>
+                                <th style="padding: 0.75rem; text-align: left;">Architecture</th>
+                                <th style="padding: 0.75rem; text-align: left;">Impact</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2017</strong></td>
+                                <td style="padding: 0.75rem;">Transformer</td>
+                                <td style="padding: 0.75rem;">Encoder-Decoder</td>
+                                <td style="padding: 0.75rem;">Machine translation breakthrough</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2018</strong></td>
+                                <td style="padding: 0.75rem;">GPT-1</td>
+                                <td style="padding: 0.75rem;">Decoder-Only</td>
+                                <td style="padding: 0.75rem;">Showed next-token prediction works</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2018</strong></td>
+                                <td style="padding: 0.75rem;">BERT</td>
+                                <td style="padding: 0.75rem;">Encoder-Only</td>
+                                <td style="padding: 0.75rem;">Best for classification/understanding</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2019</strong></td>
+                                <td style="padding: 0.75rem;">GPT-2</td>
+                                <td style="padding: 0.75rem;">Decoder-Only</td>
+                                <td style="padding: 0.75rem;">1.5B params, coherent long-form text</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2020</strong></td>
+                                <td style="padding: 0.75rem;">GPT-3</td>
+                                <td style="padding: 0.75rem;">Decoder-Only</td>
+                                <td style="padding: 0.75rem;">175B params, few-shot learning emerges</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e7eb;">
+                                <td style="padding: 0.75rem;"><strong>2023</strong></td>
+                                <td style="padding: 0.75rem;">LLaMA, GPT-4</td>
+                                <td style="padding: 0.75rem;">Decoder-Only</td>
+                                <td style="padding: 0.75rem;">Open-source & commercial dominance</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem;"><strong>2024+</strong></td>
+                                <td style="padding: 0.75rem;">Claude, Gemini</td>
+                                <td style="padding: 0.75rem;">Decoder-Only</td>
+                                <td style="padding: 0.75rem;">100% market adoption for LLMs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Why Decoder-Only Won: The Deep Reasons</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">1️⃣ Simplicity Scales</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #065f46;">
+                            <strong>Encoder-Decoder:</strong> 2 separate stacks, cross-attention between them, complex data flow
+                        </p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #065f46;">
+                            <strong>Decoder-Only:</strong> Single stack, self-attention only, clean architecture
+                        </p>
+                        <p style="margin-top: 0.5rem; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Why it matters:</strong> Simpler = easier to optimize, debug, and scale to trillions of parameters
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.5rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">2️⃣ Infinite Training Data</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #065f46;">
+                            <strong>Encoder-Decoder:</strong> Needs paired data (e.g., English→French sentences)
+                        </p>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #065f46;">
+                            <strong>Decoder-Only:</strong> Any text is training data! Just predict next token.
+                        </p>
+                        <p style="margin-top: 0.5rem; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Why it matters:</strong> Can train on entire internet (trillions of tokens) vs. limited parallel corpora (millions)
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">3️⃣ Emergent Abilities</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #92400e;">
+                            At scale (>10B parameters), decoder-only models spontaneously develop:
+                        </p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #92400e;">
+                            <li>Few-shot learning</li>
+                            <li>Chain-of-thought reasoning</li>
+                            <li>Cross-lingual transfer</li>
+                            <li>In-context learning</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; padding: 0.75rem; background: rgba(245, 158, 11, 0.1); border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Why it matters:</strong> Single model can do everything without task-specific fine-tuning
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.5rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">4️⃣ Unified Framework</h4>
+                        <p style="font-size: 0.9rem; margin: 0.5rem 0; color: #5b21b6;">
+                            Everything becomes "text completion":
+                        </p>
+                        <ul style="font-size: 0.85rem; margin: 0.5rem 0; padding-left: 1.5rem; color: #5b21b6;">
+                            <li>Translation: "Translate to French: Hello →"</li>
+                            <li>Q&A: "Question: What is...? Answer:"</li>
+                            <li>Code: "# Function to sort array\ndef"</li>
+                            <li>Math: "2 + 2 = "</li>
+                        </ul>
+                        <p style="margin-top: 0.5rem; padding: 0.75rem; background: rgba(139, 92, 246, 0.1); border-radius: 6px; font-size: 0.85rem;">
+                            <strong>Why it matters:</strong> Single training objective for all tasks
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <strong>🎯 The Killer Insight:</strong> Decoder-only models with next-token prediction are the simplest possible architecture that can learn from unlimited data and scale to arbitrary size. This combination - simplicity + scalability + data abundance - made them inevitable winners.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Architecture Comparison</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Aspect</th>
+                            <th style="padding: 0.75rem; text-align: left;">Encoder-Decoder (BERT, T5)</th>
+                            <th style="padding: 0.75rem; text-align: left;">Decoder-Only (GPT, Llama)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Structure</strong></td>
+                            <td style="padding: 0.75rem;">Separate encoder + decoder</td>
+                            <td style="padding: 0.75rem;">Single decoder stack</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Training</strong></td>
+                            <td style="padding: 0.75rem;">Masked language modeling (BERT)</td>
+                            <td style="padding: 0.75rem;">Causal language modeling (next-token prediction)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Attention</strong></td>
+                            <td style="padding: 0.75rem;">Bidirectional + cross-attention</td>
+                            <td style="padding: 0.75rem;">Causal only (left-to-right)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Best For</strong></td>
+                            <td style="padding: 0.75rem;">Classification, understanding</td>
+                            <td style="padding: 0.75rem;">Generation, open-ended tasks</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Examples</strong></td>
+                            <td style="padding: 0.75rem;">BERT, T5, mBART</td>
+                            <td style="padding: 0.75rem;">GPT-3/4, Llama, Claude, Mistral</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Industry Dominance</strong></td>
+                            <td style="padding: 0.75rem;">~5%</td>
+                            <td style="padding: 0.75rem;">~95% (the future)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>Decoder-Only Architecture</h2>
+                <p>
+                    Simplify: remove the encoder entirely. Stack decoder layers that attend to previous tokens (causal):
+                </p>
+
+                <pre><code class="language-python">
+class GPTLikeModel(torch.nn.Module):
+    def __init__(self, vocab_size, d_model=768, num_layers=12, 
+                 num_heads=12, d_ff=3072, max_seq_len=2048):
+        super().__init__()
+        
+        # Token + positional embeddings
+        self.token_embedding = torch.nn.Embedding(vocab_size, d_model)
+        self.pos_embedding = torch.nn.Embedding(max_seq_len, d_model)
+        
+        # Stack of decoder layers (only self-attention, no cross-attention)
+        self.layers = torch.nn.ModuleList([
+            GPTDecoderLayer(d_model, num_heads, d_ff)
+            for _ in range(num_layers)
+        ])
+        
+        # Output layer
+        self.ln_final = torch.nn.LayerNorm(d_model)
+        self.lm_head = torch.nn.Linear(d_model, vocab_size)
+    
+    def forward(self, token_ids):
+        """
+        token_ids: [batch, seq_len]
+        """
+        seq_len = token_ids.size(1)
+        
+        # Embeddings
+        x = self.token_embedding(token_ids)
+        pos_ids = torch.arange(seq_len, device=token_ids.device).unsqueeze(0)
+        x = x + self.pos_embedding(pos_ids)
+        
+        # Apply causal mask (can't look forward)
+        causal_mask = create_causal_mask(seq_len, device=token_ids.device)
+        
+        # Decoder layers
+        for layer in self.layers:
+            x = layer(x, causal_mask)
+        
+        # Output
+        x = self.ln_final(x)
+        logits = self.lm_head(x)  # [batch, seq_len, vocab_size]
+        
+        return logits
+
+def create_causal_mask(seq_len, device):
+    """Lower triangular matrix for causal masking"""
+    mask = torch.tril(torch.ones(seq_len, seq_len, device=device))
+    return mask.bool()
+
+class GPTDecoderLayer(torch.nn.Module):
+    def __init__(self, d_model, num_heads, d_ff):
+        super().__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.ff = torch.nn.Sequential(
+            torch.nn.Linear(d_model, d_ff),
+            torch.nn.GELU(),  # Modern: GELU instead of ReLU
+            torch.nn.Linear(d_ff, d_model)
+        )
+        self.norm1 = torch.nn.LayerNorm(d_model)
+        self.norm2 = torch.nn.LayerNorm(d_model)
+    
+    def forward(self, x, causal_mask):
+        # Self-attention with causal mask
+        attn, _ = self.attention(x, mask=causal_mask)
+        x = self.norm1(x + attn)
+        
+        # Feed-forward
+        ff = self.ff(x)
+        x = self.norm2(x + ff)
+        
+        return x
+
+# That's it! Much simpler than encoder-decoder
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Training: Next Token Prediction (Causal Language Modeling)</h2>
+                <p>
+                    Decoder-only models learn through the simplest possible objective: given a sequence of tokens, predict the next one. This is called <strong>causal language modeling</strong> or <strong>autoregressive modeling</strong>. The beauty is in its simplicity and power.
+                </p>
+
+                <h3>The Core Training Principle</h3>
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p style="color: #065f46; font-size: 1.05rem; margin-bottom: 0.5rem;"><strong>Training Objective:</strong></p>
+                    <pre><code style="color: #065f46;">Given:    tokens[0], tokens[1], ..., tokens[n-1]
+Predict:  tokens[n]
+
+Repeat for ALL positions in ALL training documents!</code></pre>
+                </div>
+
+                <h3>Example: Training on a Single Sentence</h3>
+                <pre><code class="language-python">import torch
+import torch.nn.functional as F
+
+# Training sentence: "The quick brown fox jumps"
+# After tokenization:
+tokens = ["The", "quick", "brown", "fox", "jumps"]
+token_ids = [464, 2068, 7586, 21831, 18045]  # Hypothetical IDs
+
+print("From one sentence, we create MULTIPLE training examples:\n")
+
+# Example 1: Predict "quick" given "The"
+input_1 = [464]          # "The"
+target_1 = 2068          # "quick"
+print(f"Context: ['The'] → Predict: 'quick'")
+
+# Example 2: Predict "brown" given "The quick"
+input_2 = [464, 2068]    # "The quick"
+target_2 = 7586          # "brown"
+print(f"Context: ['The', 'quick'] → Predict: 'brown'")
+
+# Example 3: Predict "fox" given "The quick brown"
+input_3 = [464, 2068, 7586]  # "The quick brown"
+target_3 = 21831             # "fox"
+print(f"Context: ['The', 'quick', 'brown'] → Predict: 'fox'")
+
+# Example 4: Predict "jumps" given "The quick brown fox"
+input_4 = [464, 2068, 7586, 21831]  # "The quick brown fox"
+target_4 = 18045                     # "jumps"
+print(f"Context: ['The', 'quick', 'brown', 'fox'] → Predict: 'jumps'")
+
+print("\n✅ From 5 tokens, we get 4 training examples!")
+print("✅ From 1000 tokens → 999 training examples")
+print("✅ From 1 trillion tokens → ~1 trillion training examples")</code></pre>
+
+                <h3>Efficient Parallel Training</h3>
+                <p>
+                    The transformer's key advantage: we can compute ALL predictions in parallel! Here's how:
+                </p>
+
+                <pre><code class="language-python">def train_step(model, token_ids, optimizer):
+    """
+    Single training step on a batch of sequences.
+    
+    Args:
+        model: Decoder-only transformer
+        token_ids: [batch_size, seq_len] - input tokens
+        optimizer: PyTorch optimizer
+    """
+    batch_size, seq_len = token_ids.shape
+    
+    # Forward pass: get predictions for ALL positions at once
+    # Causal masking ensures position i can only see tokens 0...i-1
+    logits = model(token_ids)  # [batch_size, seq_len, vocab_size]
+    
+    print(f"Input shape: {token_ids.shape}")
+    print(f"Output logits shape: {logits.shape}")
+    print(f"For each position, we have {logits.shape[-1]} probabilities (one per vocab token)\n")
+    
+    # Create targets: shift inputs left by 1
+    # We want to predict token[i+1] given tokens[0:i]
+    targets = token_ids[:, 1:].contiguous()  # Remove first token
+    logits = logits[:, :-1, :].contiguous()  # Remove last prediction
+    
+    print("After alignment:")
+    print(f"Logits shape: {logits.shape}   # Predictions for positions 0 to seq_len-2")
+    print(f"Targets shape: {targets.shape}  # Actual tokens at positions 1 to seq_len-1\n")
+    
+    # Reshape for loss computation
+    logits_flat = logits.view(-1, logits.size(-1))      # [batch*seq_len, vocab_size]
+    targets_flat = targets.view(-1)                      # [batch*seq_len]
+    
+    print(f"Flattened logits: {logits_flat.shape}")
+    print(f"Flattened targets: {targets_flat.shape}\n")
+    
+    # Compute cross-entropy loss
+    # This measures how well our predictions match the actual next tokens
+    loss = F.cross_entropy(logits_flat, targets_flat)
+    
+    print(f"Loss: {loss.item():.4f}")
+    print("(Lower = better predictions)\n")
+    
+    # Backpropagation
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    
+    return loss.item()
+
+# Example usage
+vocab_size = 50000
+d_model = 768
+model = GPTLikeModel(vocab_size, d_model)
+optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+
+# Batch of sequences
+batch_size = 2
+seq_len = 10
+token_ids = torch.randint(0, vocab_size, (batch_size, seq_len))
+
+loss = train_step(model, token_ids, optimizer)
+print(f"Training step complete! Loss: {loss:.4f}")</code></pre>
+
+                <h3>Understanding Cross-Entropy Loss</h3>
+                <div style="background: #fff; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <p><strong>Cross-entropy measures prediction quality:</strong></p>
+                    
+                    <pre><code class="language-python"># Example: Predicting next token after "The cat"
+# Correct next token: "sat" (token_id = 5678)
+
+# Model's prediction (before softmax)
+logits = torch.tensor([
+    2.1,   # token 0: "and"
+    1.5,   # token 1: "is"
+    0.8,   # token 2: "the"
+    4.2,   # token 3: "sat"  ← Should be high!
+    1.2,   # token 4: "ran"
+    # ... 49,995 more tokens
+])
+
+# Convert to probabilities
+probs = F.softmax(logits, dim=-1)
+print("Probability distribution:")
+print(f"P('and') = {probs[0]:.4f}")
+print(f"P('is')  = {probs[1]:.4f}")
+print(f"P('sat') = {probs[3]:.4f}  ← Should be high!")
+print(f"P('ran') = {probs[4]:.4f}")
+
+# Cross-entropy loss = -log(probability of correct token)
+correct_token_id = 3  # "sat"
+loss = -torch.log(probs[correct_token_id])
+print(f"\nCross-entropy loss: {loss:.4f}")
+
+# Interpretation:
+# If model gives "sat" 90% probability → loss ≈ 0.10 (very good!)
+# If model gives "sat" 50% probability → loss ≈ 0.69 (okay)
+# If model gives "sat" 10% probability → loss ≈ 2.30 (bad!)
+# If model gives "sat" 1% probability → loss ≈ 4.61 (terrible!)
+
+print("\n✅ Training pushes loss down → model learns to assign high probability to correct tokens")</code></pre>
+                </div>
+
+                <h3>What Does the Model Actually Learn?</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">📚 Language Patterns</h4>
+                        <p style="font-size: 0.85rem; margin: 0.5rem 0; color: #065f46;">
+                            "The cat" → likely: "sat", "ran", "meowed"<br>
+                            "The cats" → likely: "were", "are" (plural agreement)<br>
+                            "2 + 2 =" → likely: "4" (arithmetic)
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">🌍 World Knowledge</h4>
+                        <p style="font-size: 0.85rem; margin: 0.5rem 0; color: #065f46;">
+                            "The capital of France is" → "Paris"<br>
+                            "Einstein developed" → "relativity"<br>
+                            "Water boils at" → "100 degrees Celsius"
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">🧠 Reasoning</h4>
+                        <p style="font-size: 0.85rem; margin: 0.5rem 0; color: #92400e;">
+                            "If it rains, then" → likely continuation involves wetness<br>
+                            "Therefore, we can conclude" → logical deduction<br>
+                            Chain of thought emerges at scale
+                        </p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">💻 Code & Structure</h4>
+                        <p style="font-size: 0.85rem; margin: 0.5rem 0; color: #5b21b6;">
+                            "def factorial(" → "(n):"<br>
+                            "import" → "numpy", "torch", "os"<br>
+                            Learns syntax, APIs, patterns
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Training at Scale: The Numbers</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Model</th>
+                            <th style="padding: 0.75rem; text-align: center;">Training Tokens</th>
+                            <th style="padding: 0.75rem; text-align: center;">Training Time</th>
+                            <th style="padding: 0.75rem; text-align: center;">Compute (GPU-hours)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>GPT-2</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">40 billion</td>
+                            <td style="padding: 0.75rem; text-align: center;">~1 week</td>
+                            <td style="padding: 0.75rem; text-align: center;">~1,000</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>GPT-3</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">300 billion</td>
+                            <td style="padding: 0.75rem; text-align: center;">~1 month</td>
+                            <td style="padding: 0.75rem; text-align: center;">~350,000</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>LLaMA-2 70B</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">2 trillion</td>
+                            <td style="padding: 0.75rem; text-align: center;">~3 months</td>
+                            <td style="padding: 0.75rem; text-align: center;">~1,700,000</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>GPT-4 (est.)</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">~13 trillion</td>
+                            <td style="padding: 0.75rem; text-align: center;">~6 months</td>
+                            <td style="padding: 0.75rem; text-align: center;">~10,000,000+</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <strong>🚀 The Power of Scale:</strong> Just predicting next tokens, applied to trillions of tokens across the entire internet, creates emergent intelligence. The model learns language, facts, reasoning, and even creativity - all from the simple objective of "predict the next token accurately."
+                </div>
+
+                <h3>Complete Training Loop Implementation</h3>
+                <pre><code class="language-python">def train_language_model(model, train_dataloader, num_epochs=3, 
+                          device='cuda', learning_rate=1e-4):
+    """
+    Complete training loop for decoder-only language model.
+    """
+    model = model.to(device)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+    
+    # Learning rate scheduler (cosine decay)
+    total_steps = len(train_dataloader) * num_epochs
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=total_steps
+    )
+    
+    model.train()
+    global_step = 0
+    
+    for epoch in range(num_epochs):
+        epoch_loss = 0.0
+        
+        for batch_idx, token_ids in enumerate(train_dataloader):
+            token_ids = token_ids.to(device)
+            # token_ids shape: [batch_size, seq_len]
+            
+            # Forward pass
+            logits = model(token_ids)  # [batch, seq_len, vocab_size]
+            
+            # Prepare targets (shift by 1)
+            targets = token_ids[:, 1:].contiguous()
+            logits = logits[:, :-1, :].contiguous()
+            
+            # Compute loss
+            loss = F.cross_entropy(
+                logits.view(-1, logits.size(-1)),
+                targets.view(-1)
+            )
+            
+            # Backward pass
+            optimizer.zero_grad()
+            loss.backward()
+            
+            # Gradient clipping (prevents exploding gradients)
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            
+            optimizer.step()
+            scheduler.step()
+            
+            epoch_loss += loss.item()
+            global_step += 1
+            
+            # Logging
+            if batch_idx % 100 == 0:
+                perplexity = torch.exp(loss).item()
+                print(f"Epoch {epoch+1}/{num_epochs} | "
+                      f"Step {batch_idx}/{len(train_dataloader)} | "
+                      f"Loss: {loss.item():.4f} | "
+                      f"Perplexity: {perplexity:.2f} | "
+                      f"LR: {scheduler.get_last_lr()[0]:.2e}")
+        
+        avg_epoch_loss = epoch_loss / len(train_dataloader)
+        print(f"\n✅ Epoch {epoch+1} complete. Avg Loss: {avg_epoch_loss:.4f}\n")
+    
+    return model
+
+# Usage example
+# model = GPTLikeModel(vocab_size=50000, d_model=768, num_layers=12)
+# trained_model = train_language_model(model, train_dataloader)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Generation: Autoregressive Decoding</h2>
+                <p>
+                    Once trained, generate by repeatedly predicting the next token:
+                </p>
+
+                <pre><code class="language-python">
+@torch.no_grad()
+def generate_greedy(model, prompt_ids, max_length=100, vocab_size=50000):
+    """
+    Greedy generation: pick token with highest probability
+    """
+    sequence = prompt_ids.clone()
+    
+    for _ in range(max_length):
+        # Get logits for next token
+        logits = model(sequence)  # [batch, seq_len, vocab_size]
+        next_logits = logits[:, -1, :]  # [batch, vocab_size]
+        
+        # Greedy: pick token with highest probability
+        next_token = torch.argmax(next_logits, dim=-1)  # [batch]
+        
+        # Append to sequence
+        sequence = torch.cat([sequence, next_token.unsqueeze(1)], dim=1)
+        
+        # Stop if end-of-sequence token
+        if (next_token == end_of_sequence_token).all():
+            break
+    
+    return sequence
+
+# Usage
+model.eval()
+prompt = "Once upon a time"
+prompt_ids = tokenizer.encode(prompt)  # [1, seq_len]
+
+generated_ids = generate_greedy(model, prompt_ids, max_length=50)
+text = tokenizer.decode(generated_ids[0])
+print(text)
+</code></pre>
+
+                <p>
+                    But greedy has a problem: it can get stuck in repetitive loops or miss good continuations. Enter: sampling.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Temperature: Controlling Randomness and Creativity</h2>
+                <p>
+                    Temperature is one of the most important hyperparameters in text generation. It controls the tradeoff between "safe and predictable" vs. "creative and surprising." Understanding temperature is essential for controlling model behavior.
+                </p>
+
+                <h3>The Mathematics of Temperature</h3>
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #078930;">
+                    <p style="color: #065f46; margin-bottom: 0.5rem;"><strong>Temperature Scaling Formula:</strong></p>
+                    <pre><code style="color: #065f46;">scaled_logits = logits / temperature
+probabilities = softmax(scaled_logits)</code></pre>
+                    <p style="color: #065f46; margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Key Insight:</strong> Temperature doesn't change which token has highest probability - it changes the distribution's "sharpness" or "flatness."
+                    </p>
+                </div>
+
+                <h3>Visual Demonstration: How Temperature Affects Distribution</h3>
+                <pre><code class="language-python">import torch
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
+
+# Model's raw predictions (logits) for next token
+# These come from the final linear layer: [vocab_size]
+logits = torch.tensor([3.0, 2.5, 2.0, 1.0, 0.5, 0.1, 0.0])
+token_names = ["is", "was", "will", "can", "may", "could", "would"]
+
+temperatures = [0.1, 0.5, 1.0, 1.5, 2.0]
+
+fig, axes = plt.subplots(1, len(temperatures), figsize=(20, 4))
+
+for idx, temp in enumerate(temperatures):
+    # Apply temperature
+    scaled_logits = logits / temp
+    probs = F.softmax(scaled_logits, dim=-1).numpy()
+    
+    # Plot
+    ax = axes[idx]
+    ax.bar(range(len(token_names)), probs, color='steelblue')
+    ax.set_xticks(range(len(token_names)))
+    ax.set_xticklabels(token_names, rotation=45)
+    ax.set_ylim([0, 1])
+    ax.set_title(f'Temperature = {temp}', fontsize=12)
+    ax.set_ylabel('Probability' if idx == 0 else '')
+    
+    # Show actual probabilities
+    for i, p in enumerate(probs):
+        ax.text(i, p + 0.02, f'{p:.2f}', ha='center', fontsize=8)
+
+plt.tight_layout()
+plt.show()
+
+print("Observation:")
+print("- Low temp (0.1): Spiky distribution, almost all weight on 'is'")
+print("- Medium temp (1.0): Balanced distribution, multiple options viable")
+print("- High temp (2.0): Flat distribution, even low-probability tokens get picked")</code></pre>
+
+                <h3>Concrete Examples: Same Prompt, Different Temperatures</h3>
+                <pre><code class="language-python">def demonstrate_temperature_effects(model, prompt="The future of AI is", 
+                                     max_length=20):
+    """
+    Generate same prompt with different temperatures.
+    """
+    prompt_ids = tokenizer.encode(prompt, return_tensors='pt')
+    
+    temps = [0.1, 0.7, 1.0, 1.5, 2.0]
+    
+    print(f"Prompt: \"{prompt}\"\n")
+    print("=" * 70)
+    
+    for temp in temps:
+        generated = generate(model, prompt_ids, max_length=max_length, 
+                           temperature=temp, top_p=0.95)
+        text = tokenizer.decode(generated[0])
+        print(f"\nTemperature = {temp}:")
+        print(f"  {text}")
+    
+    print("\n" + "=" * 70)
+
+# Example output:
+# Prompt: "The future of AI is"
+# ======================================================================
+#
+# Temperature = 0.1:
+#   The future of AI is a very important topic that has been discussed extensively in recent years
+#   (Note: Safe, predictable, somewhat repetitive)
+#
+# Temperature = 0.7:
+#   The future of AI is fascinating and holds immense potential for transforming industries
+#   (Note: Good balance, natural and varied)
+#
+# Temperature = 1.0:
+#   The future of AI is uncertain but promising, with many exciting developments on the horizon
+#   (Note: More varied word choices)
+#
+# Temperature = 1.5:
+#   The future of AI is remarkable yet challenging, potentially reshaping society in unexpected ways
+#   (Note: More creative, less common word combinations)
+#
+# Temperature = 2.0:
+#   The future of AI is wonderfully mysterious, perhaps revolutionizing beyond imagination or confusion
+#   (Note: Very creative but starting to lose coherence)</code></pre>
+
+                <h3>Temperature by Use Case</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Use Case</th>
+                            <th style="padding: 0.75rem; text-align: center;">Recommended Temp</th>
+                            <th style="padding: 0.75rem; text-align: left;">Why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Code Generation</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">0.1 - 0.3</td>
+                            <td style="padding: 0.75rem;">Need correctness, syntactic precision</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Factual Q&A</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">0.2 - 0.5</td>
+                            <td style="padding: 0.75rem;">Want accurate, confident answers</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>General Chat</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">0.7 - 0.9</td>
+                            <td style="padding: 0.75rem;">Balance between coherence and variety</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Creative Writing</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">0.9 - 1.2</td>
+                            <td style="padding: 0.75rem;">Want surprising, creative language</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Brainstorming</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">1.0 - 1.5</td>
+                            <td style="padding: 0.75rem;">Need diverse, unconventional ideas</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Poetry/Art</strong></td>
+                            <td style="padding: 0.75rem; text-align: center;">1.2 - 2.0</td>
+                            <td style="padding: 0.75rem;">Maximum creativity, experimental language</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>The Problem with Temperature=0 (Greedy)</h3>
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">❌ Greedy Decoding Issues</h4>
+                    <pre><code class="language-python"># With temperature=0 (or very low), always pick most probable token
+def greedy_generation_problem():
+    """Demonstrates repetition problem with greedy decoding."""
+    prompt = "I think"
+    
+    # Step 1: "I think" → most probable: "that"
+    # Step 2: "I think that" → most probable: "I"
+    # Step 3: "I think that I" → most probable: "think"
+    # Step 4: "I think that I think" → most probable: "that"
+    # Step 5: "I think that I think that" → most probable: "I"
+    # ...
+    # Result: "I think that I think that I think that..." (infinite loop!)
+    
+    # Another example:
+    prompt = "The most important"
+    # → "The most important thing is the most important thing is the most..."
+    
+    print("Greedy decoding often causes:")
+    print("1. Repetition loops")
+    print("2. Predictable, boring outputs")
+    print("3. Missing better sequences that start with less probable tokens")
+    print("\n✅ Solution: Add randomness via temperature > 0!")</code></pre>
+                </div>
+
+                <h3>Advanced: Temperature Scheduling</h3>
+                <pre><code class="language-python">def generate_with_dynamic_temperature(model, prompt_ids, max_length=100):
+    """
+    Use different temperatures for different parts of generation.
+    
+    Strategy:
+    - Start high (creative opening)
+    - Middle moderate (balanced development)  
+    - End lower (coherent conclusion)
+    """
+    sequence = prompt_ids.clone()
+    
+    for step in range(max_length):
+        # Dynamic temperature based on generation progress
+        progress = step / max_length
+        
+        if progress < 0.2:
+            temperature = 1.2  # Creative start
+        elif progress < 0.8:
+            temperature = 0.8  # Balanced middle
+        else:
+            temperature = 0.5  # Focused ending
+        
+        logits = model(sequence)[:, -1, :]
+        logits = logits / temperature
+        probs = F.softmax(logits, dim=-1)
+        next_token = torch.multinomial(probs, num_samples=1)
+        sequence = torch.cat([sequence, next_token], dim=1)
+    
+    return sequence
+
+# This technique can produce more natural-seeming generations
+# with varied creativity throughout</code></pre>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #078930;">
+                        <h4 style="margin-top: 0; color: #065f46;">T = 0.1 - 0.3</h4>
+                        <p style="font-size: 0.85rem; color: #065f46;"><strong>Deterministic</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.5rem 0;">✅ Accurate, consistent<br>❌ Repetitive, boring</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #065f46;">T = 0.7 - 0.9</h4>
+                        <p style="font-size: 0.85rem; color: #065f46;"><strong>Balanced</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.5rem 0;">✅ Natural, varied<br>✅ Most popular setting</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #f59e0b;">
+                        <h4 style="margin-top: 0; color: #92400e;">T = 1.0</h4>
+                        <p style="font-size: 0.85rem; color: #92400e;"><strong>Default/Neutral</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.5rem 0;">✅ Unmodified distribution<br>⚠️ Sometimes too random</p>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); padding: 1.25rem; border-radius: 8px; border: 2px solid #8b5cf6;">
+                        <h4 style="margin-top: 0; color: #5b21b6;">T = 1.5 - 2.0</h4>
+                        <p style="font-size: 0.85rem; color: #5b21b6;"><strong>Creative</strong></p>
+                        <p style="font-size: 0.8rem; margin: 0.5rem 0;">✅ Surprising, novel<br>❌ Often incoherent</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Sampling Strategies: Beyond Simple Randomness</h2>
+                <p>
+                    Temperature controls how we scale probabilities, but <strong>sampling strategies</strong> control which tokens we consider. These techniques prevent the model from generating unlikely/nonsensical tokens while maintaining creativity.
+                </p>
+
+                <h3>The Problem We're Solving</h3>
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <p style="color: #991b1b; margin-top: 0;"><strong>❌ Pure Random Sampling Issue:</strong></p>
+                    <pre><code class="language-python"># With just temperature, might sample ANY token from vocabulary
+probs = F.softmax(logits / temperature, dim=-1)
+next_token = torch.multinomial(probs, num_samples=1)
+
+# Example probability distribution (50,257 tokens in GPT-2):
+# Token "is":      40.2% ← High probability, makes sense
+# Token "was":     25.1% ← Also reasonable
+# Token "will":    15.3% ← Good option
+# ...
+# Token "xyzabc":  0.0001% ← Nonsense, but can still be sampled!
+
+# Problem: With 50K+ tokens, even with temperature, we might
+# sample truly bizarre tokens with tiny probabilities</code></pre>
+                    <p style="color: #991b1b; margin-bottom: 0;">Solution: Limit sampling to a "reasonable subset" using top-k or top-p.</p>
+                </div>
+
+                <h3>Strategy 1: Top-k Sampling</h3>
+                <p><strong>Idea:</strong> Only consider the <em>k</em> most probable tokens. Set all others to zero probability.</p>
+
+                <pre><code class="language-python">def top_k_sampling(logits, k=50, temperature=1.0):
+    """
+    Top-k sampling: Keep only top k tokens, set rest to -inf
+    
+    Args:
+        logits: [vocab_size] unnormalized predictions
+        k: Number of top tokens to consider (e.g., 50)
+        temperature: Controls randomness
+    
+    Returns:
+        next_token: Sampled token ID
+    """
+    # Apply temperature
+    logits = logits / temperature
+    
+    # Get top k logits and their indices
+    top_k_logits, top_k_indices = torch.topk(logits, k)
+    # top_k_logits: [k] highest logit values
+    # top_k_indices: [k] positions of those logits
+    
+    # Create new tensor with -inf everywhere
+    logits_filtered = torch.full_like(logits, float('-inf'))
+    
+    # Put back the top k logits at their original positions
+    logits_filtered.scatter_(0, top_k_indices, top_k_logits)
+    
+    # Now softmax will give 0 probability to -inf tokens
+    probs = F.softmax(logits_filtered, dim=-1)
+    
+    # Sample from top k only
+    next_token = torch.multinomial(probs, num_samples=1)
+    
+    return next_token
+
+
+# Example walkthrough:
+print("Example: Top-k sampling with k=3")
+print("=" * 60)
+
+# Suppose model outputs these logits:
+logits = torch.tensor([3.0, 2.8, 2.5, 1.0, 0.5, 0.1, 0.0])
+tokens = ["is", "was", "will", "can", "may", "could", "would"]
+
+print("Original logits:")
+for tok, logit in zip(tokens, logits):
+    print(f"  {tok:8s}: {logit:.2f}")
+
+# Apply top-k with k=3
+k = 3
+top_k_logits, top_k_indices = torch.topk(logits, k)
+
+print(f"\nTop-{k} selection:")
+for idx, logit in zip(top_k_indices, top_k_logits):
+    print(f"  {tokens[idx]:8s}: {logit:.2f}")
+
+# After filtering
+logits_filtered = torch.full_like(logits, float('-inf'))
+logits_filtered.scatter_(0, top_k_indices, top_k_logits)
+
+probs = F.softmax(logits_filtered / 1.0, dim=-1)
+
+print(f"\nProbabilities (only top-{k} non-zero):")
+for tok, prob in zip(tokens, probs):
+    if prob > 0.001:
+        print(f"  {tok:8s}: {prob:.3f}")
+    else:
+        print(f"  {tok:8s}: 0.000 (filtered out)")
+
+# Output:
+# Original logits:
+#   is      : 3.00
+#   was     : 2.80
+#   will    : 2.50
+#   can     : 1.00
+#   may     : 0.50
+#   could   : 0.10
+#   would   : 0.00
+#
+# Top-3 selection:
+#   is      : 3.00
+#   was     : 2.80
+#   will    : 2.50
+#
+# Probabilities (only top-3 non-zero):
+#   is      : 0.442
+#   was     : 0.357
+#   will    : 0.201
+#   can     : 0.000 (filtered out)
+#   may     : 0.000 (filtered out)
+#   could   : 0.000 (filtered out)
+#   would   : 0.000 (filtered out)</code></pre>
+
+                <div class="info-box">
+                    <h4>📊 Top-k Pros and Cons</h4>
+                    <p><strong>✅ Advantages:</strong></p>
+                    <ul>
+                        <li>Simple, fast, predictable</li>
+                        <li>Prevents sampling truly unlikely tokens</li>
+                        <li>Good for code generation (k=10-30) where precision matters</li>
+                    </ul>
+                    <p><strong>❌ Disadvantages:</strong></p>
+                    <ul>
+                        <li>Fixed k doesn't adapt to model's confidence</li>
+                        <li>If model is very confident, k=50 includes many irrelevant tokens</li>
+                        <li>If model is uncertain, k=50 might exclude good alternatives</li>
+                    </ul>
+                </div>
+
+                <h3>Strategy 2: Top-p (Nucleus) Sampling</h3>
+                <p><strong>Idea:</strong> Keep the <em>smallest set of tokens</em> whose cumulative probability exceeds <em>p</em> (e.g., 0.9). This adapts to the model's confidence.</p>
+
+                <pre><code class="language-python">def top_p_sampling(logits, p=0.9, temperature=1.0):
+    """
+    Nucleus sampling: Keep tokens until cumulative probability > p
+    
+    Key insight: If model is confident, nucleus is small (few tokens).
+                If model is uncertain, nucleus is large (many tokens).
+    
+    Args:
+        logits: [vocab_size] unnormalized predictions
+        p: Cumulative probability threshold (e.g., 0.9 = 90%)
+        temperature: Controls randomness
+    
+    Returns:
+        next_token: Sampled token ID
+    """
+    # Apply temperature
+    logits = logits / temperature
+    probs = F.softmax(logits, dim=-1)
+    
+    # Sort by probability (descending)
+    sorted_probs, sorted_indices = torch.sort(probs, descending=True, dim=-1)
+    
+    # Cumulative probability
+    cumsum_probs = torch.cumsum(sorted_probs, dim=-1)
+    
+    # Find where cumulative probability exceeds p
+    # We want to REMOVE tokens where cumsum > p (they're the tail)
+    mask = cumsum_probs > p
+    
+    # Always keep the most probable token (prevent empty set)
+    mask[..., 0] = False
+    
+    # Zero out probabilities of tail tokens
+    sorted_probs[mask] = 0.0
+    
+    # Renormalize (so probabilities sum to 1 again)
+    sorted_probs = sorted_probs / sorted_probs.sum(dim=-1, keepdim=True)
+    
+    # Sample from filtered distribution
+    next_token_sorted_idx = torch.multinomial(sorted_probs, num_samples=1)
+    
+    # Map back to original vocabulary index
+    next_token = sorted_indices.gather(-1, next_token_sorted_idx)
+    
+    return next_token
+
+
+# Example walkthrough with two scenarios:
+print("Example 1: Model is CONFIDENT")
+print("=" * 60)
+
+# Confident case: One token dominates
+logits_confident = torch.tensor([5.0, 2.0, 1.0, 0.5, 0.2, 0.1, 0.0])
+probs = F.softmax(logits_confident, dim=-1)
+tokens = ["yes", "sure", "ok", "yeah", "yep", "affirmative", "indeed"]
+
+sorted_probs, sorted_indices = torch.sort(probs, descending=True)
+cumsum = torch.cumsum(sorted_probs, dim=-1)
+
+print("Token probabilities (sorted):")
+for i in range(len(tokens)):
+    idx = sorted_indices[i]
+    print(f"  {tokens[idx]:15s}: {sorted_probs[i]:.3f}  |  Cumulative: {cumsum[i]:.3f}")
+    if cumsum[i] > 0.9:
+        print(f"  └─ Top-p (p=0.9) stops here! Nucleus size: {i+1} tokens")
+        break
+
+print("\n" + "=" * 60)
+print("Example 2: Model is UNCERTAIN")
+print("=" * 60)
+
+# Uncertain case: Many tokens have similar probability
+logits_uncertain = torch.tensor([2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4])
+probs = F.softmax(logits_uncertain, dim=-1)
+tokens = ["maybe", "perhaps", "possibly", "might", "could", "uncertain", "unclear"]
+
+sorted_probs, sorted_indices = torch.sort(probs, descending=True)
+cumsum = torch.cumsum(sorted_probs, dim=-1)
+
+print("Token probabilities (sorted):")
+for i in range(len(tokens)):
+    idx = sorted_indices[i]
+    print(f"  {tokens[idx]:15s}: {sorted_probs[i]:.3f}  |  Cumulative: {cumsum[i]:.3f}")
+    if cumsum[i] > 0.9:
+        print(f"  └─ Top-p (p=0.9) stops here! Nucleus size: {i+1} tokens")
+        break
+
+# Output shows:
+# Confident case: Nucleus might be only 2-3 tokens (model knows what to say)
+# Uncertain case: Nucleus might be 5-6 tokens (model less sure, keeps more options)</code></pre>
+
+                <div class="success-box">
+                    <h4>🎯 Why Top-p is Popular (Used by ChatGPT, Claude, etc.)</h4>
+                    <p><strong>Adaptive to Confidence:</strong></p>
+                    <ul>
+                        <li>When model is confident (e.g., "The capital of France is ___"), nucleus might be just 1-2 tokens: ["Paris", "paris"]</li>
+                        <li>When model is creative (e.g., "Once upon a time, there lived a ___"), nucleus might include 100+ tokens: ["king", "dragon", "witch", "merchant", ...]</li>
+                    </ul>
+                    <p><strong>Prevents Both Problems:</strong></p>
+                    <ul>
+                        <li>Doesn't sample truly bizarre tokens (like top-k)</li>
+                        <li>Doesn't use fixed cutoff that's sometimes too large, sometimes too small</li>
+                    </ul>
+                </div>
+
+                <h3>Comparison: Top-k vs Top-p</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+                    <thead style="background: #f3f4f6;">
+                        <tr style="border-bottom: 2px solid #d1d5db;">
+                            <th style="padding: 0.75rem; text-align: left;">Aspect</th>
+                            <th style="padding: 0.75rem; text-align: left;">Top-k (k=50)</th>
+                            <th style="padding: 0.75rem; text-align: left;">Top-p (p=0.9)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Nucleus Size</strong></td>
+                            <td style="padding: 0.75rem;">Always 50 tokens</td>
+                            <td style="padding: 0.75rem;">Varies (2-200+ tokens)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>When Model Confident</strong></td>
+                            <td style="padding: 0.75rem;">Still considers 50 tokens (wasteful)</td>
+                            <td style="padding: 0.75rem;">Considers 2-5 tokens (efficient)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>When Model Uncertain</strong></td>
+                            <td style="padding: 0.75rem;">Only 50 tokens (might miss good ones)</td>
+                            <td style="padding: 0.75rem;">Considers 100+ tokens (flexible)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 0.75rem;"><strong>Use Case</strong></td>
+                            <td style="padding: 0.75rem;">Code generation, structured output</td>
+                            <td style="padding: 0.75rem;">Chat, creative writing, general use</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem;"><strong>Typical Value</strong></td>
+                            <td style="padding: 0.75rem;">k=40-50</td>
+                            <td style="padding: 0.75rem;">p=0.9-0.95</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Combining Strategies (Best Practice)</h3>
+                <pre><code class="language-python">def generate_token(logits, temperature=0.8, top_k=50, top_p=0.95):
+    """
+    Industry standard: Use BOTH top-k and top-p together
+    
+    1. First apply top-k to limit to reasonable candidates
+    2. Then apply top-p to adapt to confidence
+    """
+    # Step 1: Temperature scaling
+    logits = logits / temperature
+    
+    # Step 2: Top-k filtering (hard cutoff)
+    if top_k > 0:
+        top_k_logits, top_k_indices = torch.topk(logits, min(top_k, logits.size(-1)))
+        logits_filtered = torch.full_like(logits, float('-inf'))
+        logits_filtered.scatter_(-1, top_k_indices, top_k_logits)
+        logits = logits_filtered
+    
+    # Step 3: Top-p filtering (adaptive cutoff)
+    if top_p < 1.0:
+        probs = F.softmax(logits, dim=-1)
+        sorted_probs, sorted_indices = torch.sort(probs, descending=True)
+        cumsum_probs = torch.cumsum(sorted_probs, dim=-1)
+        
+        mask = cumsum_probs > top_p
+        mask[..., 0] = False  # Keep at least one
+        
+        sorted_probs[mask] = 0.0
+        sorted_probs = sorted_probs / sorted_probs.sum(dim=-1, keepdim=True)
+        
+        next_token_idx = torch.multinomial(sorted_probs, num_samples=1)
+        next_token = sorted_indices.gather(-1, next_token_idx)
+    else:
+        probs = F.softmax(logits, dim=-1)
+        next_token = torch.multinomial(probs, num_samples=1)
+    
+    return next_token
+
+
+# Real-world parameter combinations:
+configs = {
+    "ChatGPT default": {"temperature": 0.7, "top_p": 0.95, "top_k": None},
+    "Code generation": {"temperature": 0.2, "top_p": 0.9, "top_k": 40},
+    "Creative writing": {"temperature": 1.0, "top_p": 0.95, "top_k": None},
+    "Factual QA": {"temperature": 0.3, "top_p": 0.85, "top_k": 20},
+}</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Complete Generation with Temperature and Top-P</h2>
+                <pre><code class="language-python">
+@torch.no_grad()
+def generate(model, prompt_ids, max_length=100, temperature=0.7, 
+             top_p=0.9, vocab_size=50000, end_token=50256):
+    """
+    Generate text with temperature and top-p sampling
+    """
+    sequence = prompt_ids.clone()
+    
+    for _ in range(max_length):
+        # Forward pass
+        logits = model(sequence)  # [batch, seq_len, vocab_size]
+        next_logits = logits[:, -1, :]  # [batch, vocab_size]
+        
+        # Apply temperature
+        next_logits = apply_temperature(next_logits, temperature)
+        
+        # Apply top-p filtering
+        probs = F.softmax(next_logits, dim=-1)
+        probs = sample_top_p_filtering(probs, top_p)
+        probs = probs / probs.sum(dim=-1, keepdim=True)  # Renormalize
+        
+        # Sample next token
+        next_token = torch.multinomial(probs, num_samples=1)
+        
+        # Append to sequence
+        sequence = torch.cat([sequence, next_token], dim=1)
+        
+        # Stop if end token
+        if (next_token == end_token).all():
+            break
+    
+    return sequence
+
+# Different generation styles
+def generate_deterministic(model, prompt_ids):
+    return generate(model, prompt_ids, temperature=0.1, top_p=0.99)
+
+def generate_balanced(model, prompt_ids):
+    return generate(model, prompt_ids, temperature=0.7, top_p=0.9)
+
+def generate_creative(model, prompt_ids):
+    return generate(model, prompt_ids, temperature=1.2, top_p=0.95)
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Decoder-Only Won</h2>
+                <p>
+                    Several advantages of decoder-only models:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <strong>✅ Simpler</strong>
+                        <p>Single stack vs two stacks (encoder-decoder)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Scale Better</strong>
+                        <p>Same parameters, single path of computation</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Unsupervised Learning</strong>
+                        <p>Learn from raw text (next-token prediction)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Versatile</strong>
+                        <p>Works for generation, classification, reasoning</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Fast Inference</strong>
+                        <p>Single forward pass per token (no cross-attention overhead)</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>✅ Easy Fine-tuning</strong>
+                        <p>Just append tasks, model learns from context</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Decoder-Only:</strong> Simpler than encoder-decoder, used by GPT/Claude/Llama</li>
+                        <li><strong>Causal Masking:</strong> Can only attend to previous tokens (left-to-right)</li>
+                        <li><strong>Training:</strong> Next-token prediction on massive unlabeled text corpora</li>
+                        <li><strong>Generation:</strong> Autoregressive: repeat "predict next token" until stopping</li>
+                        <li><strong>Temperature:</strong> Controls confidence (T<1 deterministic, T>1 creative)</li>
+                        <li><strong>Greedy Sampling:</strong> Pick highest probability token (deterministic, can repeat)</li>
+                        <li><strong>Top-K Sampling:</strong> Only consider top-k tokens (filters low-probability tail)</li>
+                        <li><strong>Top-P (Nucleus):</strong> Keep tokens until p% probability mass (most popular in practice)</li>
+                        <li><strong>Why It Works:</strong> Scaling decoder-only models to billions of parameters creates emergent intelligence</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the key characteristic of decoder-only models like GPT?</strong></p>
+                    <div class="quiz-option" data-value="a">They use both encoder and decoder</div>
+                    <div class="quiz-option" data-value="b">They can see future tokens during training</div>
+                    <div class="quiz-option" data-value="c">They use causal/masked self-attention to predict next tokens autoregressively</div>
+                    <div class="quiz-option" data-value="d">They don't use attention at all</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is causal masking in decoder-only models?</strong></p>
+                    <div class="quiz-option" data-value="a">A technique to make models faster</div>
+                    <div class="quiz-option" data-value="b">Preventing attention to future positions so each token can only attend to previous tokens</div>
+                    <div class="quiz-option" data-value="c">Removing all attention weights</div>
+                    <div class="quiz-option" data-value="d">A data augmentation technique</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: What is autoregressive generation?</strong></p>
+                    <div class="quiz-option" data-value="a">Generating all tokens simultaneously</div>
+                    <div class="quiz-option" data-value="b">Generating tokens backwards</div>
+                    <div class="quiz-option" data-value="c">Random token generation</div>
+                    <div class="quiz-option" data-value="d">Generating one token at a time, each conditioned on previously generated tokens</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: Which model is an example of a decoder-only architecture?</strong></p>
+                    <div class="quiz-option" data-value="a">GPT (Generative Pre-trained Transformer)</div>
+                    <div class="quiz-option" data-value="b">BERT</div>
+                    <div class="quiz-option" data-value="c">T5</div>
+                    <div class="quiz-option" data-value="d">Original Transformer (encoder-decoder)</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: Why are decoder-only models well-suited for language generation?</strong></p>
+                    <div class="quiz-option" data-value="a">They are smaller than other models</div>
+                    <div class="quiz-option" data-value="b">They don't require training</div>
+                    <div class="quiz-option" data-value="c">They naturally model the sequential, left-to-right nature of text generation</div>
+                    <div class="quiz-option" data-value="d">They work without GPUs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="complete-transformer-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Complete Transformer Architecture</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="how-llms-work-from-tokens-to-tokens.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → How LLMs Work: Tokens to Tokens</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

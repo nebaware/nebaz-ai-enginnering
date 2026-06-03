@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master advanced prompting techniques - zero-shot, few-shot, chain-of-thought, role-based prompts, and controlling AI parameters.">
+    <title>Tutorial 3: Advanced Prompting Techniques - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .technique-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+            border-left: 6px solid #078930;
+        }
+        
+        .technique-header {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .example-demo {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 3px solid #078930;
+        }
+        
+        .prompt-example {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .output-example {
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border: 1px solid #10b981;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .technique-comparison {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-title {
+            font-weight: 700;
+            color: #078930;
+            margin-bottom: 1rem;
+        }
+        
+        .parameter-control {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .parameter-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #078930;
+        }
+        
+        .parameter-name {
+            color: #078930;
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .slider-visual {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .slider-bar {
+            flex: 1;
+            height: 8px;
+            background: linear-gradient(to right, #078930, #10b981);
+            border-radius: 4px;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 3</span>
+            </div>
+            <h1>Tutorial 3: Advanced Prompting Techniques</h1>
+            <p class="tutorial-intro">Power user techniques: few-shot learning, chain-of-thought, and parameter control</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You: <em>"Calculate 47 x 23 and explain your reasoning step-by-step."</em></p>
+                <p>ChatGPT: <em>"Let me think through this... 47 x 20 = 940, then 47 x 3 = 141, so 940 + 141 = 1,081."</em></p>
+                
+                <p><strong>That's chain-of-thought prompting</strong> — one of several advanced techniques that unlock ChatGPT's full reasoning capabilities. These techniques separate casual users from power users earning $150K+ as prompt engineers.</p>
+                
+                <div class="success-box">
+                    <p><strong>💡 By the end of this module, you'll master:</strong></p>
+                    <ul>
+                        <li>Zero-shot vs few-shot prompting (when to use each)</li>
+                        <li>Chain-of-thought reasoning for complex problems</li>
+                        <li>Role-based prompting for expert-level outputs</li>
+                        <li>System messages and conversation control</li>
+                        <li>Temperature, top-p, and other parameters</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Zero-Shot vs Few-Shot -->
+            <section class="content-section">
+                <h2>🎯 Technique 1: Zero-Shot vs Few-Shot Prompting</h2>
+                
+                <div class="technique-card">
+                    <div class="technique-header">Zero-Shot Prompting</div>
+                    <p><strong>What it is:</strong> Giving ChatGPT a task <em>without examples</em>, relying on its pre-training to understand.</p>
+                    
+                    <div class="example-demo">
+                        <p><strong>Example:</strong></p>
+                        <div class="prompt-example">
+Classify this product review sentiment: "The laptop is okay but battery life is terrible."
+                        </div>
+                        <div class="output-example">
+                            <strong>Output:</strong> Negative (mentions "terrible" battery life, dampens "okay")
+                        </div>
+                    </div>
+                    
+                    <p><strong>When to use:</strong> Simple, well-defined tasks ChatGPT already understands (sentiment analysis, translation, basic Q&A).</p>
+                </div>
+                
+                <div class="technique-card">
+                    <div class="technique-header">Few-Shot Prompting</div>
+                    <p><strong>What it is:</strong> Providing 2-5 <em>examples</em> before asking ChatGPT to perform the task. Shows the pattern you want.</p>
+                    
+                    <div class="example-demo">
+                        <p><strong>Example:</strong></p>
+                        <div class="prompt-example">
+Classify product review sentiment. Examples:
+
+Review: "Love this phone! Fast and sleek."
+Sentiment: Positive
+
+Review: "Terrible customer service, never buying again."
+Sentiment: Negative
+
+Review: "It's decent for the price."
+Sentiment: Neutral
+
+Now classify: "The laptop is okay but battery life is terrible."
+                        </div>
+                        <div class="output-example">
+                            <strong>Output:</strong> Negative (recognizes mixed sentiment leans negative due to "terrible")
+                        </div>
+                    </div>
+                    
+                    <p><strong>When to use:</strong> Custom formats, nuanced tasks, or when you want specific style/structure. Examples train ChatGPT on <em>your</em> patterns.</p>
+                </div>
+                
+                <div class="comparison-grid">
+                    <div class="technique-comparison">
+                        <div class="comparison-title">✅ Zero-Shot Wins</div>
+                        <ul>
+                            <li>Standard tasks (translate, summarize)</li>
+                            <li>Quick one-off requests</li>
+                            <li>When examples are hard to provide</li>
+                            <li>General knowledge questions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title">✅ Few-Shot Wins</div>
+                        <ul>
+                            <li>Custom output formats</li>
+                            <li>Domain-specific jargon</li>
+                            <li>Complex classification tasks</li>
+                            <li>Matching your brand voice</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chain of Thought -->
+            <section class="content-section">
+                <h2>🧠 Technique 2: Chain-of-Thought (CoT) Prompting</h2>
+                
+                <div class="technique-card">
+                    <div class="technique-header">What is Chain-of-Thought?</div>
+                    <p><strong>Concept:</strong> Asking ChatGPT to <em>"think step-by-step"</em> or <em>"explain your reasoning"</em> before answering. Forces sequential logic instead of jumping to conclusions.</p>
+                    
+                    <p><strong>Why it works:</strong> Large language models perform better on complex reasoning when they break problems into steps (just like humans).</p>
+                    
+                    <div class="info-box">
+                        <p><strong>📊 Research finding:</strong> Adding "Let's think step-by-step" improved GPT-3 accuracy on math problems from 17% to 78% (Google Research, 2022).</p>
+                    </div>
+                </div>
+                
+                <h3>CoT Example 1: Math Problem</h3>
+                <div class="comparison-grid">
+                    <div class="technique-comparison">
+                        <div class="comparison-title">❌ Without CoT</div>
+                        <div class="prompt-example" style="font-size: 0.85rem;">
+A store has 23 apples. They sell 7, then receive 15 more. How many do they have?
+                        </div>
+                        <div class="output-example">
+                            <strong>Output:</strong> 31 apples. (Correct, but no reasoning shown)
+                        </div>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title">✅ With CoT</div>
+                        <div class="prompt-example" style="font-size: 0.85rem;">
+A store has 23 apples. They sell 7, then receive 15 more. How many do they have?
+
+Let's think step-by-step.
+                        </div>
+                        <div class="output-example">
+                            <strong>Output:</strong><br>
+                            Step 1: Start with 23 apples<br>
+                            Step 2: Sell 7 → 23 - 7 = 16 apples<br>
+                            Step 3: Receive 15 → 16 + 15 = 31 apples<br>
+                            <strong>Final answer: 31 apples</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>CoT Example 2: Logic Problem</h3>
+                <div class="example-demo">
+                    <div class="prompt-example">
+Question: If all roses are flowers, and some flowers fade quickly, can we conclude that some roses fade quickly?
+
+Think through this step-by-step using logical reasoning.
+                    </div>
+                    <div class="output-example">
+                        <strong>ChatGPT's reasoning:</strong><br><br>
+                        Step 1: Analyze premise 1 → "All roses are flowers" (roses ⊂ flowers)<br>
+                        Step 2: Analyze premise 2 → "Some flowers fade quickly" (doesn't specify which flowers)<br>
+                        Step 3: Check logical connection → Premise 2 doesn't guarantee roses are in the "some flowers" subset<br>
+                        Step 4: Conclusion → <strong>No, we cannot conclude this.</strong> The roses might not be the flowers that fade quickly.
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <h3>🎯 CoT Trigger Phrases</h3>
+                    <ul>
+                        <li>"Let's think step-by-step."</li>
+                        <li>"Explain your reasoning before answering."</li>
+                        <li>"Break this down into steps."</li>
+                        <li>"Walk me through your thought process."</li>
+                        <li>"First, analyze... Then, conclude..."</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Role-Based Prompting -->
+            <section class="content-section">
+                <h2>🎭 Technique 3: Role-Based Prompting</h2>
+                
+                <div class="technique-card">
+                    <div class="technique-header">What is Role-Based Prompting?</div>
+                    <p><strong>Concept:</strong> Telling ChatGPT to <em>act as a specific expert</em> (lawyer, doctor, data scientist, comedian, etc.). This shapes vocabulary, depth, and perspective.</p>
+                    
+                    <p><strong>Why it works:</strong> Pre-training data includes countless examples of how different experts write/speak. Role assignment activates relevant patterns.</p>
+                </div>
+                
+                <h3>Example: Same Question, Different Roles</h3>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <p><strong>Question:</strong> "How do I reduce stress?"</p>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h4 style="color: #078930;">🧑‍⚕️ As a Clinical Psychologist:</h4>
+                        <div class="prompt-example" style="margin-top: 0.5rem;">
+Act as a clinical psychologist with 15 years of experience. How do I reduce stress?
+                        </div>
+                        <div class="output-example" style="margin-top: 0.5rem;">
+                            <strong>Response:</strong> "From a clinical perspective, chronic stress activates your HPA axis, releasing cortisol. Evidence-based interventions include: 1) Cognitive Behavioral Therapy (CBT) to reframe negative thought patterns, 2) Progressive Muscle Relaxation (PMR) to reduce physiological arousal, 3) Mindfulness-Based Stress Reduction (MBSR) — 8-week programs show 30% cortisol reduction..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h4 style="color: #078930;">🏋️ As a Fitness Coach:</h4>
+                        <div class="prompt-example" style="margin-top: 0.5rem;">
+Act as a certified fitness coach. How do I reduce stress?
+                        </div>
+                        <div class="output-example" style="margin-top: 0.5rem;">
+                            <strong>Response:</strong> "Exercise is your secret weapon! Here's what works: 1) 30 minutes cardio 3x/week releases endorphins (natural mood boosters), 2) Strength training builds resilience, 3) Yoga combines movement + breathwork, 4) Even a 10-minute walk outdoors reduces cortisol 15%. Start small: commit to one 20-minute workout tomorrow..."
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <h4 style="color: #078930;">🧘 As a Buddhist Monk:</h4>
+                        <div class="prompt-example" style="margin-top: 0.5rem;">
+Act as a Buddhist monk who teaches mindfulness. How do I reduce stress?
+                        </div>
+                        <div class="output-example" style="margin-top: 0.5rem;">
+                            <strong>Response:</strong> "Stress arises from attachment and resistance to what is. Practice: 1) Observe thoughts without judgment — they are clouds passing through sky of awareness, 2) Return to breath — the anchor to present moment, 3) Accept impermanence — this too shall pass. Daily sitting meditation: start with 5 minutes. Not to eliminate stress, but to change relationship with it..."
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Pro tip:</strong> Combine role + expertise level + context for maximum precision:</p>
+                    <p style="font-style: italic; margin-top: 0.5rem;">"Act as a senior data scientist at Netflix with 10 years of experience in recommendation systems. Explain collaborative filtering to a product manager..."</p>
+                </div>
+            </section>
+
+            <!-- System Messages -->
+            <section class="content-section">
+                <h2>⚙️ Technique 4: System Messages & Conversation Control</h2>
+                
+                <div class="technique-card">
+                    <div class="technique-header">What are System Messages?</div>
+                    <p><strong>Concept:</strong> In API/advanced interfaces, system messages set <em>persistent behavior</em> for entire conversation. Think of it as ChatGPT's "operating instructions."</p>
+                    
+                    <p><strong>In ChatGPT web:</strong> Use "Custom Instructions" (Settings → Personalization) to set default behavior.</p>
+                    
+                    <div class="example-demo">
+                        <p><strong>Example Custom Instructions:</strong></p>
+                        <div class="prompt-example">
+<strong>What would you like ChatGPT to know about you?</strong>
+I'm a product manager at a B2B SaaS startup. I work with engineers, designers, and executives. I value data-driven decisions.
+
+<strong>How would you like ChatGPT to respond?</strong>
+- Be concise (max 3 paragraphs unless I ask for detail)
+- Use bullet points for lists
+- Include relevant metrics/data when discussing strategy
+- Avoid jargon without explanation
+- End responses with 1-2 follow-up questions
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Result:</strong> Every response is now tailored to your role and preferences automatically.</p>
+                </div>
+                
+                <div class="success-box">
+                    <h3>Powerful System Message Templates</h3>
+                    
+                    <h4 style="margin-top: 1rem;">1. The Socratic Teacher</h4>
+                    <div class="prompt-example">
+You are a Socratic tutor. Never give direct answers. Instead, ask questions that guide me to discover the answer myself. If I'm stuck, provide hints.
+                    </div>
+                    
+                    <h4 style="margin-top: 1rem;">2. The Ruthless Editor</h4>
+                    <div class="prompt-example">
+You are a ruthless editor. Prioritize clarity and concision. Cut unnecessary words. Point out weak arguments. Be direct but constructive.
+                    </div>
+                    
+                    <h4 style="margin-top: 1rem;">3. The Expert Consultant</h4>
+                    <div class="prompt-example">
+You are a senior consultant at McKinsey. Structure all responses using: 1) Key insight upfront, 2) Supporting evidence, 3) Actionable recommendation. Use frameworks (SWOT, Porter's 5 Forces) when relevant.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Parameters -->
+            <section class="content-section">
+                <h2>🎛️ Technique 5: Controlling Parameters (Temperature, Top-P)</h2>
+                
+                <div class="parameter-control">
+                    <h3>Advanced Controls (API/Pro Users)</h3>
+                    
+                    <div class="parameter-item">
+                        <div class="parameter-name">Temperature (0.0 - 2.0)</div>
+                        <p><strong>What it controls:</strong> Randomness/creativity of outputs.</p>
+                        
+                        <div class="slider-visual">
+                            <span style="font-size: 0.875rem;">0.0 (Deterministic)</span>
+                            <div class="slider-bar"></div>
+                            <span style="font-size: 0.875rem;">2.0 (Chaotic)</span>
+                        </div>
+                        
+                        <ul style="margin-top: 1rem; line-height: 2;">
+                            <li><strong>Low (0.0-0.3):</strong> Factual, consistent, predictable. Use for: data extraction, code, technical writing</li>
+                            <li><strong>Medium (0.7-1.0):</strong> Balanced. Default for most tasks</li>
+                            <li><strong>High (1.5-2.0):</strong> Creative, surprising, risky. Use for: brainstorming, creative writing, unconventional ideas</li>
+                        </ul>
+                        
+                        <div class="example-demo">
+                            <p><strong>Example: "Write a tagline for eco-friendly shoes"</strong></p>
+                            <p><strong>Temperature 0.1:</strong> "Sustainable footwear for a better planet."</p>
+                            <p><strong>Temperature 1.5:</strong> "Walk softly, leave only footprints of change."</p>
+                        </div>
+                    </div>
+                    
+                    <div class="parameter-item">
+                        <div class="parameter-name">Top-P / Nucleus Sampling (0.0 - 1.0)</div>
+                        <p><strong>What it controls:</strong> Diversity of word choices. Limits AI to top X% probability words.</p>
+                        
+                        <ul style="margin-top: 1rem; line-height: 2;">
+                            <li><strong>Low (0.1-0.5):</strong> Focused, safe word choices</li>
+                            <li><strong>High (0.9-1.0):</strong> Allows rare, unexpected words</li>
+                        </ul>
+                        
+                        <p style="margin-top: 1rem;"><strong>Pro tip:</strong> Use high temperature OR high top-p, not both. Combining amplifies chaos.</p>
+                    </div>
+                    
+                    <div class="parameter-item">
+                        <div class="parameter-name">Max Tokens</div>
+                        <p><strong>What it controls:</strong> Maximum response length (1 token ≈ 0.75 words).</p>
+                        <p><strong>Use case:</strong> Force concise responses (max 100 tokens) or allow long-form content (max 4000 tokens).</p>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Note:</strong> ChatGPT web interface doesn't expose these controls (except via Custom Instructions). API users and ChatGPT Plus with Advanced Data Analysis can adjust parameters.</p>
+                </div>
+            </section>
+
+            <!-- Structured Outputs & JSON Mode -->
+            <section class="content-section">
+                <h2>📊 Technique 6: Structured Outputs & JSON Mode</h2>
+                
+                <div class="technique-card">
+                    <div class="technique-header">The Problem with Unstructured Responses</div>
+                    <p>You ask ChatGPT for product data, and it responds: <em>"Sure! Here's the information you requested: The product is called..."</em> — mixing explanatory text with data, making parsing impossible.</p>
+                    
+                    <p style="margin-top: 1rem;"><strong>The solution:</strong> Request structured outputs (especially JSON) with clear schemas. ChatGPT will return clean, parseable data you can use in code, databases, or APIs.</p>
+                </div>
+                
+                <h3>Why JSON Mode Matters</h3>
+                <ul>
+                    <li>✅ <strong>Parse data reliably:</strong> No extra text to strip away</li>
+                    <li>✅ <strong>Integrate with code:</strong> Direct API/database insertion</li>
+                    <li>✅ <strong>Validate structure:</strong> Ensure required fields are present</li>
+                    <li>✅ <strong>Scale workflows:</strong> Batch process hundreds of responses</li>
+                    <li>✅ <strong>Professional AI apps:</strong> Table stakes for production systems</li>
+                </ul>
+                
+                <h3>Basic JSON Request</h3>
+                
+                <div class="example-demo">
+                    <div class="prompt-example">
+Extract product information and return as valid JSON with this schema:
+{
+  "product_name": string,
+  "price": number,
+  "features": array of strings,
+  "rating": number (1-5),
+  "in_stock": boolean
+}
+
+Source text: "The UltraBook Pro laptop costs $1,299. Key features include 16GB RAM, 
+1TB SSD, and 14-hour battery life. Customers rate it 4.7 out of 5 stars. Currently 
+available for immediate shipping."
+
+Return ONLY valid JSON, no explanatory text before or after.
+                    </div>
+                    
+                    <div class="output-example">
+{
+  "product_name": "UltraBook Pro",
+  "price": 1299,
+  "features": ["16GB RAM", "1TB SSD", "14-hour battery life"],
+  "rating": 4.7,
+  "in_stock": true
+}
+                    </div>
+                </div>
+                
+                <h3>Advanced: Multi-Object JSON</h3>
+                
+                <div class="prompt-example">
+Extract all products from this page and return as a JSON array. Schema for each product:
+{
+  "name": string,
+  "brand": string,
+  "price": number,
+  "discount_percent": number or null,
+  "colors": array of strings
+}
+
+[Paste product listing HTML or text here]
+
+Return format: {"products": [...]}
+No markdown formatting. Pure JSON only.
+                </div>
+                
+                <h3>Schema Design Best Practices</h3>
+                
+                <div class="info-box">
+                    <p><strong>Tips for bulletproof JSON schemas:</strong></p>
+                    <ol>
+                        <li><strong>Be explicit about types:</strong> string, number, boolean, array, object</li>
+                        <li><strong>Specify required vs optional fields:</strong> Use "or null" for optional</li>
+                        <li><strong>Give examples:</strong> Show 1-2 sample outputs</li>
+                        <li><strong>Request validation:</strong> "Ensure all fields are present before returning"</li>
+                        <li><strong>Handle missing data:</strong> Specify defaults (null, empty array, etc.)</li>
+                    </ol>
+                </div>
+                
+                <h3>Error Handling & Validation</h3>
+                
+                <div class="prompt-example">
+Extract customer feedback and return JSON:
+{
+  "sentiment": "positive" | "negative" | "neutral",
+  "score": number (1-10),
+  "key_themes": array of strings (max 3),
+  "urgency": "low" | "medium" | "high"
+}
+
+Before returning:
+1. Validate all fields are present
+2. Ensure sentiment is one of the 3 allowed values
+3. Ensure score is between 1-10
+4. If any field can't be determined, use null
+
+Source: [customer review text]
+                </div>
+                
+                <h3>Real-World Use Cases</h3>
+                
+                <div class="use-cases-grid">
+                    <div class="use-case-card">
+                        <strong>📊 Data Extraction</strong>
+                        <p>Extract structured data from unstructured text, PDFs, or images (via vision)</p>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <strong>🔌 API Integration</strong>
+                        <p>Generate JSON that directly feeds into your application's API endpoints</p>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <strong>📋 Form Filling</strong>
+                        <p>Convert conversational inputs into structured form data</p>
+                    </div>
+                    
+                    <div class="use-case-card">
+                        <strong>📈 Report Generation</strong>
+                        <p>Create consistent, parseable reports for dashboards and analytics</p>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ Common Mistakes:</strong></p>
+                    <ul>
+                        <li><strong>Forgetting "no extra text":</strong> Always emphasize "return ONLY JSON"</li>
+                        <li><strong>Vague schemas:</strong> Be explicit about every field type and structure</li>
+                        <li><strong>No validation:</strong> Ask ChatGPT to validate before returning</li>
+                        <li><strong>Not handling nulls:</strong> Specify what to do when data is missing</li>
+                    </ul>
+                </div>
+                
+                <div class="success-box">
+                    <h3>🎯 Practice Exercise</h3>
+                    <p><strong>Challenge:</strong> Design a JSON schema and prompt for extracting job postings</p>
+                    <p><strong>Requirements:</strong></p>
+                    <ul>
+                        <li>Job title, company, location, salary range</li>
+                        <li>Required skills (array), experience years (number)</li>
+                        <li>Remote/hybrid/onsite (enum)</li>
+                        <li>Handle missing data gracefully</li>
+                    </ul>
+                    <p><strong>Test with:</strong> 2-3 real job posting paragraphs</p>
+                </div>
+            </section>
+
+            <!-- Advanced Reasoning Patterns -->
+            <section class="content-section">
+                <h2>🧠 Technique 7: Advanced Reasoning Patterns</h2>
+                
+                <p>Beyond basic chain-of-thought, these patterns unlock deeper reasoning for complex problems.</p>
+                
+                <h3>ReAct: Reasoning + Acting</h3>
+                
+                <div class="technique-card">
+                    <p><strong>What it is:</strong> Interleave thinking (reasoning) with actions (tool use, lookups, calculations). Think → Act → Observe → Repeat.</p>
+                    
+                    <p><strong>Best for:</strong> Multi-step problems requiring external information or calculations</p>
+                    
+                    <div class="prompt-example">
+Answer this question using ReAct (Reasoning + Acting) pattern:
+"What's the current market cap of Apple compared to 5 years ago?"
+
+Format:
+Thought: [Your reasoning]
+Action: [What information you need]
+Observation: [What you found/calculated]
+Thought: [Next reasoning step]
+... (repeat until final answer)
+Answer: [Final conclusion]
+                    </div>
+                </div>
+                
+                <h3>Self-Consistency: Multiple Paths to Truth</h3>
+                
+                <div class="technique-card">
+                    <p><strong>What it is:</strong> Generate multiple independent reasoning paths, then identify the consensus answer. Reduces errors on complex problems.</p>
+                    
+                    <p><strong>Best for:</strong> Math, logic puzzles, critical decisions</p>
+                    
+                    <div class="prompt-example">
+Solve this problem using 3 different approaches, then identify the consensus answer:
+
+Problem: "A store offers 20% off, then an additional 10% off the sale price. 
+If an item originally costs $100, what's the final price?"
+
+Approach 1: [Calculate step-by-step]
+Approach 2: [Use a different method]
+Approach 3: [Verify with alternative logic]
+
+Consensus answer: [If all 3 agree, that's the answer. If not, identify the error.]
+                    </div>
+                </div>
+                
+                <h3>Reflection: Self-Critique & Improve</h3>
+                
+                <div class="technique-card">
+                    <p><strong>What it is:</strong> Ask ChatGPT to critique its own response and improve it. Creates iterative refinement loop.</p>
+                    
+                    <p><strong>Best for:</strong> Writing, strategy, analysis—anything benefiting from revision</p>
+                    
+                    <div class="prompt-example">
+Write a cold outreach email for B2B sales.
+
+Then:
+1. Critique your own email: What's weak? What could be better?
+2. Rewrite it addressing those critiques
+3. Final version only (no explanations)
+                    </div>
+                    
+                    <div class="example-demo" style="margin-top: 1rem;">
+                        <p><strong>Advanced version:</strong></p>
+                        <div class="prompt-example">
+[Your initial task/question]
+
+After completing, do a self-review:
+- Score your answer 1-10 on: accuracy, completeness, clarity
+- Identify 2-3 specific weaknesses
+- Provide an improved version addressing those weaknesses
+- Explain what makes the improved version better
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Tree-of-Thought: Explore Multiple Reasoning Branches</h3>
+                
+                <div class="technique-card">
+                    <p><strong>What it is:</strong> Instead of one linear reasoning chain, explore multiple paths simultaneously, evaluate each, then choose the best.</p>
+                    
+                    <p><strong>Best for:</strong> Strategic decisions, creative problems, complex tradeoffs</p>
+                    
+                    <div class="prompt-example">
+Problem: Should our startup expand to Europe or double down on North America?
+
+Use tree-of-thought reasoning:
+
+Branch 1: Optimistic expansion scenario
+- Key assumptions: [...]
+- Pros: [...]
+- Cons: [...]
+- Likely outcome: [...]
+
+Branch 2: Conservative consolidation scenario
+- Key assumptions: [...]
+- Pros: [...]
+- Cons: [...]
+- Likely outcome: [...]
+
+Branch 3: Data-driven hybrid approach
+- Key assumptions: [...]
+- Pros: [...]
+- Cons: [...]
+- Likely outcome: [...]
+
+Evaluation: Which branch has the strongest reasoning? Why?
+Recommendation: [Choose best path with rationale]
+                    </div>
+                </div>
+                
+                <h3>When to Use Each Pattern</h3>
+                
+                <div class="comparison-grid">
+                    <div class="technique-comparison">
+                        <div class="comparison-title">Use ReAct when...</div>
+                        <ul>
+                            <li>Need external information</li>
+                            <li>Multi-step research required</li>
+                            <li>Problem needs tool/calculation use</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title">Use Self-Consistency when...</div>
+                        <ul>
+                            <li>High stakes decision</li>
+                            <li>Math or logic problems</li>
+                            <li>Need error checking</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title">Use Reflection when...</div>
+                        <ul>
+                            <li>Quality matters most</li>
+                            <li>Creative/strategic work</li>
+                            <li>Time for iteration</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="technique-comparison">
+                        <div class="comparison-title">Use Tree-of-Thought when...</div>
+                        <ul>
+                            <li>Complex tradeoffs</li>
+                            <li>Multiple viable paths</li>
+                            <li>Strategic planning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <h3>🎯 Practice Challenge</h3>
+                    <p><strong>Pick one pattern and apply it:</strong></p>
+                    <p>Problem: "Should I quit my job to start a business?"</p>
+                    <ul>
+                        <li><strong>ReAct:</strong> Research → Think → Research more</li>
+                        <li><strong>Self-Consistency:</strong> 3 different risk analyses</li>
+                        <li><strong>Reflection:</strong> Initial advice → Critique → Better advice</li>
+                        <li><strong>Tree-of-Thought:</strong> Quit now vs wait 6mo vs side hustle first</li>
+                    </ul>
+                    <p>Which pattern gives you the most insight?</p>
+                </div>
+            </section>
+
+            <!-- Combining Techniques -->
+            <section class="content-section">
+                <h2>🚀 Power Move: Combining Techniques</h2>
+                
+                <div class="success-box">
+                    <h3>Ultimate Prompt Template (All Techniques)</h3>
+                    
+                    <div class="prompt-example" style="margin-top: 1rem;">
+<strong>[ROLE]</strong> Act as a senior financial analyst at Goldman Sachs with 15 years of experience.
+
+<strong>[CONTEXT]</strong> I'm evaluating whether to invest $50K in cryptocurrency.
+
+<strong>[FEW-SHOT EXAMPLES]</strong> When analyzing investments, use this format:
+- Risk level: [High/Medium/Low]
+- Timeframe: [Short/Medium/Long-term]
+- Key factors: [3-5 bullets]
+- Recommendation: [Clear yes/no with reasoning]
+
+<strong>[CHAIN-OF-THOUGHT]</strong> Think through this step-by-step:
+1. Assess market conditions
+2. Evaluate risk vs potential return
+3. Consider my situation
+4. Provide recommendation
+
+<strong>[SPECIFIC ASK]</strong> Should I invest in cryptocurrency now? Use the format above.
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Result:</strong> Highly structured, expert-level analysis that matches your needs exactly.</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Technique Testing Lab</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Test Each Technique</h3>
+                    
+                    <p><strong>Task:</strong> Try the same question with different techniques, compare results.</p>
+                    
+                    <h4 style="margin-top: 1.5rem;">Question: "How can I improve my website's conversion rate?"</h4>
+                    
+                    <ol style="margin-top: 1rem; line-height: 2.5;">
+                        <li><strong>Zero-shot:</strong> Ask the question directly.<br>
+                        <em>Observe: Generic advice?</em></li>
+                        
+                        <li><strong>Few-shot:</strong> Provide 2 examples of analysis you like, then ask.<br>
+                        <em>Observe: Does it match your style?</em></li>
+                        
+                        <li><strong>Chain-of-thought:</strong> "Let's think step-by-step. First analyze current state, then identify bottlenecks, then suggest improvements."<br>
+                        <em>Observe: More structured reasoning?</em></li>
+                        
+                        <li><strong>Role-based:</strong> "Act as a conversion rate optimization expert at Amazon..."<br>
+                        <em>Observe: More specific tactics?</em></li>
+                        
+                        <li><strong>Combined:</strong> Use role + CoT + examples.<br>
+                        <em>Observe: Best quality output?</em></li>
+                    </ol>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Reflection:</strong> Which technique gave you the most valuable answer? Why?</p>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Advanced Techniques Arsenal</h2>
+                
+                <ul>
+                    <li>✅ <strong>Zero-shot vs few-shot:</strong> No examples vs 2-5 examples to train patterns</li>
+                    <li>✅ <strong>Chain-of-thought:</strong> "Think step-by-step" → 78% accuracy boost on reasoning tasks</li>
+                    <li>✅ <strong>Role-based prompting:</strong> "Act as [expert]" → shapes vocabulary, depth, perspective</li>
+                    <li>✅ <strong>System messages:</strong> Custom Instructions for persistent behavior across conversations</li>
+                    <li>✅ <strong>Parameters:</strong> Temperature (creativity), top-p (diversity), max tokens (length)</li>
+                    <li>✅ <strong>Combining techniques:</strong> Role + CoT + few-shot = ultimate precision</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> These techniques aren't just "tricks" — they're how professional prompt engineers earn $150K+. Master them, and you'll extract 10x more value from ChatGPT than 95% of users. Next, we'll package these into reusable frameworks.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What's the main difference between zero-shot and few-shot prompting?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Zero-shot is always better</div>
+                            <div class="quiz-option" data-value="b">Few-shot provides 2-5 examples to show the pattern you want</div>
+                            <div class="quiz-option" data-value="c">They're the same thing</div>
+                            <div class="quiz-option" data-value="d">Few-shot only works for coding</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 2: What does chain-of-thought prompting do?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Forces ChatGPT to show step-by-step reasoning before answering</div>
+                            <div class="quiz-option" data-value="b">Makes responses longer</div>
+                            <div class="quiz-option" data-value="c">Only works for math problems</div>
+                            <div class="quiz-option" data-value="d">Slows down ChatGPT unnecessarily</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 3: What does low temperature (0.0-0.3) produce?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">More creative, random outputs</div>
+                            <div class="quiz-option" data-value="b">Slower responses</div>
+                            <div class="quiz-option" data-value="c">Deterministic, factual, consistent outputs</div>
+                            <div class="quiz-option" data-value="d">Shorter responses</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: Why does role-based prompting work?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It's just a placebo effect</div>
+                            <div class="quiz-option" data-value="b">Training data includes examples of how different experts write, roles activate relevant patterns</div>
+                            <div class="quiz-option" data-value="c">ChatGPT actually becomes an expert</div>
+                            <div class="quiz-option" data-value="d">Only works with medical/legal roles</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the best approach for complex reasoning tasks?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Just ask the question directly</div>
+                            <div class="quiz-option" data-value="b">Use high temperature for creativity</div>
+                            <div class="quiz-option" data-value="c">Combine role-based + chain-of-thought + specific examples</div>
+                            <div class="quiz-option" data-value="d">Keep prompts as short as possible</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommended Resources -->
+            <section style="background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 3rem 0; border: 2px solid #078930;">
+                <h2 style="color: #065f46; margin-top: 0;">🎓 Advanced AI Learning Paths</h2>
+                <p style="font-size: 1.1rem; color: #065f46; line-height: 1.7; margin-bottom: 1.5rem;">
+                    You've mastered advanced techniques. Take your skills to professional level with specialized courses and certifications:
+                </p>
+
+                <!-- Coursera - DeepLearning.AI -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">🏆</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">ChatGPT Prompt Engineering for Developers</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Coursera (DeepLearning.AI) | Free Audit / $49 Certificate</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Taught by Andrew Ng:</strong> Learn directly from the pioneer of modern AI. This course covers prompt engineering best practices, API usage, and building AI applications. Highly recognized certification for your resume.
+                    </p>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border-left: 3px solid #078930; margin-bottom: 1rem;">
+                        <p style="margin: 0; color: #334155; font-size: 0.95rem;"><strong>💡 Perfect for:</strong> Developers and technical professionals who want university-quality education from AI pioneers. Includes hands-on coding exercises and API integration projects.</p>
+                    </div>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>Expert Instructors:</strong> Andrew Ng + Isa Fulford (OpenAI)</li>
+                        <li><strong>Hands-On Projects:</strong> Build real AI applications</li>
+                        <li><strong>Shareable Certificate:</strong> Add to LinkedIn</li>
+                        <li><strong>Flexible Schedule:</strong> Complete at your pace</li>
+                    </ul>
+                    <a href="https://www.coursera.org/learn/prompt-engineering" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Enroll on Coursera →
+                    </a>
+                </div>
+
+                <!-- Udemy Advanced Course -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">🚀</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">Advanced ChatGPT & API Mastery</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Udemy | ₹499-899</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Practical implementation:</strong> 15-25 hour courses covering advanced techniques, API integration, custom GPT building, and real-world business applications. Great for hands-on learners.
+                    </p>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>API Integration:</strong> Python scripts with OpenAI API</li>
+                        <li><strong>Custom GPTs:</strong> Build specialized AI assistants</li>
+                        <li><strong>Business Cases:</strong> Real-world implementation examples</li>
+                        <li><strong>Q&A Support:</strong> Direct instructor access</li>
+                    </ul>
+                    <a href="https://www.udemy.com/courses/search/?q=advanced%20chatgpt" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Browse Advanced Courses →
+                    </a>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Master Proven Frameworks</h2>
+                
+                <p>You've learned individual techniques. Now let's package them into <strong>battle-tested frameworks</strong> — RISEN, RTF, CRAFT — that prompt engineers use for consistent, high-quality results every time.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Tutorial 4:</strong> Learn three proven prompt frameworks (RISEN, RTF, CRAFT) that structure your thinking and deliver professional-grade outputs. Plus, build your personal prompt template library.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="prompt-engineering-fundamentals.html" class="prev">← Tutorial 2: Prompt Fundamentals</a>
+                    <a href="prompt-frameworks-templates.html" class="next">Module 4: Frameworks →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

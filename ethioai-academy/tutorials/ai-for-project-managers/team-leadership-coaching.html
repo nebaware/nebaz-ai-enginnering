@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 7: Team Leadership & Coaching | AI for Project Managers</title>
+    <meta name="description" content="Handle difficult conversations, provide constructive feedback, motivate teams, and develop leadership communication skills.">
+    
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-meta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-badge {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .tutorial-content h2 {
+            border-bottom: 3px solid #ddd6fe;
+        }
+        
+        /* Learning Objectives */
+        .learning-objectives {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            border: 2px solid #c4b5fd;
+            box-shadow: 0 4px 6px rgba(139, 92, 246, 0.1);
+        }
+        
+        .learning-objectives h3 {
+            color: #6d28d9;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .objective-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #8b5cf6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .objective-item::before {
+            content: "✓";
+            color: #8b5cf6;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 5px solid #078930;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 5px solid #f59e0b;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #10b981;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Two Column Grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        /* Conversation Scenario Cards */
+        .conversation-scenario {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .conversation-scenario:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #8b5cf6;
+        }
+        
+        .conversation-scenario h4 {
+            color: #6d28d9;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .conversation-scenario .icon {
+            font-size: 2rem;
+        }
+        
+        /* Dialogue Boxes */
+        .dialogue-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .dialogue-before {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+        }
+        
+        .dialogue-after {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: #10b981;
+        }
+        
+        .dialogue-box .label {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .dialogue-box .text {
+            font-style: italic;
+            line-height: 1.7;
+            color: #475569;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #1e293b !important;
+            border-radius: 0.75rem;
+            padding: 1.5rem !important;
+            margin: 2rem 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Practice Exercise */
+        .practice-exercise {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+        
+        .practice-exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #10b981;
+        }
+        
+        .key-takeaways h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-takeaways ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .key-takeaways li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+        
+        .key-takeaways li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        /* Navigation */
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1.5rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .tutorial-content h1 {
+                font-size: 2rem;
+            }
+            
+            .tutorial-content h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content h3 {
+                font-size: 1.35rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+            
+            .objectives-grid,
+            .two-column-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-project-managers.html">AI for Project Managers</a> → 
+                Module 7
+            </div>
+            <h1 class="page-title">Tutorial 7: Team Leadership & Coaching</h1>
+            <p class="tutorial-intro">Handle difficult conversations, provide constructive feedback, motivate teams, and develop leadership communication skills.</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📚 Week 4</span>
+                <span class="meta-item">🎯 Intermediate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <!-- Learning Objectives -->
+        <div class="learning-objectives">
+            <h3>🎯 What You'll Master</h3>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    Navigate difficult conversations with confidence and empathy
+                </div>
+                <div class="objective-item">
+                    Deliver constructive feedback that motivates instead of demotivates
+                </div>
+                <div class="objective-item">
+                    Develop coaching scripts for underperforming team members
+                </div>
+                <div class="objective-item">
+                    Build recognition messages that authentically boost team morale
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <h2>The Leadership Communication Gap</h2>
+        
+        <p>
+            Project Managers are expected to lead teams without formal authority—no hiring/firing power, no direct reports, 
+            yet responsible for performance, morale, and outcomes. The hardest part? <strong>Having difficult conversations 
+            you're not trained for</strong>.
+        </p>
+
+        <div class="warning-box">
+            <h4>⚠️ The PM Leadership Paradox</h4>
+            <p><strong>What PMs Avoid (But Shouldn't):</strong></p>
+            <ul>
+                <li>Giving critical feedback to senior developers</li>
+                <li>Addressing missed deadlines without sounding accusatory</li>
+                <li>Motivating burned-out team members</li>
+                <li>Coaching underperformers (especially when they're more senior technically)</li>
+                <li>Delivering bad news about scope/timeline changes</li>
+            </ul>
+            <p><strong>Result:</strong> Issues fester, resentment builds, projects suffer—all because we delay tough conversations.</p>
+        </div>
+
+        <p>
+            ChatGPT acts as your <strong>leadership coach</strong>—helping you prepare for difficult conversations, craft 
+            feedback that lands well, and develop communication strategies that build trust instead of burning bridges.
+        </p>
+
+        <!-- Difficult Conversations -->
+        <h2>💬 1. Handling Difficult Conversations</h2>
+
+        <p>
+            The key to difficult conversations is <strong>preparation</strong>. ChatGPT helps you anticipate reactions, 
+            plan your approach, and stay calm when emotions run high.
+        </p>
+
+        <h3>The 4-Step Difficult Conversation Framework</h3>
+
+        <div class="two-column-grid">
+            <div class="info-box">
+                <h4>1️⃣ Open with Empathy</h4>
+                <p>Acknowledge the other person's perspective first</p>
+                <p><strong>Example:</strong> "I know you've been working incredibly hard..."</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>2️⃣ State the Facts</h4>
+                <p>Describe the situation objectively, without judgment</p>
+                <p><strong>Example:</strong> "The last 3 milestones were delivered 2-4 days late..."</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>3️⃣ Explain the Impact</h4>
+                <p>Show how the behavior affects the team/project</p>
+                <p><strong>Example:</strong> "This creates downstream delays for QA and blocks launch..."</p>
+            </div>
+            
+            <div class="info-box">
+                <h4>4️⃣ Collaborate on Solutions</h4>
+                <p>Invite them to problem-solve with you</p>
+                <p><strong>Example:</strong> "What support do you need to hit deadlines going forward?"</p>
+            </div>
+        </div>
+
+        <h3>ChatGPT Conversation Prep Prompt</h3>
+
+        <pre><code class="language-plaintext">Help me prepare for a difficult conversation with a team member:
+
+Situation:
+Sarah is a senior backend developer who's been missing deadlines consistently for 3 weeks. 
+She's technically brilliant but seems disengaged lately. Other team members are picking up 
+her slack and it's causing resentment.
+
+Background:
+- Missed 3 consecutive milestones (2-5 days late each)
+- Daily standups: says "everything's fine" but doesn't provide specifics
+- Code quality remains high, but velocity is down 40%
+- I suspect she's burned out or dealing with personal issues
+
+My Concerns:
+- Don't want to sound accusatory (she's a valuable team member)
+- Need to address the pattern without damaging our relationship
+- Other devs are starting to complain
+- Project timeline is at risk
+
+Help me:
+1. Draft an opening statement that's empathetic but direct
+2. Anticipate her possible reactions and how to respond
+3. Suggest questions to uncover root cause
+4. Create a collaborative action plan framework
+5. Identify what support I can offer
+
+Tone: Supportive but firm, focused on solutions not blame</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Conversation Guide:</h4>
+            
+            <div class="conversation-scenario">
+                <h4><span class="icon">🗣️</span> Opening Statement (Empathy + Facts)</h4>
+                
+                <div class="dialogue-after">
+                    <div class="label">✅ What to Say:</div>
+                    <div class="text">
+                        "Sarah, thanks for making time to talk. I want to check in with you because I've noticed some changes 
+                        in the past few weeks that I'm concerned about. You're one of our strongest developers, and I value 
+                        your contributions enormously. At the same time, I've noticed that the last three milestones—authentication 
+                        module, payment integration, and API documentation—were each delivered 2-5 days behind schedule. I know 
+                        you're working hard, and I'm not questioning your effort. But I wanted to talk with you directly to 
+                        understand what's going on and how I can support you."
+                    </div>
+                </div>
+                
+                <div class="warning-box" style="margin-top: 1.5rem;">
+                    <h4>❌ What NOT to Say:</h4>
+                    <div class="dialogue-before">
+                        <div class="text">
+                            "Sarah, you've been missing every deadline lately. The team is complaining and I need you to get 
+                            back on track. Is something wrong?"
+                        </div>
+                    </div>
+                    <p style="margin-top: 1rem;"><strong>Why this fails:</strong> Starts with accusation, invites defensiveness, 
+                    sounds like you're responding to team complaints rather than genuine concern.</p>
+                </div>
+            </div>
+            
+            <div class="conversation-scenario">
+                <h4><span class="icon">🎭</span> Anticipating Reactions & Responses</h4>
+                
+                <p><strong>Reaction 1: Defensive ("I'm doing my best!")</strong></p>
+                <div class="dialogue-after">
+                    <div class="label">Your Response:</div>
+                    <div class="text">
+                        "I absolutely believe that, and I'm not questioning your effort at all. You're one of the hardest-working 
+                        people on this team. That's actually why I'm concerned—if someone as capable as you is struggling to meet 
+                        timelines, it tells me something systemic might be wrong. Can you help me understand what's blocking you?"
+                    </div>
+                </div>
+                
+                <p style="margin-top: 1.5rem;"><strong>Reaction 2: Deflection ("The requirements keep changing")</strong></p>
+                <div class="dialogue-after">
+                    <div class="label">Your Response:</div>
+                    <div class="text">
+                        "That's a really valid point, and I appreciate you bringing it up. Scope creep has been an issue. 
+                        Let's absolutely address that. But even accounting for those changes, we're seeing a pattern that's 
+                        different from your usual pace. Is there something else contributing to this?"
+                    </div>
+                </div>
+                
+                <p style="margin-top: 1.5rem;"><strong>Reaction 3: Opens Up ("I'm honestly just burned out")</strong></p>
+                <div class="dialogue-after">
+                    <div class="label">Your Response:</div>
+                    <div class="text">
+                        "Thank you for being honest with me. Burnout is real, and I want to make sure we address it before it 
+                        gets worse. What would help right now? Should we look at redistributing some of your tasks, giving you 
+                        a break after this sprint, or adjusting expectations for the next few weeks?"
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4>🤝 Collaborative Action Plan Framework:</h4>
+                
+                <p><strong>Questions to Ask:</strong></p>
+                <ol>
+                    <li>"What's the biggest obstacle preventing you from hitting your deadlines?"</li>
+                    <li>"On a scale of 1-10, how manageable does your workload feel right now?"</li>
+                    <li>"Is there anything happening outside of work that I should be aware of? (You don't have to share details, 
+                    but it helps me understand how to support you)"</li>
+                    <li>"What would success look like for you over the next 2-3 weeks?"</li>
+                </ol>
+                
+                <p style="margin-top: 1.5rem;"><strong>Support You Can Offer:</strong></p>
+                <ul>
+                    <li><strong>Workload Adjustment:</strong> "I can reassign the API testing to Mike to lighten your plate"</li>
+                    <li><strong>Time Off:</strong> "Take Friday off to recharge—no questions asked"</li>
+                    <li><strong>Flexible Schedule:</strong> "If you need to shift your hours or work remotely more, that's fine"</li>
+                    <li><strong>Pair Programming:</strong> "Want to pair with another dev on complex tasks to speed things up?"</li>
+                    <li><strong>Weekly Check-ins:</strong> "Let's do a quick 1-on-1 every Monday to catch issues early"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Constructive Feedback -->
+        <h2>📝 2. Delivering Constructive Feedback</h2>
+
+        <p>
+            Feedback is only useful if it's <strong>specific, actionable, and delivered in a way that motivates improvement</strong>. 
+            Generic praise ("Great job!") or vague criticism ("Your code needs work") doesn't help anyone grow.
+        </p>
+
+        <h3>The SBI Feedback Model (Situation-Behavior-Impact)</h3>
+
+        <div class="info-box">
+            <h4>📊 How SBI Works:</h4>
+            <ol>
+                <li><strong>Situation:</strong> Describe when and where the behavior occurred (context)</li>
+                <li><strong>Behavior:</strong> Describe the specific, observable action (facts, not judgments)</li>
+                <li><strong>Impact:</strong> Explain the result of that behavior (consequences)</li>
+            </ol>
+            <p style="margin-top: 1rem;"><strong>Why it works:</strong> Removes emotion, focuses on facts, shows real-world consequences.</p>
+        </div>
+
+        <h3>ChatGPT Feedback Generation Prompt</h3>
+
+        <pre><code class="language-plaintext">Generate constructive feedback using the SBI (Situation-Behavior-Impact) model:
+
+Person: Junior developer (Alex)
+Context: Sprint retrospective revealed communication issues
+
+Behaviors to Address:
+1. Doesn't speak up in daily standups (says "no blockers" even when stuck)
+2. Submits PRs without context/descriptions
+3. Asks questions via DM instead of in team channels (others can't learn)
+
+My Goal:
+- Encourage better communication habits
+- Don't discourage asking questions (that's good!)
+- Show how these behaviors impact the team
+- Provide specific actions they can take
+
+Tone: Supportive coaching, growth-oriented
+
+Generate:
+1. SBI feedback for each behavior
+2. Specific actions Alex can take to improve
+3. Positive examples of good communication to model
+4. Follow-up plan to track progress</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Feedback Framework:</h4>
+            
+            <div class="conversation-scenario">
+                <h4>📌 Feedback #1: Speaking Up in Standups</h4>
+                
+                <p><strong>Situation:</strong> "In the last three daily standups..."</p>
+                <p><strong>Behavior:</strong> "...you said 'no blockers' each time, but later I found out you were stuck on 
+                the authentication bug for 2 days."</p>
+                <p><strong>Impact:</strong> "This meant you lost 2 days of productivity when someone could have helped you 
+                in 20 minutes. It also delayed the feature for the entire team."</p>
+                
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <h4>✅ Specific Actions to Improve:</h4>
+                    <ul>
+                        <li><strong>In standups:</strong> "If you've been stuck on something for more than 2 hours, say so—even 
+                        if you think you'll figure it out"</li>
+                        <li><strong>Use this phrase:</strong> "I'm working on [X], and I could use a quick sanity check on [Y]"</li>
+                        <li><strong>Reframe 'blockers':</strong> It's not a sign of weakness—it's how teams stay unblocked</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="conversation-scenario">
+                <h4>📌 Feedback #2: Pull Request Descriptions</h4>
+                
+                <p><strong>Situation:</strong> "When you submitted the user profile PR yesterday..."</p>
+                <p><strong>Behavior:</strong> "...the description was empty, and the title just said 'user profile updates'"</p>
+                <p><strong>Impact:</strong> "The reviewer (Sarah) had to spend 30 extra minutes reading through the code to 
+                understand what changed and why. It also makes it harder for us to track changes in the future."</p>
+                
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <h4>✅ Specific Actions to Improve:</h4>
+                    <ul>
+                        <li><strong>PR Template:</strong> Use this format:
+                            <ul style="margin-top: 0.5rem;">
+                                <li><strong>What:</strong> Brief summary of changes</li>
+                                <li><strong>Why:</strong> Problem you're solving or feature you're adding</li>
+                                <li><strong>How:</strong> Key technical decisions</li>
+                                <li><strong>Testing:</strong> How you verified it works</li>
+                            </ul>
+                        </li>
+                        <li><strong>Good example:</strong> "Show Alex Sarah's recent PR as a model"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="conversation-scenario">
+                <h4>📌 Feedback #3: Asking Questions Publicly</h4>
+                
+                <p><strong>Situation:</strong> "Over the past 2 weeks..."</p>
+                <p><strong>Behavior:</strong> "...you've DMed me and other developers with technical questions instead of 
+                posting in #engineering-help"</p>
+                <p><strong>Impact:</strong> "This means other juniors don't benefit from the answers, and we end up answering 
+                the same questions multiple times. Also, it limits who can help you—sometimes someone else has a better answer."</p>
+                
+                <div class="success-box" style="margin-top: 1.5rem;">
+                    <h4>✅ Specific Actions to Improve:</h4>
+                    <ul>
+                        <li><strong>Default to public channels:</strong> Post questions in #engineering-help first</li>
+                        <li><strong>DMs are fine for:</strong> Sensitive topics, personal issues, or follow-ups to public threads</li>
+                        <li><strong>Bonus:</strong> When you figure something out, post the solution publicly so others learn</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4>📈 Follow-Up Plan (Next 2 Weeks):</h4>
+                <ol>
+                    <li><strong>Week 1:</strong> Daily check-in after standup ("How's it going? Any blockers today?")</li>
+                    <li><strong>Week 2:</strong> Review Alex's last 3 PRs—are descriptions improving?</li>
+                    <li><strong>Week 2:</strong> Monitor #engineering-help—is Alex asking questions publicly?</li>
+                    <li><strong>End of Week 2:</strong> Quick 1-on-1: "How are the communication changes feeling? Any challenges?"</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Recognition & Motivation -->
+        <h2>🏆 3. Recognition & Motivation Messages</h2>
+
+        <p>
+            Recognition is one of the most underutilized leadership tools. When done well, it <strong>boosts morale, reinforces 
+            positive behaviors, and builds team culture</strong>. When done poorly (generic "good job!" messages), it feels hollow.
+        </p>
+
+        <h3>What Makes Recognition Effective?</h3>
+
+        <div class="two-column-grid">
+            <div class="success-box">
+                <h4>✅ Effective Recognition:</h4>
+                <ul>
+                    <li><strong>Specific:</strong> References exact actions</li>
+                    <li><strong>Timely:</strong> Given soon after the achievement</li>
+                    <li><strong>Impact-Focused:</strong> Shows why it mattered</li>
+                    <li><strong>Public (when appropriate):</strong> Shared with team/company</li>
+                    <li><strong>Authentic:</strong> Genuinely felt, not formulaic</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <h4>❌ Ineffective Recognition:</h4>
+                <ul>
+                    <li><strong>Vague:</strong> "Great work on the project!"</li>
+                    <li><strong>Late:</strong> Recognition 2 months after the fact</li>
+                    <li><strong>Generic:</strong> Copy-paste messages</li>
+                    <li><strong>Private only:</strong> No team visibility</li>
+                    <li><strong>Insincere:</strong> Feels like checkbox exercise</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>ChatGPT Recognition Prompt</h3>
+
+        <pre><code class="language-plaintext">Write a team recognition message for someone who went above and beyond:
+
+Person: Maria (UX Designer)
+Achievement: Completely redesigned the checkout flow in 3 days (originally estimated 2 weeks)
+
+Context:
+- We had a tight deadline (investor demo in 5 days)
+- Original design had 8 steps; Maria simplified it to 3
+- She worked late nights and weekends without being asked
+- User testing showed 40% increase in completion rate
+- Other designers helped, but Maria drove the effort
+
+Audience: Public announcement in company Slack channel
+
+Tone: Grateful, specific about impact, celebrates team collaboration
+
+Include:
+- Specific actions Maria took
+- Business impact of the work
+- Personal qualities demonstrated
+- Thank other team members who helped
+- Emoji and energy (but keep professional)</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Recognition Message:</h4>
+            
+            <div style="background: white; padding: 2rem; border-radius: 1rem; border: 2px solid #10b981; margin: 2rem 0;">
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                    <strong>🎉 HUGE shoutout to Maria for absolutely crushing the checkout redesign! 🎉</strong>
+                </p>
+                
+                <p>
+                    With only 5 days until our investor demo, Maria took on what was scoped as a 2-week project and delivered 
+                    it in 3 days—without sacrificing quality or cutting corners.
+                </p>
+                
+                <p><strong>What she did:</strong></p>
+                <ul>
+                    <li>Simplified our 8-step checkout flow down to 3 steps (massive UX win)</li>
+                    <li>Ran guerrilla user testing with 12 customers over the weekend to validate the design</li>
+                    <li>Collaborated closely with Dev and Product to ensure feasibility</li>
+                    <li>Created high-fidelity prototypes that the dev team could implement immediately</li>
+                </ul>
+                
+                <p><strong>The impact:</strong> User testing showed a <strong>40% increase in checkout completion rates</strong>. 
+                This redesign is going to directly boost revenue and customer satisfaction. 🚀</p>
+                
+                <p>
+                    Maria—your dedication, creativity, and problem-solving under pressure were incredible to watch. You didn't 
+                    just meet the deadline; you delivered something that's genuinely better than what we originally planned.
+                </p>
+                
+                <p>
+                    Also want to recognize <strong>Priya and Jake</strong> for jumping in to help with user testing and feedback 
+                    sessions. Team effort all the way. 💪
+                </p>
+                
+                <p style="margin-bottom: 0;">
+                    <strong>Thank you, Maria. This is the kind of work that makes our team exceptional. 🙌</strong>
+                </p>
+            </div>
+            
+            <div class="info-box">
+                <h4>💡 Why This Works:</h4>
+                <ul>
+                    <li><strong>Specificity:</strong> Lists exactly what Maria did (not just "great job")</li>
+                    <li><strong>Impact:</strong> Quantifies results (40% completion rate increase)</li>
+                    <li><strong>Context:</strong> Explains the tight timeline and pressure</li>
+                    <li><strong>Collaboration:</strong> Acknowledges others who helped</li>
+                    <li><strong>Qualities:</strong> Highlights dedication, creativity, problem-solving</li>
+                    <li><strong>Tone:</strong> Enthusiastic and genuine (emoji use is appropriate for Slack culture)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Practice Exercise -->
+        <div class="practice-exercise">
+            <h3>🎯 Practice Exercise: The Underperformer Coaching Conversation</h3>
+            
+            <p><strong>Scenario:</strong></p>
+            <p>
+                You manage a 10-person development team. One developer, Tom, has been underperforming for 6 weeks. He's a 
+                mid-level dev (3 years experience) who was previously solid but is now:
+            </p>
+            
+            <ul>
+                <li>Delivering features 30-50% slower than estimated</li>
+                <li>Code reviews reveal sloppy work (missing edge cases, poor documentation)</li>
+                <li>Seems disengaged in meetings (cameras off, doesn't participate)</li>
+                <li>Other devs are frustrated because they're picking up his slack</li>
+            </ul>
+            
+            <p>
+                You need to have a coaching conversation tomorrow. Your goal is to understand what's wrong, set clear 
+                expectations, and create an improvement plan—without demotivating him further or coming across as punitive.
+            </p>
+
+            <p><strong>Your Task:</strong></p>
+            <ol>
+                <li><strong>Prep your opening:</strong> Write the first 2-3 sentences using the empathy + facts framework</li>
+                <li><strong>Anticipate 3 reactions:</strong> How will you respond to defensiveness, excuses, or shutting down?</li>
+                <li><strong>Create an improvement plan:</strong> What specific actions and timeline?</li>
+                <li><strong>Define support:</strong> What can you offer to help Tom succeed?</li>
+            </ol>
+
+            <div class="info-box" style="margin-top: 1.5rem;">
+                <h4>💡 Use This Prompt:</h4>
+                <pre style="background: white; padding: 1rem; border-radius: 0.5rem;"><code class="language-plaintext">Help me prepare for an underperformance coaching conversation:
+
+Team Member: Tom (mid-level developer, 3 years experience)
+Duration of Issue: 6 weeks
+Previous Performance: Solid, reliable
+
+Current Issues:
+- Velocity down 30-50% (used to complete 8 story points/sprint, now 4-5)
+- Code quality declining (3 bugs found in last 2 PRs, normally none)
+- Disengaged in meetings (camera off, minimal participation)
+- Team members complaining about picking up his work
+
+Possible Causes (Unknown):
+- Personal issues?
+- Burnout?
+- Bored with current work?
+- Looking for new job?
+- Technical skill gap?
+
+My Goals:
+1. Understand root cause without prying into personal life
+2. Set clear performance expectations
+3. Create 30-day improvement plan
+4. Offer support while holding accountability
+5. Avoid being punitive or demotivating
+
+Generate:
+1. Opening statement (empathetic but direct)
+2. 3 possible reactions and how to respond
+3. Questions to uncover root cause
+4. 30-day improvement plan with milestones
+5. Support I can offer vs. expectations I must hold</code></pre>
+            </div>
+
+            <details style="margin-top: 1.5rem;">
+                <summary style="cursor: pointer; font-weight: 600; color: #92400e; font-size: 1.1rem;">
+                    View Sample Coaching Plan ↓
+                </summary>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h4>Sample AI-Generated Coaching Framework:</h4>
+                    
+                    <div class="dialogue-after">
+                        <div class="label">✅ Opening Statement:</div>
+                        <div class="text">
+                            "Tom, I wanted to talk with you because I care about your success on this team, and I've noticed some 
+                            changes over the past 6 weeks that concern me. You've been a reliable, solid contributor for a long time, 
+                            so this isn't your usual pattern. Your velocity has dropped from about 8 story points per sprint to 4-5, 
+                            and we've seen a few quality issues in recent PRs that aren't typical for you. I also notice you seem less 
+                            engaged in meetings lately. I'm not here to criticize—I want to understand what's going on and figure out 
+                            how I can support you. Can you help me understand what's changed?"
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 2rem;"><strong>30-Day Improvement Plan:</strong></p>
+                    
+                    <div class="info-box">
+                        <h4>📅 Week 1-2: Diagnosis & Quick Wins</h4>
+                        <ul>
+                            <li><strong>Action:</strong> Daily 10-min check-ins to identify blockers</li>
+                            <li><strong>Goal:</strong> Complete 6 story points (vs current 4-5)</li>
+                            <li><strong>Success:</strong> Zero bugs found in code review</li>
+                        </ul>
+                        
+                        <h4 style="margin-top: 1.5rem;">📅 Week 3-4: Momentum Building</h4>
+                        <ul>
+                            <li><strong>Action:</strong> Reduce check-ins to 3x/week</li>
+                            <li><strong>Goal:</strong> Complete 7 story points</li>
+                            <li><strong>Success:</strong> Participates actively in 2+ team meetings</li>
+                        </ul>
+                        
+                        <h4 style="margin-top: 1.5rem;">📅 End of Month Review:</h4>
+                        <ul>
+                            <li><strong>Metrics:</strong> Velocity back to 8 story points, code quality improved, engagement up</li>
+                            <li><strong>If successful:</strong> Continue with monthly check-ins</li>
+                            <li><strong>If unsuccessful:</strong> Escalate to manager, discuss PIP options</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="key-takeaways">
+            <h3>🎓 Key Takeaways</h3>
+            <ul>
+                <li><strong>Preparation Is Power:</strong> AI helps you rehearse difficult conversations before they happen</li>
+                <li><strong>Empathy + Facts:</strong> Start with empathy, ground in facts, focus on impact—not blame</li>
+                <li><strong>SBI Model Works:</strong> Situation-Behavior-Impact removes emotion and focuses on observable actions</li>
+                <li><strong>Recognition Must Be Specific:</strong> Generic praise is worthless; detailed impact is motivating</li>
+                <li><strong>Leadership Without Authority:</strong> PMs lead through influence, communication, and coaching</li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <h4>🚀 What You've Mastered</h4>
+            <p>
+                You can now prepare for difficult conversations with confidence, deliver constructive feedback that motivates 
+                improvement, and recognize team members in ways that build genuine morale. AI acts as your leadership coach, 
+                helping you navigate the human side of project management.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>Next up:</strong> Module 8 will show you how to run efficient meetings, capture action items, and 
+                create documentation that actually gets read.
+            </p>
+        </div>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of AI for team leadership!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="B">
+                    <h4>1. How can AI support team leadership?</h4>
+                    <div class="quiz-option" data-value="A">A) By replacing all leadership functions</div>
+                    <div class="quiz-option" data-value="B">B) By providing coaching insights and communication suggestions</div>
+                    <div class="quiz-option" data-value="C">C) By making all team decisions</div>
+                    <div class="quiz-option" data-value="D">D) Leadership doesn't need AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="C">
+                    <h4>2. What can AI help with in performance feedback?</h4>
+                    <div class="quiz-option" data-value="A">A) Delivering feedback automatically</div>
+                    <div class="quiz-option" data-value="B">B) Avoiding difficult conversations</div>
+                    <div class="quiz-option" data-value="C">C) Structuring constructive, balanced feedback</div>
+                    <div class="quiz-option" data-value="D">D) Eliminating need for 1-on-1s</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How should AI be used in team motivation?</h4>
+                    <div class="quiz-option" data-value="A">A) Suggesting recognition approaches and team-building ideas</div>
+                    <div class="quiz-option" data-value="B">B) Replacing personal connection</div>
+                    <div class="quiz-option" data-value="C">C) Automating all motivation</div>
+                    <div class="quiz-option" data-value="D">D) Motivation doesn't involve AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What is important when using AI for leadership?</h4>
+                    <div class="quiz-option" data-value="A">A) Let AI handle all team interactions</div>
+                    <div class="quiz-option" data-value="B">B) Avoid personal judgment</div>
+                    <div class="quiz-option" data-value="C">C) Follow AI suggestions blindly</div>
+                    <div class="quiz-option" data-value="D">D) Balance AI insights with empathy and human connection</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. How can AI assist with conflict resolution?</h4>
+                    <div class="quiz-option" data-value="A">A) By avoiding conflicts</div>
+                    <div class="quiz-option" data-value="B">B) By suggesting mediation strategies and neutral phrasing</div>
+                    <div class="quiz-option" data-value="C">C) By making decisions for the team</div>
+                    <div class="quiz-option" data-value="D">D) Conflicts cannot involve AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="tutorial-nav">
+            <a href="risk-management-with-ai.html" class="prev">← Tutorial 6: Risk Management with AI</a>
+            <a href="meeting-management-documentation.html" class="next">Module 8: Meeting Management →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master ML development workflow with experiment tracking using MLflow and Weights & Biases. Learn model versioning, reproducibility, and collaboration best practices for production ML.">
+    <meta name="keywords" content="MLOps, experiment tracking, MLflow, Weights & Biases, model versioning, ML reproducibility, ML collaboration, hyperparameter tracking">
+    <title>ML Development Workflow - MLOps Engineer | Nebaz AI Academy</title>
+    <link rel="canonical" href="ml-development-workflow.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>ML Development Workflow</span>
+            </div>
+            <h1>ML Development Workflow</h1>
+            <p class="tutorial-intro">Master experiment tracking with MLflow and Weights & Biases. Learn model versioning, reproducibility, and collaboration for production ML</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <!-- Content Sections -->
+            <section class="content-section" id="the-experiment-chaos">
+                    <h2>🔥 The Experiment Chaos Problem</h2>
+                    <p>
+                        Imagine you've trained 50 different models over the past month. You know one had 94% accuracy, but you can't remember which hyperparameters you used. Your notebook is a mess of commented-out code, and you've overwritten files multiple times. Sound familiar?
+                    </p>
+                    <p>
+                        This is the <strong>experiment chaos problem</strong>, and it's one of the biggest productivity killers in ML development. Without proper tracking, you'll:
+                    </p>
+                    <ul>
+                        <li><strong>Waste time</strong> re-running experiments you've already done</li>
+                        <li><strong>Lose insights</strong> about what worked and what didn't</li>
+                        <li><strong>Struggle to reproduce</strong> your best results</li>
+                        <li><strong>Can't collaborate</strong> effectively with teammates</li>
+                        <li><strong>Fail audits</strong> when stakeholders ask "how did you get this result?"</li>
+                    </ul>
+
+                    <div class="warning-box" style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #92400e;">
+                            <strong>⚠️ Real Cost:</strong> Data scientists spend an average of 20-30% of their time trying to reproduce past experiments or debug "why did this work last week?" issues. That's 10+ hours per week of wasted effort!
+                        </p>
+                    </div>
+
+                    <p>
+                        <strong>The solution?</strong> Systematic experiment tracking from day one. Let's dive in.
+                    </p>
+            </section>
+
+            <section class="content-section" id="experiment-tracking">
+                    <h2>📊 What is Experiment Tracking?</h2>
+                    <p>
+                        <strong>Experiment tracking</strong> is the practice of automatically logging everything related to your ML experiments:
+                    </p>
+                    
+                    <h3>What to Track</h3>
+                    <ul>
+                        <li><strong>Hyperparameters:</strong> Learning rate, batch size, number of layers, regularization, etc.</li>
+                        <li><strong>Metrics:</strong> Accuracy, loss, precision, recall, F1 score, AUC-ROC</li>
+                        <li><strong>Artifacts:</strong> Model files, plots, confusion matrices, feature importance charts</li>
+                        <li><strong>Code version:</strong> Git commit hash to know exactly what code was used</li>
+                        <li><strong>Environment:</strong> Python version, library versions, hardware specs</li>
+                        <li><strong>Data version:</strong> Which dataset version was used</li>
+                        <li><strong>Metadata:</strong> Training time, who ran it, notes/tags</li>
+                    </ul>
+
+                    <div class="info-box" style="background: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #065f46;">
+                            <strong>💡 Key Insight:</strong> Good experiment tracking is like version control (Git) for your ML experiments. Instead of tracking code changes, you're tracking model changes and their results.
+                        </p>
+                    </div>
+
+                    <h3>Benefits of Experiment Tracking</h3>
+                    <ol>
+                        <li><strong>Reproducibility:</strong> Recreate any experiment months later</li>
+                        <li><strong>Comparison:</strong> Easily compare 100+ experiments side-by-side</li>
+                        <li><strong>Collaboration:</strong> Share results with teammates instantly</li>
+                        <li><strong>Optimization:</strong> Identify patterns in what works</li>
+                        <li><strong>Compliance:</strong> Meet regulatory requirements for model auditing</li>
+                        <li><strong>Debugging:</strong> Quickly find when/why performance degraded</li>
+                    </ol>
+            </section>
+
+            <section class="content-section" id="mlflow-basics">
+                    <h2>🚀 Getting Started with MLflow</h2>
+                    <p>
+                        <strong>MLflow</strong> is an open-source platform for the complete ML lifecycle. It has four main components, but we'll focus on <strong>MLflow Tracking</strong> for experiment tracking.
+                    </p>
+
+                    <h3>Installing MLflow</h3>
+                    <pre><code class="language-bash"># Install MLflow
+pip install mlflow
+
+# Optionally install with scikit-learn
+pip install mlflow[extras]
+
+# Start the MLflow UI
+mlflow ui
+
+# Visit: http://localhost:5000</code></pre>
+
+                    <h3>MLflow Key Concepts</h3>
+                    <ul>
+                        <li><strong>Run:</strong> A single execution of model training code</li>
+                        <li><strong>Experiment:</strong> A collection of related runs (e.g., "Customer Churn Model v2")</li>
+                        <li><strong>Parameters:</strong> Input values (hyperparameters)</li>
+                        <li><strong>Metrics:</strong> Output values (accuracy, loss, etc.)</li>
+                        <li><strong>Artifacts:</strong> Output files (models, plots, data)</li>
+                        <li><strong>Tags:</strong> Metadata for organizing runs</li>
+                    </ul>
+
+                    <div class="info-box" style="background: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #065f46;">
+                            <strong>💡 Pro Tip:</strong> MLflow stores everything locally by default in a <code>mlruns</code> folder. For teams, you can set up a central tracking server so everyone shares the same experiment database.
+                        </p>
+                    </div>
+            </section>
+
+            <section class="content-section" id="tracking-experiments">
+                    <h2>📝 Tracking Experiments with MLflow</h2>
+                    
+                    <h3>Basic Tracking Example</h3>
+                    <p>Here's how to add MLflow tracking to your existing training code:</p>
+
+                    <pre><code class="language-python">import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, f1_score
+import pandas as pd
+
+# Load your data
+data = pd.read_csv('customer_data.csv')
+X = data.drop('churned', axis=1)
+y = data['churned']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Set experiment name
+mlflow.set_experiment("customer-churn-prediction")
+
+# Start a run
+with mlflow.start_run():
+    # Define hyperparameters
+    n_estimators = 100
+    max_depth = 10
+    min_samples_split = 5
+    
+    # Log parameters
+    mlflow.log_param("n_estimators", n_estimators)
+    mlflow.log_param("max_depth", max_depth)
+    mlflow.log_param("min_samples_split", min_samples_split)
+    
+    # Train model
+    model = RandomForestClassifier(
+        n_estimators=n_estimators,
+        max_depth=max_depth,
+        min_samples_split=min_samples_split,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
+    
+    # Make predictions
+    y_pred = model.predict(X_test)
+    
+    # Log metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    mlflow.log_metric("accuracy", accuracy)
+    mlflow.log_metric("f1_score", f1)
+    
+    # Log model
+    mlflow.sklearn.log_model(model, "random_forest_model")
+    
+    # Log additional artifacts
+    import matplotlib.pyplot as plt
+    from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+    
+    cm = confusion_matrix(y_test, y_pred)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+    disp.plot()
+    plt.savefig("confusion_matrix.png")
+    mlflow.log_artifact("confusion_matrix.png")
+    
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"F1 Score: {f1:.4f}")
+    print(f"Run ID: {mlflow.active_run().info.run_id}")</code></pre>
+
+                    <h3>Viewing Results in MLflow UI</h3>
+                    <p>After running the code above, open the MLflow UI:</p>
+                    <pre><code class="language-bash">mlflow ui</code></pre>
+                    <p>You'll see:</p>
+                    <ul>
+                        <li>📊 All your experiments organized in a table</li>
+                        <li>🔍 Filter and sort by any metric or parameter</li>
+                        <li>📈 Compare multiple runs side-by-side</li>
+                        <li>📁 Download models and artifacts</li>
+                        <li>📝 Add notes and tags to runs</li>
+                    </ul>
+
+                    <h3>Advanced: Hyperparameter Tuning with MLflow</h3>
+                    <pre><code class="language-python">import mlflow
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+# Define parameter grid
+param_grid = {
+    'n_estimators': [50, 100, 200],
+    'max_depth': [5, 10, 15, 20],
+    'min_samples_split': [2, 5, 10]
+}
+
+mlflow.set_experiment("customer-churn-hyperparameter-tuning")
+
+with mlflow.start_run(run_name="grid_search_parent"):
+    rf = RandomForestClassifier(random_state=42)
+    grid_search = GridSearchCV(rf, param_grid, cv=5, scoring='f1', n_jobs=-1)
+    
+    grid_search.fit(X_train, y_train)
+    
+    # Log each configuration as a nested run
+    for i, params in enumerate(grid_search.cv_results_['params']):
+        with mlflow.start_run(nested=True, run_name=f"config_{i}"):
+            mlflow.log_params(params)
+            mlflow.log_metric("mean_f1_score", grid_search.cv_results_['mean_test_score'][i])
+            mlflow.log_metric("std_f1_score", grid_search.cv_results_['std_test_score'][i])
+    
+    # Log best configuration
+    mlflow.log_params(grid_search.best_params_)
+    mlflow.log_metric("best_f1_score", grid_search.best_score_)
+    mlflow.sklearn.log_model(grid_search.best_estimator_, "best_model")
+    
+print(f"Best params: {grid_search.best_params_}")
+print(f"Best F1 score: {grid_search.best_score_:.4f}")</code></pre>
+            </section>
+
+            <section class="content-section" id="weights-and-biases">
+                    <h2>🌐 Weights & Biases for Team Collaboration</h2>
+                    <p>
+                        While MLflow is great for local tracking, <strong>Weights & Biases (W&B)</strong> excels at team collaboration with a cloud-first approach and beautiful visualizations.
+                    </p>
+
+                    <h3>Why Choose W&B?</h3>
+                    <ul>
+                        <li>✅ <strong>Cloud-first:</strong> Automatic syncing, no server setup</li>
+                        <li>✅ <strong>Real-time updates:</strong> Watch training in progress</li>
+                        <li>✅ <strong>Beautiful dashboards:</strong> Interactive charts out of the box</li>
+                        <li>✅ <strong>Team features:</strong> Comments, reports, sharing</li>
+                        <li>✅ <strong>Integration:</strong> Works with PyTorch, TensorFlow, scikit-learn, Hugging Face</li>
+                        <li>✅ <strong>Free tier:</strong> Unlimited personal projects</li>
+                    </ul>
+
+                    <h3>Getting Started with W&B</h3>
+                    <pre><code class="language-bash"># Install wandb
+pip install wandb
+
+# Login (creates account if needed)
+wandb login</code></pre>
+
+                    <h3>Basic W&B Tracking</h3>
+                    <pre><code class="language-python">import wandb
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, f1_score
+
+# Initialize W&B
+wandb.init(
+    project="customer-churn",
+    name="rf-experiment-1",
+    config={
+        "n_estimators": 100,
+        "max_depth": 10,
+        "min_samples_split": 5,
+        "model": "RandomForest"
+    }
+)
+
+# Access config
+config = wandb.config
+
+# Train model
+model = RandomForestClassifier(
+    n_estimators=config.n_estimators,
+    max_depth=config.max_depth,
+    min_samples_split=config.min_samples_split,
+    random_state=42
+)
+model.fit(X_train, y_train)
+
+# Predictions and metrics
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+# Log metrics
+wandb.log({
+    "accuracy": accuracy,
+    "f1_score": f1
+})
+
+# Log confusion matrix
+wandb.sklearn.plot_confusion_matrix(y_test, y_pred, labels=['Not Churned', 'Churned'])
+
+# Save model
+wandb.save('model.pkl')
+
+# Finish run
+wandb.finish()</code></pre>
+
+                    <h3>W&B for Deep Learning</h3>
+                    <pre><code class="language-python">import wandb
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+
+# Initialize
+wandb.init(project="image-classification", config={
+    "learning_rate": 0.001,
+    "epochs": 50,
+    "batch_size": 32
+})
+
+config = wandb.config
+
+# Define model
+model = YourNeuralNetwork()
+optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
+
+# Training loop
+for epoch in range(config.epochs):
+    for batch_idx, (data, target) in enumerate(train_loader):
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step()
+        
+        # Log every 100 batches
+        if batch_idx % 100 == 0:
+            wandb.log({
+                "epoch": epoch,
+                "batch": batch_idx,
+                "loss": loss.item()
+            })
+    
+    # Validation
+    val_accuracy = validate(model, val_loader)
+    wandb.log({
+        "epoch": epoch,
+        "val_accuracy": val_accuracy
+    })
+
+wandb.finish()</code></pre>
+
+                    <div class="info-box" style="background: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #065f46;">
+                            <strong>💡 Pro Tip:</strong> W&B automatically logs system metrics (CPU, GPU, memory) so you can identify bottlenecks and optimize training performance.
+                        </p>
+                    </div>
+            </section>
+
+            <section class="content-section" id="model-versioning">
+                    <h2>🔖 Model Versioning Best Practices</h2>
+                    <p>
+                        Model versioning is critical for tracking which model is in production, rolling back to previous versions, and maintaining a history of model evolution.
+                    </p>
+
+                    <h3>Semantic Versioning for Models</h3>
+                    <p>Use a versioning scheme like <code>MAJOR.MINOR.PATCH</code>:</p>
+                    <ul>
+                        <li><strong>MAJOR:</strong> Complete model architecture change (e.g., Random Forest → Neural Network)</li>
+                        <li><strong>MINOR:</strong> Significant retraining with new features or data</li>
+                        <li><strong>PATCH:</strong> Bug fixes, small hyperparameter tweaks</li>
+                    </ul>
+
+                    <p><strong>Example:</strong> <code>customer-churn-model-v2.3.1</code></p>
+
+                    <h3>MLflow Model Registry</h3>
+                    <p>MLflow provides a centralized model registry for managing model versions:</p>
+
+                    <pre><code class="language-python">import mlflow
+from mlflow.tracking import MlflowClient
+
+client = MlflowClient()
+
+# Register a model
+mlflow.set_experiment("customer-churn")
+with mlflow.start_run():
+    # Train model
+    model = train_your_model()
+    
+    # Log model
+    mlflow.sklearn.log_model(
+        model, 
+        "model",
+        registered_model_name="customer-churn-classifier"
+    )
+
+# Transition model to production
+client.transition_model_version_stage(
+    name="customer-churn-classifier",
+    version=1,
+    stage="Production"
+)
+
+# Load production model
+model_uri = "models:/customer-churn-classifier/Production"
+loaded_model = mlflow.sklearn.load_model(model_uri)</code></pre>
+
+                    <h3>Model Version Stages</h3>
+                    <ul>
+                        <li><strong>None:</strong> Initial state after registration</li>
+                        <li><strong>Staging:</strong> Model being tested before production</li>
+                        <li><strong>Production:</strong> Currently deployed model</li>
+                        <li><strong>Archived:</strong> Old version, kept for reference</li>
+                    </ul>
+            </section>
+
+            <section class="content-section" id="reproducibility">
+                    <h2>🔄 Ensuring Reproducibility</h2>
+                    <p>
+                        Reproducibility means anyone (including future you) can recreate exact results. This requires tracking <strong>everything</strong> that affects model training.
+                    </p>
+
+                    <h3>Reproducibility Checklist</h3>
+                    <ol>
+                        <li>
+                            <strong>Set Random Seeds</strong>
+                            <pre><code class="language-python">import random
+import numpy as np
+import torch
+
+def set_seed(seed=42):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    # For deterministic behavior
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+set_seed(42)</code></pre>
+                        </li>
+                        
+                        <li>
+                            <strong>Log Python Environment</strong>
+                            <pre><code class="language-bash"># Create requirements.txt
+pip freeze > requirements.txt
+
+# Or use conda
+conda env export > environment.yml</code></pre>
+                        </li>
+                        
+                        <li>
+                            <strong>Track Data Versions with DVC</strong>
+                            <pre><code class="language-bash"># Initialize DVC
+dvc init
+
+# Track data file
+dvc add data/customer_data.csv
+
+# Commit .dvc file to Git
+git add data/customer_data.csv.dvc .gitignore
+git commit -m "Track data with DVC"</code></pre>
+                        </li>
+                        
+                        <li>
+                            <strong>Log Git Commit Hash</strong>
+                            <pre><code class="language-python">import subprocess
+import mlflow
+
+def get_git_commit():
+    try:
+        commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
+        return commit
+    except:
+        return "unknown"
+
+with mlflow.start_run():
+    mlflow.set_tag("git_commit", get_git_commit())
+    # ... rest of training code</code></pre>
+                        </li>
+                    </ol>
+
+                    <div class="warning-box" style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #92400e;">
+                            <strong>⚠️ Common Pitfall:</strong> GPU non-determinism can still cause slight variations even with seeds set. For 100% reproducibility, use <code>torch.use_deterministic_algorithms(True)</code>, but be aware this may slow training.
+                        </p>
+                    </div>
+            </section>
+
+            <section class="content-section" id="comparing-tools">
+                    <h2>⚖️ MLflow vs W&B vs DVC</h2>
+                    
+                    <h3>Feature Comparison</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Feature</th>
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">MLflow</th>
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Weights & Biases</th>
+                                <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">DVC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Experiment Tracking</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">✅ Excellent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">✅ Excellent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">⚠️ Basic</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Data Versioning</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">❌ No</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">⚠️ Limited</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">✅ Excellent</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Hosting</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Self-hosted or cloud</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Cloud-only</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Git + cloud storage</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>UI Quality</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">⭐⭐⭐ Good</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">⭐⭐⭐⭐⭐ Excellent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">⭐⭐ Basic</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Free Tier</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Unlimited</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Personal projects</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Unlimited</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Best For</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Open-source projects</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Team collaboration</td>
+                                <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Data/model versioning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>Our Recommendation</h3>
+                    <p>
+                        <strong>Use all three together!</strong> They complement each other:
+                    </p>
+                    <ul>
+                        <li><strong>DVC:</strong> Version control for data and model files</li>
+                        <li><strong>MLflow:</strong> Track experiments, manage models locally</li>
+                        <li><strong>W&B:</strong> Team collaboration and beautiful visualizations</li>
+                    </ul>
+
+                    <p>
+                        For solo developers or small teams: <strong>Start with MLflow</strong> (free, self-hosted).<br>
+                        For larger teams needing collaboration: <strong>Add W&B</strong>.<br>
+                        When data versioning becomes critical: <strong>Add DVC</strong>.
+                    </p>
+            </section>
+
+            <section class="content-section" id="hands-on-practice">
+                    <h2>💻 Hands-On: Complete Tracking Example</h2>
+                    <p>
+                        Let's put everything together in a complete example that tracks experiments, versions models, and ensures reproducibility.
+                    </p>
+
+                    <pre><code class="language-python">"""
+Complete ML Development Workflow with Tracking
+"""
+import mlflow
+import mlflow.sklearn
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, classification_report
+import matplotlib.pyplot as plt
+import seaborn as sns
+import subprocess
+import json
+from datetime import datetime
+
+# ===== 1. REPRODUCIBILITY =====
+def set_seed(seed=42):
+    """Set seeds for reproducibility"""
+    np.random.seed(seed)
+    import random
+    random.seed(seed)
+
+set_seed(42)
+
+# ===== 2. HELPER FUNCTIONS =====
+def get_git_commit():
+    """Get current git commit hash"""
+    try:
+        commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
+        return commit
+    except:
+        return "unknown"
+
+def plot_confusion_matrix(y_true, y_pred, labels, filename="confusion_matrix.png"):
+    """Create and save confusion matrix plot"""
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    plt.title('Confusion Matrix')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.savefig(filename, dpi=150, bbox_inches='tight')
+    plt.close()
+    return filename
+
+# ===== 3. LOAD AND PREPARE DATA =====
+print("Loading data...")
+# Replace with your actual data loading
+data = pd.read_csv('data/customer_churn.csv')
+X = data.drop('churn', axis=1)
+y = data['churn']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training samples: {len(X_train)}, Test samples: {len(X_test)}")
+
+# ===== 4. EXPERIMENT TRACKING =====
+# Set experiment
+mlflow.set_experiment("customer-churn-production")
+
+# Define hyperparameters to try
+hyperparameter_configs = [
+    {"n_estimators": 100, "max_depth": 10, "min_samples_split": 5},
+    {"n_estimators": 200, "max_depth": 15, "min_samples_split": 2},
+    {"n_estimators": 150, "max_depth": 12, "min_samples_split": 10},
+]
+
+best_model = None
+best_f1 = 0
+
+for config_idx, config in enumerate(hyperparameter_configs):
+    print(f"\n{'='*60}")
+    print(f"Training configuration {config_idx + 1}/{len(hyperparameter_configs)}")
+    print(f"Config: {config}")
+    print(f"{'='*60}")
+    
+    with mlflow.start_run(run_name=f"rf_config_{config_idx}"):
+        # ===== LOG METADATA =====
+        mlflow.set_tag("git_commit", get_git_commit())
+        mlflow.set_tag("model_type", "RandomForest")
+        mlflow.set_tag("dataset_version", "v1.0")
+        mlflow.set_tag("training_date", datetime.now().isoformat())
+        mlflow.set_tag("engineer", "your_name")
+        
+        # ===== LOG PARAMETERS =====
+        mlflow.log_params(config)
+        mlflow.log_param("test_size", 0.2)
+        mlflow.log_param("random_state", 42)
+        
+        # ===== TRAIN MODEL =====
+        model = RandomForestClassifier(**config, random_state=42, n_jobs=-1)
+        
+        import time
+        start_time = time.time()
+        model.fit(X_train, y_train)
+        training_time = time.time() - start_time
+        
+        mlflow.log_metric("training_time_seconds", training_time)
+        
+        # ===== EVALUATE MODEL =====
+        y_pred_train = model.predict(X_train)
+        y_pred_test = model.predict(X_test)
+        
+        # Training metrics
+        train_acc = accuracy_score(y_train, y_pred_train)
+        mlflow.log_metric("train_accuracy", train_acc)
+        
+        # Test metrics
+        test_acc = accuracy_score(y_test, y_pred_test)
+        test_precision = precision_score(y_test, y_pred_test, average='weighted')
+        test_recall = recall_score(y_test, y_pred_test, average='weighted')
+        test_f1 = f1_score(y_test, y_pred_test, average='weighted')
+        
+        mlflow.log_metric("test_accuracy", test_acc)
+        mlflow.log_metric("test_precision", test_precision)
+        mlflow.log_metric("test_recall", test_recall)
+        mlflow.log_metric("test_f1_score", test_f1)
+        
+        # Check for overfitting
+        overfit_gap = train_acc - test_acc
+        mlflow.log_metric("overfit_gap", overfit_gap)
+        
+        print(f"Train Accuracy: {train_acc:.4f}")
+        print(f"Test Accuracy: {test_acc:.4f}")
+        print(f"Test F1 Score: {test_f1:.4f}")
+        print(f"Overfit Gap: {overfit_gap:.4f}")
+        
+        # ===== LOG ARTIFACTS =====
+        # Confusion matrix
+        cm_file = plot_confusion_matrix(y_test, y_pred_test, ['No Churn', 'Churn'])
+        mlflow.log_artifact(cm_file)
+        
+        # Classification report
+        report = classification_report(y_test, y_pred_test, output_dict=True)
+        with open('classification_report.json', 'w') as f:
+            json.dump(report, f, indent=2)
+        mlflow.log_artifact('classification_report.json')
+        
+        # Feature importance
+        feature_importance = pd.DataFrame({
+            'feature': X.columns,
+            'importance': model.feature_importances_
+        }).sort_values('importance', ascending=False)
+        
+        plt.figure(figsize=(10, 6))
+        sns.barplot(data=feature_importance.head(10), x='importance', y='feature')
+        plt.title('Top 10 Feature Importances')
+        plt.tight_layout()
+        plt.savefig('feature_importance.png', dpi=150)
+        plt.close()
+        mlflow.log_artifact('feature_importance.png')
+        
+        # ===== LOG MODEL =====
+        mlflow.sklearn.log_model(
+            model,
+            "model",
+            registered_model_name="customer-churn-classifier"
+        )
+        
+        # Track best model
+        if test_f1 > best_f1:
+            best_f1 = test_f1
+            best_model = model
+            print(f"✨ New best model! F1 Score: {best_f1:.4f}")
+
+print(f"\n{'='*60}")
+print(f"🎉 Training Complete!")
+print(f"Best F1 Score: {best_f1:.4f}")
+print(f"View results: mlflow ui")
+print(f"{'='*60}")</code></pre>
+
+                    <div class="info-box" style="background: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <p style="margin: 0; color: #065f46;">
+                            <strong>💡 What's Happening:</strong> This script trains 3 different model configurations, tracks everything in MLflow, saves artifacts, and automatically selects the best model. Run <code>mlflow ui</code> to see all experiments in a beautiful dashboard.
+                        </p>
+                    </div>
+
+                    <h3>Next Steps</h3>
+                    <ol>
+                        <li>Run the script above with your own data</li>
+                        <li>Open MLflow UI and explore the results</li>
+                        <li>Try adding W&B tracking alongside MLflow</li>
+                        <li>Set up a central MLflow tracking server for your team</li>
+                        <li>Create automated retraining pipelines (we'll cover this in later tutorials)</li>
+                    </ol>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                    
+                    <div class="quiz-question" data-answer="c">
+                        <p><strong>Q1: What percentage of time do data scientists typically waste trying to reproduce past experiments?</strong></p>
+                        <div class="quiz-option" data-value="a">5-10%</div>
+                        <div class="quiz-option" data-value="b">10-15%</div>
+                        <div class="quiz-option" data-value="c">20-30%</div>
+                        <div class="quiz-option" data-value="d">40-50%</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <p><strong>Q2: Which of the following should you track in ML experiments?</strong></p>
+                        <div class="quiz-option" data-value="a">Only hyperparameters</div>
+                        <div class="quiz-option" data-value="b">Hyperparameters, metrics, artifacts, code version, environment, data version</div>
+                        <div class="quiz-option" data-value="c">Only metrics and model files</div>
+                        <div class="quiz-option" data-value="d">Only the final model</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <p><strong>Q3: What is the main advantage of Weights & Biases over MLflow?</strong></p>
+                        <div class="quiz-option" data-value="a">It's completely free</div>
+                        <div class="quiz-option" data-value="b">It has better model versioning</div>
+                        <div class="quiz-option" data-value="c">It supports more ML frameworks</div>
+                        <div class="quiz-option" data-value="d">Cloud-first with excellent team collaboration and visualizations</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <p><strong>Q4: In semantic versioning for models (MAJOR.MINOR.PATCH), when should you increment the MAJOR version?</strong></p>
+                        <div class="quiz-option" data-value="a">Complete model architecture change (e.g., Random Forest → Neural Network)</div>
+                        <div class="quiz-option" data-value="b">Small hyperparameter tweaks</div>
+                        <div class="quiz-option" data-value="c">Bug fixes</div>
+                        <div class="quiz-option" data-value="d">Retraining with the same architecture</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <p><strong>Q5: Which tool is best for data versioning in ML projects?</strong></p>
+                        <div class="quiz-option" data-value="a">MLflow</div>
+                        <div class="quiz-option" data-value="b">Weights & Biases</div>
+                        <div class="quiz-option" data-value="c">DVC (Data Version Control)</div>
+                        <div class="quiz-option" data-value="d">Git</div>
+                        <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="what-is-mlops.html">← Previous: What is MLOps</a>
+                <a href="model-packaging-serialization.html">Next: Model Packaging & Serialization →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

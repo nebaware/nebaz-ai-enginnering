@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Python libraries - pip, virtual environments, popular packages. Learn to leverage Python's vast ecosystem for real projects.">
+    <title>Working with Python Libraries - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <div class="info-box">
+                <h3>🎯 Congratulations!</h3>
+                <p>You've completed the Python Fundamentals course! You now have:</p>
+                <ul>
+                    <li>✅ Solid foundation in Python syntax and concepts</li>
+                    <li>✅ Experience with data structures and algorithms</li>
+                    <li>✅ Object-oriented programming skills</li>
+                    <li>✅ File handling and data processing abilities</li>
+                    <li>✅ Knowledge of Python's ecosystem and libraries</li>
+                </ul>
+                <p><strong>Next Steps:</strong> Apply these skills to AI/ML, web development, data science, or automation projects!</p>
+            </div>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Python libraries!</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: Which library is used for numerical computing?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) requests</div>
+                            <div class="quiz-option" data-value="b">B) numpy</div>
+                            <div class="quiz-option" data-value="c">C) beautifulsoup</div>
+                            <div class="quiz-option" data-value="d">D) flask</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: Which library is used for data manipulation and analysis?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) matplotlib</div>
+                            <div class="quiz-option" data-value="b">B) requests</div>
+                            <div class="quiz-option" data-value="c">C) pandas</div>
+                            <div class="quiz-option" data-value="d">D) django</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: How do you install a Python library?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) pip install library_name</div>
+                            <div class="quiz-option" data-value="b">B) python install library_name</div>
+                            <div class="quiz-option" data-value="c">C) import install library_name</div>
+                            <div class="quiz-option" data-value="d">D) download library_name</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <h3>Question 4: Which library is used for making HTTP requests?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) pandas</div>
+                            <div class="quiz-option" data-value="b">B) numpy</div>
+                            <div class="quiz-option" data-value="c">C) matplotlib</div>
+                            <div class="quiz-option" data-value="d">D) requests</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: Which library is used for data visualization?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) requests</div>
+                            <div class="quiz-option" data-value="b">B) matplotlib</div>
+                            <div class="quiz-option" data-value="c">C) flask</div>
+                            <div class="quiz-option" data-value="d">D) beautifulsoup</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Certificate Request Section -->
+            <link rel="stylesheet" href="../../certificates/certificate.css">
+            <section class="certificate-section">
+                <div class="certificate-icon">🎓</div>
+                <h2>Get Your Completion Certificate</h2>
+                <p class="subtitle">Showcase your Python skills! Add this certificate to your resume and LinkedIn profile.</p>
+                
+                <div class="certificate-benefits">
+                    <h4>📜 Your certificate includes:</h4>
+                    <ul>
+                        <li>✅ Official Python Fundamentals completion</li>
+                        <li>✅ Unique verification ID</li>
+                        <li>✅ Shareable credential for job applications</li>
+                        <li>✅ Public verification page</li>
+                        <li>✅ Professional PDF certificate</li>
+                    </ul>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="Python Fundamentals">
+                    <div class="form-group">
+                        <label for="cert-name-python">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-python"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-python">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-python"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="oop-tutorial.html" class="btn btn-secondary">← Previous: Object-Oriented Programming</a>
+                <a href="../../courses/python.html" class="btn btn-primary">Back to Python Course →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../js/common.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../certificates/certificate.js"></script>
+</body>
+
+</html>

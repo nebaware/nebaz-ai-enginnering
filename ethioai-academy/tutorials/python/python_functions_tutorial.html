@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how to write reusable Python functions with parameters, return values, and default arguments. Includes hands-on exercises and a practical mini-project.">
+    <title>Functions in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Functions in Python</h1>
+            <p class="page-subtitle">Learn to write reusable code with functions and parameters</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        <!-- Opening Hook -->
+        <p>Imagine you're building a calculator app. You need to add two numbers in five different places throughout your code. You could copy-paste the same addition code five times, but what happens when you discover a bug? You'd have to fix it in five places! This is where functions become your best friend. Functions let you write code once and reuse it anywhere, making your programs cleaner, easier to maintain, and far less prone to errors.</p>
+
+        <p>Whether you're calculating taxes, validating user input, or processing data, functions are the building blocks that transform repetitive spaghetti code into elegant, organized solutions. Let's learn how to harness their power!</p>
+
+        <h2>What is a Function?</h2>
+        
+        <p>A <strong>function</strong> is a reusable block of code that performs a specific task. Think of it as a mini-program within your program. Functions can accept inputs (called <strong>parameters</strong>), do some work, and optionally send back a result (using <code>return</code>).</p>
+
+        <h3>Breaking Down the Terms</h3>
+
+        <p><strong>What is a parameter?</strong><br>
+        A parameter is a variable that acts as a placeholder for information you pass into the function. When you call the function, you provide actual values (called <strong>arguments</strong>) that fill these placeholders. Think of parameters as empty boxes that get filled with data when the function runs.</p>
+
+        <p><strong>What does <code>return</code> do?</strong><br>
+        The <code>return</code> statement sends a value back to whoever called the function. Without <code>return</code>, a function completes its work but doesn't give you anything back—it returns <code>None</code> by default. It's like sending a letter without expecting a reply versus waiting for a response.</p>
+
+        <p><strong>How does a function work?</strong><br>
+        When Python encounters a function call, it jumps to the function definition, executes the code inside with the provided arguments, and then returns to where it was called from, bringing back the result if there is one.</p>
+
+        <div class="info-box">
+            <p>💡 <strong>Key Difference:</strong> Unlike a simple code block that runs immediately, a function definition just creates the recipe. The code inside only runs when you actually <em>call</em> the function by using its name with parentheses.</p>
+        </div>
+
+        <h2>The Perfect Analogy: The Vending Machine</h2>
+
+        <p>Think of a function as a vending machine. You insert money and press a button (inputs), the machine does its internal work (processing), and out comes your snack (output). You don't need to know how the machine works internally—you just need to know what to put in and what you'll get out.</p>
+
+        <pre><code class="language-python"># The vending machine analogy in code
+def vending_machine(money, button):
+    # Internal processing (hidden from user)
+    if money >= 1.50 and button == "A1":
+        return "Chips"
+    elif money >= 2.00 and button == "B2":
+        return "Soda"
+    else:
+        return "Insufficient funds"
+
+# Using the vending machine
+snack = vending_machine(2.00, "B2")
+print(snack)  # Output: Soda</code></pre>
+
+        <h2>Visual Flow: How Functions Work</h2>
+
+        <div class="visual-diagram">
+<pre>
+Function Definition (The Recipe):
+┌─────────────────────────────────┐
+│ def function_name(parameters):  │
+│     # do work                   │
+│     return result               │
+└─────────────────────────────────┘
+            ↓
+Function Call (Using the Recipe):
+┌─────────────────────────────────┐
+│ output = function_name(args)    │
+└─────────────────────────────────┘
+            ↓
+         Result!
+
+Example Flow:
+    def greet(name):          ← Define once
+        return f"Hi, {name}!" 
+            ↓
+    message = greet("Alice")  ← Call with argument
+            ↓
+    print(message)            ← Use the result
+            ↓
+    Output: Hi, Alice!
+</pre>
+        </div>
+
+        <h2>Code Examples: From Simple to Powerful</h2>
+
+        <h3>Example 1: Basic Function</h3>
+        <p>Let's start with the simplest function that doesn't take any inputs or return anything:</p>
+
+        <pre><code class="language-python"># A function that just performs an action
+def say_hello():
+    print("Hello, World!")
+
+# Call the function
+say_hello()  # Output: Hello, World!
+say_hello()  # Output: Hello, World! (reusable!)</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Notice:</strong> Even though this function doesn't have parameters or a return statement, it's still useful for organizing code that needs to run multiple times.</p>
+        </div>
+
+        <h3>Example 2: Function with Parameters</h3>
+        <p>Now let's add inputs to make our function more flexible:</p>
+
+        <pre><code class="language-python"># Function that accepts input and returns output
+def greet(name):
+    # Create a personalized greeting
+    message = f"Hello, {name}!"
+    return message  # Send the result back
+
+# Call the function with different arguments
+greeting1 = greet("Aisha")
+greeting2 = greet("Marcus")
+
+print(greeting1)  # Output: Hello, Aisha!
+print(greeting2)  # Output: Hello, Marcus!</code></pre>
+
+        <h3>Example 3: Default Parameters</h3>
+        <p>Sometimes you want a parameter to have a fallback value if nothing is provided:</p>
+
+        <pre><code class="language-python"># Function with default parameter value
+def greet(name="friend"):
+    return f"Hello, {name}!"
+
+# Call with an argument
+print(greet("Aisha"))  # Output: Hello, Aisha!
+
+# Call without an argument (uses default)
+print(greet())  # Output: Hello, friend!</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Important:</strong> Parameters with default values must come <em>after</em> parameters without defaults. This won't work: <code>def greet(name="friend", age)</code></p>
+        </div>
+
+        <h3>Example 4: Real-World Calculation Function</h3>
+        <p>Let's create something practical—a function that calculates the total price with tax:</p>
+
+        <pre><code class="language-python"># Function that performs calculations
+def calculate_total(price, tax_rate=0.08):
+    """
+    Calculate the total price including tax.
+    
+    Args:
+        price: The base price of the item
+        tax_rate: Tax rate as a decimal (default 8%)
+    
+    Returns:
+        The total price with tax included
+    """
+    tax_amount = price * tax_rate
+    total = price + tax_amount
+    return total
+
+# Use the function
+item_price = 50.00
+final_price = calculate_total(item_price)
+print(f"Total: ${final_price:.2f}")  # Output: Total: $54.00
+
+# Use with custom tax rate
+ca_price = calculate_total(50.00, 0.0725)
+print(f"California total: ${ca_price:.2f}")  # Output: California total: $53.63</code></pre>
+
+        <h2>Hands-On Exercise: Area of a Circle</h2>
+
+        <p>Now it's your turn! Let's build a function that calculates the area of a circle given its radius. This will help you practice working with functions, parameters, and return values.</p>
+
+        <h3>Step 1: Set Up Your Environment</h3>
+        <ol>
+            <li>Create a new file called <code>circle_calculator.py</code></li>
+            <li>Open it in your text editor or IDE</li>
+        </ol>
+
+        <h3>Step 2: Import the Math Module</h3>
+        <p>We'll need access to π (pi) for our calculation. Python provides this in the <code>math</code> module:</p>
+
+        <pre><code class="language-python">import math
+
+# Test that pi is available
+print(f"The value of pi is: {math.pi}")</code></pre>
+
+        <h3>Step 3: Write the Function</h3>
+        <p>Now create the function that calculates area. Remember: Area = π × r²</p>
+
+        <pre><code class="language-python">import math
+
+def area_of_circle(radius):
+    """
+    Calculate the area of a circle.
+    
+    Args:
+        radius: The radius of the circle
+    
+    Returns:
+        The area of the circle
+    """
+    # Formula: A = π × r²
+    area = math.pi * (radius ** 2)
+    return area
+
+# Your function is ready!</code></pre>
+
+        <h3>Step 4: Test Your Function</h3>
+        <p>Add test calls to verify it works correctly:</p>
+
+        <pre><code class="language-python"># Test with different radii
+small_circle = area_of_circle(5)
+medium_circle = area_of_circle(10)
+large_circle = area_of_circle(20)
+
+print(f"Radius 5: {small_circle:.2f} square units")
+print(f"Radius 10: {medium_circle:.2f} square units")
+print(f"Radius 20: {large_circle:.2f} square units")</code></pre>
+
+        <h3>Step 5: Run and Verify</h3>
+        <p>Open your terminal and run:</p>
+
+        <pre><code class="language-bash">python circle_calculator.py</code></pre>
+
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>The value of pi is: 3.141592653589793
+Radius 5: 78.54 square units
+Radius 10: 314.16 square units
+Radius 20: 1256.64 square units</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Troubleshooting Tips:</strong></p>
+            <ul>
+                <li>If you get "NameError: name 'math' is not defined", make sure <code>import math</code> is at the top</li>
+                <li>If the numbers seem wrong, check that you're using <code>radius ** 2</code> for squaring</li>
+                <li>The <code>.2f</code> in the print statements rounds to 2 decimal places</li>
+            </ul>
+        </div>
+
+        <h2>Common Mistakes to Avoid</h2>
+
+        <h3>1. Forgetting the <code>return</code> Statement</h3>
+        <p><strong>The Problem:</strong> Your function does the calculation but doesn't send the result back.</p>
+
+        <pre><code class="language-python"># ❌ Wrong - no return statement
+def add(a, b):
+    result = a + b
+    # Missing return!
+
+answer = add(5, 3)
+print(answer)  # Output: None</code></pre>
+
+        <p><strong>Why it happens:</strong> Without <code>return</code>, Python automatically returns <code>None</code>. The calculation happens, but the result is lost.</p>
+
+        <p><strong>The Fix:</strong></p>
+        <pre><code class="language-python"># ✅ Correct - returns the result
+def add(a, b):
+    result = a + b
+    return result  # Send the result back
+
+answer = add(5, 3)
+print(answer)  # Output: 8</code></pre>
+
+        <p><strong>Prevention Tip:</strong> Ask yourself: "Do I need the result of this function somewhere else?" If yes, use <code>return</code>.</p>
+
+        <h3>2. Function Name Collisions</h3>
+        <p><strong>The Problem:</strong> Using the same name for a function and a variable causes confusion.</p>
+
+        <pre><code class="language-python"># ❌ Wrong - name collision
+def calculate():
+    return 100
+
+calculate = 50  # Oops! Overwrote the function
+result = calculate()  # TypeError: 'int' object is not callable</code></pre>
+
+        <p><strong>Why it happens:</strong> Python treats everything as an object. When you assign a value to <code>calculate</code>, you're replacing the function with a number.</p>
+
+        <p><strong>The Fix:</strong></p>
+        <pre><code class="language-python"># ✅ Correct - use different names
+def calculate():
+    return 100
+
+calculation_result = 50  # Different name
+result = calculate()  # Works fine!</code></pre>
+
+        <h3>3. Functions That Do Too Much</h3>
+        <p><strong>The Problem:</strong> A single function trying to handle multiple responsibilities becomes hard to maintain.</p>
+
+        <pre><code class="language-python"># ❌ Wrong - function does too much
+def process_user_data(name, email, age):
+    # Validates email
+    if "@" not in email:
+        return "Invalid email"
+    # Calculates birth year
+    birth_year = 2025 - age
+    # Formats output
+    return f"{name} ({email}) born in {birth_year}"</code></pre>
+
+        <p><strong>The Fix:</strong> Break it into smaller, focused functions.</p>
+        <pre><code class="language-python"># ✅ Correct - each function has one job
+def validate_email(email):
+    return "@" in email
+
+def calculate_birth_year(age):
+    return 2025 - age
+
+def format_user_info(name, email, birth_year):
+    return f"{name} ({email}) born in {birth_year}"
+
+# Now use them together
+def process_user_data(name, email, age):
+    if not validate_email(email):
+        return "Invalid email"
+    birth_year = calculate_birth_year(age)
+    return format_user_info(name, email, birth_year)</code></pre>
+
+        <p><strong>Prevention Tip:</strong> If you find yourself writing "and" when describing what your function does, it probably does too much. Split it up!</p>
+
+        <h3>4. Mutable Default Arguments</h3>
+        <p><strong>The Problem:</strong> Using mutable objects (like lists) as default values can cause unexpected behavior.</p>
+
+        <pre><code class="language-python"># ❌ Dangerous - mutable default
+def add_item(item, shopping_list=[]):
+    shopping_list.append(item)
+    return shopping_list
+
+list1 = add_item("apples")
+list2 = add_item("bananas")  # Oops! Contains both items
+print(list1)  # ['apples', 'bananas']
+print(list2)  # ['apples', 'bananas']</code></pre>
+
+        <p><strong>The Fix:</strong></p>
+        <pre><code class="language-python"># ✅ Correct - use None as default
+def add_item(item, shopping_list=None):
+    if shopping_list is None:
+        shopping_list = []  # Create new list each time
+    shopping_list.append(item)
+    return shopping_list</code></pre>
+
+        <h3>5. Not Using Descriptive Names</h3>
+        <p><strong>The Problem:</strong> Vague function and parameter names make code hard to understand.</p>
+
+        <pre><code class="language-python"># ❌ Unclear
+def calc(x, y):
+    return x * y * 0.5</code></pre>
+
+        <p><strong>The Fix:</strong></p>
+        <pre><code class="language-python"># ✅ Clear and descriptive
+def calculate_triangle_area(base, height):
+    return base * height * 0.5</code></pre>
+
+        <h2>Mini-Project: Grade Calculator Helper</h2>
+
+        <p>Let's build a practical tool that converts numeric scores into letter grades. This project will help you apply everything you've learned about functions while creating something genuinely useful.</p>
+
+        <h3>Project Goal</h3>
+        <p>Create a grade calculator that can convert multiple numeric scores into letter grades and calculate class statistics.</p>
+
+        <h3>Requirements</h3>
+        <ul>
+            <li>Function to convert a single score to a letter grade</li>
+            <li>Handle multiple scores at once</li>
+            <li>Calculate and display average grade</li>
+            <li>Provide user-friendly output</li>
+        </ul>
+
+        <h3>Step-by-Step Implementation</h3>
+
+        <p><strong>Step 1:</strong> Create the basic grade conversion function</p>
+        <pre><code class="language-python">def letter_grade(score):
+    """
+    Convert a numeric score to a letter grade.
+    
+    Args:
+        score: Numeric score (0-100)
+    
+    Returns:
+        Letter grade (A, B, C, D, or F)
+    """
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    elif score >= 60:
+        return "D"
+    else:
+        return "F"
+
+# Test it
+print(letter_grade(85))  # Should print: B</code></pre>
+
+        <p><strong>Step 2:</strong> Add a function to process multiple scores</p>
+        <pre><code class="language-python">def convert_all_grades(scores):
+    """
+    Convert a list of numeric scores to letter grades.
+    
+    Args:
+        scores: List of numeric scores
+    
+    Returns:
+        List of letter grades
+    """
+    grades = []
+    for score in scores:
+        grade = letter_grade(score)
+        grades.append(grade)
+    return grades
+
+# Or use a list comprehension (more advanced)
+def convert_all_grades_v2(scores):
+    return [letter_grade(score) for score in scores]</code></pre>
+
+        <p><strong>Step 3:</strong> Add a function to calculate the average</p>
+        <pre><code class="language-python">def calculate_average(scores):
+    """
+    Calculate the average of a list of scores.
+    
+    Args:
+        scores: List of numeric scores
+    
+    Returns:
+        Average score rounded to 2 decimal places
+    """
+    if len(scores) == 0:
+        return 0
+    total = sum(scores)
+    average = total / len(scores)
+    return round(average, 2)</code></pre>
+
+        <p><strong>Step 4:</strong> Create a main function to tie it all together</p>
+        <pre><code class="language-python">def display_grade_report(scores):
+    """
+    Display a complete grade report with individual grades and average.
+    
+    Args:
+        scores: List of numeric scores
+    """
+    print("=" * 40)
+    print("GRADE REPORT")
+    print("=" * 40)
+    
+    # Convert scores to letter grades
+    letter_grades = convert_all_grades(scores)
+    
+    # Display individual scores and grades
+    print("\nIndividual Scores:")
+    for i, score in enumerate(scores):
+        print(f"  Score {i+1}: {score} → {letter_grades[i]}")
+    
+    # Calculate and display average
+    avg = calculate_average(scores)
+    avg_grade = letter_grade(avg)
+    
+    print(f"\nClass Average: {avg} ({avg_grade})")
+    print("=" * 40)</code></pre>
+
+        <p><strong>Step 5:</strong> Put it all together and test</p>
+        <pre><code class="language-python"># Complete program
+def letter_grade(score):
+    if score >= 90: return "A"
+    if score >= 80: return "B"
+    if score >= 70: return "C"
+    if score >= 60: return "D"
+    return "F"
+
+def convert_all_grades(scores):
+    return [letter_grade(s) for s in scores]
+
+def calculate_average(scores):
+    if len(scores) == 0: return 0
+    return round(sum(scores) / len(scores), 2)
+
+def display_grade_report(scores):
+    print("=" * 40)
+    print("GRADE REPORT")
+    print("=" * 40)
+    letter_grades = convert_all_grades(scores)
+    print("\nIndividual Scores:")
+    for i, score in enumerate(scores):
+        print(f"  Score {i+1}: {score} → {letter_grades[i]}")
+    avg = calculate_average(scores)
+    print(f"\nClass Average: {avg} ({letter_grade(avg)})")
+    print("=" * 40)
+
+# Test with sample data
+test_scores = [88, 92, 73, 85, 95, 67]
+display_grade_report(test_scores)</code></pre>
+
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>========================================
+GRADE REPORT
+========================================
+
+Individual Scores:
+  Score 1: 88 → B
+  Score 2: 92 → A
+  Score 3: 73 → C
+  Score 4: 85 → B
+  Score 5: 95 → A
+  Score 6: 67 → D
+
+Class Average: 83.33 (B)
+========================================</code></pre>
+
+        <h3>🚀 Bonus Challenges</h3>
+        <ol>
+            <li><strong>Add grade weights:</strong> Create a function that accepts both a score and a weight (e.g., homework = 20%, exam = 80%) to calculate weighted averages</li>
+            <li><strong>Add validation:</strong> Modify <code>letter_grade()</code> to handle invalid inputs (scores below 0 or above 100) by returning an error message</li>
+            <li><strong>Add plus/minus grades:</strong> Enhance the grading system to include A+, A-, B+, B-, etc.</li>
+        </ol>
+
+        <h2>Summary and Key Takeaways</h2>
+
+        <h3>✅ What You've Learned</h3>
+        <ul>
+            <li>Functions are reusable blocks of code that help eliminate repetition and organize your programs</li>
+            <li>Parameters let functions accept inputs, making them flexible and adaptable</li>
+            <li>The <code>return</code> statement sends results back from functions; without it, functions return <code>None</code></li>
+            <li>Default parameters provide fallback values when arguments aren't supplied</li>
+            <li>Breaking complex tasks into smaller functions makes code easier to read, test, and maintain</li>
+        </ul>
+
+        <h3>🎯 What Makes Functions Special</h3>
+        <ol>
+            <li><strong>Reusability:</strong> Write once, use everywhere. No more copy-pasting code!</li>
+            <li><strong>Maintainability:</strong> Fix a bug once in the function, and it's fixed everywhere it's used</li>
+            <li><strong>Testability:</strong> Small functions are easy to test in isolation, catching bugs early</li>
+            <li><strong>Readability:</strong> Well-named functions make code self-documenting and easier to understand</li>
+        </ol>
+
+        <h3>📋 Your Next Steps</h3>
+        <ul>
+            <li>✅ Practice writing functions for everyday tasks (temperature conversion, tip calculator, etc.)</li>
+            <li>✅ Experiment with different parameter combinations and default values</li>
+            <li>✅ Challenge yourself to break down a large script into multiple small functions</li>
+            <li>✅ Learn about <code>*args</code> and <code>**kwargs</code> for functions with variable numbers of arguments</li>
+            <li>✅ Explore lambda functions for quick, one-line function definitions</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Pro Tip:</strong> A good function should do one thing and do it well. If you struggle to name a function without using "and", it's probably trying to do too much!</p>
+        </div>
+
+        <p><strong>Remember:</strong> Functions are the foundation of organized, professional code. Master them, and you'll write better programs faster. Every expert programmer started exactly where you are now—by writing their first function and discovering the power of reusable code.</p>
+
+        <p>Keep practicing, keep experimenting, and most importantly, have fun building! The more functions you write, the more naturally they'll come to you. Soon you'll be organizing entire programs into elegant, efficient functions without even thinking about it. 🚀</p>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Python Functions</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What will this function return when called with no arguments: <code>def greet(name="World"): return f"Hello {name}"</code>?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">It will raise an error</div>
+                    <div class="quiz-option" data-correct="true">Hello World</div>
+                    <div class="quiz-option" data-correct="false">None</div>
+                    <div class="quiz-option" data-correct="false">Hello name</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What happens if a function doesn't have a <code>return</code> statement?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">The program crashes</div>
+                    <div class="quiz-option" data-correct="false">It returns an empty string</div>
+                    <div class="quiz-option" data-correct="true">It returns None</div>
+                    <div class="quiz-option" data-correct="false">It returns 0</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. Which of the following is the correct way to define a function that calculates the square of a number?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">function square(x): return x * x</div>
+                    <div class="quiz-option" data-correct="true">def square(x): return x * x</div>
+                    <div class="quiz-option" data-correct="false">def square(x) { return x * x }</div>
+                    <div class="quiz-option" data-correct="false">square(x): return x * x</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What is the main benefit of using functions in your code?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">They make programs run faster</div>
+                    <div class="quiz-option" data-correct="true">They make code reusable and easier to maintain</div>
+                    <div class="quiz-option" data-correct="false">They reduce the file size</div>
+                    <div class="quiz-option" data-correct="false">They automatically fix bugs</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="python-data-structures-tutorial.html" class="btn btn-secondary">← Previous: Data Structures</a>
+                <a href="modules-packages-tutorial.html" class="btn btn-primary">Next: Modules & Packages →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

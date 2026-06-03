@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Decision Trees - the intuitive tree-based algorithm for classification and regression. Learn how to build and interpret tree models.">
+    <meta name="keywords" content="decision trees tutorial, tree-based machine learning, classification trees, regression trees, feature importance">
+    <title>Decision Trees - ML Tree-Based Models Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="decision-trees.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .example-box p { margin: 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .comparison-table th { background: #f8fafc; font-weight: 600; color: var(--text-dark); }
+        .comparison-table tr:hover { background: #f8fafc; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) {
+            .tutorial-meta-info { justify-content: center; }
+            .tutorial-navigation { flex-direction: column; }
+            .tutorial-navigation a { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Decision Trees</span>
+            </div>
+            <h1>Decision Trees</h1>
+            <p class="tutorial-intro">Learn the intuitive tree-based algorithm for classification and regression that mimics human decision-making</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 4</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🌳 Welcome to Decision Trees</h2>
+                <p>
+                    Decision Trees are one of the most intuitive and powerful machine learning algorithms. Unlike Logistic Regression's mathematical approach, Decision Trees mimic how humans make decisions by asking a series of yes/no questions about data.
+                </p>
+                <p>
+                    They're also the foundation for ensemble methods like Random Forests and Gradient Boosting, making them essential to understand.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🤔 What is a Decision Tree?</h2>
+                
+                <div class="info-box">
+                    <h3>Definition</h3>
+                    <p>
+                        A <strong>Decision Tree</strong> is a tree-structured model that makes predictions by repeatedly asking questions about features. Each question splits the data into smaller subsets until reaching a prediction (leaf).
+                    </p>
+                </div>
+
+                <p>
+                    Imagine deciding whether to go to the beach:
+                </p>
+                <ul>
+                    <li>Is it sunny? (If yes, continue)</li>
+                    <li>Is the water warm? (If yes, continue)</li>
+                    <li>Am I free? (If yes, go to beach!)</li>
+                </ul>
+
+                <p>
+                    Decision Trees follow exactly this logic!
+                </p>
+
+                <h3>Tree Components</h3>
+                <ul>
+                    <li><strong>Root Node:</strong> First decision (top of tree)</li>
+                    <li><strong>Internal Nodes:</strong> Decision points (questions)</li>
+                    <li><strong>Branches:</strong> Outcomes (yes/no, left/right)</li>
+                    <li><strong>Leaf Nodes:</strong> Final predictions</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ How Do Trees Learn to Split?</h2>
+                
+                <p>
+                    The key challenge: How does the algorithm decide which feature and threshold to use for each split?
+                </p>
+
+                <h3>Gini Index & Information Gain</h3>
+                <p>
+                    Decision Trees use metrics to evaluate splits. The most common is <strong>Gini Index</strong>:
+                </p>
+                
+                <ul>
+                    <li><strong>Gini = 0:</strong> Pure node (all same class) - perfect split!</li>
+                    <li><strong>Gini = 1:</strong> Perfectly mixed classes - worst split</li>
+                </ul>
+
+                <p>
+                    The algorithm tries all possible splits and picks the one with the lowest Gini (most pure children).
+                </p>
+
+                <div class="example-box">
+                    <p>
+                        <strong>🌳 Example:</strong> Deciding customer loyalty:
+                    </p>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>Test: "Purchase > $100?" - Maybe 80% loyal customers say yes</li>
+                        <li>Test: "Age > 35?" - Maybe only 60% correlation</li>
+                        <li>Choose first split because it's "purer"</li>
+                    </ul>
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💻 Decision Trees in Python</h2>
+                
+                <h3>🎯 Complete Classification Example: Iris Flower Dataset</h3>
+                <pre><code class="language-python"># Complete Decision Tree Classification Example
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Split into training and test sets (80/20)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"Training samples: {len(X_train)}")
+print(f"Test samples: {len(X_test)}")
+print(f"Features: {iris.feature_names}")
+print(f"Classes: {iris.target_names}")
+
+# Create and train tree
+tree = DecisionTreeClassifier(
+    criterion='gini',        # or 'entropy'
+    max_depth=3,             # prevent overfitting
+    min_samples_split=2,
+    min_samples_leaf=1,
+    random_state=42
+)
+tree.fit(X_train, y_train)
+
+# Make predictions
+y_pred = tree.predict(X_test)
+y_proba = tree.predict_proba(X_test)
+
+# Evaluate
+train_accuracy = tree.score(X_train, y_train)
+test_accuracy = tree.score(X_test, y_test)
+
+print(f"\nTraining Accuracy: {train_accuracy:.2%}")
+print(f"Test Accuracy: {test_accuracy:.2%}")
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=iris.target_names))
+
+# Cross-validation for robust evaluation
+cv_scores = cross_val_score(tree, X_train, y_train, cv=5)
+print(f"\n5-Fold CV Accuracy: {cv_scores.mean():.2%} (+/- {cv_scores.std() * 2:.2%})")
+
+# Feature importance
+print("\n🔍 Feature Importance:")
+for feature, importance in zip(iris.feature_names, tree.feature_importances_):
+    print(f"  {feature}: {importance:.2%}")
+
+# Predict for new sample
+new_flower = np.array([[5.1, 3.5, 1.4, 0.2]])  # Typical setosa measurements
+prediction = tree.predict(new_flower)
+probabilities = tree.predict_proba(new_flower)[0]
+
+print(f"\n🌸 New flower prediction: {iris.target_names[prediction[0]]}")
+for class_name, prob in zip(iris.target_names, probabilities):
+    print(f"  {class_name}: {prob:.1%}")</code></pre>
+
+                <h3>📊 Visualizing Decision Trees</h3>
+                <pre><code class="language-python"># Visualization 1: Tree Structure
+plt.figure(figsize=(20, 10))
+plot_tree(
+    tree,
+    feature_names=iris.feature_names,
+    class_names=iris.target_names,
+    filled=True,          # color nodes by class
+    rounded=True,         # rounded boxes
+    fontsize=10
+)
+plt.title("Decision Tree for Iris Classification", fontsize=16)
+plt.tight_layout()
+plt.savefig('decision_tree_structure.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Visualization 2: Decision Boundaries (2D projection)
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
+
+# Use only 2 features for visualization
+X_2d = X[:, [2, 3]]  # petal length, petal width
+tree_2d = DecisionTreeClassifier(max_depth=3, random_state=42)
+tree_2d.fit(X_2d, y)
+
+# Create mesh
+x_min, x_max = X_2d[:, 0].min() - 0.5, X_2d[:, 0].max() + 0.5
+y_min, y_max = X_2d[:, 1].min() - 0.5, X_2d[:, 1].max() + 0.5
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                     np.arange(y_min, y_max, 0.02))
+
+# Predict on mesh
+Z = tree_2d.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot
+plt.figure(figsize=(10, 6))
+plt.contourf(xx, yy, Z, alpha=0.3, cmap=ListedColormap(['#FF6B6B', '#4ECDC4', '#45B7D1']))
+plt.scatter(X_2d[:, 0], X_2d[:, 1], c=y, cmap=ListedColormap(['#FF0000', '#00FF00', '#0000FF']), 
+            edgecolor='black', s=50)
+plt.xlabel('Petal Length (cm)')
+plt.ylabel('Petal Width (cm)')
+plt.title('Decision Tree Decision Boundaries')
+plt.colorbar()
+plt.show()
+
+# Visualization 3: Feature Importance Bar Chart
+importances = tree.feature_importances_
+indices = np.argsort(importances)[::-1]
+
+plt.figure(figsize=(10, 6))
+plt.bar(range(X.shape[1]), importances[indices])
+plt.xticks(range(X.shape[1]), [iris.feature_names[i] for i in indices], rotation=45)
+plt.xlabel('Feature')
+plt.ylabel('Importance')
+plt.title('Feature Importance in Decision Tree')
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>💾 Saving and Loading Models</h3>
+                <pre><code class="language-python"># Save trained model
+import joblib
+
+# Save
+joblib.dump(tree, 'decision_tree_model.pkl')
+print("Model saved!")
+
+# Load
+loaded_tree = joblib.load('decision_tree_model.pkl')
+print("Model loaded!")
+
+# Verify it works
+test_prediction = loaded_tree.predict(X_test[:5])
+print(f"Predictions: {test_prediction}")
+
+# Alternative: Pickle
+import pickle
+with open('tree_model.pickle', 'wb') as f:
+    pickle.dump(tree, f)
+
+with open('tree_model.pickle', 'rb') as f:
+    loaded_tree2 = pickle.load(f)</code></pre>
+
+                <h3>🎓 Advanced: Comparing Different Hyperparameters</h3>
+                <pre><code class="language-python"># Compare trees with different max_depth
+from sklearn.model_selection import validation_curve
+
+param_range = range(1, 15)
+train_scores, test_scores = validation_curve(
+    DecisionTreeClassifier(random_state=42),
+    X_train, y_train,
+    param_name="max_depth",
+    param_range=param_range,
+    cv=5,
+    scoring="accuracy"
+)
+
+train_mean = np.mean(train_scores, axis=1)
+train_std = np.std(train_scores, axis=1)
+test_mean = np.mean(test_scores, axis=1)
+test_std = np.std(test_scores, axis=1)
+
+plt.figure(figsize=(10, 6))
+plt.plot(param_range, train_mean, label='Training score', color='blue', marker='o')
+plt.fill_between(param_range, train_mean - train_std, train_mean + train_std, alpha=0.15, color='blue')
+plt.plot(param_range, test_mean, label='Validation score', color='red', marker='s')
+plt.fill_between(param_range, test_mean - test_std, test_mean + test_std, alpha=0.15, color='red')
+plt.xlabel('max_depth')
+plt.ylabel('Accuracy')
+plt.title('Training vs Validation Accuracy by Tree Depth')
+plt.legend(loc='best')
+plt.grid(True)
+plt.show()
+
+print(f"Optimal max_depth: {param_range[np.argmax(test_mean)]}")
+print(f"Best validation accuracy: {np.max(test_mean):.2%}")</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Feature Importance:</strong> Decision Trees automatically tell you which features matter most! This is incredibly valuable for business insights and feature selection.</p>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Pro Tip:</strong> Always visualize your tree! Use <code>plot_tree()</code> to understand how decisions are made. If your tree is too deep to visualize, it's probably overfitting.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📈 Regression Trees: Predicting Continuous Values</h2>
+                
+                <p>
+                    Decision Trees aren't just for classification! <strong>Regression Trees</strong> predict continuous values by averaging the target values in leaf nodes.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Key Differences for Regression:</strong><br><br>
+                    
+                    <strong>Classification Trees:</strong><br>
+                    • Split criterion: Gini Index or Entropy<br>
+                    • Leaf prediction: Majority class<br>
+                    • Example: "This email is Spam"<br><br>
+
+                    <strong>Regression Trees:</strong><br>
+                    • Split criterion: MSE (Mean Squared Error) or MAE<br>
+                    • Leaf prediction: Average of target values<br>
+                    • Example: "This house costs $250,000"
+                </div>
+
+                <pre><code class="language-python"># Regression Tree: Predicting House Prices
+from sklearn.tree import DecisionTreeRegressor
+import numpy as np
+
+# Sample data: [size_sqft, bedrooms, age_years]
+X_train = np.array([
+    [1500, 3, 10],
+    [2000, 4, 5],
+    [1200, 2, 20],
+    [2500, 4, 2],
+    [1800, 3, 8]
+])
+y_train = np.array([250000, 350000, 180000, 420000, 300000])
+
+# Train regression tree
+tree_reg = DecisionTreeRegressor(
+    max_depth=3,
+    min_samples_split=2,
+    random_state=42
+)
+tree_reg.fit(X_train, y_train)
+
+# Predict
+new_house = np.array([[1700, 3, 12]])
+price = tree_reg.predict(new_house)
+print(f"Predicted price: ${price[0]:,.0f}")
+
+# Feature importance
+for feature, importance in zip(['Size', 'Bedrooms', 'Age'], tree_reg.feature_importances_):
+    print(f"{feature}: {importance:.2%}")</code></pre>
+
+                <h3>How Regression Trees Split</h3>
+                <p>
+                    Instead of Gini, regression trees minimize <strong>MSE (Mean Squared Error)</strong> when splitting:
+                </p>
+                <ul>
+                    <li>• Try split: "Size ≤ 1600 sqft"</li>
+                    <li>• Left child: houses [1200, 1500] → avg price = $215k</li>
+                    <li>• Right child: houses [1800, 2000, 2500] → avg price = $357k</li>
+                    <li>• Calculate MSE of predictions vs actual prices</li>
+                    <li>• Pick split with lowest MSE</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ Overfitting: The Main Problem</h2>
+                
+                <p>
+                    Decision Trees have a critical weakness: <strong>they can grow arbitrarily deep and memorize training data</strong> (overfitting).
+                </p>
+
+                <div class="warning-box">
+                    <p>⚠️ An unrestricted tree will keep splitting until each leaf has perfect purity — meaning it memorizes the training data but fails catastrophically on new data. This is called <strong>high variance</strong>.</p>
+                </div>
+
+                <div class="example-box">
+                    <p><strong>😱 Overfitting Example:</strong></p>
+                    <p style="margin-top: 1rem;">
+                        Training accuracy: <strong>100%</strong> (memorized perfectly)<br>
+                        Test accuracy: <strong>65%</strong> (terrible on new data)<br><br>
+                        The tree learned noise and outliers instead of patterns!
+                    </p>
+                </div>
+
+                <h3>🛡️ Pre-Pruning: Stop Growing Early</h3>
+                <p>
+                    <strong>Pre-pruning</strong> prevents overfitting by stopping tree growth early using hyperparameters:
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Hyperparameter</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">What It Does</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0;">Typical Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>max_depth</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Maximum tree depth</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">3-10 (start with 5)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>min_samples_split</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Min samples needed to split a node</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">10-50</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>min_samples_leaf</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Min samples required in leaf nodes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">5-20</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>max_leaf_nodes</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Maximum number of leaf nodes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">10-100</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>min_impurity_decrease</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Min impurity reduction needed to split</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">0.001-0.01</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <pre><code class="language-python"># Comprehensive Overfitting Control
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Option 1: Manual tuning
+tree = DecisionTreeClassifier(
+    max_depth=5,              # Limit depth
+    min_samples_split=20,     # Need 20+ samples to split
+    min_samples_leaf=10,      # Need 10+ samples per leaf
+    max_leaf_nodes=20,        # Max 20 leaves
+    min_impurity_decrease=0.01,  # Only split if impurity reduces by 0.01+
+    random_state=42
+)
+tree.fit(X_train, y_train)
+
+print(f"Training accuracy: {tree.score(X_train, y_train):.2%}")
+print(f"Test accuracy: {tree.score(X_test, y_test):.2%}")
+
+# Option 2: GridSearch for best hyperparameters
+param_grid = {
+    'max_depth': [3, 5, 7, 10],
+    'min_samples_split': [10, 20, 50],
+    'min_samples_leaf': [5, 10, 20]
+}
+
+grid_search = GridSearchCV(
+    DecisionTreeClassifier(random_state=42),
+    param_grid,
+    cv=5,  # 5-fold cross-validation
+    scoring='accuracy'
+)
+grid_search.fit(X_train, y_train)
+
+print(f"\nBest parameters: {grid_search.best_params_}")
+print(f"Best CV score: {grid_search.best_score_:.2%}")
+print(f"Test score: {grid_search.score(X_test, y_test):.2%}")</code></pre>
+
+                <h3>✂️ Post-Pruning: Grow Then Cut</h3>
+                <p>
+                    <strong>Post-pruning</strong> (also called "pruning") grows a full tree, then removes branches that don't improve validation performance:
+                </p>
+
+                <div style="background: #ecfdf5; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;">
+                    <strong>Post-Pruning Process:</strong><br><br>
+                    1️⃣ Grow complete tree (no restrictions)<br>
+                    2️⃣ Evaluate each branch on validation set<br>
+                    3️⃣ Remove branches that don't improve validation accuracy<br>
+                    4️⃣ Repeat until no more branches can be removed<br><br>
+
+                    <strong>Advantage:</strong> Can discover optimal tree size automatically<br>
+                    <strong>Disadvantage:</strong> Computationally expensive (grows full tree first)
+                </div>
+
+                <pre><code class="language-python"># Post-pruning using cost complexity pruning (sklearn 0.22+)
+from sklearn.tree import DecisionTreeClassifier
+
+# Train full tree
+full_tree = DecisionTreeClassifier(random_state=42)
+full_tree.fit(X_train, y_train)
+
+print(f"Full tree depth: {full_tree.get_depth()}")
+print(f"Full tree leaves: {full_tree.get_n_leaves()}")
+
+# Get cost complexity path
+path = full_tree.cost_complexity_pruning_path(X_train, y_train)
+alphas = path.ccp_alphas
+
+# Train trees with different alpha values
+trees = []
+for alpha in alphas:
+    tree = DecisionTreeClassifier(random_state=42, ccp_alpha=alpha)
+    tree.fit(X_train, y_train)
+    trees.append(tree)
+
+# Find best alpha based on validation set
+train_scores = [tree.score(X_train, y_train) for tree in trees]
+test_scores = [tree.score(X_test, y_test) for tree in trees]
+
+best_idx = np.argmax(test_scores)
+print(f"\nBest alpha: {alphas[best_idx]:.6f}")
+print(f"Pruned tree depth: {trees[best_idx].get_depth()}")
+print(f"Pruned tree leaves: {trees[best_idx].get_n_leaves()}")
+print(f"Test accuracy: {test_scores[best_idx]:.2%}")</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Pro Tip:</strong> Start with pre-pruning (max_depth, min_samples_split) as it's faster and usually sufficient. Only use post-pruning if you need to squeeze out the last few percent of accuracy.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Highly Interpretable</h3>
+                        <p>You can visualize and explain every decision</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Handles Non-Linear Patterns</h3>
+                        <p>Works with curved, complex relationships</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Feature Importance Built-in</h3>
+                        <p>Automatically identifies which features matter</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Prone to Overfitting</h3>
+                        <p>Can memorize training data without careful tuning</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Unstable</h3>
+                        <p>Small data changes can drastically change the tree</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Greedy Algorithm</h3>
+                        <p>Makes locally optimal choices that may not be globally best</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 When to Use Decision Trees</h2>
+                
+                <ul>
+                    <li>✅ Need interpretable models you can explain to stakeholders</li>
+                    <li>✅ Non-linear relationships in your data</li>
+                    <li>✅ Want automatic feature importance</li>
+                    <li>✅ Mixed data types (numerical and categorical)</li>
+                    <li>✅ As foundation for ensemble methods (Random Forests, XGBoost)</li>
+                    <li>✅ Quick baseline model for any classification/regression problem</li>
+                    <li>❌ Avoid when: Need highest accuracy (use ensembles instead)</li>
+                    <li>❌ Avoid when: Data has high dimensionality (many features)</li>
+                    <li>❌ Avoid when: Extrapolation needed (trees can't predict beyond training range)</li>
+                </ul>
+
+                <div class="info-box">
+                    <p>💡 <strong>Pro Tip:</strong> Decision Trees are rarely used alone in production. They're usually combined with ensemble methods like Random Forests or Gradient Boosting for better performance and stability.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Troubleshooting Guide</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Problem</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Symptoms</th>
+                            <th style="padding: 0.75rem; border: 1px solid #e2e8f0; text-align: left;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Overfitting</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Training accuracy 95%+<br>Test accuracy 70%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Reduce max_depth (try 3-7)<br>• Increase min_samples_split<br>• Use pruning (ccp_alpha)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Underfitting</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Both training and test accuracy low</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Increase max_depth<br>• Decrease min_samples_split<br>• Add more features</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Imbalanced Classes</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Model always predicts majority class</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Use class_weight='balanced'<br>• Oversample minority class (SMOTE)<br>• Try stratified splits</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Tree Too Deep</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Can't visualize tree<br>100+ nodes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Set max_depth=5 or lower<br>• Use max_leaf_nodes=20<br>• Consider ensemble methods</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Slow Training</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Takes minutes to fit tree</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Reduce max_features<br>• Sample data for prototyping<br>• Set max_depth limit</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Unstable Predictions</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Tree changes drastically with small data changes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Use Random Forests<br>• Set random_state for reproducibility<br>• Collect more data</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Poor Feature Importance</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">All features show ~0% importance</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">• Scale features (StandardScaler)<br>• Remove constant/duplicate features<br>• Check for data leakage</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🐛 Common Code Issues</h3>
+                <pre><code class="language-python"># ❌ WRONG: Fitting on entire dataset
+tree.fit(X, y)
+score = tree.score(X, y)  # This is training accuracy, misleading!
+
+# ✅ RIGHT: Always use train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+tree.fit(X_train, y_train)
+train_score = tree.score(X_train, y_train)
+test_score = tree.score(X_test, y_test)  # Real performance
+
+# ❌ WRONG: Not setting random_state
+tree = DecisionTreeClassifier()  # Results not reproducible
+
+# ✅ RIGHT: Set random_state for reproducibility
+tree = DecisionTreeClassifier(random_state=42)
+
+# ❌ WRONG: Ignoring class imbalance
+# 95% class 0, 5% class 1 → model predicts all class 0
+
+# ✅ RIGHT: Handle class imbalance
+tree = DecisionTreeClassifier(class_weight='balanced', random_state=42)
+
+# ❌ WRONG: Not handling categorical features
+# sklearn requires numeric input
+
+# ✅ RIGHT: Encode categorical features
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+X['category_encoded'] = le.fit_transform(X['category'])</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Practice Projects</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>🌸 Project 1: Iris Classification</h3>
+                        <p><strong>Difficulty:</strong> Beginner</p>
+                        <p><strong>Dataset:</strong> sklearn.datasets.load_iris()</p>
+                        <p><strong>Goal:</strong> Classify iris species based on measurements</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Train decision tree with max_depth=3</li>
+                            <li>• Visualize tree with plot_tree()</li>
+                            <li>• Calculate accuracy on test set</li>
+                            <li>• Identify most important feature</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #0d9488;">
+                        <h3>💳 Project 2: Credit Card Fraud Detection</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> Kaggle Credit Card Fraud Detection</p>
+                        <p><strong>Goal:</strong> Detect fraudulent transactions</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle highly imbalanced classes (use class_weight)</li>
+                            <li>• Compare Gini vs Entropy criterion</li>
+                            <li>• Tune hyperparameters with GridSearchCV</li>
+                            <li>• Calculate precision, recall, F1-score</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>🏠 Project 3: House Price Prediction</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> Boston Housing or California Housing</p>
+                        <p><strong>Goal:</strong> Predict house prices using regression trees</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Use DecisionTreeRegressor</li>
+                            <li>• Compare MSE vs MAE criterion</li>
+                            <li>• Visualize actual vs predicted prices</li>
+                            <li>• Find optimal max_depth (3-15)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #8b5cf6;">
+                        <h3>📧 Project 4: Email Spam Filter</h3>
+                        <p><strong>Difficulty:</strong> Advanced</p>
+                        <p><strong>Dataset:</strong> SMS Spam Collection or Enron Email</p>
+                        <p><strong>Goal:</strong> Build spam classifier from text</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Extract features with TfidfVectorizer</li>
+                            <li>• Train tree on text features</li>
+                            <li>• Identify most important words (feature_importances_)</li>
+                            <li>• Compare with Naive Bayes baseline</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📝 Project Starter Code</h3>
+                <pre><code class="language-python"># Template for Practice Projects
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.metrics import accuracy_score, classification_report
+import pandas as pd
+import numpy as np
+
+# 1. Load data
+# X, y = load_your_dataset()
+
+# 2. Explore data
+print(f"Samples: {len(X)}, Features: {X.shape[1]}")
+print(f"Class distribution: {np.bincount(y)}")
+
+# 3. Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 4. Train tree
+tree = DecisionTreeClassifier(
+    max_depth=5,
+    min_samples_split=10,
+    random_state=42
+)
+tree.fit(X_train, y_train)
+
+# 5. Evaluate
+train_acc = tree.score(X_train, y_train)
+test_acc = tree.score(X_test, y_test)
+print(f"Training: {train_acc:.2%}, Test: {test_acc:.2%}")
+
+# 6. Cross-validation
+cv_scores = cross_val_score(tree, X_train, y_train, cv=5)
+print(f"CV: {cv_scores.mean():.2%} (+/- {cv_scores.std()*2:.2%})")
+
+# 7. Feature importance
+if hasattr(X, 'columns'):  # pandas DataFrame
+    for feat, imp in zip(X.columns, tree.feature_importances_):
+        if imp > 0.05:  # Only show important features
+            print(f"{feat}: {imp:.1%}")
+
+# 8. Detailed evaluation
+y_pred = tree.predict(X_test)
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))</code></pre>
+
+                <div class="success-box">
+                    <p><strong>🎯 Challenge:</strong> After completing the basic projects, try building an ensemble! Combine 10 decision trees trained on random data subsets, then average their predictions. This is the foundation of Random Forests (next tutorial)!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>✅ What You've Learned:</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>Core Concepts</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Recursive partitioning algorithm</li>
+                            <li>• Binary splits at each node</li>
+                            <li>• Classification & regression trees</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0d9488;">
+                        <strong>Splitting Criteria</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Gini Index (default, faster)</li>
+                            <li>• Entropy (information gain)</li>
+                            <li>• MSE for regression trees</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>Overfitting Control</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Pre-pruning (max_depth, min_samples)</li>
+                            <li>• Post-pruning (ccp_alpha)</li>
+                            <li>• Cross-validation for tuning</li>
+                        </ul>
+                    </div>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                        <strong>Python Implementation</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• sklearn DecisionTreeClassifier/Regressor</li>
+                            <li>• Feature importance extraction</li>
+                            <li>• Visualization with plot_tree()</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>🎓 Key Takeaways</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; width: 30%; background: #f1f5f9;"><strong>Best Feature</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Interpretability - you can explain every decision to stakeholders</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>Biggest Weakness</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Overfitting - requires careful hyperparameter tuning</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>When to Use</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Quick baselines, interpretable models, feature selection</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>When to Avoid</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Need max accuracy (use ensembles), extrapolation tasks</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0; background: #f1f5f9;"><strong>Next Evolution</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Random Forests, Gradient Boosting (combine many trees)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🔑 Quick Reference Card</h3>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                    <pre style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; overflow-x: auto;"><code class="language-python"># Decision Tree Essentials Cheat Sheet
+
+# Classification
+from sklearn.tree import DecisionTreeClassifier
+tree = DecisionTreeClassifier(
+    criterion='gini',        # or 'entropy'
+    max_depth=5,             # CRITICAL: controls overfitting
+    min_samples_split=20,    # min samples to split
+    min_samples_leaf=10,     # min samples in leaf
+    random_state=42          # reproducibility
+)
+tree.fit(X_train, y_train)
+
+# Regression
+from sklearn.tree import DecisionTreeRegressor
+tree_reg = DecisionTreeRegressor(
+    criterion='squared_error',  # or 'absolute_error'
+    max_depth=5
+)
+
+# Key Methods
+tree.predict(X_test)              # predictions
+tree.predict_proba(X_test)        # probabilities
+tree.feature_importances_         # importance scores
+tree.get_depth()                  # tree depth
+tree.get_n_leaves()               # leaf count
+
+# Visualization
+from sklearn.tree import plot_tree
+plot_tree(tree, filled=True, feature_names=['f1', 'f2'])
+
+# Hyperparameter Tuning
+from sklearn.model_selection import GridSearchCV
+params = {'max_depth': [3,5,7], 'min_samples_split': [10,20,50]}
+grid = GridSearchCV(tree, params, cv=5)
+grid.fit(X_train, y_train)</code></pre>
+                </div>
+
+                <h3>🚀 What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Random Forests</strong>, we'll learn how to combine multiple Decision Trees to create a more powerful and stable model. You'll discover:
+                </p>
+                <ul>
+                    <li>✅ <strong>Ensemble Learning</strong> - Combining multiple weak learners</li>
+                    <li>✅ <strong>Bagging</strong> - Bootstrap aggregating for variance reduction</li>
+                    <li>✅ <strong>Feature Randomness</strong> - Decorrelating trees</li>
+                    <li>✅ <strong>Out-of-Bag Evaluation</strong> - Free validation without test set</li>
+                    <li>✅ <strong>Practical Benefits</strong> - Better accuracy, less overfitting, no tuning needed</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've now mastered Decision Trees - one of the most interpretable and foundational ML algorithms. You understand recursive partitioning, splitting criteria (Gini vs Entropy), overfitting control, and how to implement trees in Python. You're ready for ensemble methods!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Decision Trees!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="C">
+                        <h4>1. How do decision trees make predictions?</h4>
+                        <div class="quiz-option" data-value="A">A) By calculating distances to data points</div>
+                        <div class="quiz-option" data-value="B">B) By fitting a line to the data</div>
+                        <div class="quiz-option" data-value="C">C) By splitting data based on if-else rules</div>
+                        <div class="quiz-option" data-value="D">D) By transforming data with sigmoid function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>2. What does Gini impurity measure?</h4>
+                        <div class="quiz-option" data-value="A">A) Tree depth</div>
+                        <div class="quiz-option" data-value="B">B) How mixed/impure the classes are at a node</div>
+                        <div class="quiz-option" data-value="C">C) Number of samples in a node</div>
+                        <div class="quiz-option" data-value="D">D) Model accuracy</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>3. What is the main risk with deep decision trees?</h4>
+                        <div class="quiz-option" data-value="A">A) Training too slowly</div>
+                        <div class="quiz-option" data-value="B">B) Using too much memory</div>
+                        <div class="quiz-option" data-value="C">C) Underfitting the data</div>
+                        <div class="quiz-option" data-value="D">D) Overfitting by memorizing training data</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>4. Which hyperparameter controls the maximum depth of a decision tree?</h4>
+                        <div class="quiz-option" data-value="A">A) max_depth</div>
+                        <div class="quiz-option" data-value="B">B) learning_rate</div>
+                        <div class="quiz-option" data-value="C">C) n_estimators</div>
+                        <div class="quiz-option" data-value="D">D) alpha</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>5. What is feature importance in decision trees?</h4>
+                        <div class="quiz-option" data-value="A">A) The number of times a feature appears</div>
+                        <div class="quiz-option" data-value="B">B) The average value of a feature</div>
+                        <div class="quiz-option" data-value="C">C) How much a feature contributes to splits and predictions</div>
+                        <div class="quiz-option" data-value="D">D) The correlation between features</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="logistic-regression.html" class="btn btn-secondary">← Previous: Logistic Regression</a>
+                <a href="random-forests.html" class="btn btn-primary">Next: Random Forests →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

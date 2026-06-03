@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn how AI models are trained. Understand supervised learning, unsupervised learning, and reinforcement learning with real-world examples.">
+    <title>Tutorial 8: How AI Models are Trained - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .learning-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .learning-type-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .learning-type-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .type-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .supervised-badge {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+        
+        .unsupervised-badge {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .reinforcement-badge {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .training-analogy {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px solid #078930;
+        }
+        
+        .training-steps {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .training-step {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .real-examples-section {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .example-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #078930;
+        }
+        
+        .example-title {
+            color: #078930;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        .process-visualization {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .process-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .process-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .process-arrow {
+            text-align: center;
+            color: #078930;
+            font-size: 1.5rem;
+        }
+        
+        .interactive-demo {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .demo-button {
+            background: white;
+            color: #078930;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .demo-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .learning-types-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 8</span>
+            </div>
+            <h1>Tutorial 8: How AI Models are Trained</h1>
+            <p class="tutorial-intro">Discover the three types of machine learning and see how AI learns from examples</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You know AI needs data. But <strong>how does it actually learn from that data?</strong> What happens inside the "black box" when we say AI is "training"?</p>
+                
+                <p>Training AI is like <strong>teaching a child through examples</strong>. Show them 1,000 pictures of dogs, and they'll recognize dogs they've never seen before. AI works the same way — it learns patterns from examples, then applies those patterns to new situations.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Learning Process:</strong> AI doesn't memorize every example. Instead, it extracts patterns and rules (like "dogs have four legs, fur, and wagging tails") that work across new, unseen data.</p>
+                </div>
+            </section>
+
+            <!-- The Student Analogy -->
+            <section class="content-section">
+                <h2>🎓 The Student Learning Analogy</h2>
+                
+                <div class="training-analogy">
+                    <h3>Imagine Teaching a Student Math</h3>
+                    
+                    <div class="training-steps">
+                        <div class="training-step">
+                            <div class="step-number">1</div>
+                            <div>
+                                <strong>Show Examples</strong>
+                                <p>"2 + 3 = 5, 5 + 7 = 12, 10 + 15 = 25"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="training-step">
+                            <div class="step-number">2</div>
+                            <div>
+                                <strong>Student Finds Pattern</strong>
+                                <p>"Oh, I see! You combine the numbers to get a total."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="training-step">
+                            <div class="step-number">3</div>
+                            <div>
+                                <strong>Test with New Problem</strong>
+                                <p>"What's 8 + 6?" → Student answers "14"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="training-step">
+                            <div class="step-number">4</div>
+                            <div>
+                                <strong>Feedback & Correction</strong>
+                                <p>If wrong, explain why. If right, reinforce the pattern.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="training-step">
+                            <div class="step-number">5</div>
+                            <div>
+                                <strong>Repeat Until Mastery</strong>
+                                <p>After 1,000 examples, student understands addition deeply.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>AI training works identically:</strong> Show examples → Find patterns → Test on new data → Adjust based on errors → Repeat until accurate.</p>
+            </section>
+
+            <!-- Three Types of Learning -->
+            <section class="content-section">
+                <h2>🎯 Three Ways AI Learns</h2>
+                
+                <p>Just like humans learn in different ways (textbook study, exploration, trial-and-error), AI has three main learning approaches:</p>
+                
+                <div class="learning-types-grid">
+                    <!-- Supervised Learning -->
+                    <div class="learning-type-card">
+                        <div class="type-badge supervised-badge">Supervised Learning</div>
+                        <div class="type-icon">👨‍🏫</div>
+                        <h3>Learning with a Teacher</h3>
+                        <p><strong>How it works:</strong> AI is given data WITH correct answers (labels). It learns by comparing its predictions to the right answers.</p>
+                        <p><strong>Analogy:</strong> Flashcards with answers on the back. You guess, flip, check if correct, adjust.</p>
+                        <p><strong>Real examples:</strong></p>
+                        <ul>
+                            <li>Email spam filtering</li>
+                            <li>Medical image diagnosis</li>
+                            <li>House price prediction</li>
+                            <li>Language translation</li>
+                        </ul>
+                        <p><strong>Data format:</strong></p>
+                        <p style="font-family: monospace; background: #f8fafc; padding: 0.5rem; border-radius: 4px;">
+                            Email text → "Spam" or "Not Spam"<br>
+                            X-ray image → "Cancer" or "Healthy"
+                        </p>
+                    </div>
+                    
+                    <!-- Unsupervised Learning -->
+                    <div class="learning-type-card">
+                        <div class="type-badge unsupervised-badge">Unsupervised Learning</div>
+                        <div class="type-icon">🔍</div>
+                        <h3>Learning Without Labels</h3>
+                        <p><strong>How it works:</strong> AI gets data WITHOUT answers. It must find hidden patterns, groups, or structures on its own.</p>
+                        <p><strong>Analogy:</strong> Organizing a messy closet without instructions. You group similar items naturally.</p>
+                        <p><strong>Real examples:</strong></p>
+                        <ul>
+                            <li>Customer segmentation (marketing)</li>
+                            <li>Recommendation systems (Netflix)</li>
+                            <li>Anomaly detection (fraud)</li>
+                            <li>Data compression</li>
+                        </ul>
+                        <p><strong>Data format:</strong></p>
+                        <p style="font-family: monospace; background: #f8fafc; padding: 0.5rem; border-radius: 4px;">
+                            Customer data → AI finds 5 groups<br>
+                            Shopping patterns → "Similar to users X, Y, Z"
+                        </p>
+                    </div>
+                    
+                    <!-- Reinforcement Learning -->
+                    <div class="learning-type-card">
+                        <div class="type-badge reinforcement-badge">Reinforcement Learning</div>
+                        <div class="type-icon">🎮</div>
+                        <h3>Learning by Trial & Error</h3>
+                        <p><strong>How it works:</strong> AI learns by taking actions and receiving rewards (points) or penalties. It maximizes long-term rewards.</p>
+                        <p><strong>Analogy:</strong> Training a dog with treats. Good action = treat. Bad action = no treat. Dog learns what works.</p>
+                        <p><strong>Real examples:</strong></p>
+                        <ul>
+                            <li>Game-playing AI (AlphaGo, chess)</li>
+                            <li>Self-driving cars</li>
+                            <li>Robotics (walking, grasping)</li>
+                            <li>Resource optimization</li>
+                        </ul>
+                        <p><strong>Data format:</strong></p>
+                        <p style="font-family: monospace; background: #f8fafc; padding: 0.5rem; border-radius: 4px;">
+                            Action: Turn left → Reward: +10<br>
+                            Action: Hit wall → Penalty: -50
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Supervised Learning Deep Dive -->
+            <section class="content-section">
+                <h2>👨‍🏫 Supervised Learning: Most Common Type</h2>
+                
+                <p><strong>70% of real-world AI uses supervised learning</strong> because it's the most straightforward when you have labeled data.</p>
+                
+                <div class="process-visualization">
+                    <h3>🔄 The Supervised Learning Process</h3>
+                    <div class="process-flow">
+                        <div class="process-item">
+                            <strong>Step 1:</strong> Collect labeled data (thousands of examples with correct answers)
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 2:</strong> Split data into training (80%), validation (10%), test (10%)
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 3:</strong> AI makes predictions on training data, compares to actual answers
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 4:</strong> Calculate error (how wrong was the prediction?)
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 5:</strong> Adjust AI's internal parameters to reduce error
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 6:</strong> Repeat steps 3-5 thousands of times (epochs)
+                        </div>
+                        <div class="process-arrow">↓</div>
+                        <div class="process-item">
+                            <strong>Step 7:</strong> Test on unseen data to verify it generalizes well
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="real-examples-section">
+                    <h3>🎯 Real Example: Email Spam Filter</h3>
+                    
+                    <div class="example-box">
+                        <div class="example-title">Training Data</div>
+                        <p>10,000 emails labeled as "Spam" or "Not Spam" by humans</p>
+                    </div>
+                    
+                    <div class="example-box">
+                        <div class="example-title">AI's Learning Process</div>
+                        <ol>
+                            <li>AI analyzes patterns: "Spam emails often contain words like 'FREE', 'WIN', 'URGENT', many exclamation marks"</li>
+                            <li>Builds a model: "If email has 3+ spam keywords AND all caps = likely spam"</li>
+                            <li>Tests predictions: "This new email has 'FREE MONEY!!!' → Predict: Spam"</li>
+                            <li>Checks answer: Was it actually spam? Yes → Model was correct, reinforce pattern</li>
+                            <li>Repeats 10,000+ times until 99% accurate</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="example-box">
+                        <div class="example-title">Result</div>
+                        <p>Gmail's spam filter now blocks 99.9% of spam emails, letting only 0.1% through (10 million spam emails blocked daily per user!)</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison Table -->
+            <section class="content-section">
+                <h2>📊 Comparing the Three Learning Types</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Supervised</th>
+                            <th>Unsupervised</th>
+                            <th>Reinforcement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Data Required</strong></td>
+                            <td>Labeled (with answers)</td>
+                            <td>Unlabeled (no answers)</td>
+                            <td>Environment with rewards</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Human Effort</strong></td>
+                            <td>High (labeling data)</td>
+                            <td>Low (no labeling)</td>
+                            <td>Medium (design reward system)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Goal</strong></td>
+                            <td>Predict correct output</td>
+                            <td>Find hidden patterns</td>
+                            <td>Maximize long-term rewards</td>
+                        </tr>
+                        <tr>
+                            <td><strong>When to Use</strong></td>
+                            <td>Clear right/wrong answers exist</td>
+                            <td>Explore data, no labels available</td>
+                            <td>Sequential decision-making</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Real Examples</strong></td>
+                            <td>Spam detection, medical diagnosis</td>
+                            <td>Customer grouping, Netflix recommendations</td>
+                            <td>Game AI, robotics, trading bots</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Popularity</strong></td>
+                            <td>70% of use cases</td>
+                            <td>20% of use cases</td>
+                            <td>10% of use cases</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Common Mistake -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistake: "AI Just Memorizes the Training Data"</h2>
+                
+                <div class="warning-box">
+                    <h3>The Misconception</h3>
+                    <p>"AI training is just memorization. It can't handle anything new."</p>
+                    
+                    <h3>The Reality</h3>
+                    <p>Good AI <strong>generalizes</strong> — it learns underlying patterns, not specific examples.</p>
+                    
+                    <p><strong>Analogy:</strong> When you learn multiplication, you don't memorize "7 × 8 = 56". You learn the <em>rule</em> of multiplication, so you can solve 7 × 9 even if you've never seen it.</p>
+                    
+                    <p><strong>Bad AI (Overfitting):</strong> Memorizes training data perfectly but fails on new data</p>
+                    <p><strong>Good AI (Generalizing):</strong> Learns patterns that work on training AND new data</p>
+                    
+                    <p><strong>Example:</strong></p>
+                    <ul>
+                        <li><strong>Overfitted AI:</strong> "This exact cat photo = cat" (fails on new cat photos)</li>
+                        <li><strong>Generalized AI:</strong> "Pointy ears + whiskers + four legs = cat" (works on all cats)</li>
+                    </ul>
+                    
+                    <p><strong>How to prevent overfitting:</strong> Use lots of diverse data, validate on unseen data, stop training at the right time</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Simulate AI Training</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Activity: Teach Yourself Pattern Recognition</h3>
+                    
+                    <p><strong>Goal:</strong> Experience how AI learns by doing it manually</p>
+                    
+                    <p><strong>Scenario:</strong> You're training an AI to predict if a student will pass or fail an exam based on study hours.</p>
+                    
+                    <p><strong>Training Data (Labeled):</strong></p>
+                    <table class="comparison-table" style="margin-top: 1rem;">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Study Hours</th>
+                                <th>Actual Result</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Alice</td><td>2 hours</td><td>Fail</td></tr>
+                            <tr><td>Bob</td><td>5 hours</td><td>Pass</td></tr>
+                            <tr><td>Carol</td><td>3 hours</td><td>Fail</td></tr>
+                            <tr><td>David</td><td>7 hours</td><td>Pass</td></tr>
+                            <tr><td>Eve</td><td>4 hours</td><td>Pass</td></tr>
+                            <tr><td>Frank</td><td>1 hour</td><td>Fail</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <p><strong>Your tasks:</strong></p>
+                    <ol>
+                        <li><strong>Find the pattern:</strong> What's the relationship between study hours and passing?</li>
+                        <li><strong>Create a rule:</strong> "If study hours is ___ or more, predict Pass"</li>
+                        <li><strong>Test your rule:</strong> New student studied 4.5 hours. What do you predict?</li>
+                        <li><strong>Calculate accuracy:</strong> How many of the 6 training examples did your rule get correct?</li>
+                    </ol>
+                    
+                    <p><strong>Reflection:</strong></p>
+                    <ul>
+                        <li>What pattern did you discover? (Likely: "4+ hours = Pass")</li>
+                        <li>Was there any example your rule got wrong? (Eve passed with only 4 hours — edge case)</li>
+                        <li>How would more data help? (More examples near the boundary would clarify the threshold)</li>
+                    </ul>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 This is exactly what AI does</strong> — except it processes millions of examples and finds complex, multidimensional patterns humans can't see.</p>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Design a Learning Strategy</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Challenge: Choose the Right Learning Type</h3>
+                    
+                    <p><strong>You have 5 AI project ideas. For each, decide: Supervised, Unsupervised, or Reinforcement Learning?</strong></p>
+                    
+                    <ol>
+                        <li>
+                            <strong>Project: Detect fraudulent credit card transactions</strong>
+                            <p>Data available: 100,000 past transactions labeled "fraud" or "legitimate"</p>
+                            <p><em>Your answer: _______________</em></p>
+                            <p><em>Why?</em></p>
+                        </li>
+                        
+                        <li>
+                            <strong>Project: Group customers into segments for targeted marketing</strong>
+                            <p>Data available: Customer purchase history, demographics (no labels)</p>
+                            <p><em>Your answer: _______________</em></p>
+                            <p><em>Why?</em></p>
+                        </li>
+                        
+                        <li>
+                            <strong>Project: Train a robot to walk across different terrains</strong>
+                            <p>Data available: Sensors provide real-time feedback on balance and speed</p>
+                            <p><em>Your answer: _______________</em></p>
+                            <p><em>Why?</em></p>
+                        </li>
+                        
+                        <li>
+                            <strong>Project: Predict house prices based on size, location, age</strong>
+                            <p>Data available: 50,000 houses with features and actual sale prices</p>
+                            <p><em>Your answer: _______________</em></p>
+                            <p><em>Why?</em></p>
+                        </li>
+                        
+                        <li>
+                            <strong>Project: Create a chess AI that learns by playing against itself</strong>
+                            <p>Data available: None initially, learns by winning/losing games</p>
+                            <p><em>Your answer: _______________</em></p>
+                            <p><em>Why?</em></p>
+                        </li>
+                    </ol>
+                    
+                    <p><strong>Answers:</strong></p>
+                    <ol>
+                        <li><strong>Supervised</strong> (labeled data with correct answers)</li>
+                        <li><strong>Unsupervised</strong> (no labels, find natural groupings)</li>
+                        <li><strong>Reinforcement</strong> (learn by trial-and-error with feedback)</li>
+                        <li><strong>Supervised</strong> (predicting a specific value from labeled examples)</li>
+                        <li><strong>Reinforcement</strong> (maximize wins through game outcomes)</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: How AI Learns</h2>
+                
+                <ul>
+                    <li>✅ <strong>Training = Learning from examples</strong> — AI finds patterns, not memorization</li>
+                    <li>✅ <strong>Supervised Learning (70%)</strong> — Learn from labeled data with correct answers</li>
+                    <li>✅ <strong>Unsupervised Learning (20%)</strong> — Find hidden patterns without labels</li>
+                    <li>✅ <strong>Reinforcement Learning (10%)</strong> — Learn by trial-and-error with rewards</li>
+                    <li>✅ <strong>Process: Examples → Pattern → Test → Adjust → Repeat</strong></li>
+                    <li>✅ <strong>Goal: Generalization, not memorization</strong> — works on new, unseen data</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> AI training is iterative pattern recognition. The algorithm sees thousands of examples, extracts rules, tests those rules on new data, and adjusts based on errors. Just like you learned addition in school, AI learns tasks through repetition and feedback.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 1: Which type of learning is most commonly used in real-world AI?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Supervised Learning (70% of cases)</div>
+                            <div class="quiz-option" data-value="b">Unsupervised Learning</div>
+                            <div class="quiz-option" data-value="c">Reinforcement Learning</div>
+                            <div class="quiz-option" data-value="d">All are equally common</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: What's the difference between overfitting and generalization?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">They're the same thing</div>
+                            <div class="quiz-option" data-value="b">Overfitting is better performance</div>
+                            <div class="quiz-option" data-value="c">Overfitting memorizes training data but fails on new data; generalization learns patterns that work on both</div>
+                            <div class="quiz-option" data-value="d">Generalization only works with small datasets</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 3: Which learning type would you use for customer segmentation with no predefined labels?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Supervised Learning</div>
+                            <div class="quiz-option" data-value="b">Unsupervised Learning</div>
+                            <div class="quiz-option" data-value="c">Reinforcement Learning</div>
+                            <div class="quiz-option" data-value="d">None of these</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 4: How does reinforcement learning work?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It uses labeled data with correct answers</div>
+                            <div class="quiz-option" data-value="b">It finds patterns without any feedback</div>
+                            <div class="quiz-option" data-value="c">It learns by taking actions and receiving rewards or penalties</div>
+                            <div class="quiz-option" data-value="d">It memorizes all training examples</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: What percentage accuracy does Gmail's spam filter achieve?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">85%</div>
+                            <div class="quiz-option" data-value="b">99.9%</div>
+                            <div class="quiz-option" data-value="c">75%</div>
+                            <div class="quiz-option" data-value="d">100%</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project Section -->
+            <section class="content-section" style="background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); padding: 2rem; border-radius: 12px; margin: 3rem 0;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: inline-block; background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; padding: 0.5rem 1.5rem; border-radius: 25px; font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem;">
+                        🚀 ADVANCED MINI-PROJECT
+                    </div>
+                    <h2 style="font-size: 2rem; margin-bottom: 0.75rem;">Build a Custom Image Classifier for Real-World Use</h2>
+                    <p style="font-size: 1.125rem; color: #64748b;">
+                        Create a practical AI solution you can actually use—product quality control, plant identification, or emotion detection
+                    </p>
+                </div>
+
+                <!-- Project Overview -->
+                <div style="background: white; border-left: 4px solid #8b5cf6; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <h3 style="color: #7c3aed;">🎯 What You'll Build</h3>
+                    <p style="color: #1e293b;">
+                        A custom image classification AI trained on YOUR data for a real problem. Choose from: quality control checker (defective vs. perfect products), plant disease identifier, emotion detector, or wildlife species classifier. This demonstrates the complete ML training cycle.
+                    </p>
+                </div>
+
+                <!-- Why This Is Advanced -->
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <h3 style="color: #92400e;">⚡ Level Up: Why This Project Matters</h3>
+                    <ul style="color: #78350f;">
+                        <li><strong>Supervised learning hands-on:</strong> You'll label data and see how AI learns from examples</li>
+                        <li><strong>Real data challenges:</strong> Experience class imbalance, lighting variations, edge cases</li>
+                        <li><strong>Model evaluation:</strong> Test accuracy and understand where your AI fails</li>
+                        <li><strong>Iteration cycle:</strong> Improve your model by adding better training data</li>
+                        <li><strong>Portfolio-worthy:</strong> Export and deploy your model—show employers actual ML experience!</li>
+                    </ul>
+                </div>
+
+                <!-- Tool Required -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border: 2px solid #e2e8f0;">
+                    <h3 style="margin-bottom: 1rem;">🛠️ Tool You'll Use</h3>
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 0.5rem;">Google Teachable Machine</h4>
+                            <p style="color: #64748b; margin-bottom: 0.75rem;">
+                                Free, browser-based ML training platform. Train sophisticated image classifiers without code or GPU. Export to TensorFlow, TensorFlow.js, or TensorFlow Lite.
+                            </p>
+                            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                                <span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    ✓ 100% Free
+                                </span>
+                                <span style="background: #ecfdf5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    ⚡ No Installation
+                                </span>
+                                <span style="background: #fef3c7; color: #92400e; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.875rem; font-weight: 600;">
+                                    📤 Exportable Models
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="https://teachablemachine.withgoogle.com/&amp;utm_medium=referral&amp;utm_campaign=ai-for-everyone&amp;utm_content=training-ai-models&amp;utm_term=teachable-machine" 
+                               target="_blank" 
+                               class="btn btn-primary"
+                               data-track-event="tool_click"
+                               data-track-type="tool"
+                               data-track-title="Teachable Machine"
+                               style="white-space: nowrap; background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                Open Teachable Machine →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Ideas -->
+                <div style="margin: 2rem 0;">
+                    <h3>💡 Choose Your Project (Pick One)</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <!-- Project 1 -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏭</div>
+                            <h4 style="color: #1e293b; margin-bottom: 0.5rem;">Quality Control Checker</h4>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                                Train AI to spot defective products (scratches, dents, misalignment). Great for manufacturing.
+                            </p>
+                            <p style="color: #059669; font-size: 0.875rem; font-weight: 600;">
+                                Classes: Perfect, Scratched, Dented, Misaligned
+                            </p>
+                        </div>
+
+                        <!-- Project 2 -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🌱</div>
+                            <h4 style="color: #1e293b; margin-bottom: 0.5rem;">Plant Disease Identifier</h4>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                                Detect plant health issues from leaf photos. Useful for agriculture and gardening.
+                            </p>
+                            <p style="color: #059669; font-size: 0.875rem; font-weight: 600;">
+                                Classes: Healthy, Bacterial, Fungal, Nutrient Deficiency
+                            </p>
+                        </div>
+
+                        <!-- Project 3 -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">😊</div>
+                            <h4 style="color: #1e293b; margin-bottom: 0.5rem;">Emotion Detector</h4>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                                Recognize facial expressions. Good for UX research or mental health applications.
+                            </p>
+                            <p style="color: #059669; font-size: 0.875rem; font-weight: 600;">
+                                Classes: Happy, Sad, Surprised, Neutral
+                            </p>
+                        </div>
+
+                        <!-- Project 4 -->
+                        <div style="background: white; padding: 1.5rem; border-radius: 8px; border: 2px solid #e2e8f0;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🦅</div>
+                            <h4 style="color: #1e293b; margin-bottom: 0.5rem;">Wildlife Species Classifier</h4>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                                Identify animals from photos. Great for conservation or nature education.
+                            </p>
+                            <p style="color: #059669; font-size: 0.875rem; font-weight: 600;">
+                                Classes: 4-6 local species (birds, mammals, etc.)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step-by-Step Instructions -->
+                <div style="margin: 2rem 0;">
+                    <h3>📋 Complete Training Workflow (30-45 minutes)</h3>
+                    
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #078930;">
+                        <h4 style="color: #065f46; margin-bottom: 0.75rem;">Step 1: Data Collection (15 mins)</h4>
+                        <ol style="color: #475569;">
+                            <li>Choose your project and decide on 4 classes to train</li>
+                            <li><strong>Option A - Use webcam:</strong> Collect 50-100 images per class using different angles, lighting, backgrounds</li>
+                            <li><strong>Option B - Upload images:</strong> Find/download 50-100 images per class from internet (public domain)</li>
+                            <li><strong>Pro tip:</strong> Vary your training data—different lighting, angles, backgrounds makes AI more robust</li>
+                        </ol>
+                        <div class="info-box" style="margin-top: 1rem; border-left-color: #078930; background: #eff6ff;">
+                            <p style="color: #065f46;"><strong>Quality over quantity:</strong> 50 varied images beats 200 identical ones. Diversity in training data = smarter AI!</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #10b981;">
+                        <h4 style="color: #059669; margin-bottom: 0.75rem;">Step 2: Model Training (10 mins)</h4>
+                        <ol style="color: #475569;">
+                            <li>Go to <a href="https://teachablemachine.withgoogle.com/" target="_blank" style="color: #10b981; font-weight: 600;">teachablemachine.withgoogle.com</a></li>
+                            <li>Create "Image Project" → "Standard image model"</li>
+                            <li>Add your 4 classes and label them clearly</li>
+                            <li>Upload or capture your training images for each class</li>
+                            <li>Click "Train Model" and watch AI learn patterns (1-3 minutes)</li>
+                            <li>In "Advanced" settings, try different epoch values (25, 50, 100) to see impact on accuracy</li>
+                        </ol>
+                        <div class="success-box" style="margin-top: 1rem;">
+                            <p><strong>You're doing transfer learning!</strong> Teachable Machine uses a pre-trained model (MobileNet) and adapts it to YOUR specific task—same technique used by industry.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #f59e0b;">
+                        <h4 style="color: #d97706; margin-bottom: 0.75rem;">Step 3: Testing & Evaluation (10 mins)</h4>
+                        <ol style="color: #475569;">
+                            <li>Test with new images/objects the AI hasn't seen before</li>
+                            <li>Note the confidence scores (%) for each prediction</li>
+                            <li>Identify edge cases where AI fails or gets confused</li>
+                            <li>Document common failure patterns:
+                                <ul style="margin-top: 0.5rem; color: #64748b;">
+                                    <li>Poor lighting reduces accuracy</li>
+                                    <li>Unusual angles confuse the model</li>
+                                    <li>Similar-looking classes get mixed up</li>
+                                    <li>Partially visible objects harder to classify</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <div class="warning-box" style="margin-top: 1rem;">
+                            <p><strong>This is real ML experience:</strong> Understanding failure modes is MORE valuable than perfect accuracy. Document what you learned!</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #8b5cf6;">
+                        <h4 style="color: #7c3aed; margin-bottom: 0.75rem;">Step 4: Iteration & Improvement (10 mins)</h4>
+                        <ol style="color: #475569;">
+                            <li>Add more training images for classes where AI performed poorly</li>
+                            <li>Include edge cases in training data (bad lighting, weird angles)</li>
+                            <li>Re-train and test again—notice accuracy improvement!</li>
+                            <li>Repeat until you hit 85%+ accuracy on test cases</li>
+                        </ol>
+                        <div class="success-box" style="margin-top: 1rem;">
+                            <p><strong>You just did the ML improvement loop:</strong> Train → Test → Identify failures → Add better data → Retrain. This is professional ML engineering!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Your Model -->
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 1.5rem; border-radius: 8px; margin: 2rem 0;">
+                    <h3 style="color: #065f46;">📤 Export & Use Your Model (Advanced)</h3>
+                    <p style="color: #1e3a8a; margin-bottom: 1rem;">Turn your training into a real deployable AI:</p>
+                    <ol style="color: #1e3a8a;">
+                        <li>Click "Export Model" button</li>
+                        <li>Choose format:
+                            <ul style="margin-top: 0.5rem; color: #64748b;">
+                                <li><strong>TensorFlow.js:</strong> Use in websites/web apps</li>
+                                <li><strong>TensorFlow Lite:</strong> Deploy on mobile phones</li>
+                                <li><strong>TensorFlow:</strong> Use in Python applications</li>
+                            </ul>
+                        </li>
+                        <li>Download the model files</li>
+                        <li>Follow the provided code snippet to integrate into your app</li>
+                    </ol>
+                    <p style="color: #1e3a8a; margin-top: 1rem; font-weight: 600;">
+                        🎉 Congrats! You have a deployable AI model. Add this to your portfolio/resume!
+                    </p>
+                </div>
+
+                <!-- What You Learned -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 2rem 0; border: 2px dashed #8b5cf6;">
+                    <h3 style="color: #7c3aed;">🎓 Skills You Just Mastered</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                        <div>
+                            <strong style="color: #1e293b;">Data Collection</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Gathering & organizing training data</p>
+                        </div>
+                        <div>
+                            <strong style="color: #1e293b;">Data Labeling</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Creating ground truth for supervised learning</p>
+                        </div>
+                        <div>
+                            <strong style="color: #1e293b;">Model Training</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Transfer learning with MobileNet</p>
+                        </div>
+                        <div>
+                            <strong style="color: #1e293b;">Testing & Evaluation</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Assessing model performance</p>
+                        </div>
+                        <div>
+                            <strong style="color: #1e293b;">Error Analysis</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Understanding failure modes</p>
+                        </div>
+                        <div>
+                            <strong style="color: #1e293b;">Iteration</strong>
+                            <p style="color: #64748b; font-size: 0.875rem; margin-top: 0.25rem;">Improving models with better data</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; margin-top: 1rem;">
+                        <strong>Resume bullet:</strong> "Trained custom image classification model achieving 85%+ accuracy using transfer learning, with iterative data collection and error analysis."
+                    </p>
+                </div>
+
+                <!-- Share Achievement -->
+                <div style="text-align: center; margin-top: 2rem; padding: 2rem; background: white; border-radius: 12px;">
+                    <h3 style="margin-bottom: 1rem;">🎉 Built Your Custom AI Classifier?</h3>
+                    <p style="color: #64748b; margin-bottom: 1.5rem;">
+                        Share your achievement and inspire others to build with AI!
+                    </p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <a href="https://twitter.com/intent/tweet?text=I%20just%20trained%20a%20custom%20image%20classifier%20with%2085%25%2B%20accuracy!%20%F0%9F%A4%96%20Learned%20the%20complete%20ML%20training%20cycle%3A%20data%20%E2%86%92%20train%20%E2%86%92%20test%20%E2%86%92%20iterate.%20%23Nebaz AI Academy%20%23MachineLearning%20%23AITraining&amp;url=https://nebaz-ai.local" 
+                           target="_blank" 
+                           class="btn btn-secondary" 
+                           style="background: #1da1f2; color: white; border: none;">
+                            Share on Twitter →
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://nebaz-ai.local" 
+                           target="_blank" 
+                           class="btn btn-secondary" 
+                           style="background: #0077b5; color: white; border: none;">
+                            Share on LinkedIn →
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: AI Project Workflow</h2>
+                
+                <p>You understand data and how AI learns. Now let's put it all together: <strong>the complete step-by-step process of building an AI project</strong> from idea to deployment.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Module 9:</strong> Learn the end-to-end AI project lifecycle — problem definition, data collection, model training, evaluation, and deployment. Plus real project examples!</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="data-in-ai.html" class="prev">← Module 7: The Role of Data</a>
+                    <a href="ai-project-workflow.html" class="next">Module 9: AI Project Workflow →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

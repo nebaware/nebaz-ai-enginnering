@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master dimensionality reduction: PCA, t-SNE, UMAP, LDA. Visualize high-dimensional data and improve model performance.">
+    <title>Dimensionality Reduction - Feature Engineering - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../index.html" class="nav-brand">
+                <span class="gradient-text">🤖 Nebaz AI Academy</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../courses/feature-engineering.html">Feature Engineering</a></li>
+                <li><a href="../../index.html#courses">All Courses</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="breadcrumb" style="margin-bottom: 1rem;">
+                <a href="../../index.html" style="color: rgba(255,255,255,0.8);">Home</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <a href="../../courses/feature-engineering.html" style="color: rgba(255,255,255,0.8);">Feature Engineering</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <span style="color: white;">Dimensionality Reduction</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">
+                🔬 Dimensionality Reduction
+            </h1>
+            <p style="font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto;">
+                Transform high-dimensional data into lower dimensions while preserving information
+            </p>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; font-size: 0.95rem;">
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">📚 Tutorial 7 of 8</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">⏱️ 80 minutes</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">🚀 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <section>
+            <p>The <strong>curse of dimensionality</strong> makes many ML algorithms struggle with high-dimensional data. Dimensionality reduction techniques compress data into fewer dimensions while retaining essential patterns, improving model performance, reducing computational cost, and enabling visualization.</p>
+
+            <div class="info-box">
+                <h4>🎯 What You'll Learn</h4>
+                <ul>
+                    <li>PCA (Principal Component Analysis) for linear dimensionality reduction</li>
+                    <li>t-SNE for non-linear visualization of high-dimensional data</li>
+                    <li>UMAP - modern alternative to t-SNE with better scalability</li>
+                    <li>LDA (Linear Discriminant Analysis) for supervised reduction</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Principal Component Analysis (PCA)</h2>
+            
+            <p><strong>Finds orthogonal directions (principal components) that maximize variance</strong></p>
+
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_digits
+import matplotlib.pyplot as plt
+
+# Load high-dimensional data (64 features)
+digits = load_digits()
+X, y = digits.data, digits.target
+
+# Standardize (important for PCA)
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Apply PCA
+pca = PCA(n_components=0.95)  # Keep 95% of variance
+X_pca = pca.fit_transform(X_scaled)
+
+print(f"Original dimensions: {X.shape[1]}")
+print(f"Reduced dimensions: {X_pca.shape[1]}")
+print(f"Variance explained: {pca.explained_variance_ratio_.sum():.4f}")
+print(f"Components: {pca.n_components_}")
+</code></pre>
+
+            <h3>Scree Plot - Choosing Number of Components</h3>
+
+<pre><code class="language-python"># Full PCA to see all components
+pca_full = PCA()
+pca_full.fit(X_scaled)
+
+# Plot explained variance
+plt.figure(figsize=(12, 5))
+
+# Individual variance
+plt.subplot(1, 2, 1)
+plt.bar(range(1, 21), pca_full.explained_variance_ratio_[:20])
+plt.xlabel('Principal Component')
+plt.ylabel('Explained Variance Ratio')
+plt.title('Scree Plot')
+
+# Cumulative variance
+plt.subplot(1, 2, 2)
+cumsum = np.cumsum(pca_full.explained_variance_ratio_)
+plt.plot(cumsum)
+plt.axhline(y=0.95, color='r', linestyle='--', label='95% variance')
+plt.xlabel('Number of Components')
+plt.ylabel('Cumulative Explained Variance')
+plt.title('Cumulative Variance')
+plt.legend()
+plt.tight_layout()
+plt.show()
+</code></pre>
+        </section>
+
+        <section>
+            <h2>PCA for Visualization</h2>
+            
+<pre><code class="language-python"># Reduce to 2D for visualization
+pca_2d = PCA(n_components=2)
+X_2d = pca_2d.fit_transform(X_scaled)
+
+# Plot
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_2d[:, 0], X_2d[:, 1], c=y, cmap='tab10', alpha=0.6)
+plt.colorbar(scatter, label='Digit')
+plt.xlabel(f'PC1 ({pca_2d.explained_variance_ratio_[0]:.2%} variance)')
+plt.ylabel(f'PC2 ({pca_2d.explained_variance_ratio_[1]:.2%} variance)')
+plt.title('PCA: 64D → 2D Visualization')
+plt.show()
+</code></pre>
+        </section>
+
+        <section>
+            <h2>t-SNE: Non-Linear Dimensionality Reduction</h2>
+            
+            <p><strong>Excellent for visualization, preserves local structure</strong></p>
+
+<pre><code class="language-python">from sklearn.manifold import TSNE
+
+# Apply t-SNE (works better on pre-reduced data)
+# First reduce with PCA to ~50 dimensions for speed
+pca_pre = PCA(n_components=50)
+X_pca_pre = pca_pre.fit_transform(X_scaled)
+
+# t-SNE
+tsne = TSNE(n_components=2, perplexity=30, random_state=42, n_iter=1000)
+X_tsne = tsne.fit_transform(X_pca_pre)
+
+# Visualize
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y, cmap='tab10', alpha=0.6)
+plt.colorbar(scatter, label='Digit')
+plt.title('t-SNE: Digits Dataset')
+plt.xlabel('t-SNE 1')
+plt.ylabel('t-SNE 2')
+plt.show()
+</code></pre>
+
+            <div class="warning-box">
+                <h4>⚠️ t-SNE Limitations</h4>
+                <ul>
+                    <li>Slow on large datasets (>10,000 samples)</li>
+                    <li>Non-deterministic (different runs produce different results)</li>
+                    <li>Cannot transform new data (no .transform() method)</li>
+                    <li>Hyperparameter sensitive (perplexity affects results)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>UMAP: Modern Alternative to t-SNE</h2>
+            
+<pre><code class="language-python"># Install: pip install umap-learn
+import umap
+
+# Apply UMAP
+reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, random_state=42)
+X_umap = reducer.fit_transform(X_scaled)
+
+# Visualize
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_umap[:, 0], X_umap[:, 1], c=y, cmap='tab10', alpha=0.6)
+plt.colorbar(scatter, label='Digit')
+plt.title('UMAP: Digits Dataset')
+plt.xlabel('UMAP 1')
+plt.ylabel('UMAP 2')
+plt.show()
+</code></pre>
+
+            <div class="success-box">
+                <h4>✅ UMAP Advantages Over t-SNE</h4>
+                <ul>
+                    <li>Much faster, scales to millions of samples</li>
+                    <li>Preserves both local and global structure</li>
+                    <li>Can transform new data (has .transform() method)</li>
+                    <li>More robust hyperparameters</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Linear Discriminant Analysis (LDA)</h2>
+            
+            <p><strong>Supervised dimensionality reduction that maximizes class separability</strong></p>
+
+<pre><code class="language-python">from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+# LDA (requires labels)
+lda = LinearDiscriminantAnalysis(n_components=2)
+X_lda = lda.fit_transform(X_scaled, y)
+
+print(f"Original dimensions: {X.shape[1]}")
+print(f"LDA dimensions: {X_lda.shape[1]}")
+print(f"Explained variance ratio: {lda.explained_variance_ratio_}")
+
+# Visualize
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_lda[:, 0], X_lda[:, 1], c=y, cmap='tab10', alpha=0.6)
+plt.colorbar(scatter, label='Digit')
+plt.title('LDA: Supervised Dimensionality Reduction')
+plt.xlabel('LD 1')
+plt.ylabel('LD 2')
+plt.show()
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Comparison: PCA vs LDA</h2>
+            
+<pre><code class="language-python">from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+# Compare classification performance
+models = {
+    'Original (64D)': X_scaled,
+    'PCA (20D)': PCA(n_components=20).fit_transform(X_scaled),
+    'LDA (9D)': LinearDiscriminantAnalysis(n_components=9).fit_transform(X_scaled, y)
+}
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+
+for name, data in models.items():
+    scores = cross_val_score(rf, data, y, cv=5, scoring='accuracy')
+    print(f"{name}: {scores.mean():.4f} (+/- {scores.std():.4f})")
+</code></pre>
+
+            <div class="info-box">
+                <h4>🔍 When to Use Each Method</h4>
+                <ul>
+                    <li><strong>PCA:</strong> Unsupervised, variance-based. Use when labels unavailable or for preprocessing.</li>
+                    <li><strong>t-SNE:</strong> Visualization only. Best for exploring data structure in 2D/3D.</li>
+                    <li><strong>UMAP:</strong> Visualization + transformation. Better than t-SNE for most use cases.</li>
+                    <li><strong>LDA:</strong> Supervised, class-aware. Use when labels available and classes well-separated.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Complete Pipeline with Dimensionality Reduction</h2>
+            
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+
+# Pipeline: Scale → PCA → Classifier
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('pca', PCA(n_components=0.95)),  # Keep 95% variance
+    ('classifier', LogisticRegression(max_iter=1000))
+])
+
+# Train
+pipe.fit(X, y)
+
+# Evaluate
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(pipe, X, y, cv=5, scoring='accuracy')
+print(f"Pipeline accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
+
+# Check final dimensionality
+n_components = pipe.named_steps['pca'].n_components_
+print(f"PCA reduced to {n_components} components")
+</code></pre>
+        </section>
+
+        <section>
+            <h2>🧠 Knowledge Check</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="b">
+                    <h4>Question 1: What does PCA maximize?</h4>
+                    <div class="quiz-option" data-value="a">Classification accuracy</div>
+                    <div class="quiz-option" data-value="b">Variance along principal components</div>
+                    <div class="quiz-option" data-value="c">Distance between classes</div>
+                    <div class="quiz-option" data-value="d">Correlation between features</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 2: What is the main limitation of t-SNE?</h4>
+                    <div class="quiz-option" data-value="a">Requires labeled data</div>
+                    <div class="quiz-option" data-value="b">Only works with categorical features</div>
+                    <div class="quiz-option" data-value="c">Cannot transform new data and is computationally expensive</div>
+                    <div class="quiz-option" data-value="d">Preserves too much variance</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <h4>Question 3: How is LDA different from PCA?</h4>
+                    <div class="quiz-option" data-value="a">LDA is supervised and maximizes class separability</div>
+                    <div class="quiz-option" data-value="b">LDA is faster than PCA</div>
+                    <div class="quiz-option" data-value="c">LDA works with non-linear relationships</div>
+                    <div class="quiz-option" data-value="d">LDA doesn't require standardization</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <h4>Question 4: Why is UMAP often preferred over t-SNE?</h4>
+                    <div class="quiz-option" data-value="a">UMAP is always more accurate</div>
+                    <div class="quiz-option" data-value="b">UMAP requires less data</div>
+                    <div class="quiz-option" data-value="c">UMAP is older and more tested</div>
+                    <div class="quiz-option" data-value="d">UMAP is faster and can transform new data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Summary</h2>
+            
+            <div class="success-box">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>PCA:</strong> Linear, unsupervised. Maximizes variance. Use for preprocessing and feature extraction.</li>
+                    <li><strong>t-SNE:</strong> Non-linear visualization. Slow but excellent for exploring data structure.</li>
+                    <li><strong>UMAP:</strong> Modern alternative to t-SNE. Faster, can transform new data, preserves structure.</li>
+                    <li><strong>LDA:</strong> Supervised reduction. Maximizes class separation when labels available.</li>
+                    <li><strong>Always standardize:</strong> Scale features before applying dimensionality reduction.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; text-align: center;">
+            <h3 style="color: white; margin-bottom: 1rem;">🎯 Ready for the Final Challenge?</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="feature-selection.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">← Previous: Feature Selection</a>
+                <a href="../../courses/feature-engineering.html" class="btn" style="background: white; color: #667eea;">📚 Course Hub</a>
+                <a href="automated-feature-engineering.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">Next: Automated Feature Engineering →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nebaz AI Academy</h3>
+                    <p>Master AI, Machine Learning, and Python through hands-on tutorials.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nebaz AI Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

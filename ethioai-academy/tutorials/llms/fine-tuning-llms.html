@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master fine-tuning Large Language Models. Learn full fine-tune, LoRA, QLoRA, and memory-efficient techniques. Train models on your data efficiently.">
+    <meta name="keywords" content="fine-tuning, LoRA, QLoRA, LLM training, full fine-tune, parameter-efficient">
+    <title>Fine-tuning LLMs - LLMs & Transformers Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="fine-tuning-llms.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        </section>
+
+            <section class="content-section">
+                <h2>💾 Full Fine-tuning: Training All Parameters</h2>
+                
+                <p>
+                    <strong>Full fine-tuning</strong> (also called <em>supervised fine-tuning</em> or SFT) means updating <strong>every single parameter</strong> 
+                    in the model through backpropagation. If you're fine-tuning a 7B parameter model, you're training all 7 billion weights.
+                </p>
+
+                <div class="info-box">
+                    <p>📊 <strong>Scale:</strong> A 7B model has ~7 billion parameters. At 16-bit precision (FP16), that's <strong>14GB just to load the model</strong>. 
+                    During training, you also need memory for gradients (another 14GB), optimizer states (28GB for Adam), and activations. 
+                    Total: <strong>~60-80GB VRAM</strong> for full fine-tuning of a 7B model!</p>
+                </div>
+
+                <h3>When to Use Full Fine-tuning</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="success-box">
+                        <p><strong>✅ Use Full Fine-tuning When:</strong></p>
+                        <ul>
+                            <li>You have access to A100/H100 GPUs (80GB VRAM)</li>
+                            <li>Need absolute maximum performance</li>
+                            <li>Training relatively small models (< 3B params)</li>
+                            <li>Have budget for expensive compute</li>
+                            <li>Domain shift is very large (e.g., new language)</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>❌ Skip Full Fine-tuning When:</strong></p>
+                        <ul>
+                            <li>Using consumer GPUs (RTX 3090, 4090)</li>
+                            <li>Models are large (> 7B params)</li>
+                            <li>Budget is limited</li>
+                            <li>Quick experimentation needed</li>
+                            <li>Task is well-defined (LoRA/QLoRA work well)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Hardware Requirements by Model Size</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #0d9488; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Model Size</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Model Weights</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Full Fine-tune VRAM</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">GPU Required</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Approx Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>GPT-2 (124M)</strong></td>
+                            <td style="padding: 1rem;">~500MB</td>
+                            <td style="padding: 1rem;">~4GB</td>
+                            <td style="padding: 1rem;">RTX 3060 (12GB)</td>
+                            <td style="padding: 1rem;">$300-500 GPU</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>GPT-2 XL (1.5B)</strong></td>
+                            <td style="padding: 1rem;">~6GB</td>
+                            <td style="padding: 1rem;">~24GB</td>
+                            <td style="padding: 1rem;">RTX 3090/4090 (24GB)</td>
+                            <td style="padding: 1rem;">$1,000-1,500 GPU</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (7B)</strong></td>
+                            <td style="padding: 1rem;">~14GB</td>
+                            <td style="padding: 1rem;">~60-80GB</td>
+                            <td style="padding: 1rem;">A100 (80GB)</td>
+                            <td style="padding: 1rem;">$1.50/hr cloud or $10K GPU</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (13B)</strong></td>
+                            <td style="padding: 1rem;">~26GB</td>
+                            <td style="padding: 1rem;">~120GB</td>
+                            <td style="padding: 1rem;">2x A100 (80GB each)</td>
+                            <td style="padding: 1rem;">$3/hr cloud or $20K GPUs</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Llama 2 (70B)</strong></td>
+                            <td style="padding: 1rem;">~140GB</td>
+                            <td style="padding: 1rem;">~500GB+</td>
+                            <td style="padding: 1rem;">8x A100 (80GB each)</td>
+                            <td style="padding: 1rem;">$12/hr cloud or $80K+ GPUs</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Reality Check:</strong> Full fine-tuning a 7B model on an A100 costs $1.50/hour. A typical training run takes 10-20 hours = 
+                    <strong>$15-30 per experiment</strong>. With hyperparameter tuning (5-10 runs), you're looking at <strong>$150-300</strong> in compute costs.</p>
+                </div>
+
+                <h3>The Full Fine-tuning Process</h3>
+
+                <p>Here's a complete, production-ready fine-tuning pipeline using HuggingFace Transformers:</p>
+
+                <h4>Step 1: Prepare Your Training Data</h4>
+
+                <pre><code class="language-json">// train.jsonl (instruction-following format)
+{"instruction": "Summarize this article", "input": "Article text here...", "output": "Summary text here..."}
+{"instruction": "Translate to French", "input": "Hello world", "output": "Bonjour le monde"}
+{"instruction": "Answer the question", "input": "What is Python?", "output": "Python is a programming language..."}
+
+// Recommendation: 1,000+ examples minimum, 10,000+ for best results</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>Data Quality > Quantity:</strong> 1,000 high-quality, diverse examples beat 10,000 noisy, repetitive examples. 
+                    Each example should be carefully reviewed, properly formatted, and representative of your task.</p>
+                </div>
+
+                <h4>Step 2: Complete Training Script</h4>
+
+                <pre><code class="language-python"># install: pip install transformers datasets accelerate torch
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    TrainingArguments,
+    Trainer,
+    DataCollatorForLanguageModeling
+)
+
+# 1. Load your model and tokenizer
+model_name = "meta-llama/Llama-2-7b-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.float16,  # Use FP16 for memory efficiency
+    device_map="auto"  # Automatically distribute across GPUs
+)
+
+# Add padding token if missing
+if tokenizer.pad_token is None:
+    tokenizer.pad_token = tokenizer.eos_token
+    model.config.pad_token_id = model.config.eos_token_id
+
+# 2. Load and prepare dataset
+dataset = load_dataset("json", data_files={
+    "train": "train.jsonl",
+    "validation": "validation.jsonl"
+})
+
+def format_instruction(example):
+    """Convert instruction-input-output to a prompt"""
+    instruction = example["instruction"]
+    input_text = example.get("input", "")
+    output = example["output"]
+    
+    if input_text:
+        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n{output}"
+    else:
+        prompt = f"### Instruction:\n{instruction}\n\n### Response:\n{output}"
+    
+    return {"text": prompt}
+
+# Format all examples
+dataset = dataset.map(format_instruction)
+
+# 3. Tokenize dataset
+def tokenize_function(examples):
+    return tokenizer(
+        examples["text"],
+        truncation=True,
+        max_length=512,  # Adjust based on your task
+        padding="max_length"
+    )
+
+tokenized_dataset = dataset.map(
+    tokenize_function,
+    batched=True,
+    remove_columns=dataset["train"].column_names
+)
+
+# 4. Set up training arguments
+training_args = TrainingArguments(
+    output_dir="./llama-2-7b-finetuned",
+    num_train_epochs=3,  # 3-5 epochs typical
+    per_device_train_batch_size=4,  # Adjust based on VRAM
+    per_device_eval_batch_size=4,
+    gradient_accumulation_steps=4,  # Effective batch size = 4 * 4 = 16
+    learning_rate=2e-5,  # Low LR to prevent catastrophic forgetting
+    weight_decay=0.01,
+    warmup_steps=100,  # Gradual learning rate warmup
+    lr_scheduler_type="cosine",  # Cosine decay schedule
+    logging_steps=10,
+    evaluation_strategy="steps",
+    eval_steps=100,
+    save_steps=500,
+    save_total_limit=3,  # Keep only 3 best checkpoints
+    load_best_model_at_end=True,
+    fp16=True,  # Mixed precision training (faster, less memory)
+    report_to="tensorboard",  # Log to TensorBoard
+    push_to_hub=False
+)
+
+# 5. Create data collator
+data_collator = DataCollatorForLanguageModeling(
+    tokenizer=tokenizer,
+    mlm=False  # We're doing causal LM, not masked LM
+)
+
+# 6. Initialize Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_dataset["train"],
+    eval_dataset=tokenized_dataset["validation"],
+    data_collator=data_collator
+)
+
+# 7. Train!
+print("🚀 Starting training...")
+trainer.train()
+
+# 8. Save the final model
+print("💾 Saving model...")
+trainer.save_model("./llama-2-7b-final")
+tokenizer.save_pretrained("./llama-2-7b-final")
+
+print("✅ Training complete!")</code></pre>
+
+                <h4>Step 3: Monitor Training</h4>
+
+                <pre><code class="language-bash"># Watch training progress in real-time
+tensorboard --logdir ./llama-2-7b-finetuned/runs
+
+# Monitor GPU usage
+watch -n 1 nvidia-smi
+
+# Expected training time for 7B model on A100:
+# - 5,000 examples: ~8-12 hours
+# - 10,000 examples: ~16-24 hours
+# - 50,000 examples: ~80-120 hours</code></pre>
+
+                <h4>Step 4: Evaluate Your Model</h4>
+
+                <pre><code class="language-python"># Load fine-tuned model
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+tokenizer = AutoTokenizer.from_pretrained("./llama-2-7b-final")
+model = AutoModelForCausalLM.from_pretrained(
+    "./llama-2-7b-final",
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# Test it!
+def generate_response(instruction, input_text=""):
+    if input_text:
+        prompt = f"### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n"
+    else:
+        prompt = f"### Instruction:\n{instruction}\n\n### Response:\n"
+    
+    inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=256,
+        temperature=0.7,
+        top_p=0.9,
+        do_sample=True
+    )
+    
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return response.split("### Response:\n")[1].strip()
+
+# Try it
+print(generate_response(
+    "Summarize this article",
+    "Python is a high-level programming language known for its simplicity and readability..."
+))</code></pre>
+
+                <h3>Key Hyperparameters Explained</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>📊 Learning Rate</strong></p>
+                        <ul>
+                            <li><strong>2e-5 to 5e-5:</strong> Standard range</li>
+                            <li><strong>Too high (1e-4+):</strong> Catastrophic forgetting, unstable training</li>
+                            <li><strong>Too low (1e-6):</strong> Very slow learning, might not improve</li>
+                            <li><strong>Pro tip:</strong> Start with 2e-5, increase if loss plateaus</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🔄 Epochs</strong></p>
+                        <ul>
+                            <li><strong>3-5 epochs:</strong> Typical for most tasks</li>
+                            <li><strong>1-2 epochs:</strong> Large datasets (50K+ examples)</li>
+                            <li><strong>5-10 epochs:</strong> Small datasets (< 1K examples), but risk overfitting</li>
+                            <li><strong>Pro tip:</strong> Monitor validation loss, stop when it increases</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>📦 Batch Size</strong></p>
+                        <ul>
+                            <li><strong>Effective batch size 16-32:</strong> Good balance</li>
+                            <li><strong>Use gradient accumulation:</strong> Simulate large batches on small GPUs</li>
+                            <li><strong>Example:</strong> batch_size=4 × accumulation=4 = effective 16</li>
+                            <li><strong>Pro tip:</strong> Larger batches = more stable, but need more memory</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🌡️ Warmup Steps</strong></p>
+                        <ul>
+                            <li><strong>10% of total steps:</strong> Common heuristic</li>
+                            <li><strong>Purpose:</strong> Gradually increase LR from 0 to target</li>
+                            <li><strong>Why:</strong> Prevents early training instability</li>
+                            <li><strong>Example:</strong> 10,000 steps total → 1,000 warmup steps</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>The Catastrophic Forgetting Problem</h3>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Catastrophic Forgetting:</strong> When you fine-tune a model too aggressively, it "forgets" its general knowledge 
+                    and only remembers your training data. The model becomes specialized but loses its general capabilities.</p>
+                </div>
+
+                <pre><code class="language-text">Before Fine-tuning:
+Q: "What is Python?"
+A: "Python is a high-level programming language created by Guido van Rossum..."
+(General knowledge intact)
+
+After Aggressive Fine-tuning (LR too high, too many epochs):
+Q: "What is Python?"
+A: "### Instruction:\nAnswer this question\n\n### Response:\n..."
+(Model only knows training format, forgot general knowledge!)
+
+Solution:
+✅ Low learning rate (2e-5)
+✅ Few epochs (3-5)
+✅ Validation monitoring
+✅ Early stopping if val loss increases</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>How to Detect Catastrophic Forgetting:</strong></p>
+                    <ul>
+                        <li>Test model on general knowledge questions before and after fine-tuning</li>
+                        <li>If performance on general tasks drops significantly, you've overfitted</li>
+                        <li>Solution: Reduce LR, reduce epochs, or add general examples to training data</li>
+                    </ul>
+                </div>
+
+                <h3>Cost Analysis: Full Fine-tuning</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #f59e0b; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Setup</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Model</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Training Time</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Hardware</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Cost per Run</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Small Scale</strong></td>
+                            <td style="padding: 1rem;">GPT-2 (124M)</td>
+                            <td style="padding: 1rem;">~2 hours</td>
+                            <td style="padding: 1rem;">RTX 3090 (24GB)</td>
+                            <td style="padding: 1rem;">$0 (own GPU) or $0.50 cloud</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Medium Scale</strong></td>
+                            <td style="padding: 1rem;">GPT-2 XL (1.5B)</td>
+                            <td style="padding: 1rem;">~8 hours</td>
+                            <td style="padding: 1rem;">RTX 4090 (24GB)</td>
+                            <td style="padding: 1rem;">$0 (own GPU) or $2 cloud</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Production Scale</strong></td>
+                            <td style="padding: 1rem;">Llama 2 (7B)</td>
+                            <td style="padding: 1rem;">~16 hours</td>
+                            <td style="padding: 1rem;">A100 (80GB)</td>
+                            <td style="padding: 1rem;">$24 cloud per experiment</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Enterprise Scale</strong></td>
+                            <td style="padding: 1rem;">Llama 2 (70B)</td>
+                            <td style="padding: 1rem;">~80 hours</td>
+                            <td style="padding: 1rem;">8x A100 (80GB)</td>
+                            <td style="padding: 1rem;">$960 cloud per experiment</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <p>💸 <strong>Budget Reality:</strong> Full fine-tuning a 7B model requires experimentation (5-10 runs to tune hyperparameters) = 
+                    <strong>$120-240 in cloud costs</strong>. Plus data preparation time (1-2 weeks). This is why LoRA/QLoRA became so popular—they're 10x cheaper!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ LoRA (Low-Rank Adaptation): The Game Changer</h2>
+                
+                <p>
+                    <strong>LoRA</strong> (Low-Rank Adaptation) is a breakthrough technique published by Microsoft researchers in 2021 that revolutionized LLM fine-tuning. 
+                    Instead of updating billions of parameters, LoRA trains <strong>tiny adapter modules</strong> (< 1% of model size) that achieve 
+                    <strong>95-99% of full fine-tuning performance</strong> at a fraction of the cost.
+                </p>
+
+                <div class="success-box">
+                    <p>🎯 <strong>The Revolution:</strong> LoRA made it possible to fine-tune 7B parameter models on consumer GPUs (RTX 3090, 4090) 
+                    instead of requiring $10K A100 GPUs. This democratized fine-tuning for researchers, startups, and hobbyists.</p>
+                </div>
+
+                <h3>The Core Idea: Low-Rank Decomposition</h3>
+
+                <p>LoRA is based on a key insight: <strong>fine-tuning updates to model weights are low-rank</strong>. 
+                This means most of the "learning" happens in a low-dimensional subspace, not across all dimensions.</p>
+
+                <pre><code class="language-text">Standard Fine-tuning:
+--------------------
+Original Weight Matrix W: 4096 × 4096 = 16,777,216 parameters
+During training: Update ALL 16M parameters
+Memory needed: W + gradients + optimizer states = 4x model size
+
+LoRA Fine-tuning:
+-----------------
+Original Weight Matrix W: 4096 × 4096 (frozen, not trained)
+LoRA Adapter:
+  - Matrix A: 4096 × 8 = 32,768 parameters
+  - Matrix B: 8 × 4096 = 32,768 parameters
+  - Total: 65,536 parameters (0.4% of original!)
+
+During training: Update only A and B
+Memory needed: Only adapters' gradients + optimizer states
+Result: 100x less memory!</code></pre>
+
+                <h3>How LoRA Works: The Math</h3>
+
+                <p>In a standard transformer layer, attention computation looks like:</p>
+
+                <pre><code class="language-text">Standard Forward Pass:
+----------------------
+output = W × input
+
+Where W is a huge weight matrix (e.g., 4096 × 4096)
+
+LoRA Forward Pass:
+------------------
+output = W × input + (B × A) × input
+         ↑           ↑
+         Frozen      Trained adapters
+         
+Where:
+- W: Original pretrained weights (frozen)
+- A: Low-rank matrix (e.g., 4096 × r, r=8)
+- B: Low-rank matrix (e.g., r × 4096)
+- r: Rank (typically 8, 16, 32, or 64)
+
+Key insight: (B × A) is a 4096 × 4096 matrix, but we only 
+            train r × (4096 + 4096) parameters instead of 4096²!</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>Example:</strong> For a 4096×4096 weight matrix:</p>
+                    <ul>
+                        <li><strong>Full fine-tuning:</strong> 16,777,216 trainable parameters</li>
+                        <li><strong>LoRA (r=8):</strong> 65,536 trainable parameters (256x reduction!)</li>
+                        <li><strong>LoRA (r=16):</strong> 131,072 trainable parameters (128x reduction)</li>
+                        <li><strong>LoRA (r=64):</strong> 524,288 trainable parameters (32x reduction)</li>
+                    </ul>
+                </div>
+
+                <h3>LoRA Configuration Parameters</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>📏 Rank (r)</strong></p>
+                        <p><strong>What it is:</strong> Dimensionality of the low-rank decomposition</p>
+                        <ul>
+                            <li><strong>r=4-8:</strong> Very parameter-efficient, good for simple tasks</li>
+                            <li><strong>r=16-32:</strong> Sweet spot for most tasks</li>
+                            <li><strong>r=64-128:</strong> Complex tasks, closer to full fine-tuning</li>
+                        </ul>
+                        <p><strong>Trade-off:</strong> Higher r = more parameters = better performance but more memory</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🎚️ LoRA Alpha</strong></p>
+                        <p><strong>What it is:</strong> Scaling factor for LoRA updates</p>
+                        <ul>
+                            <li><strong>Formula:</strong> scaling = alpha / r</li>
+                            <li><strong>Typical values:</strong> 16, 32, 64</li>
+                            <li><strong>Rule of thumb:</strong> alpha = 2 × r</li>
+                        </ul>
+                        <p><strong>Effect:</strong> Controls how much LoRA adapters influence the output</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>🎯 Target Modules</strong></p>
+                        <p><strong>What it is:</strong> Which layers get LoRA adapters</p>
+                        <ul>
+                            <li><strong>Common:</strong> ["q_proj", "v_proj"] (query & value in attention)</li>
+                            <li><strong>More aggressive:</strong> ["q_proj", "k_proj", "v_proj", "o_proj"]</li>
+                            <li><strong>Full coverage:</strong> All linear layers</li>
+                        </ul>
+                        <p><strong>Trade-off:</strong> More modules = better performance but more parameters</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>💧 LoRA Dropout</strong></p>
+                        <p><strong>What it is:</strong> Dropout applied to LoRA layers</p>
+                        <ul>
+                            <li><strong>Typical:</strong> 0.05 (5%)</li>
+                            <li><strong>Purpose:</strong> Regularization to prevent overfitting</li>
+                            <li><strong>When to increase:</strong> Small datasets (< 1K examples)</li>
+                        </ul>
+                        <p><strong>Effect:</strong> Helps generalization, especially on small datasets</p>
+                    </div>
+                </div>
+
+                <h3>Complete LoRA Fine-tuning Example</h3>
+
+                <pre><code class="language-python"># Install: pip install peft transformers datasets accelerate
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    TrainingArguments,
+    Trainer
+)
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+
+# 1. Load base model (in FP16 for memory efficiency)
+model_name = "meta-llama/Llama-2-7b-hf"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# 2. Configure LoRA
+lora_config = LoraConfig(
+    r=16,  # Rank: 16 is a good balance
+    lora_alpha=32,  # Alpha: 2 × r
+    target_modules=[
+        "q_proj",   # Query projection in attention
+        "k_proj",   # Key projection
+        "v_proj",   # Value projection
+        "o_proj",   # Output projection
+        "gate_proj",  # For Llama's FFN
+        "up_proj",
+        "down_proj"
+    ],
+    lora_dropout=0.05,  # 5% dropout for regularization
+    bias="none",  # Don't train bias terms
+    task_type="CAUSAL_LM"  # Causal language modeling
+)
+
+# 3. Apply LoRA to model
+model = get_peft_model(model, lora_config)
+
+# Print trainable parameters
+model.print_trainable_parameters()
+# Output: trainable params: 4,194,304 || all params: 6,742,609,920 || trainable%: 0.062%
+
+# 4. Load and prepare dataset (same as full fine-tuning)
+dataset = load_dataset("json", data_files={"train": "train.jsonl", "validation": "val.jsonl"})
+
+def format_instruction(example):
+    return {"text": f"### Instruction:\n{example['instruction']}\n\n### Response:\n{example['output']}"}
+
+dataset = dataset.map(format_instruction)
+
+def tokenize_function(examples):
+    return tokenizer(examples["text"], truncation=True, max_length=512, padding="max_length")
+
+tokenized_dataset = dataset.map(tokenize_function, batched=True)
+
+# 5. Training arguments (optimized for LoRA)
+training_args = TrainingArguments(
+    output_dir="./llama-2-7b-lora",
+    num_train_epochs=3,
+    per_device_train_batch_size=8,  # Can use larger batch size!
+    per_device_eval_batch_size=8,
+    gradient_accumulation_steps=2,
+    learning_rate=3e-4,  # LoRA can use higher LR than full fine-tuning
+    weight_decay=0.01,
+    warmup_steps=100,
+    logging_steps=10,
+    evaluation_strategy="steps",
+    eval_steps=100,
+    save_steps=500,
+    fp16=True,
+    report_to="tensorboard"
+)
+
+# 6. Train
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_dataset["train"],
+    eval_dataset=tokenized_dataset["validation"]
+)
+
+print("🚀 Starting LoRA training...")
+trainer.train()
+
+# 7. Save LoRA adapters (only ~10-50MB!)
+model.save_pretrained("./llama-2-7b-lora-final")
+tokenizer.save_pretrained("./llama-2-7b-lora-final")
+
+print("✅ LoRA training complete!")
+print("💡 Saved adapter weights are only ~20MB instead of ~14GB!")</code></pre>
+
+                <h3>Loading and Using LoRA Models</h3>
+
+                <pre><code class="language-python"># Load the base model + LoRA adapters
+from peft import PeftModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+# Load base model
+base_model = AutoModelForCausalLM.from_pretrained(
+    "meta-llama/Llama-2-7b-hf",
+    torch_dtype=torch.float16,
+    device_map="auto"
+)
+
+# Load LoRA adapters on top
+model = PeftModel.from_pretrained(base_model, "./llama-2-7b-lora-final")
+tokenizer = AutoTokenizer.from_pretrained("./llama-2-7b-lora-final")
+
+# Use it!
+def generate(instruction):
+    prompt = f"### Instruction:\n{instruction}\n\n### Response:\n"
+    inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+    outputs = model.generate(**inputs, max_new_tokens=256, temperature=0.7)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True).split("### Response:\n")[1]
+
+print(generate("Explain quantum computing in simple terms"))
+
+# Merge LoRA weights into base model (optional, for deployment)
+merged_model = model.merge_and_unload()
+merged_model.save_pretrained("./llama-2-7b-merged")
+# Now you have a standalone model without needing the base + adapter separately!</code></pre>
+
+                <h3>LoRA Hardware Requirements</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #10b981; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Model Size</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Base Model</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">LoRA VRAM</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">GPU Options</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Training Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>GPT-2 (124M)</strong></td>
+                            <td style="padding: 1rem;">~500MB</td>
+                            <td style="padding: 1rem;">~2GB</td>
+                            <td style="padding: 1rem;">RTX 3060 (12GB) ✅</td>
+                            <td style="padding: 1rem;">~30 min</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>GPT-2 XL (1.5B)</strong></td>
+                            <td style="padding: 1rem;">~6GB</td>
+                            <td style="padding: 1rem;">~8GB</td>
+                            <td style="padding: 1rem;">RTX 3090 (24GB) ✅</td>
+                            <td style="padding: 1rem;">~2 hours</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (7B)</strong></td>
+                            <td style="padding: 1rem;">~14GB</td>
+                            <td style="padding: 1rem;">~18GB</td>
+                            <td style="padding: 1rem;">RTX 3090/4090 (24GB) ✅</td>
+                            <td style="padding: 1rem;">~6 hours</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (13B)</strong></td>
+                            <td style="padding: 1rem;">~26GB</td>
+                            <td style="padding: 1rem;">~32GB</td>
+                            <td style="padding: 1rem;">A100 (40GB) or RTX 6000 Ada</td>
+                            <td style="padding: 1rem;">~12 hours</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Llama 2 (70B)</strong></td>
+                            <td style="padding: 1rem;">~140GB</td>
+                            <td style="padding: 1rem;">~160GB</td>
+                            <td style="padding: 1rem;">2-3x A100 (80GB each)</td>
+                            <td style="padding: 1rem;">~48 hours</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p>✅ <strong>LoRA's Killer Feature:</strong> You can fine-tune a 7B model on a consumer RTX 3090 (24GB, $1,200) 
+                    instead of needing an A100 (80GB, $10,000). This 8x cost reduction democratized LLM fine-tuning!</p>
+                </div>
+
+                <h3>LoRA vs Full Fine-tuning: Performance Comparison</h3>
+
+                <p>Research shows LoRA achieves 95-99% of full fine-tuning performance across diverse tasks:</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #078930; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Task</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Full Fine-tune</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">LoRA (r=16)</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Text Classification</td>
+                            <td style="padding: 1rem;">95.2%</td>
+                            <td style="padding: 1rem;">94.8%</td>
+                            <td style="padding: 1rem;">-0.4%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Question Answering</td>
+                            <td style="padding: 1rem;">88.7%</td>
+                            <td style="padding: 1rem;">87.9%</td>
+                            <td style="padding: 1rem;">-0.8%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Summarization (ROUGE)</td>
+                            <td style="padding: 1rem;">42.1</td>
+                            <td style="padding: 1rem;">41.6</td>
+                            <td style="padding: 1rem;">-0.5</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Code Generation</td>
+                            <td style="padding: 1rem;">72.3%</td>
+                            <td style="padding: 1rem;">71.1%</td>
+                            <td style="padding: 1rem;">-1.2%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Average</strong></td>
+                            <td style="padding: 1rem;"><strong>100%</strong></td>
+                            <td style="padding: 1rem;"><strong>97.5%</strong></td>
+                            <td style="padding: 1rem;"><strong>-2.5%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p>💡 <strong>Cost-Benefit Analysis:</strong></p>
+                    <ul>
+                        <li><strong>Full fine-tuning:</strong> 100% performance, $30/run (A100), 16 hours</li>
+                        <li><strong>LoRA:</strong> 97.5% performance, $0 (own RTX 3090) or $3/run (cloud), 6 hours</li>
+                        <li><strong>Verdict:</strong> LoRA is 10x cheaper for 2.5% performance drop—incredible trade-off!</li>
+                    </ul>
+                </div>
+
+                <h3>LoRA Best Practices</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="success-box">
+                        <p><strong>✅ Do's</strong></p>
+                        <ul>
+                            <li>Start with r=16, alpha=32 (good default)</li>
+                            <li>Target at least q_proj and v_proj</li>
+                            <li>Use higher learning rates (3e-4) than full fine-tuning</li>
+                            <li>Train for more epochs (3-5) since only adapters update</li>
+                            <li>Save adapters separately (only ~20MB!)</li>
+                            <li>Merge adapters before deployment for faster inference</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>❌ Don'ts</strong></p>
+                        <ul>
+                            <li>Don't use r > 64 (diminishing returns, use full fine-tuning instead)</li>
+                            <li>Don't forget to freeze base model (LoRA does this automatically)</li>
+                            <li>Don't use too low r (< 4) for complex tasks</li>
+                            <li>Don't train on too few examples (< 500)</li>
+                            <li>Don't forget to merge adapters for production</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔋 QLoRA (Quantized LoRA): The Ultimate Memory Saver</h2>
+                
+                <p>
+                    <strong>QLoRA</strong> (Quantized Low-Rank Adaptation) takes LoRA one step further by combining it with <strong>4-bit quantization</strong>.
+                    The result? You can fine-tune a <strong>13B model on a single RTX 3090</strong> (24GB) or a <strong>70B model on a single A100</strong> (80GB)—something
+                    previously impossible without multiple high-end GPUs.
+                </p>
+
+                <div class="success-box">
+                    <p>🚀 <strong>The Magic:</strong> QLoRA enabled researchers to fine-tune 65B parameter models on consumer hardware for the first time.
+                    This democratization led to an explosion of open-source fine-tuned models in 2023 (Alpaca, Vicuna, WizardLM, etc.).</p>
+                </div>
+
+                <h3>How QLoRA Works: Quantization + LoRA</h3>
+
+                <p>QLoRA combines three key innovations:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div class="info-box">
+                        <p><strong>1. 4-bit NormalFloat (NF4) Quantization</strong></p>
+                        <p>Stores model weights in 4-bit instead of 16-bit:</p>
+                        <ul>
+                            <li><strong>16-bit (FP16):</strong> 7B model = 14GB</li>
+                            <li><strong>4-bit (NF4):</strong> 7B model = 3.5GB (4x smaller!)</li>
+                        </ul>
+                        <p><strong>NF4:</strong> Optimized 4-bit format for normally distributed weights (like neural nets)</p>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>2. Double Quantization</strong></p>
+                        <p>Quantize the quantization constants themselves:</p>
+                        <ul>
+                            <li>First quantization saves 4x memory</li>
+                            <li>Double quantization saves additional ~0.37 bits/param</li>
+                            <li>Total: 4.2x memory reduction with minimal quality loss</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>3. Paged Optimizers</strong></p>
+                        <p>Use CPU RAM when GPU memory is full:</p>
+                        <ul>
+                            <li>Optimizer states moved to CPU</li>
+                            <li>Transferred to GPU only when needed</li>
+                            <li>Prevents out-of-memory crashes</li>
+                            <li>Enables training on smaller GPUs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Memory Breakdown: QLoRA vs LoRA vs Full</h3>
+
+                <pre><code class="language-text">Fine-tuning a 7B model (in FP16):
+
+Full Fine-tuning:
+├── Model weights: 14GB
+├── Gradients: 14GB
+├── Optimizer states (Adam): 28GB
+└── Activations: 8-12GB
+    TOTAL: ~64-68GB (needs A100 80GB)
+
+LoRA (r=16):
+├── Model weights: 14GB (frozen, no gradients)
+├── LoRA adapters: 0.02GB
+├── LoRA gradients: 0.02GB
+├── Optimizer states: 0.04GB
+└── Activations: 8-12GB
+    TOTAL: ~22-26GB (fits RTX 3090 24GB, barely)
+
+QLoRA (r=16, 4-bit):
+├── Model weights (4-bit): 3.5GB (no gradients!)
+├── LoRA adapters (FP16): 0.02GB
+├── LoRA gradients: 0.02GB
+├── Optimizer states: 0.04GB
+└── Activations: 4-6GB
+    TOTAL: ~7.5-9.5GB (fits RTX 3060 12GB!)</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>The Catch:</strong> QLoRA is ~20-30% slower than LoRA (due to quantization overhead) and achieves ~96% of full fine-tuning
+                    performance vs LoRA's 97.5%. But the memory savings are so dramatic that it's worth the trade-off for most use cases.</p>
+                </div>
+
+                <h3>Complete QLoRA Implementation</h3>
+
+                <pre><code class="language-python"># Install: pip install bitsandbytes peft transformers accelerate
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    BitsAndBytesConfig,
+    TrainingArguments,
+    Trainer
+)
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+
+# 1. Configure 4-bit quantization with NF4
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,  # Use 4-bit quantization
+    bnb_4bit_quant_type="nf4",  # NormalFloat4 (optimal for neural nets)
+    bnb_4bit_compute_dtype=torch.float16,  # Compute in FP16 for speed
+    bnb_4bit_use_double_quant=True  # Double quantization for extra savings
+)
+
+# 2. Load model in 4-bit
+model_name = "meta-llama/Llama-2-13b-hf"  # 13B model!
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=bnb_config,
+    device_map="auto",  # Automatically distribute across available GPUs
+    trust_remote_code=True
+)
+
+# 3. Prepare model for k-bit training
+model = prepare_model_for_kbit_training(model)
+
+# 4. Configure LoRA
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=[
+        "q_proj", "k_proj", "v_proj", "o_proj",
+        "gate_proj", "up_proj", "down_proj"
+    ],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+# 5. Apply LoRA
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+# trainable params: 41,943,040 || all params: 13,016,035,328 || trainable%: 0.322%
+
+# 6. Load dataset (same as before)
+dataset = load_dataset("json", data_files={"train": "train.jsonl", "validation": "val.jsonl"})
+
+def format_instruction(example):
+    return {"text": f"### Instruction:\n{example['instruction']}\n\n### Response:\n{example['output']}"}
+
+dataset = dataset.map(format_instruction)
+
+def tokenize_function(examples):
+    return tokenizer(examples["text"], truncation=True, max_length=512, padding="max_length")
+
+tokenized_dataset = dataset.map(tokenize_function, batched=True)
+
+# 7. Training arguments (optimized for QLoRA)
+training_args = TrainingArguments(
+    output_dir="./llama-2-13b-qlora",
+    num_train_epochs=3,
+    per_device_train_batch_size=4,  # 4-bit allows larger batches
+    gradient_accumulation_steps=4,
+    learning_rate=2e-4,  # Slightly higher than full fine-tuning
+    warmup_steps=100,
+    logging_steps=10,
+    save_steps=500,
+    fp16=True,  # Mixed precision
+    optim="paged_adamw_8bit",  # 8-bit Adam with paging (crucial for QLoRA!)
+    lr_scheduler_type="cosine",
+    evaluation_strategy="steps",
+    eval_steps=100,
+    report_to="tensorboard"
+)
+
+# 8. Train
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_dataset["train"],
+    eval_dataset=tokenized_dataset["validation"]
+)
+
+print("🚀 Starting QLoRA training of 13B model on consumer GPU...")
+trainer.train()
+
+# 9. Save
+model.save_pretrained("./llama-2-13b-qlora-final")
+tokenizer.save_pretrained("./llama-2-13b-qlora-final")
+print("✅ QLoRA training complete! Saved adapters (~40MB).")</code></pre>
+
+                <h3>QLoRA Hardware Requirements: The Real Game-Changer</h3>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #8b5cf6; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Model Size</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Full Fine-tune</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">LoRA</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">QLoRA</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">GPU Needed (QLoRA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (7B)</strong></td>
+                            <td style="padding: 1rem;">~64GB</td>
+                            <td style="padding: 1rem;">~22GB</td>
+                            <td style="padding: 1rem;">~8GB</td>
+                            <td style="padding: 1rem;">RTX 3060 (12GB) ✅</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (13B)</strong></td>
+                            <td style="padding: 1rem;">~120GB</td>
+                            <td style="padding: 1rem;">~40GB</td>
+                            <td style="padding: 1rem;">~16GB</td>
+                            <td style="padding: 1rem;">RTX 3090/4090 (24GB) ✅</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Llama 2 (70B)</strong></td>
+                            <td style="padding: 1rem;">~600GB</td>
+                            <td style="padding: 1rem;">~200GB</td>
+                            <td style="padding: 1rem;">~48GB</td>
+                            <td style="padding: 1rem;">A100 (80GB) ✅</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Mixtral (8x7B)</strong></td>
+                            <td style="padding: 1rem;">~480GB</td>
+                            <td style="padding: 1rem;">~160GB</td>
+                            <td style="padding: 1rem;">~40GB</td>
+                            <td style="padding: 1rem;">A100 (80GB) ✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p>🎯 <strong>QLoRA's Superpower:</strong> A hobbyist with a $1,500 RTX 4090 can fine-tune a 13B model that outperforms GPT-3.5
+                    on specialized tasks. This was unthinkable before QLoRA—you needed $30K+ in GPUs.</p>
+                </div>
+
+                <h3>QLoRA Performance: How Much Quality Do You Lose?</h3>
+
+                <p>QLoRA achieves 96-98% of full fine-tuning performance across tasks:</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #f59e0b; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Task</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">Full FT</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">LoRA (r=16)</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 600;">QLoRA (r=16)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Instruction Following</td>
+                            <td style="padding: 1rem;">91.2%</td>
+                            <td style="padding: 1rem;">90.1% (-1.1%)</td>
+                            <td style="padding: 1rem;">89.3% (-1.9%)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Code Generation</td>
+                            <td style="padding: 1rem;">68.5%</td>
+                            <td style="padding: 1rem;">67.2% (-1.3%)</td>
+                            <td style="padding: 1rem;">66.1% (-2.4%)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;">Summarization (ROUGE)</td>
+                            <td style="padding: 1rem;">45.7</td>
+                            <td style="padding: 1rem;">44.9 (-0.8)</td>
+                            <td style="padding: 1rem;">44.1 (-1.6)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>Average Retention</strong></td>
+                            <td style="padding: 1rem;"><strong>100%</strong></td>
+                            <td style="padding: 1rem;"><strong>98.5%</strong></td>
+                            <td style="padding: 1rem;"><strong>96.8%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p>💡 <strong>Real Talk:</strong> QLoRA loses 3-4% performance vs full fine-tuning but uses <strong>8x less memory</strong>.
+                    For most applications, this is an incredible trade-off. Plus, you can often recover lost performance by using a larger model
+                    (e.g., 13B QLoRA beats 7B full fine-tuning).</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Comparison</h2>
+                
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead style="background-color: #078930; color: white;">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left;">Approach</th>
+                            <th style="padding: 1rem; text-align: left;">Trainable Params</th>
+                            <th style="padding: 1rem; text-align: left;">VRAM (7B)</th>
+                            <th style="padding: 1rem; text-align: left;">Speed</th>
+                            <th style="padding: 1rem; text-align: left;">Quality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>Full</strong></td>
+                            <td style="padding: 1rem;">7B (all)</td>
+                            <td style="padding: 1rem;">40-80GB</td>
+                            <td style="padding: 1rem;">Slow</td>
+                            <td style="padding: 1rem;">⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 1rem;"><strong>LoRA</strong></td>
+                            <td style="padding: 1rem;">~1M</td>
+                            <td style="padding: 1rem;">10-15GB</td>
+                            <td style="padding: 1rem;">Fast</td>
+                            <td style="padding: 1rem;">⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem;"><strong>QLoRA</strong></td>
+                            <td style="padding: 1rem;">~1M</td>
+                            <td style="padding: 1rem;">6-8GB</td>
+                            <td style="padding: 1rem;">Very Fast</td>
+                            <td style="padding: 1rem;">⭐⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Best Practices</h2>
+                
+                <ul>
+                    <li><strong>Start with prompting/RAG:</strong> Try those first. They're faster</li>
+                    <li><strong>Use QLoRA:</strong> Best cost-benefit for most use cases</li>
+                    <li><strong>Low learning rates:</strong> 1e-4 to 5e-5 typical</li>
+                    <li><strong>Evaluate regularly:</strong> On validation set during training</li>
+                    <li><strong>Don't overfit:</strong> 3-5 epochs usually optimal</li>
+                    <li><strong>Use instruction data:</strong> Format data as instructions for best results</li>
+                    <li><strong>Monitor perplexity:</strong> Track validation loss</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Full fine-tuning updates all parameters (expensive)</li>
+                    <li>LoRA trains small adapter modules (10x cheaper)</li>
+                    <li>QLoRA combines quantization + LoRA (most practical)</li>
+                    <li>QLoRA: ~1M trainable params, 6-8GB VRAM for 7B models</li>
+                    <li>Start with RAG/prompting. Fine-tune only when needed</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In our next tutorial, <strong>Inference Optimization</strong>, we'll learn how to deploy models efficiently.
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Excellent!</strong> You now have the skills to fine-tune any LLM on your data efficiently!</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main advantage of Parameter-Efficient Fine-Tuning (PEFT)?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes models larger</div>
+                    <div class="quiz-option" data-value="b">It eliminates the need for training data</div>
+                    <div class="quiz-option" data-value="c">It updates only a small subset of parameters, reducing memory and compute requirements</div>
+                    <div class="quiz-option" data-value="d">It works without GPUs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does LoRA (Low-Rank Adaptation) do?</strong></p>
+                    <div class="quiz-option" data-value="a">It compresses the model permanently</div>
+                    <div class="quiz-option" data-value="b">It adds small trainable rank decomposition matrices to model layers while keeping original weights frozen</div>
+                    <div class="quiz-option" data-value="c">It removes layers from the model</div>
+                    <div class="quiz-option" data-value="d">It increases model size significantly</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Which fine-tuning approach updates ALL model parameters?</strong></p>
+                    <div class="quiz-option" data-value="a">LoRA</div>
+                    <div class="quiz-option" data-value="b">Prefix tuning</div>
+                    <div class="quiz-option" data-value="c">Adapter layers</div>
+                    <div class="quiz-option" data-value="d">Full fine-tuning</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is the purpose of the validation set during fine-tuning?</strong></p>
+                    <div class="quiz-option" data-value="a">To monitor model performance and detect overfitting without using test data</div>
+                    <div class="quiz-option" data-value="b">To increase training speed</div>
+                    <div class="quiz-option" data-value="c">To generate more training data</div>
+                    <div class="quiz-option" data-value="d">To replace the test set</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: When should you consider full fine-tuning instead of PEFT?</strong></p>
+                    <div class="quiz-option" data-value="a">Always, it's always better</div>
+                    <div class="quiz-option" data-value="b">Never, PEFT is always superior</div>
+                    <div class="quiz-option" data-value="c">When you have substantial domain-specific data and need maximum performance</div>
+                    <div class="quiz-option" data-value="d">Only for image models</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="in-context-learning-and-rag.html" class="btn btn-secondary">← Previous: In-Context Learning & RAG</a>
+                <a href="inference-optimization.html" class="btn btn-primary">Next: Inference Optimization →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

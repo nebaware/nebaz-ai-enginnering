@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a multi-agent code review system where specialized AI agents (security, performance, style) collaborate to analyze code comprehensively using CrewAI.">
+    <meta name="keywords" content="multi-agent system, code review, AI agents, CrewAI, collaborative agents, software engineering">
+    <title>Project: Multi-Agent Code Review System | Nebaz AI Academy</title>
+    <link rel="canonical" href="multi-agent-code-review.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .project-badge { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 50px; font-weight: bold; font-size: 0.9rem; display: inline-block; margin-bottom: 1rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+        .code-example { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .code-header { background: #1e293b; color: #e2e8f0; padding: 0.75rem 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0; font-weight: 600; font-size: 0.9rem; }
+        .agent-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1rem 0; }
+        .agent-card h4 { color: white; margin-top: 0; }
+        .architecture-diagram { background: white; border: 2px solid #e2e8f0; padding: 2rem; border-radius: 12px; margin: 2rem 0; text-align: center; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="project-badge">🚀 HANDS-ON PROJECT</div>
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/ai-agents.html">AI Agents</a> → 
+                <span>Multi-Agent Code Review Project</span>
+            </div>
+            <h1>👥 Build a Multi-Agent Code Review System</h1>
+            <p class="tutorial-intro">Create a team of specialized AI agents that collaborate to provide comprehensive code reviews covering security, performance, and style</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Advanced</span>
+                <span class="meta-item">⏱️ 2-3 hours</span>
+                <span class="meta-item">💻 Python + CrewAI + GPT-4</span>
+                <span class="meta-item">🔧 Multi-Agent Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <!-- Project Overview -->
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Code reviews are critical but time-consuming. What if you had a team of AI experts—each specializing in security, performance, or code style—working together to review your code automatically? In this project, you'll build exactly that using multi-agent collaboration!
+                </p>
+
+                <h3>The Agent Team</h3>
+                <div class="agent-card">
+                    <h4>🔒 Security Agent</h4>
+                    <p>Specializes in finding vulnerabilities: SQL injection, XSS, hardcoded secrets, insecure dependencies</p>
+                </div>
+
+                <div class="agent-card">
+                    <h4>⚡ Performance Agent</h4>
+                    <p>Identifies bottlenecks: inefficient algorithms, memory leaks, blocking operations, database N+1 queries</p>
+                </div>
+
+                <div class="agent-card">
+                    <h4>🎨 Style Agent</h4>
+                    <p>Enforces best practices: naming conventions, code structure, documentation, maintainability</p>
+                </div>
+
+                <div class="agent-card">
+                    <h4>📊 Manager Agent</h4>
+                    <p>Coordinates the team, synthesizes findings, assigns severity, generates final report</p>
+                </div>
+
+                <div class="success-box">
+                    <p>🚀 <strong>Why Multi-Agent?</strong> Instead of one generalist agent, specialized agents provide deeper, more accurate reviews. They collaborate like a real development team!</p>
+                </div>
+
+                <h3>System Architecture</h3>
+                <div class="architecture-diagram">
+                    <pre style="text-align: left;">
+┌──────────────────────────────────────┐
+│      Code Submission (GitHub PR)     │
+└──────────────┬───────────────────────┘
+               │
+               ▼
+    ┌─────────────────────┐
+    │   Manager Agent     │ ← Coordinates team
+    └────────┬────────────┘
+             │
+      ┌──────┼──────┐
+      │      │      │
+      ▼      ▼      ▼
+   ┌────┐ ┌────┐ ┌────┐
+   │🔒  │ │⚡  │ │🎨  │  ← Specialist agents
+   │Sec │ │Perf│ │Style│    (parallel review)
+   └─┬──┘ └─┬──┘ └─┬──┘
+     │      │      │
+     └──────┼──────┘
+            │
+            ▼
+   ┌─────────────────────┐
+   │  Manager Agent      │ ← Synthesize findings
+   │  (Final Report)     │
+   └─────────────────────┘
+            │
+            ▼
+   ┌─────────────────────┐
+   │  Review Report      │
+   │  • Security: 2 issues│
+   │  • Performance: 1    │
+   │  • Style: 5 issues   │
+   │  • Overall: APPROVED │
+   └─────────────────────┘
+                    </pre>
+                </div>
+            </section>
+
+            <!-- Setup -->
+            <section class="content-section">
+                <h2>🛠️ Setup & Dependencies</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install CrewAI Framework</h3>
+                    <pre><code class="language-bash"># Install CrewAI and dependencies
+pip install crewai crewai-tools
+pip install langchain langchain-openai
+pip install python-dotenv
+
+# For GitHub integration
+pip install PyGithub gitpython
+
+# For syntax analysis
+pip install pylint pyflakes radon</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Configure API Keys</h3>
+                    <p>Create <code>.env</code> file:</p>
+                    <pre><code class="language-bash"># OpenAI API key (required)
+OPENAI_API_KEY=your_openai_key_here
+
+# GitHub token (optional - for PR integration)
+GITHUB_TOKEN=your_github_token_here</code></pre>
+
+                    <div class="info-box">
+                        <p><strong>💡 Get API Keys:</strong></p>
+                        <ul>
+                            <li><strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></li>
+                            <li><strong>GitHub:</strong> Settings → Developer settings → Personal access tokens</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">3</span> Project Structure</h3>
+                    <pre><code class="language-bash">code-review-system/
+├── .env                       # API keys
+├── agents/
+│   ├── security_agent.py      # Security specialist
+│   ├── performance_agent.py   # Performance specialist
+│   ├── style_agent.py         # Style specialist
+│   └── manager_agent.py       # Coordinator
+├── tools/
+│   ├── code_analyzer.py       # Static analysis tools
+│   └── github_tools.py        # GitHub integration
+├── crew.py                    # Multi-agent crew setup
+├── main.py                    # Main entry point
+└── test_files/                # Sample code to review</code></pre>
+                </div>
+            </section>
+
+            <!-- Implementation -->
+            <section class="content-section">
+                <h2>💻 Building the Multi-Agent System</h2>
+
+                <h3>Step 1: Define Specialist Agents</h3>
+                <div class="code-example">
+                    <div class="code-header">agents/security_agent.py</div>
+                    <pre><code class="language-python">"""
+Security specialist agent
+"""
+from crewai import Agent
+from langchain_openai import ChatOpenAI
+
+class SecurityAgent:
+    """Agent specialized in code security"""
+    
+    def __init__(self, llm):
+        self.agent = Agent(
+            role="Security Expert",
+            goal="Identify security vulnerabilities and risks in code",
+            backstory="""You are an expert security engineer with 15 years of experience.
+            You've found critical vulnerabilities in major projects and are passionate about
+            secure coding practices. You specialize in:
+            - SQL injection & XSS detection
+            - Authentication & authorization flaws
+            - Hardcoded secrets & credentials
+            - Insecure dependencies
+            - OWASP Top 10 vulnerabilities""",
+            
+            verbose=True,
+            allow_delegation=False,
+            llm=llm
+        )
+    
+    def get_agent(self):
+        return self.agent
+
+# Sample security checks
+SECURITY_CHECKS = """
+When reviewing code, check for:
+
+1. **Injection Flaws:**
+   - SQL injection (unsafe string concatenation in queries)
+   - Command injection (os.system with user input)
+   - LDAP/XPath injection
+
+2. **Authentication Issues:**
+   - Weak password requirements
+   - Missing authentication checks
+   - Insecure session management
+
+3. **Sensitive Data:**
+   - Hardcoded API keys, passwords, secrets
+   - Unencrypted sensitive data
+   - Logging sensitive information
+
+4. **Dependencies:**
+   - Outdated libraries with known CVEs
+   - Imports from untrusted sources
+
+5. **Access Control:**
+   - Missing authorization checks
+   - Insecure direct object references
+
+For each issue found, provide:
+- Severity: CRITICAL/HIGH/MEDIUM/LOW
+- Location: File and line number
+- Description: What's wrong
+- Recommendation: How to fix
+"""</code></pre>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">agents/performance_agent.py</div>
+                    <pre><code class="language-python">"""
+Performance specialist agent
+"""
+from crewai import Agent
+
+class PerformanceAgent:
+    """Agent specialized in performance optimization"""
+    
+    def __init__(self, llm):
+        self.agent = Agent(
+            role="Performance Engineer",
+            goal="Identify performance bottlenecks and optimization opportunities",
+            backstory="""You are a performance optimization expert who has scaled
+            systems to handle millions of requests. You understand algorithms,
+            data structures, and system architecture deeply. You specialize in:
+            - Time complexity analysis (O(n), O(n²), etc.)
+            - Memory leak detection
+            - Database query optimization (N+1 queries)
+            - Async/await usage
+            - Caching opportunities
+            - Resource management""",
+            
+            verbose=True,
+            allow_delegation=False,
+            llm=llm
+        )
+    
+    def get_agent(self):
+        return self.agent
+
+PERFORMANCE_CHECKS = """
+When reviewing code, check for:
+
+1. **Algorithm Efficiency:**
+   - Nested loops (potential O(n²) or worse)
+   - Inefficient data structures (lists vs sets)
+   - Redundant computations
+
+2. **Database Issues:**
+   - N+1 query problems
+   - Missing indexes
+   - SELECT * instead of specific columns
+   - Loading too much data at once
+
+3. **Memory:**
+   - Memory leaks (unclosed files, connections)
+   - Large objects in memory
+   - Inefficient string concatenation
+
+4. **Async Operations:**
+   - Blocking operations in async code
+   - Missing await keywords
+   - Sequential operations that could be parallel
+
+5. **Caching:**
+   - Repeated expensive operations
+   - Missing caching layer
+   - Cache invalidation issues
+
+For each issue, provide:
+- Severity: HIGH/MEDIUM/LOW
+- Impact: Estimated performance impact
+- Location: File and line number
+- Recommendation: Specific optimization
+"""</code></pre>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">agents/style_agent.py</div>
+                    <pre><code class="language-python">"""
+Code style specialist agent
+"""
+from crewai import Agent
+
+class StyleAgent:
+    """Agent specialized in code quality and style"""
+    
+    def __init__(self, llm):
+        self.agent = Agent(
+            role="Code Quality Expert",
+            goal="Ensure code follows best practices and maintainability standards",
+            backstory="""You are a software architect who values clean, readable code.
+            You've mentored hundreds of developers on writing maintainable code.
+            You specialize in:
+            - Naming conventions (PEP 8 for Python)
+            - Code structure and organization
+            - Documentation and comments
+            - DRY principle (Don't Repeat Yourself)
+            - SOLID principles
+            - Error handling patterns""",
+            
+            verbose=True,
+            allow_delegation=False,
+            llm=llm
+        )
+    
+    def get_agent(self):
+        return self.agent
+
+STYLE_CHECKS = """
+When reviewing code, check for:
+
+1. **Naming:**
+   - Variables: descriptive snake_case
+   - Functions: verb-based, snake_case
+   - Classes: PascalCase
+   - Constants: UPPER_SNAKE_CASE
+   - Avoid single-letter names (except i, j in loops)
+
+2. **Structure:**
+   - Function length (< 50 lines ideal)
+   - Class complexity (single responsibility)
+   - Module organization
+   - Proper imports (grouped: std, 3rd party, local)
+
+3. **Documentation:**
+   - Missing docstrings
+   - Unclear comments
+   - TODO/FIXME without context
+   - No type hints
+
+4. **Code Smells:**
+   - Duplicated code
+   - Magic numbers (use constants)
+   - Long parameter lists (> 4 parameters)
+   - Deeply nested conditionals (> 3 levels)
+
+5. **Error Handling:**
+   - Bare except clauses
+   - Swallowed exceptions
+   - Missing error messages
+
+For each issue, provide:
+- Severity: HIGH/MEDIUM/LOW
+- Location: File and line number
+- Current code: What needs improvement
+- Recommendation: Better approach
+"""</code></pre>
+                </div>
+
+                <h3>Step 2: Create Manager Agent</h3>
+                <div class="code-example">
+                    <div class="code-header">agents/manager_agent.py</div>
+                    <pre><code class="language-python">"""
+Manager agent that coordinates the review team
+"""
+from crewai import Agent
+
+class ManagerAgent:
+    """Manager agent that coordinates specialist agents"""
+    
+    def __init__(self, llm):
+        self.agent = Agent(
+            role="Code Review Manager",
+            goal="Coordinate the review team and synthesize findings into actionable report",
+            backstory="""You are a technical lead who has managed code reviews
+            for major software projects. You understand how to balance security,
+            performance, and maintainability. You excel at:
+            - Prioritizing issues by severity and impact
+            - Synthesizing multiple perspectives
+            - Communicating clearly with developers
+            - Making approval/rejection decisions
+            - Providing actionable feedback""",
+            
+            verbose=True,
+            allow_delegation=True,  # Can delegate to specialist agents
+            llm=llm
+        )
+    
+    def get_agent(self):
+        return self.agent</code></pre>
+                </div>
+
+                <h3>Step 3: Define Review Tasks</h3>
+                <div class="code-example">
+                    <div class="code-header">crew.py - Task definitions</div>
+                    <pre><code class="language-python">"""
+Multi-agent code review crew
+"""
+import os
+from dotenv import load_dotenv
+from crewai import Crew, Task
+from langchain_openai import ChatOpenAI
+
+from agents.security_agent import SecurityAgent, SECURITY_CHECKS
+from agents.performance_agent import PerformanceAgent, PERFORMANCE_CHECKS
+from agents.style_agent import StyleAgent, STYLE_CHECKS
+from agents.manager_agent import ManagerAgent
+
+load_dotenv()
+
+class CodeReviewCrew:
+    """Multi-agent code review system"""
+    
+    def __init__(self):
+        # Initialize LLM
+        self.llm = ChatOpenAI(
+            model="gpt-4-turbo-preview",
+            temperature=0.3,
+            openai_api_key=os.getenv("OPENAI_API_KEY")
+        )
+        
+        # Initialize agents
+        self.security_agent = SecurityAgent(self.llm).get_agent()
+        self.performance_agent = PerformanceAgent(self.llm).get_agent()
+        self.style_agent = StyleAgent(self.llm).get_agent()
+        self.manager_agent = ManagerAgent(self.llm).get_agent()
+    
+    def review_code(self, code: str, filename: str = "code.py") -> dict:
+        """Review code using multi-agent crew"""
+        
+        # Task 1: Security Review
+        security_task = Task(
+            description=f"""Review this code for security vulnerabilities:
+
+Filename: {filename}
+
+Code:
+```python
+{code}
+```
+
+{SECURITY_CHECKS}
+
+Provide detailed findings with severity levels.""",
+            agent=self.security_agent,
+            expected_output="Detailed security analysis with vulnerabilities found, severity, and recommendations"
+        )
+        
+        # Task 2: Performance Review
+        performance_task = Task(
+            description=f"""Review this code for performance issues:
+
+Filename: {filename}
+
+Code:
+```python
+{code}
+```
+
+{PERFORMANCE_CHECKS}
+
+Identify bottlenecks and optimization opportunities.""",
+            agent=self.performance_agent,
+            expected_output="Performance analysis with bottlenecks, complexity analysis, and optimization suggestions"
+        )
+        
+        # Task 3: Style Review
+        style_task = Task(
+            description=f"""Review this code for style and maintainability:
+
+Filename: {filename}
+
+Code:
+```python
+{code}
+```
+
+{STYLE_CHECKS}
+
+Check adherence to Python best practices and PEP 8.""",
+            agent=self.style_agent,
+            expected_output="Code quality analysis with style issues, refactoring suggestions, and best practices"
+        )
+        
+        # Task 4: Final Report (Manager synthesizes all findings)
+        synthesis_task = Task(
+            description=f"""You are reviewing code file: {filename}
+
+Your specialist team has completed their reviews. Synthesize their findings into a comprehensive code review report.
+
+IMPORTANT: You must delegate to the security, performance, and style agents to get their findings.
+
+After collecting all reviews:
+1. Summarize key findings by category
+2. Assign overall priority to each issue
+3. Count issues by severity (CRITICAL/HIGH/MEDIUM/LOW)
+4. Make final decision: APPROVED / APPROVED_WITH_CHANGES / REJECTED
+5. Provide top 3 action items for the developer
+
+Format as a professional code review report.""",
+            agent=self.manager_agent,
+            expected_output="Comprehensive code review report with final decision and prioritized action items",
+            context=[security_task, performance_task, style_task]  # Dependencies
+        )
+        
+        # Create crew
+        crew = Crew(
+            agents=[
+                self.security_agent,
+                self.performance_agent,
+                self.style_agent,
+                self.manager_agent
+            ],
+            tasks=[
+                security_task,
+                performance_task,
+                style_task,
+                synthesis_task
+            ],
+            verbose=True
+        )
+        
+        # Run review
+        print(f"\n🔍 Starting code review for {filename}...")
+        print("=" * 60)
+        
+        result = crew.kickoff()
+        
+        print("\n" + "=" * 60)
+        print("✅ Code review complete!")
+        
+        return {
+            "filename": filename,
+            "report": result,
+            "success": True
+        }
+
+# Test with sample code
+if __name__ == "__main__":
+    # Sample vulnerable code
+    test_code = '''
+import sqlite3
+import os
+
+def get_user(username):
+    # Vulnerable to SQL injection!
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    query = f"SELECT * FROM users WHERE username = '{username}'"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return result
+
+def process_data(data_list):
+    # Performance issue: O(n²) complexity
+    result = []
+    for i in data_list:
+        for j in data_list:
+            if i != j:
+                result.append((i, j))
+    return result
+
+def x(a, b, c, d, e, f):
+    # Style issues: poor naming, too many params
+    return a + b + c + d + e + f
+
+API_KEY = "sk-1234567890abcdef"  # Security: hardcoded secret!
+'''
+    
+    # Run review
+    crew = CodeReviewCrew()
+    result = crew.review_code(test_code, "vulnerable_code.py")
+    
+    print("\n" + "=" * 60)
+    print("FINAL REPORT")
+    print("=" * 60)
+    print(result["report"])</code></pre>
+                </div>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint: Test the Crew</h3>
+                    <p>Run the code review system:</p>
+                    <pre><code class="language-bash">python crew.py</code></pre>
+                    <p>You should see:</p>
+                    <ul>
+                        <li>Security agent finding SQL injection and hardcoded API key</li>
+                        <li>Performance agent identifying O(n²) complexity</li>
+                        <li>Style agent noting poor naming and parameter issues</li>
+                        <li>Manager synthesizing findings into final report</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Advanced Features -->
+            <section class="content-section">
+                <h2>🚀 Advanced Features</h2>
+
+                <h3>GitHub Integration</h3>
+                <div class="code-example">
+                    <div class="code-header">tools/github_tools.py</div>
+                    <pre><code class="language-python">"""
+GitHub integration for automatic PR reviews
+"""
+from github import Github
+import os
+
+class GitHubReviewer:
+    """Integrate code review with GitHub PRs"""
+    
+    def __init__(self):
+        self.github = Github(os.getenv("GITHUB_TOKEN"))
+    
+    def review_pull_request(self, repo_name: str, pr_number: int):
+        """Review a GitHub pull request"""
+        
+        # Get repository and PR
+        repo = self.github.get_repo(repo_name)
+        pr = repo.get_pull(pr_number)
+        
+        # Get changed files
+        files = pr.get_files()
+        
+        # Review each file
+        from crew import CodeReviewCrew
+        crew = CodeReviewCrew()
+        
+        all_reviews = []
+        for file in files:
+            if file.filename.endswith('.py'):
+                # Get file content
+                content = repo.get_contents(file.filename, ref=pr.head.sha)
+                code = content.decoded_content.decode('utf-8')
+                
+                # Review
+                review = crew.review_code(code, file.filename)
+                all_reviews.append(review)
+        
+        # Post combined review as PR comment
+        combined_report = self._combine_reviews(all_reviews)
+        pr.create_issue_comment(combined_report)
+        
+        return all_reviews
+    
+    def _combine_reviews(self, reviews):
+        """Combine multiple file reviews"""
+        report = "## 🤖 Automated Code Review\\n\\n"
+        
+        for review in reviews:
+            report += f"### {review['filename']}\\n"
+            report += review['report'] + "\\n\\n"
+        
+        return report
+
+# Usage
+reviewer = GitHubReviewer()
+reviewer.review_pull_request("yourusername/yourrepo", 42)</code></pre>
+                </div>
+
+                <h3>Static Analysis Tools Integration</h3>
+                <div class="code-example">
+                    <div class="code-header">Enhanced with static analysis</div>
+                    <pre><code class="language-python">"""
+Integrate static analysis tools
+"""
+import pylint.lint
+import radon.complexity as radon_cc
+from pyflakes import api as pyflakes_api
+import io
+import sys
+
+def run_pylint(code: str) -> str:
+    """Run pylint on code"""
+    # Write code to temp file
+    with open('temp.py', 'w') as f:
+        f.write(code)
+    
+    # Run pylint
+    stdout = io.StringIO()
+    sys.stdout = stdout
+    
+    pylint.lint.Run(['temp.py'], exit=False)
+    
+    sys.stdout = sys.__stdout__
+    return stdout.getvalue()
+
+def calculate_complexity(code: str) -> list:
+    """Calculate cyclomatic complexity"""
+    return radon_cc.cc_visit(code)
+
+def run_pyflakes(code: str) -> str:
+    """Run pyflakes for syntax errors"""
+    stdout = io.StringIO()
+    sys.stdout = stdout
+    
+    pyflakes_api.check(code, 'code.py')
+    
+    sys.stdout = sys.__stdout__
+    return stdout.getvalue()
+
+# Add to agent tools
+class EnhancedSecurityAgent(SecurityAgent):
+    def analyze_with_tools(self, code: str):
+        """Combine AI with static analysis"""
+        
+        # Get static analysis results
+        pylint_results = run_pylint(code)
+        pyflakes_results = run_pyflakes(code)
+        complexity = calculate_complexity(code)
+        
+        # Provide to agent for enhanced analysis
+        enhanced_prompt = f"""
+Code to review:
+{code}
+
+Static Analysis Results:
+Pylint: {pylint_results}
+Pyflakes: {pyflakes_results}
+Complexity: {complexity}
+
+Combine these automated findings with your security expertise.
+"""
+        return enhanced_prompt</code></pre>
+                </div>
+
+                <h3>Custom Review Rules</h3>
+                <div class="code-example">
+                    <div class="code-header">Company-specific rules</div>
+                    <pre><code class="language-python">"""
+Add custom review rules
+"""
+import yaml
+
+class CustomRules:
+    """Load and apply custom review rules"""
+    
+    def __init__(self, rules_file: str = "review_rules.yaml"):
+        with open(rules_file) as f:
+            self.rules = yaml.safe_load(f)
+    
+    def get_rules_prompt(self) -> str:
+        """Generate prompt from custom rules"""
+        prompt = "Additional company-specific rules:\\n\\n"
+        
+        for category, rules in self.rules.items():
+            prompt += f"{category}:\\n"
+            for rule in rules:
+                prompt += f"- {rule}\\n"
+            prompt += "\\n"
+        
+        return prompt
+
+# review_rules.yaml
+"""
+security:
+  - Never use pickle for untrusted data
+  - All API endpoints must have authentication
+  - Secrets must use AWS Secrets Manager
+
+performance:
+  - Database queries must have EXPLAIN ANALYZE comment
+  - API calls must have timeout < 5s
+  - Batch operations for > 100 items
+
+style:
+  - All functions must have type hints
+  - Docstrings must follow Google style
+  - Max line length: 100 characters
+"""</code></pre>
+                </div>
+            </section>
+
+            <!-- Challenges -->
+            <section class="content-section">
+                <h2>💪 Challenges & Extensions</h2>
+
+                <div class="step-card">
+                    <h3>🥉 Challenge 1: Add Test Coverage Agent</h3>
+                    <p>Create an agent that checks test coverage and suggests missing tests.</p>
+                    <pre><code class="language-python">class TestAgent:
+    """Agent specialized in test coverage"""
+    
+    def __init__(self, llm):
+        self.agent = Agent(
+            role="Test Engineer",
+            goal="Ensure comprehensive test coverage",
+            backstory="Expert in unit testing, integration testing, TDD...",
+            llm=llm
+        )
+    
+    # TODO: Implement checks for:
+    # - Missing test files
+    # - Untested functions
+    # - Edge cases not covered
+    # - Test quality (assertions, mocking)</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3>🥈 Challenge 2: Learning from Past Reviews</h3>
+                    <p>Store reviews in a database and use past feedback to improve future reviews.</p>
+                    <pre><code class="language-python">import chromadb
+
+class ReviewMemory:
+    """Store and retrieve past reviews"""
+    
+    def __init__(self):
+        self.client = chromadb.Client()
+        self.collection = self.client.create_collection("reviews")
+    
+    def store_review(self, code, review, metadata):
+        """Store review for future reference"""
+        self.collection.add(
+            documents=[code],
+            metadatas=[metadata],
+            ids=[metadata['id']]
+        )
+    
+    def get_similar_reviews(self, code, n=3):
+        """Find similar past reviews"""
+        results = self.collection.query(
+            query_texts=[code],
+            n_results=n
+        )
+        return results</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3>🥇 Challenge 3: Multi-Language Support</h3>
+                    <p>Extend the system to review JavaScript, Go, Java, etc.</p>
+                    <pre><code class="language-python">class LanguageRouter:
+    """Route to language-specific agents"""
+    
+    LANGUAGE_AGENTS = {
+        'python': PythonReviewCrew,
+        'javascript': JavaScriptReviewCrew,
+        'go': GoReviewCrew
+    }
+    
+    def detect_language(self, filename: str) -> str:
+        """Detect programming language"""
+        ext = filename.split('.')[-1]
+        mapping = {
+            'py': 'python',
+            'js': 'javascript',
+            'go': 'go'
+        }
+        return mapping.get(ext, 'unknown')
+    
+    def review(self, code: str, filename: str):
+        """Route to appropriate crew"""
+        lang = self.detect_language(filename)
+        crew_class = self.LANGUAGE_AGENTS.get(lang)
+        
+        if crew_class:
+            crew = crew_class()
+            return crew.review_code(code, filename)
+        else:
+            return {"error": f"Unsupported language: {lang}"}</code></pre>
+                </div>
+            </section>
+
+            <!-- Production Tips -->
+            <section class="content-section">
+                <h2>🚀 Production Deployment</h2>
+
+                <h3>1. Set Up CI/CD Integration</h3>
+                <pre><code class="language-yaml"># .github/workflows/code-review.yml
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      
+      - name: Run AI Code Review
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python crew.py --pr ${{ github.event.pull_request.number }}
+</code></pre>
+
+                <h3>2. Add Cost Controls</h3>
+                <pre><code class="language-python">from langchain.callbacks import get_openai_callback
+
+def review_with_budget(crew, code, max_cost=1.0):
+    """Review with cost limit"""
+    
+    with get_openai_callback() as cb:
+        result = crew.review_code(code)
+        
+        if cb.total_cost > max_cost:
+            print(f"⚠️ Review exceeded budget: ${cb.total_cost}")
+        
+        result['cost'] = cb.total_cost
+    
+    return result</code></pre>
+
+                <h3>3. Rate Limiting</h3>
+                <pre><code class="language-python">from ratelimit import limits, sleep_and_retry
+
+@sleep_and_retry
+@limits(calls=10, period=60)  # 10 reviews per minute
+def rate_limited_review(crew, code):
+    """Rate-limited review"""
+    return crew.review_code(code)</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Production Considerations:</strong></p>
+                    <ul>
+                        <li><strong>Costs:</strong> Each review uses ~5000-10000 tokens ($0.10-$0.30)</li>
+                        <li><strong>Time:</strong> Full review takes 30-60 seconds</li>
+                        <li><strong>Rate Limits:</strong> OpenAI has TPM (tokens per minute) limits</li>
+                        <li><strong>False Positives:</strong> AI can make mistakes - human review still important</li>
+                        <li><strong>Privacy:</strong> Don't send proprietary code to external APIs without approval</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section class="content-section">
+                <h2>🎯 Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Specialization:</strong> Multiple specialized agents > one generalist</li>
+                        <li><strong>Collaboration:</strong> Agents work together through delegation and context sharing</li>
+                        <li><strong>Task Design:</strong> Clear, specific tasks with expected outputs improve results</li>
+                        <li><strong>Manager Pattern:</strong> Coordinator agent synthesizes findings effectively</li>
+                        <li><strong>Tool Integration:</strong> Combine AI with static analysis for best results</li>
+                        <li><strong>Iterative:</strong> Start simple, add agents and features progressively</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>📚 Next Steps</h2>
+                <ul>
+                    <li>🔗 <a href="ai-research-assistant.html">Project 1: AI Research Assistant</a> - Build autonomous research agents</li>
+                    <li>🔗 <a href="business-process-automation.html">Project 3: Business Process Automation</a> - Automate workflows</li>
+                    <li>🔗 <a href="../multi-agent-systems.html">Multi-Agent Systems</a> - Learn coordination patterns</li>
+                    <li>🔗 <a href="../building-production-agent-systems.html">Production Agent Systems</a> - Scale your agents</li>
+                </ul>
+            </section>
+
+            <div style="text-align: center; margin: 3rem 0; padding: 2rem; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); border-radius: 12px; color: white;">
+                <h2 style="color: white; margin-top: 0;">🎉 Congratulations!</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 1rem;">You've built a multi-agent code review system with specialized AI agents collaborating like a real development team!</p>
+                <a href="../../../courses/ai-agents.html" style="display: inline-block; background: white; color: #078930; padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1rem;">← Back to AI Agents Course</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

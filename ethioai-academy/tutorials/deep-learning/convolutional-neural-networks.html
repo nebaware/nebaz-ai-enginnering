@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Convolutional Neural Networks (CNNs). Learn convolutions, pooling, feature maps, and build powerful image classification and computer vision models.">
+    <meta name="keywords" content="CNN tutorial, convolutional neural networks, computer vision, image classification, convolution, pooling">
+    <title>Convolutional Neural Networks - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="convolutional-neural-networks.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Convolutional Neural Networks</span>
+            </div>
+            <h1>Convolutional Neural Networks</h1>
+            <p class="tutorial-intro">Master CNNs for computer vision. Learn convolutions, pooling, and how to build image classifiers and object detectors</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 3</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🖼️ Why Convolutional Neural Networks?</h2>
+                
+                <p>
+                    Imagine teaching a computer to recognize cats in photos. A regular neural network would treat a 224×224 pixel image as 150,528 individual numbers (224×224×3 color channels), connecting each pixel to every neuron. This approach has three fatal flaws:
+                </p>
+
+                <ul>
+                    <li><strong>Massive parameters:</strong> Millions of weights needed even for small images</li>
+                    <li><strong>No spatial awareness:</strong> Treats neighboring pixels as unrelated</li>
+                    <li><strong>Position dependent:</strong> Cat in top-left corner vs bottom-right = entirely different patterns to learn</li>
+                </ul>
+
+                <p>
+                    <strong>Convolutional Neural Networks (CNNs)</strong> solve all three problems. They're now the foundation of computer vision, powering:
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📸</div>
+                        <h3>Image Recognition</h3>
+                        <p>Classify objects in photos (Google Photos, Pinterest visual search)</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚗</div>
+                        <h3>Self-Driving Cars</h3>
+                        <p>Detect pedestrians, vehicles, traffic signs in real-time</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🏥</div>
+                        <h3>Medical Imaging</h3>
+                        <p>Detect tumors, diagnose diseases from X-rays and MRIs</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎨</div>
+                        <h3>Style Transfer</h3>
+                        <p>Transform photos into artistic styles (Prisma, Photoshop Neural Filters)</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 The Key Insight:</strong> Images have <strong>spatial structure</strong>. Nearby pixels are related. A cat's ear pixels cluster together. CNNs exploit this by looking at small neighborhoods at a time, using the same "pattern detector" (filter) everywhere in the image.</p>
+                </div>
+
+                <h3>From Dense Networks to CNNs</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fee2e2; padding: 1.25rem; border-radius: 8px;">
+                        <strong>❌ Fully Connected (Dense) Network</strong><br><br>
+                        <strong>Problem:</strong> Every pixel connects to every neuron<br>
+                        <strong>Example:</strong> 28×28 image → 1000 neurons = 784,000 parameters<br>
+                        <strong>Issues:</strong> Massive parameters, no spatial awareness, can't detect patterns at different positions
+                    </div>
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>✅ Convolutional Network</strong><br><br>
+                        <strong>Solution:</strong> Small filters scan the image<br>
+                        <strong>Example:</strong> 3×3 filter × 32 filters = 288 parameters<br>
+                        <strong>Benefits:</strong> Efficient, spatial awareness, detects patterns anywhere in image
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔍 Understanding Convolution Operations</h2>
+                
+                <div class="info-box">
+                    <h3>The Core Mechanism</h3>
+                    <p>
+                        A <strong>convolution</strong> slides a small filter (also called a kernel) across an image. At each position, it performs element-wise multiplication between the filter and the image patch it covers, then sums all the results to produce one output value. This output becomes one pixel in the feature map.
+                    </p>
+                </div>
+
+                <h3>Convolution Step-by-Step Example</h3>
+                <p>Let's detect a vertical edge in a simple 5×5 grayscale image using a 3×3 filter:</p>
+
+                <div class="example-box">
+                    <strong>🎯 Example: Vertical Edge Detection</strong>
+                    
+                    <p style="margin-top: 1rem;"><strong>Input Image (5×5):</strong></p>
+                    <pre style="background: #f8fafc; color: #334155; padding: 1rem;">
+10  10  10  50  50
+10  10  10  50  50
+10  10  10  50  50
+10  10  10  50  50
+10  10  10  50  50</pre>
+
+                    <p><strong>Vertical Edge Filter (3×3):</strong></p>
+                    <pre style="background: #f8fafc; color: #334155; padding: 1rem;">
+-1   0   1
+-1   0   1
+-1   0   1</pre>
+
+                    <p><strong>Convolution at Position (0,0):</strong></p>
+                    <p style="margin-top: 0.5rem;">
+                        Cover top-left 3×3 region:<br>
+                        = (-1×10) + (0×10) + (1×10) + (-1×10) + (0×10) + (1×10) + (-1×10) + (0×10) + (1×10)<br>
+                        = -10 + 0 + 10 - 10 + 0 + 10 - 10 + 0 + 10<br>
+                        = <strong>0</strong> (no edge here, uniform region)
+                    </p>
+
+                    <p><strong>Convolution at Position (0,2):</strong></p>
+                    <p style="margin-top: 0.5rem;">
+                        Cover region crossing the edge:<br>
+                        = (-1×10) + (0×50) + (1×50) + (-1×10) + (0×50) + (1×50) + (-1×10) + (0×50) + (1×50)<br>
+                        = -10 + 0 + 50 - 10 + 0 + 50 - 10 + 0 + 50<br>
+                        = <strong>120</strong> (strong vertical edge detected!)
+                    </p>
+
+                    <p><strong>Output Feature Map (3×3):</strong></p>
+                    <pre style="background: #f8fafc; color: #334155; padding: 1rem;">
+  0  120  120
+  0  120  120
+  0  120  120</pre>
+
+                    <p style="margin-top: 0.75rem;">
+                        <strong>Result:</strong> High values where vertical edges exist! The filter successfully detected the transition from dark (10) to bright (50).
+                    </p>
+                </div>
+
+                <h3>Key Convolution Concepts</h3>
+
+                <h4>1. Filter/Kernel</h4>
+                <p>
+                    Small matrices (typically 3×3, 5×5, or 7×7) containing learnable weights. Each filter learns to detect a specific pattern:
+                </p>
+                <ul>
+                    <li><strong>Horizontal edges:</strong> Responds to horizontal lines/boundaries</li>
+                    <li><strong>Vertical edges:</strong> Responds to vertical lines</li>
+                    <li><strong>Corners:</strong> Responds to 90-degree angles</li>
+                    <li><strong>Textures:</strong> Responds to specific texture patterns</li>
+                    <li><strong>Complex patterns:</strong> In deeper layers, filters detect eyes, wheels, faces</li>
+                </ul>
+
+                <h4>2. Stride</h4>
+                <p>
+                    How many pixels the filter moves at each step. Common values:
+                </p>
+                <ul>
+                    <li><strong>Stride = 1:</strong> Move 1 pixel at a time (most common, captures all details)</li>
+                    <li><strong>Stride = 2:</strong> Move 2 pixels (reduces output size, faster, less detail)</li>
+                </ul>
+
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Output size formula:</strong><br>
+                    Output size = (Input size - Filter size) / Stride + 1<br>
+                    <strong>Example:</strong> 28×28 image, 3×3 filter, stride=1: (28-3)/1 + 1 = 26×26 output
+                </div>
+
+                <h4>3. Padding</h4>
+                <p>
+                    Adding border pixels around the input to control output size:
+                </p>
+                <ul>
+                    <li><strong>Valid (no padding):</strong> Output smaller than input</li>
+                    <li><strong>Same (zero padding):</strong> Output same size as input (adds zeros around border)</li>
+                </ul>
+
+                <p><strong>Why padding?</strong> Without padding, output shrinks with each layer. Edge pixels get processed less. Padding preserves spatial dimensions and treats all pixels equally.</p>
+
+                <h4>4. Multiple Filters = Multiple Feature Maps</h4>
+                <p>
+                    One convolution layer uses many filters (e.g., 32 or 64), each detecting different patterns. Each filter produces one feature map, so 32 filters create 32 feature maps stacked together.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 Intuition:</strong> Think of filters as "pattern detectors." The first layer detects simple patterns (edges, colors). Deeper layers combine these to detect complex patterns (textures → parts → objects).</p>
+                </div>
+
+                <h3>Why Convolution Works for Images</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔗</div>
+                        <h3>Parameter Sharing</h3>
+                        <p>Same filter used everywhere in image. One 3×3 filter = 9 parameters for entire image vs millions in fully connected layers.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📍</div>
+                        <h3>Spatial Awareness</h3>
+                        <p>Considers neighboring pixels together. A cat's ear pixels are processed as a group, not individually.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Translation Invariance</h3>
+                        <p>Detects patterns anywhere in image. Cat in corner or center = same filter activates.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🏗️</div>
+                        <h3>Hierarchical Learning</h3>
+                        <p>Early layers: edges. Middle layers: textures. Deep layers: parts and objects.</p>
+                    </div>
+                </div>
+
+                <h3>Convolution Implementation</h3>
+                <pre><code class="language-python">import numpy as np
+
+# Manual convolution implementation
+def convolve2d(image, filter):
+    """
+    Perform 2D convolution on image with filter
+    """
+    img_h, img_w = image.shape
+    filt_h, filt_w = filter.shape
+    
+    # Output dimensions
+    out_h = img_h - filt_h + 1
+    out_w = img_w - filt_w + 1
+    output = np.zeros((out_h, out_w))
+    
+    # Slide filter across image
+    for i in range(out_h):
+        for j in range(out_w):
+            # Extract image patch
+            patch = image[i:i+filt_h, j:j+filt_w]
+            # Element-wise multiply and sum
+            output[i, j] = np.sum(patch * filter)
+    
+    return output
+
+# Example: vertical edge detection
+image = np.array([
+    [10, 10, 10, 50, 50],
+    [10, 10, 10, 50, 50],
+    [10, 10, 10, 50, 50],
+    [10, 10, 10, 50, 50],
+    [10, 10, 10, 50, 50]
+])
+
+vertical_edge_filter = np.array([
+    [-1, 0, 1],
+    [-1, 0, 1],
+    [-1, 0, 1]
+])
+
+result = convolve2d(image, vertical_edge_filter)
+print("Edge Detection Result:")
+print(result)
+# Output shows high values where vertical edge exists
+
+# ============ USING TENSORFLOW/KERAS ============
+import tensorflow as tf
+
+# Simple CNN architecture
+model = tf.keras.Sequential([
+    # Conv layer: 32 filters, each 3x3, ReLU activation
+    # Input shape: (height, width, channels)
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', 
+                          padding='same',  # Keep same dimensions
+                          input_shape=(28, 28, 1)),
+    
+    # Second conv layer: 64 filters
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+    
+    # Pooling to reduce dimensions
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    
+    # Another conv block
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
+    tf.keras.layers.MaxPooling2D((2, 2)),
+    
+    # Flatten for classification
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.summary()  # See architecture details</code></pre>
+
+                <h3>Visualizing What CNNs Learn</h3>
+                <p>Early layer filters learn simple patterns. Here's what actual trained filters detect:</p>
+                
+                <ul>
+                    <li><strong>Layer 1 (closest to input):</strong> Edges at different angles, color gradients, simple textures</li>
+                    <li><strong>Layer 2-3:</strong> Corners, circles, stripes, grid patterns, simple shapes</li>
+                    <li><strong>Layer 4-5:</strong> Textures (fur, brick, grass), repeating patterns, object parts</li>
+                    <li><strong>Deep layers:</strong> High-level concepts (faces, eyes, wheels, windows)</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>✅ Key Takeaway:</strong> Convolution is element-wise multiplication + sum, repeated at each image location. It's a sliding window that detects patterns efficiently, using the same filter weights everywhere (parameter sharing).</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Pooling: Downsampling for Efficiency</h2>
+                
+                <p>
+                    After convolution creates feature maps, we often have large spatial dimensions (e.g., 224×224). <strong>Pooling</strong> reduces these dimensions while keeping the most important information. This makes networks faster, more memory-efficient, and helps them generalize better.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 The Intuition:</strong> If a feature (like an edge) was detected in a region, we don't need its exact pixel position — just that it exists in that general area. Pooling summarizes neighborhoods, reducing spatial resolution while preserving what matters.</p>
+                </div>
+
+                <h3>Max Pooling (Most Common)</h3>
+                <p>
+                    Takes the <strong>maximum value</strong> from each neighborhood. Typically uses 2×2 windows with stride 2, reducing dimensions by half.
+                </p>
+
+                <div class="example-box">
+                    <strong>🎯 Max Pooling Example</strong>
+                    
+                    <p style="margin-top: 1rem;"><strong>Input Feature Map (4×4):</strong></p>
+                    <pre style="background: #f8fafc; color: #334155; padding: 1rem;">
+1   3  |  2   4
+5   7  |  8   1
+-----------------
+2   4  |  6   2
+0   1  |  3   5</pre>
+
+                    <p><strong>Apply 2×2 Max Pooling (stride=2):</strong></p>
+                    <ul>
+                        <li><strong>Top-left region:</strong> max(1, 3, 5, 7) = <strong>7</strong></li>
+                        <li><strong>Top-right region:</strong> max(2, 4, 8, 1) = <strong>8</strong></li>
+                        <li><strong>Bottom-left region:</strong> max(2, 4, 0, 1) = <strong>4</strong></li>
+                        <li><strong>Bottom-right region:</strong> max(6, 2, 3, 5) = <strong>6</strong></li>
+                    </ul>
+
+                    <p><strong>Output Feature Map (2×2):</strong></p>
+                    <pre style="background: #f8fafc; color: #334155; padding: 1rem;">
+7   8
+4   6</pre>
+
+                    <p style="margin-top: 0.75rem;">
+                        <strong>Result:</strong> Dimensions reduced by 50% (4×4 → 2×2), but strongest activations preserved!
+                    </p>
+                </div>
+
+                <p><strong>Why max pooling works:</strong></p>
+                <ul>
+                    <li><strong>Captures strongest signals:</strong> High activation = pattern detected. Max keeps the strongest evidence.</li>
+                    <li><strong>Translation invariance:</strong> Small shifts in feature position don't change the max value</li>
+                    <li><strong>Reduces noise:</strong> Weak activations (noise) discarded</li>
+                    <li><strong>Increases receptive field:</strong> Each neuron "sees" larger image region as you go deeper</li>
+                </ul>
+
+                <h3>Average Pooling</h3>
+                <p>
+                    Takes the <strong>average</strong> of values in each neighborhood. Less common than max pooling, but useful in some scenarios.
+                </p>
+
+                <div class="example-box">
+                    <strong>Average Pooling Example (same input):</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Top-left:</strong> (1 + 3 + 5 + 7) / 4 = <strong>4</strong></li>
+                        <li><strong>Top-right:</strong> (2 + 4 + 8 + 1) / 4 = <strong>3.75</strong></li>
+                        <li><strong>Bottom-left:</strong> (2 + 4 + 0 + 1) / 4 = <strong>1.75</strong></li>
+                        <li><strong>Bottom-right:</strong> (6 + 2 + 3 + 5) / 4 = <strong>4</strong></li>
+                    </ul>
+                    <p><strong>Output:</strong> [4, 3.75] [1.75, 4] — smoother, less extreme values</p>
+                </div>
+
+                <p><strong>When to use average pooling:</strong></p>
+                <ul>
+                    <li>Final layers before classification (global average pooling)</li>
+                    <li>When smooth feature representation is desired</li>
+                    <li>Less aggressive downsampling</li>
+                </ul>
+
+                <h3>Global Average Pooling (GAP)</h3>
+                <p>
+                    Instead of 2×2 neighborhoods, take the average of the <strong>entire feature map</strong>. Each feature map → 1 number.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>Example:</strong><br>
+                    Feature map (7×7×512) → Global Average Pooling → Vector (512)<br>
+                    Each of 512 feature maps averaged to 1 value.<br><br>
+                    <strong>Benefit:</strong> Replaces Flatten + Dense layers, reducing parameters dramatically. Used in modern architectures like ResNet, EfficientNet.
+                </div>
+
+                <h3>Pooling Comparison</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Type</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Operation</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Effect</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Max Pooling</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Take maximum</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Keeps strongest activation</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Feature detection, CNNs (most common)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Average Pooling</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Take mean</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Smooth representation</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Noise reduction, smoother features</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Global Average</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Average entire map</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">One value per feature map</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Final classification layer</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Benefits of Pooling</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Computational Efficiency</h3>
+                        <p>Reduces spatial dimensions by 75% (2×2 pooling). Fewer parameters, faster training and inference.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Translation Invariance</h3>
+                        <p>Small shifts in input don't change output. Makes network robust to exact feature positions.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Overfitting Prevention</h3>
+                        <p>Reduces information, forcing network to learn robust features rather than memorizing details.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">👁️</div>
+                        <h3>Larger Receptive Field</h3>
+                        <p>Each neuron in deeper layers "sees" larger regions of the original image.</p>
+                    </div>
+                </div>
+
+                <h3>Implementation</h3>
+                <pre><code class="language-python">import tensorflow as tf
+import numpy as np
+
+# ============ MAX POOLING ============
+# Manual implementation
+def max_pool2d(input_map, pool_size=2, stride=2):
+    """
+    Perform 2x2 max pooling
+    """
+    h, w = input_map.shape
+    out_h = (h - pool_size) // stride + 1
+    out_w = (w - pool_size) // stride + 1
+    output = np.zeros((out_h, out_w))
+    
+    for i in range(out_h):
+        for j in range(out_w):
+            # Extract pool region
+            h_start = i * stride
+            w_start = j * stride
+            pool_region = input_map[h_start:h_start+pool_size, 
+                                   w_start:w_start+pool_size]
+            # Take maximum
+            output[i, j] = np.max(pool_region)
+    
+    return output
+
+# Test
+feature_map = np.array([
+    [1, 3, 2, 4],
+    [5, 7, 8, 1],
+    [2, 4, 6, 2],
+    [0, 1, 3, 5]
+])
+
+pooled = max_pool2d(feature_map)
+print("Max Pooled Output:")
+print(pooled)
+# Output: [[7, 8], [4, 6]]
+
+# ============ USING KERAS ============
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)),
+    
+    # Max pooling: reduces 64x64 to 32x32
+    tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2),
+    
+    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+    
+    # Average pooling
+    tf.keras.layers.AveragePooling2D(pool_size=(2, 2)),
+    
+    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+    
+    # Global average pooling: feature maps to vector
+    tf.keras.layers.GlobalAveragePooling2D(),
+    
+    # Classification head
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.summary()
+
+# ============ COMPARING POOLING STRATEGIES ============
+# Build models with different pooling
+def build_model_with_pooling(pooling_type='max'):
+    model = tf.keras.Sequential([
+        tf.keras.layers.Conv2D(32, 3, activation='relu', input_shape=(28, 28, 1)),
+        
+        # Different pooling types
+        tf.keras.layers.MaxPooling2D(2) if pooling_type == 'max'
+        else tf.keras.layers.AveragePooling2D(2),
+        
+        tf.keras.layers.Conv2D(64, 3, activation='relu'),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(10, activation='softmax')
+    ])
+    return model
+
+max_model = build_model_with_pooling('max')
+avg_model = build_model_with_pooling('avg')
+
+print("Max Pooling Parameters:", max_model.count_params())
+print("Average Pooling Parameters:", avg_model.count_params())
+# Both have same parameters (pooling has no learnable weights)</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Common Mistake:</strong> Too much pooling too early can lose important details. For high-resolution images (e.g., medical imaging), you may want to delay pooling or use smaller pool sizes to preserve fine details.</p>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ Best Practices:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>Use 2×2 max pooling with stride 2 (standard)</li>
+                        <li>Pool after convolution blocks (Conv → ReLU → Pool)</li>
+                        <li>Don't pool too aggressively early in the network</li>
+                        <li>Consider Global Average Pooling before final classification</li>
+                        <li>Modern architectures (ResNet, EfficientNet) use less pooling, more stride-2 convolutions</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ CNN Architecture Patterns</h2>
+                
+                <p>
+                    Most successful CNNs follow a common pattern: <strong>progressive feature extraction</strong>. Early layers detect simple patterns (edges), middle layers combine them into textures, and deep layers recognize complex objects.
+                </p>
+
+                <h3>Standard CNN Building Blocks</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Typical Pattern (repeated multiple times):</strong><br><br>
+                    <strong>1. Convolution Block:</strong> Conv2D → BatchNorm → ReLU → (optional) Pooling<br>
+                    <strong>2. Feature Extraction:</strong> Stack multiple conv blocks, increasing filters (32 → 64 → 128 → 256)<br>
+                    <strong>3. Dimensionality Reduction:</strong> Flatten or GlobalAveragePooling<br>
+                    <strong>4. Classification Head:</strong> Dense layers → Softmax output
+                </div>
+
+                <h3>Architecture Evolution Over Time</h3>
+
+                <h4>1. LeNet-5 (1998) - The Pioneer</h4>
+                <div class="example-box">
+                    <strong>First successful CNN for digit recognition (MNIST)</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Structure:</strong> Conv → Pool → Conv → Pool → Dense → Dense</li>
+                        <li><strong>Layers:</strong> 7 layers total</li>
+                        <li><strong>Parameters:</strong> ~60,000</li>
+                        <li><strong>Innovation:</strong> Showed convolution + pooling works for images</li>
+                        <li><strong>Limitation:</strong> Too simple for complex images</li>
+                    </ul>
+                </div>
+
+                <h4>2. AlexNet (2012) - The Breakthrough</h4>
+                <div class="example-box">
+                    <strong>Won ImageNet competition with 16% error (vs 26% previous best)</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Structure:</strong> 5 conv layers + 3 dense layers</li>
+                        <li><strong>Parameters:</strong> 60 million</li>
+                        <li><strong>Innovations:</strong> ReLU activation, dropout, data augmentation, GPU training</li>
+                        <li><strong>Impact:</strong> Launched the deep learning revolution</li>
+                    </ul>
+                </div>
+
+                <h4>3. VGG-16/19 (2014) - Simple and Deep</h4>
+                <div class="example-box">
+                    <strong>Very deep networks with simple architecture</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Structure:</strong> Only 3×3 convolutions throughout</li>
+                        <li><strong>Layers:</strong> 16 or 19 layers</li>
+                        <li><strong>Parameters:</strong> 138 million (VGG-16)</li>
+                        <li><strong>Key Insight:</strong> Stack of small filters (3×3) better than large filters (5×5, 7×7)</li>
+                        <li><strong>Use Today:</strong> Feature extraction backbone, transfer learning</li>
+                        <li><strong>Limitation:</strong> Memory-heavy, slow to train</li>
+                    </ul>
+                </div>
+
+                <h4>4. ResNet (2015) - Skip Connections</h4>
+                <div class="example-box">
+                    <strong>Solved vanishing gradient problem with residual connections</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Structure:</strong> Residual blocks with skip connections (x + F(x))</li>
+                        <li><strong>Layers:</strong> 50, 101, or 152 layers</li>
+                        <li><strong>Key Innovation:</strong> Skip connections allow training 100+ layer networks</li>
+                        <li><strong>Why It Works:</strong> Gradients can flow directly through skip connections</li>
+                        <li><strong>Impact:</strong> Most influential architecture; basis for modern CNNs</li>
+                        <li><strong>Use Today:</strong> Default choice for computer vision tasks</li>
+                    </ul>
+                </div>
+
+                <h4>5. EfficientNet (2019) - Compound Scaling</h4>
+                <div class="example-box">
+                    <strong>Optimal balance of depth, width, and resolution</strong>
+                    <ul style="margin-top: 0.75rem;">
+                        <li><strong>Innovation:</strong> Systematically scale depth, width, resolution together</li>
+                        <li><strong>Variants:</strong> B0 (small) to B7 (large)</li>
+                        <li><strong>Efficiency:</strong> 10x fewer parameters than ResNet for same accuracy</li>
+                        <li><strong>Use Today:</strong> Production deployments, mobile apps, edge devices</li>
+                    </ul>
+                </div>
+
+                <h3>Architecture Comparison Table</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Architecture</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Year</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Layers</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Parameters</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Key Innovation</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Best Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>LeNet</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">1998</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">7</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">60K</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">First CNN</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Learning/simple tasks</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>AlexNet</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">2012</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">8</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">60M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">ReLU + Dropout</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Historical reference</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>VGG-16</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">2014</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">16</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">138M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Simple, deep</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Transfer learning</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>ResNet-50</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">2015</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">50</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">25M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Skip connections</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">General purpose (most popular)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>EfficientNet-B0</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">2019</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Varies</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">5M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Compound scaling</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Production/mobile</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Choosing an Architecture</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎓</div>
+                        <h3>Learning</h3>
+                        <p><strong>Use:</strong> LeNet, simple custom CNN<br>
+                        <strong>Why:</strong> Understand basics, fast training on CPU, small datasets</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔬</div>
+                        <h3>Research/Prototyping</h3>
+                        <p><strong>Use:</strong> ResNet-50, EfficientNet-B0<br>
+                        <strong>Why:</strong> Good accuracy, reasonable speed, well-tested</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Production</h3>
+                        <p><strong>Use:</strong> EfficientNet variants<br>
+                        <strong>Why:</strong> Best accuracy/size trade-off, optimized for deployment</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📱</div>
+                        <h3>Mobile/Edge</h3>
+                        <p><strong>Use:</strong> MobileNet, EfficientNet-B0<br>
+                        <strong>Why:</strong> Lightweight, fast inference, low memory</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ Architecture Design Tips:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Start simple:</strong> Build baseline, then add complexity</li>
+                        <li><strong>Increase filters gradually:</strong> 32 → 64 → 128 → 256</li>
+                        <li><strong>Use batch normalization:</strong> Stabilizes training, allows higher learning rates</li>
+                        <li><strong>Add dropout:</strong> After pooling or dense layers (0.25-0.5)</li>
+                        <li><strong>Use GlobalAveragePooling:</strong> Reduces parameters vs Flatten</li>
+                        <li><strong>Consider pre-trained models:</strong> Faster convergence, better accuracy with small datasets</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💻 Complete Image Classification Pipeline</h2>
+                
+                <p>
+                    Let's build a complete production-ready CNN for CIFAR-10 (60,000 32×32 color images in 10 classes: airplanes, cars, birds, cats, etc.).
+                </p>
+
+                <h3>Full Implementation with Best Practices</h3>
+                <pre><code class="language-python">import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import cifar10
+import matplotlib.pyplot as plt
+import numpy as np
+
+# ============ 1. LOAD AND EXPLORE DATA ============
+print("Loading CIFAR-10...")
+(X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+print(f"Training: {X_train.shape}")  # (50000, 32, 32, 3)
+print(f"Test: {X_test.shape}")        # (10000, 32, 32, 3)
+
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
+
+# ============ 2. PREPROCESS ============
+X_train = X_train.astype('float32') / 255.0
+X_test = X_test.astype('float32') / 255.0
+
+# One-hot encode labels
+y_train_cat = tf.keras.utils.to_categorical(y_train, 10)
+y_test_cat = tf.keras.utils.to_categorical(y_test, 10)
+
+# ============ 3. DATA AUGMENTATION ============
+data_augmentation = tf.keras.Sequential([
+    layers.RandomFlip('horizontal'),
+    layers.RandomRotation(0.1),
+    layers.RandomZoom(0.1),
+])
+
+# ============ 4. BUILD CNN ============
+def build_cnn():
+    model = models.Sequential([
+        layers.Input(shape=(32, 32, 3)),
+        data_augmentation,
+        
+        # Block 1
+        layers.Conv2D(32, 3, padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation('relu'),
+        layers.Conv2D(32, 3, padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation('relu'),
+        layers.MaxPooling2D(2),
+        layers.Dropout(0.25),
+        
+        # Block 2
+        layers.Conv2D(64, 3, padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation('relu'),
+        layers.Conv2D(64, 3, padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation('relu'),
+        layers.MaxPooling2D(2),
+        layers.Dropout(0.25),
+        
+        # Block 3
+        layers.Conv2D(128, 3, padding='same'),
+        layers.BatchNormalization(),
+        layers.Activation('relu'),
+        layers.MaxPooling2D(2),
+        layers.Dropout(0.25),
+        
+        # Classification
+        layers.Flatten(),
+        layers.Dense(256, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.5),
+        layers.Dense(10, activation='softmax')
+    ])
+    return model
+
+model = build_cnn()
+model.summary()
+
+# ============ 5. COMPILE ============
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(0.001),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# ============ 6. CALLBACKS ============
+callbacks = [
+    tf.keras.callbacks.ReduceLROnPlateau(
+        monitor='val_loss', factor=0.5, patience=3, min_lr=1e-7
+    ),
+    tf.keras.callbacks.EarlyStopping(
+        monitor='val_loss', patience=10, restore_best_weights=True
+    ),
+    tf.keras.callbacks.ModelCheckpoint(
+        'best_cnn.h5', monitor='val_accuracy', save_best_only=True
+    )
+]
+
+# ============ 7. TRAIN ============
+history = model.fit(
+    X_train, y_train_cat,
+    batch_size=128,
+    epochs=50,
+    validation_split=0.2,
+    callbacks=callbacks
+)
+
+# ============ 8. EVALUATE ============
+test_loss, test_acc = model.evaluate(X_test, y_test_cat)
+print(f"Test Accuracy: {test_acc*100:.2f}%")
+
+# ============ 9. VISUALIZE TRAINING ============
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Train')
+plt.plot(history.history['val_accuracy'], label='Val')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.title('Accuracy')
+
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Train')
+plt.plot(history.history['val_loss'], label='Val')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.title('Loss')
+
+plt.tight_layout()
+plt.savefig('training.png')
+
+# ============ 10. MAKE PREDICTIONS ============
+predictions = model.predict(X_test[:10])
+predicted_classes = np.argmax(predictions, axis=1)
+
+for i in range(10):
+    true_label = class_names[y_test[i][0]]
+    pred_label = class_names[predicted_classes[i]]
+    conf = predictions[i][predicted_classes[i]] * 100
+    print(f"Image {i}: True={true_label}, Pred={pred_label} ({conf:.1f}%)")
+
+model.save('final_cnn.h5')</code></pre>
+
+                <h3>Expected Results</h3>
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Accuracy</h3>
+                        <p><strong>Train:</strong> ~90-95%<br>
+                        <strong>Val:</strong> ~80-85%<br>
+                        <strong>Test:</strong> ~80-85%</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⏱️</div>
+                        <h3>Training Time</h3>
+                        <p><strong>GPU:</strong> ~10-15 min<br>
+                        <strong>CPU:</strong> ~1-2 hours<br>
+                        <strong>Epochs:</strong> 20-50</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💾</div>
+                        <h3>Model Size</h3>
+                        <p><strong>Parameters:</strong> ~1-2M<br>
+                        <strong>File:</strong> ~10-20 MB<br>
+                        <strong>Memory:</strong> ~100 MB</p>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Common Issues & Solutions:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li><strong>Overfitting:</strong> Increase dropout, add more augmentation, reduce model size</li>
+                        <li><strong>Underfitting:</strong> Increase capacity (more filters/layers), train longer, reduce regularization</li>
+                        <li><strong>Loss not decreasing:</strong> Check learning rate (try 0.001, 0.0001), verify preprocessing</li>
+                        <li><strong>Out of memory:</strong> Reduce batch size (128 → 64 → 32), use smaller model</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 What You've Mastered</h2>
+                
+                <p>Congratulations! You now understand Convolutional Neural Networks — the foundation of modern computer vision. Let's consolidate:</p>
+
+                <h3>Core Concepts</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Convolution</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>Sliding filters detect patterns</li>
+                            <li>Parameter sharing = efficiency</li>
+                            <li>Spatial awareness maintained</li>
+                            <li>Translation invariance</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📉</div>
+                        <h3>Pooling</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>Max pooling for features</li>
+                            <li>Reduces dimensions</li>
+                            <li>Adds position robustness</li>
+                            <li>Prevents overfitting</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🏗️</div>
+                        <h3>Architectures</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>LeNet: First CNN</li>
+                            <li>VGG: Simple, deep</li>
+                            <li>ResNet: Skip connections</li>
+                            <li>EfficientNet: Optimal scaling</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💻</div>
+                        <h3>Practical Skills</h3>
+                        <ul style="text-align: left; line-height: 1.8;">
+                            <li>Build custom CNNs</li>
+                            <li>Use transfer learning</li>
+                            <li>Apply data augmentation</li>
+                            <li>Train and evaluate</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Key Mental Models</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>🧠 Remember:</strong></p>
+                    <ul style="line-height: 2;">
+                        <li><strong>Convolution = Pattern Detection:</strong> Learned filters scan entire image</li>
+                        <li><strong>Hierarchical Learning:</strong> Edges → Textures → Parts → Objects</li>
+                        <li><strong>Parameter Sharing:</strong> Same filter everywhere = efficient + translation invariant</li>
+                        <li><strong>Pooling = Summarization:</strong> Keep important info, discard exact positions</li>
+                        <li><strong>Transfer Learning:</strong> Pre-trained models know visual patterns</li>
+                    </ul>
+                </div>
+
+                <h3>CNN Design Checklist</h3>
+                <div class="success-box">
+                    <strong>✅ For Your Next Project:</strong>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>[ ] Start with proven architecture (ResNet, EfficientNet)</li>
+                        <li>[ ] Use transfer learning if < 10,000 images</li>
+                        <li>[ ] Apply data augmentation (flip, rotate, zoom)</li>
+                        <li>[ ] Normalize inputs (0-1 or standardization)</li>
+                        <li>[ ] Use batch normalization</li>
+                        <li>[ ] Add dropout (0.25-0.5)</li>
+                        <li>[ ] Monitor train/val curves</li>
+                        <li>[ ] Use learning rate schedules</li>
+                        <li>[ ] Save best model</li>
+                        <li>[ ] Test on separate test set</li>
+                    </ul>
+                </div>
+
+                <h3>Practice Projects</h3>
+                <div class="cards-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="info-card">
+                        <div class="card-icon">🐱</div>
+                        <h3>Dogs vs Cats</h3>
+                        <p><strong>Dataset:</strong> Kaggle<br>
+                        <strong>Task:</strong> Binary classification<br>
+                        <strong>Skills:</strong> Data augmentation, transfer learning</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Digit Recognition</h3>
+                        <p><strong>Dataset:</strong> MNIST<br>
+                        <strong>Task:</strong> Multi-class<br>
+                        <strong>Skills:</strong> Build CNN from scratch</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🛣️</div>
+                        <h3>Traffic Signs</h3>
+                        <p><strong>Dataset:</strong> German Traffic Signs<br>
+                        <strong>Task:</strong> 43-class<br>
+                        <strong>Skills:</strong> Imbalanced data, real-world application</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🏥</div>
+                        <h3>Medical Imaging</h3>
+                        <p><strong>Dataset:</strong> Chest X-rays<br>
+                        <strong>Task:</strong> Disease detection<br>
+                        <strong>Skills:</strong> Transfer learning, high-stakes accuracy</p>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 2rem;">
+                    <p><strong>💡 Pro Tips:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 1.8;">
+                        <li><strong>Always use transfer learning</strong> unless you have 100,000+ images</li>
+                        <li><strong>Data quality > model complexity:</strong> Clean data beats fancy architectures</li>
+                        <li><strong>Visualize activations:</strong> Understand what the model learns</li>
+                        <li><strong>Test on real data:</strong> Your photos may differ from training data</li>
+                    </ul>
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    You've mastered CNNs for spatial data (images). Next: <strong>Recurrent Neural Networks (RNNs)</strong> for sequential data (text, time series, audio).
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Outstanding!</strong> You've mastered computer vision fundamentals. CNNs are now your tool for building image recognition systems!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Convolutional Neural Networks!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is the main purpose of CNNs?</h4>
+                        <div class="quiz-option" data-value="A">A) Text processing</div>
+                        <div class="quiz-option" data-value="B">B) Processing grid-like data such as images</div>
+                        <div class="quiz-option" data-value="C">C) Time series prediction</div>
+                        <div class="quiz-option" data-value="D">D) Audio generation</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What does a convolutional layer do?</h4>
+                        <div class="quiz-option" data-value="A">A) Reduces image size only</div>
+                        <div class="quiz-option" data-value="B">B) Classifies the entire image</div>
+                        <div class="quiz-option" data-value="C">C) Applies filters to detect features like edges and patterns</div>
+                        <div class="quiz-option" data-value="D">D) Normalizes pixel values</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is pooling in CNNs?</h4>
+                        <div class="quiz-option" data-value="A">A) Downsampling to reduce spatial dimensions</div>
+                        <div class="quiz-option" data-value="B">B) Adding more layers</div>
+                        <div class="quiz-option" data-value="C">C) Increasing image resolution</div>
+                        <div class="quiz-option" data-value="D">D) A type of activation function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What is a filter/kernel in CNN?</h4>
+                        <div class="quiz-option" data-value="A">A) The final output layer</div>
+                        <div class="quiz-option" data-value="B">B) A type of loss function</div>
+                        <div class="quiz-option" data-value="C">C) An optimizer</div>
+                        <div class="quiz-option" data-value="D">D) A small matrix that slides over input to detect patterns</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What advantage do CNNs have over fully connected networks for images?</h4>
+                        <div class="quiz-option" data-value="A">A) They are slower</div>
+                        <div class="quiz-option" data-value="B">B) They preserve spatial relationships and require fewer parameters</div>
+                        <div class="quiz-option" data-value="C">C) They require more training data</div>
+                        <div class="quiz-option" data-value="D">D) They can only work with grayscale images</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="training-neural-networks.html" class="btn btn-secondary">← Previous: Training Neural Networks</a>
+                <a href="recurrent-neural-networks.html" class="btn btn-primary">Next: Recurrent Neural Networks →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete hands-on project: Fine-tune BERT for sentiment analysis. Learn data preparation, training, evaluation, and deployment with production-ready code.">
+    <meta name="keywords" content="BERT fine-tuning, sentiment analysis, HuggingFace Transformers, text classification, NLP project">
+    <title>Project 1: Fine-tune BERT for Sentiment Classification | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-1-fine-tune-bert.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3, .info-box h4 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .project-badge { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; margin-bottom: 1rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Project 1: Fine-tune BERT</span>
+            </div>
+            <div class="project-badge">🚀 HANDS-ON PROJECT</div>
+            <h1>Project 1: Fine-tune BERT for Sentiment Classification</h1>
+            <p class="tutorial-intro">Build a complete sentiment analysis system from scratch. Train, evaluate, and deploy a production-ready classifier</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">⏱️ 90-120 minutes</span>
+                <span class="meta-item">🔧 Hands-on Project</span>
+                <span class="meta-item">💻 Python, HuggingFace, PyTorch</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                
+                <p>
+                    In this project, you'll build a <strong>sentiment analysis classifier</strong> by fine-tuning BERT on the IMDb movie reviews dataset. You'll learn the complete workflow from data preparation to deployment.
+                </p>
+
+                <h3>What You'll Build</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Data Pipeline</h3>
+                        <p>Load and preprocess 50k movie reviews. Split train/val/test sets properly.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Fine-tuned Model</h3>
+                        <p>Train BERT-base on sentiment classification. Achieve >90% accuracy.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Evaluation System</h3>
+                        <p>Measure accuracy, F1, precision, recall. Analyze errors and confusion matrix.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>Deployment API</h3>
+                        <p>Serve model via FastAPI. Build simple web interface for real-time predictions.</p>
+                    </div>
+                </div>
+
+                <h3>📚 Prerequisites</h3>
+                <ul>
+                    <li>Python 3.8+ installed</li>
+                    <li>Basic PyTorch knowledge (tensors, models)</li>
+                    <li>GPU recommended (Colab T4 free tier works)</li>
+                    <li>Completed LLM tutorials 1-5</li>
+                </ul>
+
+                <h3>⏱️ Time Breakdown</h3>
+                <ul>
+                    <li><strong>Setup:</strong> 10 minutes (install libraries, download data)</li>
+                    <li><strong>Data Exploration:</strong> 15 minutes (understand dataset)</li>
+                    <li><strong>Training:</strong> 30 minutes (fine-tune BERT)</li>
+                    <li><strong>Evaluation:</strong> 15 minutes (test and analyze)</li>
+                    <li><strong>Deployment:</strong> 20 minutes (create API)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Step 1: Environment Setup</h2>
+                
+                <h3>Install Dependencies</h3>
+                <pre><code class="language-bash"># Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install required packages
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install transformers datasets accelerate evaluate scikit-learn
+pip install fastapi uvicorn pandas numpy matplotlib seaborn
+
+# Verify installation
+python -c "import torch; print(f'PyTorch: {torch.__version__}')"
+python -c "import transformers; print(f'Transformers: {transformers.__version__}')"</code></pre>
+
+                <h3>Project Structure</h3>
+                <pre><code class="language-bash">bert-sentiment-classifier/
+├── data/
+│   └── imdb/                 # Downloaded dataset
+├── models/
+│   └── bert-sentiment/       # Saved model checkpoints
+├── notebooks/
+│   └── exploration.ipynb     # Data exploration
+├── src/
+│   ├── train.py             # Training script
+│   ├── evaluate.py          # Evaluation script
+│   ├── predict.py           # Inference
+│   └── api.py               # FastAPI server
+├── requirements.txt
+└── README.md</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Using Google Colab?</h4>
+                    <p>
+                        If you don't have a GPU, use Google Colab (free T4 GPU). Go to <strong>Runtime → Change runtime type → GPU (T4)</strong>. Training will take ~20 minutes instead of 2 hours on CPU.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Step 2: Data Preparation</h2>
+                
+                <h3>Load IMDb Dataset</h3>
+                <pre><code class="language-python"># data_preparation.py
+from datasets import load_dataset
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load IMDb dataset (50k reviews: 25k train, 25k test)
+print("Loading IMDb dataset...")
+dataset = load_dataset("imdb")
+
+print(f"Train size: {len(dataset['train'])}")
+print(f"Test size: {len(dataset['test'])}")
+
+# Examine a sample
+sample = dataset['train'][0]
+print(f"\nSample review:")
+print(f"Text: {sample['text'][:200]}...")
+print(f"Label: {sample['label']} (0=negative, 1=positive)")
+
+# Check label distribution
+train_labels = [ex['label'] for ex in dataset['train']]
+test_labels = [ex['label'] for ex in dataset['test']]
+
+print(f"\nTrain distribution:")
+print(f"Negative: {train_labels.count(0)} ({train_labels.count(0)/len(train_labels)*100:.1f}%)")
+print(f"Positive: {train_labels.count(1)} ({train_labels.count(1)/len(train_labels)*100:.1f}%)")
+
+# Visualize
+plt.figure(figsize=(10, 4))
+
+plt.subplot(1, 2, 1)
+sns.countplot(x=train_labels)
+plt.title('Train Set Label Distribution')
+plt.xlabel('Sentiment')
+plt.ylabel('Count')
+
+plt.subplot(1, 2, 2)
+lengths = [len(ex['text'].split()) for ex in dataset['train'][:1000]]
+plt.hist(lengths, bins=50)
+plt.title('Review Length Distribution (words)')
+plt.xlabel('Word Count')
+plt.ylabel('Frequency')
+
+plt.tight_layout()
+plt.savefig('data_exploration.png')
+print("\nSaved visualization to data_exploration.png")</code></pre>
+
+                <h3>📈 Expected Output</h3>
+                <div class="example-box">
+                    <pre style="background: white; color: #1e293b; padding: 1rem; margin: 0;">Train size: 25000
+Test size: 25000
+
+Sample review:
+Text: One of the other reviewers has mentioned that after watching just 1 Oz episode you'll be hooked...
+
+Label: 1 (0=negative, 1=positive)
+
+Train distribution:
+Negative: 12500 (50.0%)
+Positive: 12500 (50.0%)</pre>
+                </div>
+
+                <h3>Create Train/Validation Split</h3>
+                <pre><code class="language-python"># Split training data into train (80%) and validation (20%)
+train_testvalid = dataset['train'].train_test_split(test_size=0.2, seed=42)
+
+# Final splits
+train_dataset = train_testvalid['train']  # 20k samples
+val_dataset = train_testvalid['test']     # 5k samples
+test_dataset = dataset['test']            # 25k samples
+
+print(f"Training samples: {len(train_dataset)}")
+print(f"Validation samples: {len(val_dataset)}")
+print(f"Test samples: {len(test_dataset)}")</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Common Mistake:</strong> Don't test on the training set! Always hold out a separate test set that the model never sees during training.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🧠 Step 3: Tokenization & Data Loading</h2>
+                
+                <h3>Initialize Tokenizer</h3>
+                <pre><code class="language-python">from transformers import AutoTokenizer
+
+# Load BERT tokenizer
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Test tokenization
+sample_text = "This movie was absolutely fantastic! I loved every minute of it."
+tokens = tokenizer(sample_text, truncation=True, padding=True, max_length=512)
+
+print("Original text:", sample_text)
+print("\nTokenized:")
+print("Input IDs:", tokens['input_ids'][:10], "...")
+print("Attention Mask:", tokens['attention_mask'][:10], "...")
+
+# Decode back to text
+decoded = tokenizer.decode(tokens['input_ids'])
+print("\nDecoded:", decoded)</code></pre>
+
+                <h3>Tokenize Dataset</h3>
+                <pre><code class="language-python">def tokenize_function(examples):
+    """Tokenize a batch of texts"""
+    return tokenizer(
+        examples['text'],
+        truncation=True,
+        padding='max_length',
+        max_length=512  # BERT's max sequence length
+    )
+
+# Tokenize all datasets (batched for speed)
+print("Tokenizing datasets...")
+tokenized_train = train_dataset.map(tokenize_function, batched=True)
+tokenized_val = val_dataset.map(tokenize_function, batched=True)
+tokenized_test = test_dataset.map(tokenize_function, batched=True)
+
+# Set format for PyTorch
+tokenized_train.set_format('torch', columns=['input_ids', 'attention_mask', 'label'])
+tokenized_val.set_format('torch', columns=['input_ids', 'attention_mask', 'label'])
+tokenized_test.set_format('torch', columns=['input_ids', 'attention_mask', 'label'])
+
+print("Tokenization complete!")</code></pre>
+
+                <h3>Create DataLoaders</h3>
+                <pre><code class="language-python">from torch.utils.data import DataLoader
+
+# Training: batch_size=16, shuffle=True
+train_dataloader = DataLoader(tokenized_train, batch_size=16, shuffle=True)
+
+# Validation/Test: batch_size=32, shuffle=False
+val_dataloader = DataLoader(tokenized_val, batch_size=32, shuffle=False)
+test_dataloader = DataLoader(tokenized_test, batch_size=32, shuffle=False)
+
+print(f"Training batches: {len(train_dataloader)}")
+print(f"Validation batches: {len(val_dataloader)}")
+print(f"Test batches: {len(test_dataloader)}")
+
+# Examine a batch
+batch = next(iter(train_dataloader))
+print(f"\nBatch keys: {batch.keys()}")
+print(f"Input IDs shape: {batch['input_ids'].shape}")  # [16, 512]
+print(f"Labels shape: {batch['label'].shape}")  # [16]</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Batch Size Guidelines</h4>
+                    <p><strong>GPU Memory:</strong></p>
+                    <ul style="margin: 0;">
+                        <li>12GB (T4): batch_size=16</li>
+                        <li>16GB (V100): batch_size=24</li>
+                        <li>24GB (RTX 3090): batch_size=32</li>
+                        <li>40GB (A100): batch_size=64</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎓 Step 4: Model Training</h2>
+                
+                <h3>Initialize Model</h3>
+                <pre><code class="language-python">from transformers import AutoModelForSequenceClassification
+import torch
+
+# Load pre-trained BERT with classification head
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name,
+    num_labels=2,  # Binary classification (negative/positive)
+    problem_type="single_label_classification"
+)
+
+# Move to GPU if available
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model.to(device)
+
+print(f"Model loaded on: {device}")
+print(f"Model parameters: {sum(p.numel() for p in model.parameters()):,}")
+print(f"Trainable parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad):,}")</code></pre>
+
+                <h3>Training Configuration</h3>
+                <pre><code class="language-python">from transformers import TrainingArguments, Trainer
+import numpy as np
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+# Define evaluation metrics
+def compute_metrics(eval_pred):
+    """Compute accuracy, F1, precision, recall"""
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    
+    return {
+        'accuracy': accuracy_score(labels, predictions),
+        'f1': f1_score(labels, predictions, average='binary'),
+        'precision': precision_score(labels, predictions, average='binary'),
+        'recall': recall_score(labels, predictions, average='binary')
+    }
+
+# Training arguments
+training_args = TrainingArguments(
+    output_dir='./models/bert-sentiment',
+    
+    # Training hyperparameters
+    num_train_epochs=3,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=32,
+    learning_rate=2e-5,
+    weight_decay=0.01,
+    warmup_steps=500,
+    
+    # Evaluation
+    evaluation_strategy="steps",
+    eval_steps=500,
+    save_strategy="steps",
+    save_steps=500,
+    save_total_limit=2,  # Keep only 2 best checkpoints
+    load_best_model_at_end=True,
+    metric_for_best_model='f1',
+    
+    # Logging
+    logging_dir='./logs',
+    logging_steps=100,
+    report_to="none",  # Disable wandb/tensorboard
+    
+    # Performance
+    fp16=torch.cuda.is_available(),  # Mixed precision training (faster)
+    dataloader_num_workers=4,
+)
+
+print("Training configuration:")
+print(f"Epochs: {training_args.num_train_epochs}")
+print(f"Batch size: {training_args.per_device_train_batch_size}")
+print(f"Learning rate: {training_args.learning_rate}")
+print(f"Mixed precision: {training_args.fp16}")</code></pre>
+
+                <h3>Train the Model</h3>
+                <pre><code class="language-python"># Initialize Trainer
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_train,
+    eval_dataset=tokenized_val,
+    compute_metrics=compute_metrics,
+)
+
+# Start training
+print("\n🚀 Starting training...")
+print("This will take ~20 minutes on T4 GPU, ~2 hours on CPU\n")
+
+train_result = trainer.train()
+
+# Print training summary
+print("\n✅ Training complete!")
+print(f"Training time: {train_result.metrics['train_runtime']:.2f} seconds")
+print(f"Samples/second: {train_result.metrics['train_samples_per_second']:.2f}")
+print(f"Final loss: {train_result.metrics['train_loss']:.4f}")
+
+# Save model
+trainer.save_model('./models/bert-sentiment-final')
+tokenizer.save_pretrained('./models/bert-sentiment-final')
+print("\nModel saved to ./models/bert-sentiment-final")</code></pre>
+
+                <h3>📊 Expected Training Output</h3>
+                <div class="example-box">
+                    <pre style="background: white; color: #1e293b; padding: 1rem; margin: 0;">🚀 Starting training...
+
+Epoch 1/3
+Step   100: loss=0.3245, eval_acc=0.8720, eval_f1=0.8698
+Step   500: loss=0.2012, eval_acc=0.9140, eval_f1=0.9128
+Epoch 1 complete: avg_loss=0.2234
+
+Epoch 2/3
+Step  1000: loss=0.1456, eval_acc=0.9280, eval_f1=0.9275
+Step  1500: loss=0.1189, eval_acc=0.9320, eval_f1=0.9318
+Epoch 2 complete: avg_loss=0.1398
+
+Epoch 3/3
+Step  2000: loss=0.0892, eval_acc=0.9345, eval_f1=0.9342
+Step  2500: loss=0.0745, eval_acc=0.9360, eval_f1=0.9358
+Epoch 3 complete: avg_loss=0.0856
+
+✅ Training complete!
+Training time: 1234.56 seconds
+Final loss: 0.0856
+Best F1 score: 0.9358</pre>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 Training Tips</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>Overfitting?</strong> Add dropout, reduce epochs, or use more data</li>
+                        <li><strong>Slow training?</strong> Enable fp16 mixed precision (2x faster)</li>
+                        <li><strong>Out of memory?</strong> Reduce batch_size or use gradient accumulation</li>
+                        <li><strong>Poor performance?</strong> Try lower learning rate (1e-5) or more epochs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📈 Step 5: Model Evaluation</h2>
+                
+                <h3>Evaluate on Test Set</h3>
+                <pre><code class="language-python"># Evaluate on held-out test set
+print("Evaluating on test set...")
+test_results = trainer.evaluate(tokenized_test)
+
+print("\n📊 Test Set Results:")
+print(f"Accuracy:  {test_results['eval_accuracy']:.4f}")
+print(f"F1 Score:  {test_results['eval_f1']:.4f}")
+print(f"Precision: {test_results['eval_precision']:.4f}")
+print(f"Recall:    {test_results['eval_recall']:.4f}")</code></pre>
+
+                <h3>Confusion Matrix</h3>
+                <pre><code class="language-python">from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+# Get predictions
+predictions = trainer.predict(tokenized_test)
+pred_labels = np.argmax(predictions.predictions, axis=-1)
+true_labels = predictions.label_ids
+
+# Compute confusion matrix
+cm = confusion_matrix(true_labels, pred_labels)
+
+# Visualize
+fig, ax = plt.subplots(figsize=(8, 6))
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=['Negative', 'Positive']
+)
+disp.plot(ax=ax, cmap='Blues', values_format='d')
+plt.title('Confusion Matrix - BERT Sentiment Classifier')
+plt.savefig('confusion_matrix.png')
+print("\nConfusion matrix saved to confusion_matrix.png")
+
+# Calculate per-class metrics
+tn, fp, fn, tp = cm.ravel()
+print(f"\nTrue Negatives:  {tn} ({tn/(tn+fp)*100:.1f}%)")
+print(f"False Positives: {fp} ({fp/(tn+fp)*100:.1f}%)")
+print(f"False Negatives: {fn} ({fn/(tp+fn)*100:.1f}%)")
+print(f"True Positives:  {tp} ({tp/(tp+fn)*100:.1f}%)")</code></pre>
+
+                <h3>Error Analysis</h3>
+                <pre><code class="language-python"># Find misclassified examples
+errors = []
+for i, (pred, true) in enumerate(zip(pred_labels, true_labels)):
+    if pred != true:
+        errors.append({
+            'index': i,
+            'text': test_dataset[i]['text'],
+            'true_label': true,
+            'predicted_label': pred,
+            'confidence': np.max(predictions.predictions[i])
+        })
+
+print(f"\nTotal errors: {len(errors)} ({len(errors)/len(test_dataset)*100:.2f}%)")
+
+# Show 5 most confident wrong predictions
+errors_sorted = sorted(errors, key=lambda x: x['confidence'], reverse=True)
+
+print("\n🔍 Top 5 Most Confident Errors:\n")
+for i, error in enumerate(errors_sorted[:5], 1):
+    true_label = 'Positive' if error['true_label'] == 1 else 'Negative'
+    pred_label = 'Positive' if error['predicted_label'] == 1 else 'Negative'
+    
+    print(f"{i}. True: {true_label} | Predicted: {pred_label} (conf: {error['confidence']:.3f})")
+    print(f"   Text: {error['text'][:150]}...")
+    print()</code></pre>
+
+                <h3>Test on Custom Examples</h3>
+                <pre><code class="language-python">def predict_sentiment(text, model, tokenizer):
+    """Predict sentiment for a single text"""
+    # Tokenize
+    inputs = tokenizer(text, return_tensors='pt', truncation=True, 
+                      padding=True, max_length=512)
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+    
+    # Predict
+    model.eval()
+    with torch.no_grad():
+        outputs = model(**inputs)
+        logits = outputs.logits
+        probs = torch.softmax(logits, dim=-1)
+    
+    # Get prediction
+    prediction = torch.argmax(probs, dim=-1).item()
+    confidence = probs[0][prediction].item()
+    
+    sentiment = 'Positive 😊' if prediction == 1 else 'Negative 😞'
+    
+    return {
+        'sentiment': sentiment,
+        'confidence': confidence,
+        'positive_prob': probs[0][1].item(),
+        'negative_prob': probs[0][0].item()
+    }
+
+# Test examples
+test_reviews = [
+    "This movie was absolutely amazing! Best film I've seen all year.",
+    "Terrible waste of time. I want my money back.",
+    "It was okay, not great but not terrible either.",
+    "Brilliant acting and stunning cinematography. Highly recommend!",
+    "Boring and predictable. Fell asleep halfway through."
+]
+
+print("🎬 Custom Review Predictions:\n")
+for review in test_reviews:
+    result = predict_sentiment(review, model, tokenizer)
+    print(f"Review: {review}")
+    print(f"Prediction: {result['sentiment']} (confidence: {result['confidence']:.3f})")
+    print(f"Probabilities: Negative={result['negative_prob']:.3f}, Positive={result['positive_prob']:.3f}\n")</code></pre>
+
+                <h3>📊 Expected Results</h3>
+                <div class="success-box">
+                    <p><strong>Target Metrics (BERT-base on IMDb):</strong></p>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Accuracy: <strong>93-94%</strong></li>
+                        <li>F1 Score: <strong>93-94%</strong></li>
+                        <li>Training time: <strong>~20 minutes (T4 GPU)</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Step 6: Deployment</h2>
+                
+                <h3>Create FastAPI Server</h3>
+                <pre><code class="language-python"># api.py - Production-ready API
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+import logging
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize FastAPI
+app = FastAPI(title="BERT Sentiment Analysis API", version="1.0.0")
+
+# Load model at startup
+@app.on_event("startup")
+async def load_model():
+    global model, tokenizer, device
+    
+    logger.info("Loading model...")
+    model_path = "./models/bert-sentiment-final"
+    
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    model = AutoModelForSequenceClassification.from_pretrained(model_path)
+    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model.to(device)
+    model.eval()
+    
+    logger.info(f"Model loaded on {device}")
+
+class ReviewRequest(BaseModel):
+    text: str
+    
+class PredictionResponse(BaseModel):
+    sentiment: str
+    confidence: float
+    positive_probability: float
+    negative_probability: float
+
+@app.post("/predict", response_model=PredictionResponse)
+async def predict(request: ReviewRequest):
+    """Predict sentiment for a review"""
+    try:
+        # Validate input
+        if not request.text or len(request.text.strip()) == 0:
+            raise HTTPException(status_code=400, detail="Text cannot be empty")
+        
+        if len(request.text) > 5000:
+            raise HTTPException(status_code=400, detail="Text too long (max 5000 chars)")
+        
+        # Tokenize
+        inputs = tokenizer(
+            request.text,
+            return_tensors='pt',
+            truncation=True,
+            padding=True,
+            max_length=512
+        )
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        
+        # Predict
+        with torch.no_grad():
+            outputs = model(**inputs)
+            probs = torch.softmax(outputs.logits, dim=-1)
+        
+        # Extract results
+        prediction = torch.argmax(probs, dim=-1).item()
+        confidence = probs[0][prediction].item()
+        
+        sentiment = 'positive' if prediction == 1 else 'negative'
+        
+        return PredictionResponse(
+            sentiment=sentiment,
+            confidence=confidence,
+            positive_probability=probs[0][1].item(),
+            negative_probability=probs[0][0].item()
+        )
+        
+    except Exception as e:
+        logger.error(f"Prediction error: {e}")
+        raise HTTPException(status_code=500, detail="Prediction failed")
+
+@app.get("/health")
+async def health():
+    """Health check endpoint"""
+    return {"status": "healthy", "model": "bert-base-uncased"}
+
+@app.get("/")
+async def root():
+    """API info"""
+    return {
+        "name": "BERT Sentiment Analysis API",
+        "version": "1.0.0",
+        "endpoints": {
+            "POST /predict": "Predict sentiment",
+            "GET /health": "Health check",
+            "GET /docs": "API documentation"
+        }
+    }
+
+# Run: uvicorn api:app --host 0.0.0.0 --port 8000 --reload</code></pre>
+
+                <h3>Test the API</h3>
+                <pre><code class="language-bash"># Start server
+uvicorn api:app --host 0.0.0.0 --port 8000
+
+# In another terminal, test with curl
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "This movie was fantastic!"}'
+
+# Expected response:
+# {
+#   "sentiment": "positive",
+#   "confidence": 0.987,
+#   "positive_probability": 0.987,
+#   "negative_probability": 0.013
+# }</code></pre>
+
+                <h3>Simple Web Interface</h3>
+                <pre><code class="language-html">&lt;!-- index.html - Simple web UI --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Sentiment Analyzer&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        textarea { width: 100%; height: 150px; padding: 10px; font-size: 14px; }
+        button { background: #078930; color: white; padding: 10px 20px; border: none; 
+                 border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #065f46; }
+        #result { margin-top: 20px; padding: 20px; border-radius: 10px; display: none; }
+        .positive { background: #d1fae5; border: 2px solid #10b981; }
+        .negative { background: #fee2e2; border: 2px solid #ef4444; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;🎬 Movie Review Sentiment Analyzer&lt;/h1&gt;
+    &lt;p&gt;Enter a movie review to analyze its sentiment:&lt;/p&gt;
+    
+    &lt;textarea id="review" placeholder="Type your review here..."&gt;&lt;/textarea&gt;
+    &lt;br&gt;&lt;br&gt;
+    &lt;button onclick="analyzeSentiment()"&gt;Analyze Sentiment&lt;/button&gt;
+    
+    &lt;div id="result"&gt;&lt;/div&gt;
+    
+    &lt;script&gt;
+        async function analyzeSentiment() {
+            const text = document.getElementById('review').value;
+            
+            if (!text.trim()) {
+                alert('Please enter a review');
+                return;
+            }
+            
+            const response = await fetch('http://localhost:8000/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text })
+            });
+            
+            const data = await response.json();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = data.sentiment;
+            resultDiv.style.display = 'block';
+            
+            const emoji = data.sentiment === 'positive' ? '😊' : '😞';
+            const sentiment = data.sentiment.charAt(0).toUpperCase() + data.sentiment.slice(1);
+            
+            resultDiv.innerHTML = `
+                &lt;h2&gt;${emoji} ${sentiment} Sentiment&lt;/h2&gt;
+                &lt;p&gt;Confidence: ${(data.confidence * 100).toFixed(1)}%&lt;/p&gt;
+                &lt;p&gt;Positive: ${(data.positive_probability * 100).toFixed(1)}%&lt;/p&gt;
+                &lt;p&gt;Negative: ${(data.negative_probability * 100).toFixed(1)}%&lt;/p&gt;
+            `;
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+                <div class="info-box">
+                    <h4>🚀 Deployment Options</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>Local:</strong> uvicorn api:app (development)</li>
+                        <li><strong>Docker:</strong> Containerize with Dockerfile</li>
+                        <li><strong>Cloud:</strong> Deploy to AWS, GCP, Azure (with GPU)</li>
+                        <li><strong>Serverless:</strong> AWS Lambda + API Gateway (small models)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Step 7: Improvements & Extensions</h2>
+                
+                <h3>Model Improvements</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Use Larger Model</h3>
+                        <p>Try BERT-large or RoBERTa for +1-2% accuracy. Training takes 2-3x longer.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📚</div>
+                        <h3>More Data</h3>
+                        <p>Combine IMDb with Yelp, Amazon reviews. More diverse data = better generalization.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔧</div>
+                        <h3>Hyperparameter Tuning</h3>
+                        <p>Grid search: learning rates (1e-5, 2e-5, 5e-5), batch sizes, dropout rates.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎭</div>
+                        <h3>Multi-class</h3>
+                        <p>Expand to 5-star ratings instead of binary (negative/positive).</p>
+                    </div>
+                </div>
+
+                <h3>Production Enhancements</h3>
+                <pre><code class="language-python"># 1. Add caching for repeated queries
+from functools import lru_cache
+import hashlib
+
+@lru_cache(maxsize=1000)
+def predict_cached(text_hash):
+    # Cache predictions by text hash
+    pass
+
+# 2. Batch prediction endpoint
+@app.post("/predict_batch")
+async def predict_batch(reviews: List[str]):
+    # Process multiple reviews at once
+    pass
+
+# 3. Model versioning
+@app.get("/model_info")
+async def model_info():
+    return {
+        "model": "bert-base-uncased",
+        "fine_tuned_on": "IMDb",
+        "version": "1.0.0",
+        "accuracy": 0.934
+    }
+
+# 4. Rate limiting
+from slowapi import Limiter
+
+limiter = Limiter(key_func=lambda: "global")
+@app.post("/predict")
+@limiter.limit("10/minute")
+async def predict(...):
+    # Limit to 10 requests per minute
+    pass</code></pre>
+
+                <h3>🏆 Challenge Extensions</h3>
+                <ol>
+                    <li><strong>Multi-lingual:</strong> Fine-tune mBERT on reviews in Spanish, French, etc.</li>
+                    <li><strong>Aspect-based:</strong> Classify sentiment per aspect (acting, plot, visuals)</li>
+                    <li><strong>Zero-shot:</strong> Compare with GPT-3.5 zero-shot (no training)</li>
+                    <li><strong>Distillation:</strong> Compress to DistilBERT (2x faster, 40% smaller)</li>
+                    <li><strong>Real-time:</strong> Deploy with WebSockets for streaming predictions</li>
+                </ol>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Complete Code Summary</h2>
+                
+                <h3>Key Files Created</h3>
+                <ul>
+                    <li><strong>data_preparation.py:</strong> Load and explore IMDb dataset</li>
+                    <li><strong>train.py:</strong> Fine-tune BERT on sentiment classification</li>
+                    <li><strong>evaluate.py:</strong> Test model and analyze errors</li>
+                    <li><strong>api.py:</strong> FastAPI server for predictions</li>
+                    <li><strong>index.html:</strong> Simple web interface</li>
+                </ul>
+
+                <h3>What You Learned</h3>
+                <ul>
+                    <li>✅ Load and preprocess text datasets with HuggingFace</li>
+                    <li>✅ Tokenize text for BERT models</li>
+                    <li>✅ Fine-tune pre-trained models with Trainer API</li>
+                    <li>✅ Evaluate with accuracy, F1, precision, recall</li>
+                    <li>✅ Analyze errors with confusion matrix</li>
+                    <li>✅ Deploy model via FastAPI</li>
+                    <li>✅ Build web interface for predictions</li>
+                </ul>
+
+                <h3>📊 Expected Final Results</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Metric</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Value</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Test Accuracy</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">93-94%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">State-of-the-art for IMDb</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>F1 Score</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">93-94%</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Balanced performance</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Training Time</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">~20 minutes</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">On T4 GPU (Colab free tier)</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Inference Time</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">~50ms</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Per review on GPU</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Model Size</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">~440MB</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">BERT-base parameters</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've built a production-ready sentiment classifier from scratch. You can now:</p>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Fine-tune any HuggingFace model on any classification task</li>
+                        <li>Deploy ML models via REST APIs</li>
+                        <li>Evaluate model performance with proper metrics</li>
+                        <li>Build end-to-end ML projects independently</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔗 Resources & Next Steps</h2>
+                
+                <h3>Code Repository</h3>
+                <p>Full project code available at: <a href="https://github.com/nebaz-ai-academy/bert-sentiment-classifier" target="_blank">github.com/nebaz-ai-academy/bert-sentiment-classifier</a></p>
+
+                <h3>Further Reading</h3>
+                <ul>
+                    <li><a href="https://huggingface.co/docs/transformers" target="_blank">HuggingFace Transformers Docs</a></li>
+                    <li><a href="https://arxiv.org/abs/1810.04805" target="_blank">BERT Paper (Devlin et al., 2018)</a></li>
+                    <li><a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI Documentation</a></li>
+                </ul>
+
+                <h3>Next Projects</h3>
+                <ul>
+                    <li><strong>Project 2:</strong> Build a RAG Chatbot with vector search</li>
+                    <li><strong>Project 3:</strong> Deploy a Fine-tuned LLM at scale</li>
+                </ul>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What library is commonly used for fine-tuning transformer models?</strong></p>
+                    <div class="quiz-option" data-value="a">NumPy</div>
+                    <div class="quiz-option" data-value="b">Pandas</div>
+                    <div class="quiz-option" data-value="c">Hugging Face Transformers</div>
+                    <div class="quiz-option" data-value="d">Matplotlib</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is the purpose of tokenization in BERT fine-tuning?</strong></p>
+                    <div class="quiz-option" data-value="a">To increase model size</div>
+                    <div class="quiz-option" data-value="b">To convert text into numerical tokens that the model can process</div>
+                    <div class="quiz-option" data-value="c">To remove stopwords</div>
+                    <div class="quiz-option" data-value="d">To translate text</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Which metric is commonly used for evaluating classification models?</strong></p>
+                    <div class="quiz-option" data-value="a">Only accuracy</div>
+                    <div class="quiz-option" data-value="b">Only loss</div>
+                    <div class="quiz-option" data-value="c">Only perplexity</div>
+                    <div class="quiz-option" data-value="d">Accuracy, precision, recall, and F1-score</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What happens during the training loop?</strong></p>
+                    <div class="quiz-option" data-value="a">Forward pass, loss calculation, backward pass, and parameter updates</div>
+                    <div class="quiz-option" data-value="b">Only data loading</div>
+                    <div class="quiz-option" data-value="c">Only model evaluation</div>
+                    <div class="quiz-option" data-value="d">Only tokenization</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: Why do we use a validation set during fine-tuning?</strong></p>
+                    <div class="quiz-option" data-value="a">To increase training speed</div>
+                    <div class="quiz-option" data-value="b">To reduce model size</div>
+                    <div class="quiz-option" data-value="c">To monitor performance and detect overfitting</div>
+                    <div class="quiz-option" data-value="d">To generate more data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="building-llm-applications.html">← Tutorial 7: Building LLM Applications</a>
+                <a href="../../courses/llms-and-transformers.html">Back to Course</a>
+                <a href="project-2-rag-chatbot.html">Next: Project 2 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

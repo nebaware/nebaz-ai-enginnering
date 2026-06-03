@@ -1,0 +1,209 @@
+/**
+ * Nebaz AI Academy — brand override layer (loads after style.css)
+ * Replaces clone blue-teal tutorial aesthetic with Ethiopia-first design.
+ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #078930 !important;
+    --primary-hover: #065f46 !important;
+    --secondary-color: #0d9488 !important;
+    --accent-color: #ca8a04 !important;
+    --eth-green: #078930;
+    --eth-gold: #FCD116;
+    --eth-teal: #0d9488;
+    --bg-light: #f5f2eb !important;
+    --bg-lighter: #faf8f4 !important;
+    --text-dark: #1c1917 !important;
+    --text-medium: #57534e !important;
+    --font-primary: 'DM Sans', 'Noto Sans Ethiopic', system-ui, sans-serif !important;
+    --gradient-brand: linear-gradient(135deg, #078930 0%, #0d9488 55%, #ca8a04 100%);
+    --gradient-hero: linear-gradient(165deg, #ecfdf5 0%, #fef9c3 42%, #faf8f4 100%);
+    --shadow-card: 0 8px 32px rgba(7, 137, 48, 0.1);
+}
+
+[data-theme="dark"] {
+    --primary-color: #34d399 !important;
+    --primary-hover: #10b981 !important;
+    --secondary-color: #2dd4bf !important;
+    --bg-light: #1a1f1c !important;
+    --bg-lighter: #0f1412 !important;
+    --bg-white: #1a1f1c !important;
+    --text-dark: #ecfdf5 !important;
+}
+
+body {
+    font-family: var(--font-primary) !important;
+    background: var(--bg-lighter) !important;
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--eth-gold) !important;
+    box-shadow: 0 2px 16px rgba(7, 137, 48, 0.06) !important;
+}
+
+.nav-brand {
+    font-weight: 700 !important;
+    color: var(--eth-green) !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--eth-green) !important;
+}
+
+/* Hero — distinct layout */
+.hero {
+    background: var(--gradient-hero) !important;
+    border-bottom: 4px solid var(--eth-gold);
+    padding: 4rem 0 5rem !important;
+}
+
+.hero-badge {
+    background: rgba(7, 137, 48, 0.12) !important;
+    border: 1px solid rgba(7, 137, 48, 0.25) !important;
+    color: #065f46 !important;
+}
+
+.hero-title .highlight,
+.page-title .highlight {
+    background: var(--gradient-brand) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.btn-primary,
+.newsletter-btn {
+    background: var(--gradient-brand) !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(7, 137, 48, 0.35) !important;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    border-color: var(--eth-green) !important;
+    color: var(--eth-green) !important;
+}
+
+.btn-outline:hover {
+    background: rgba(7, 137, 48, 0.08) !important;
+}
+
+/* Course cards */
+.topic-card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(7, 137, 48, 0.12) !important;
+    box-shadow: var(--shadow-card) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.topic-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(7, 137, 48, 0.15) !important;
+}
+
+.topic-card.featured {
+    border: 2px solid var(--eth-gold) !important;
+}
+
+.course-badge {
+    background: var(--eth-green) !important;
+}
+
+.section-title::after {
+    background: var(--gradient-brand) !important;
+}
+
+/* Tutorial headers */
+.tutorial-header,
+.page-header {
+    background: var(--gradient-brand) !important;
+}
+
+.certificate-banner {
+    background: var(--gradient-brand) !important;
+}
+
+/* Founder strip */
+.nebaz-founder-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+    padding: 1.25rem 1.5rem;
+    background: #fff;
+    border-radius: 16px;
+    border-left: 5px solid var(--eth-gold);
+    box-shadow: var(--shadow-card);
+}
+
+.nebaz-founder-strip .founder-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Replace affiliate blocks */
+.nebaz-practice-box {
+    background: linear-gradient(135deg, #ecfdf5, #fef9c3);
+    border: 2px solid var(--eth-green);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin: 2rem 0;
+}
+
+.nebaz-practice-box h2 {
+    color: #065f46;
+    margin-top: 0;
+}
+
+.nebaz-legal-note {
+    font-size: 0.85rem;
+    color: var(--text-medium);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Footer */
+.footer {
+    background: #1c1917 !important;
+    color: #e7e5e4 !important;
+}
+
+.footer a {
+    color: #a7f3d0 !important;
+}
+
+.footer-brand {
+    color: var(--eth-gold) !important;
+}
+
+/* Progress page */
+.stat-number {
+    color: var(--eth-green) !important;
+}
+
+/* Kill clone blue inline overrides */
+[style*="3b82f6"],
+[style*="14b8a6"],
+[style*="2563eb"] {
+    /* softened via JS color pass; theme handles components */
+}

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a complete end-to-end ML pipeline from data ingestion to deployment. Hands-on project using MLflow, Docker, FastAPI, and monitoring.">
+    <meta name="keywords" content="MLOps project, end-to-end ML pipeline, MLflow, Docker, FastAPI, ML deployment, hands-on MLOps">
+    <title>Project: End-to-End ML Pipeline - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-end-to-end-ml-pipeline.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .checklist { list-style: none; padding-left: 0; }
+        .checklist li { padding-left: 2rem; position: relative; margin-bottom: 0.75rem; }
+        .checklist li:before { content: "☐"; position: absolute; left: 0; font-size: 1.2rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: #8b5cf6; color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Project 1: End-to-End ML Pipeline</span>
+            </div>
+            <h1>🚀 Project: Build an End-to-End ML Pipeline</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Use Telebirr mobile-money transaction logs (anonymized) to train fraud detection — a classic imbalanced classification problem for Ethiopian fintech.</em></p>
+</div>
+            <p class="tutorial-intro">Complete hands-on project: data ingestion → training → deployment with MLflow, Docker, FastAPI, and monitoring</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🎯 Project 1</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 2-3 hours</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Project Overview -->
+            <section class="content-section" id="overview">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Build a production-ready ML pipeline for <strong>house price prediction</strong> that includes:
+                </p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Data Pipeline</h3>
+                        <p>Automated data ingestion, validation, and preprocessing</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🤖</div>
+                        <h3>Training Pipeline</h3>
+                        <p>MLflow experiment tracking with hyperparameter tuning</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🐳</div>
+                        <h3>Containerization</h3>
+                        <p>Docker packaging for consistent deployment</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚀</div>
+                        <h3>API Deployment</h3>
+                        <p>FastAPI REST endpoint with validation</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Monitoring</h3>
+                        <p>Prometheus metrics and dashboard</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Testing</h3>
+                        <p>Unit tests and integration tests</p>
+                    </div>
+                </div>
+
+                <h3>What You'll Build</h3>
+                <p>A complete ML system that:</p>
+                <ul>
+                    <li>Trains a regression model to predict house prices</li>
+                    <li>Tracks experiments with MLflow</li>
+                    <li>Packages the model in a Docker container</li>
+                    <li>Deploys a FastAPI endpoint for predictions</li>
+                    <li>Monitors performance with Prometheus and Grafana</li>
+                    <li>Includes automated tests for quality assurance</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💡 Prerequisites:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Python 3.9+, Docker Desktop installed</li>
+                        <li>Completed tutorials 1-13</li>
+                        <li>Basic understanding of regression models</li>
+                        <li>Familiarity with command line</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Step 1: Project Setup -->
+            <section class="content-section" id="setup">
+                <h2>📁 Step 1: Project Setup</h2>
+                
+                <h3>Create Project Structure</h3>
+                <pre><code class="language-bash"># Create project directory
+mkdir ml-pipeline-project
+cd ml-pipeline-project
+
+# Create structure
+mkdir -p {data,models,notebooks,src/{data,models,api},tests,config}
+touch README.md requirements.txt Dockerfile docker-compose.yml .gitignore
+
+# Project structure:
+# ml-pipeline-project/
+# ├── data/               # Raw and processed data
+# ├── models/             # Saved models
+# ├── notebooks/          # Exploratory notebooks
+# ├── src/
+# │   ├── data/          # Data processing
+# │   ├── models/        # Model training
+# │   └── api/           # FastAPI app
+# ├── tests/             # Unit and integration tests
+# ├── config/            # Configuration files
+# ├── requirements.txt
+# ├── Dockerfile
+# └── docker-compose.yml</code></pre>
+
+                <h3>Install Dependencies</h3>
+                <pre><code class="language-bash"># requirements.txt
+pandas==2.0.3
+scikit-learn==1.3.0
+mlflow==2.7.1
+fastapi==0.103.1
+uvicorn[standard]==0.23.2
+pydantic==2.3.0
+prometheus-client==0.17.1
+pytest==7.4.2
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Install
+pip install -r requirements.txt</code></pre>
+            </section>
+
+            <!-- Step 2: Data Pipeline -->
+            <section class="content-section" id="data-pipeline">
+                <h2>📊 Step 2: Data Pipeline</h2>
+                
+                <h3>Download Dataset</h3>
+                <pre><code class="language-python"># src/data/load_data.py
+"""
+Download and load house price dataset
+"""
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+import os
+
+def load_raw_data():
+    """Load California housing dataset"""
+    print("Loading dataset...")
+    data = fetch_california_housing(as_frame=True)
+    df = data.frame
+    
+    # Save raw data
+    os.makedirs('data/raw', exist_ok=True)
+    df.to_csv('data/raw/housing.csv', index=False)
+    
+    print(f"Loaded {len(df)} samples with {len(df.columns)} features")
+    return df
+
+if __name__ == '__main__':
+    load_raw_data()</code></pre>
+
+                <h3>Data Validation & Preprocessing</h3>
+                <pre><code class="language-python"># src/data/preprocess.py
+"""
+Data validation and preprocessing
+"""
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import joblib
+import os
+
+def validate_data(df):
+    """Validate data quality"""
+    print("\n🔍 Validating data...")
+    
+    # Check missing values
+    missing = df.isnull().sum()
+    if missing.any():
+        print(f"⚠️  Missing values found:\n{missing[missing > 0]}")
+        raise ValueError("Dataset contains missing values")
+    
+    # Check data types
+    numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
+    if len(numeric_cols) != len(df.columns):
+        print("⚠️  Non-numeric columns found")
+    
+    # Check for outliers (simple check)
+    for col in numeric_cols:
+        q1 = df[col].quantile(0.25)
+        q3 = df[col].quantile(0.75)
+        iqr = q3 - q1
+        outliers = ((df[col] < q1 - 3*iqr) | (df[col] > q3 + 3*iqr)).sum()
+        if outliers > 0:
+            print(f"  {col}: {outliers} outliers detected")
+    
+    print("✅ Data validation passed")
+
+def preprocess_data(input_path='data/raw/housing.csv', test_size=0.2):
+    """Preprocess and split data"""
+    print("\n📊 Preprocessing data...")
+    
+    # Load
+    df = pd.read_csv(input_path)
+    
+    # Validate
+    validate_data(df)
+    
+    # Split features and target
+    X = df.drop('MedHouseVal', axis=1)
+    y = df['MedHouseVal']
+    
+    # Train/test split
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_size, random_state=42
+    )
+    
+    # Scale features
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    # Save preprocessed data
+    os.makedirs('data/processed', exist_ok=True)
+    pd.DataFrame(X_train_scaled, columns=X.columns).to_csv(
+        'data/processed/X_train.csv', index=False
+    )
+    pd.DataFrame(X_test_scaled, columns=X.columns).to_csv(
+        'data/processed/X_test.csv', index=False
+    )
+    pd.DataFrame(y_train).to_csv('data/processed/y_train.csv', index=False)
+    pd.DataFrame(y_test).to_csv('data/processed/y_test.csv', index=False)
+    
+    # Save scaler
+    os.makedirs('models/artifacts', exist_ok=True)
+    joblib.dump(scaler, 'models/artifacts/scaler.pkl')
+    
+    print(f"✅ Data preprocessed: {len(X_train)} train, {len(X_test)} test samples")
+    return X_train_scaled, X_test_scaled, y_train, y_test
+
+if __name__ == '__main__':
+    preprocess_data()</code></pre>
+            </section>
+
+            <!-- Step 3: Training Pipeline -->
+            <section class="content-section" id="training">
+                <h2>🤖 Step 3: Training Pipeline with MLflow</h2>
+                
+                <pre><code class="language-python"># src/models/train.py
+"""
+Model training with MLflow tracking
+"""
+import mlflow
+import mlflow.sklearn
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+import pandas as pd
+import numpy as np
+import joblib
+import os
+
+def train_model(n_estimators=100, max_depth=10, experiment_name="house_price_prediction"):
+    """Train model with MLflow tracking"""
+    
+    # Set MLflow experiment
+    mlflow.set_experiment(experiment_name)
+    
+    # Load data
+    print("📊 Loading preprocessed data...")
+    X_train = pd.read_csv('data/processed/X_train.csv')
+    X_test = pd.read_csv('data/processed/X_test.csv')
+    y_train = pd.read_csv('data/processed/y_train.csv').values.ravel()
+    y_test = pd.read_csv('data/processed/y_test.csv').values.ravel()
+    
+    # Start MLflow run
+    with mlflow.start_run():
+        print(f"\n🤖 Training RandomForest model...")
+        
+        # Train model
+        model = RandomForestRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=42,
+            n_jobs=-1
+        )
+        model.fit(X_train, y_train)
+        
+        # Predictions
+        y_pred_train = model.predict(X_train)
+        y_pred_test = model.predict(X_test)
+        
+        # Metrics
+        train_rmse = np.sqrt(mean_squared_error(y_train, y_pred_train))
+        test_rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
+        train_r2 = r2_score(y_train, y_pred_train)
+        test_r2 = r2_score(y_test, y_pred_test)
+        test_mae = mean_absolute_error(y_test, y_pred_test)
+        
+        print(f"\n📈 Training Metrics:")
+        print(f"  Train RMSE: {train_rmse:.4f}")
+        print(f"  Train R²:   {train_r2:.4f}")
+        print(f"\n📈 Test Metrics:")
+        print(f"  Test RMSE:  {test_rmse:.4f}")
+        print(f"  Test R²:    {test_r2:.4f}")
+        print(f"  Test MAE:   {test_mae:.4f}")
+        
+        # Log parameters
+        mlflow.log_param("n_estimators", n_estimators)
+        mlflow.log_param("max_depth", max_depth)
+        mlflow.log_param("model_type", "RandomForestRegressor")
+        
+        # Log metrics
+        mlflow.log_metric("train_rmse", train_rmse)
+        mlflow.log_metric("test_rmse", test_rmse)
+        mlflow.log_metric("train_r2", train_r2)
+        mlflow.log_metric("test_r2", test_r2)
+        mlflow.log_metric("test_mae", test_mae)
+        
+        # Log model
+        mlflow.sklearn.log_model(model, "model")
+        
+        # Save model locally
+        os.makedirs('models/production', exist_ok=True)
+        joblib.dump(model, 'models/production/model.pkl')
+        
+        print(f"\n✅ Model saved to models/production/model.pkl")
+        print(f"   MLflow run: {mlflow.active_run().info.run_id}")
+        
+        return model, test_rmse, test_r2
+
+if __name__ == '__main__':
+    train_model()</code></pre>
+
+                <h3>Hyperparameter Tuning</h3>
+                <pre><code class="language-python"># src/models/tune.py
+"""
+Hyperparameter tuning with MLflow
+"""
+import mlflow
+from train import train_model
+
+def hyperparameter_search():
+    """Grid search with MLflow tracking"""
+    
+    param_grid = {
+        'n_estimators': [50, 100, 200],
+        'max_depth': [10, 20, None]
+    }
+    
+    best_rmse = float('inf')
+    best_params = {}
+    
+    print("🔍 Starting hyperparameter search...\n")
+    
+    for n_est in param_grid['n_estimators']:
+        for depth in param_grid['max_depth']:
+            print(f"Testing: n_estimators={n_est}, max_depth={depth}")
+            
+            model, rmse, r2 = train_model(
+                n_estimators=n_est,
+                max_depth=depth
+            )
+            
+            if rmse < best_rmse:
+                best_rmse = rmse
+                best_params = {'n_estimators': n_est, 'max_depth': depth}
+    
+    print(f"\n🏆 Best parameters: {best_params}")
+    print(f"   Best RMSE: {best_rmse:.4f}")
+
+if __name__ == '__main__':
+    hyperparameter_search()</code></pre>
+            </section>
+
+            <!-- Step 4: FastAPI Deployment -->
+            <section class="content-section" id="api">
+                <h2>🚀 Step 4: FastAPI Deployment</h2>
+                
+                <pre><code class="language-python"># src/api/main.py
+"""
+FastAPI application for house price prediction
+"""
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+from prometheus_client import Counter, Histogram, generate_latest
+from fastapi.responses import Response
+import joblib
+import numpy as np
+import time
+
+# Load model and scaler
+model = joblib.load('models/production/model.pkl')
+scaler = joblib.load('models/artifacts/scaler.pkl')
+
+app = FastAPI(
+    title="House Price Prediction API",
+    description="Predict California house prices",
+    version="1.0.0"
+)
+
+# Prometheus metrics
+prediction_counter = Counter(
+    'predictions_total',
+    'Total number of predictions'
+)
+prediction_latency = Histogram(
+    'prediction_latency_seconds',
+    'Prediction latency'
+)
+prediction_errors = Counter(
+    'prediction_errors_total',
+    'Total prediction errors'
+)
+
+# Request model
+class HouseFeatures(BaseModel):
+    MedInc: float = Field(..., description="Median income", ge=0)
+    HouseAge: float = Field(..., description="House age", ge=0, le=100)
+    AveRooms: float = Field(..., description="Average rooms", ge=0)
+    AveBedrms: float = Field(..., description="Average bedrooms", ge=0)
+    Population: float = Field(..., description="Population", ge=0)
+    AveOccup: float = Field(..., description="Average occupancy", ge=0)
+    Latitude: float = Field(..., description="Latitude", ge=32, le=42)
+    Longitude: float = Field(..., description="Longitude", ge=-125, le=-114)
+
+class PredictionResponse(BaseModel):
+    predicted_price: float
+    model_version: str = "1.0.0"
+
+@app.get("/")
+async def root():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "service": "House Price Prediction API",
+        "version": "1.0.0"
+    }
+
+@app.post("/predict", response_model=PredictionResponse)
+async def predict(features: HouseFeatures):
+    """Make house price prediction"""
+    
+    start_time = time.time()
+    
+    try:
+        # Convert to array
+        feature_array = np.array([[
+            features.MedInc,
+            features.HouseAge,
+            features.AveRooms,
+            features.AveBedrms,
+            features.Population,
+            features.AveOccup,
+            features.Latitude,
+            features.Longitude
+        ]])
+        
+        # Scale features
+        features_scaled = scaler.transform(feature_array)
+        
+        # Predict
+        prediction = model.predict(features_scaled)[0]
+        
+        # Metrics
+        prediction_counter.inc()
+        latency = time.time() - start_time
+        prediction_latency.observe(latency)
+        
+        return PredictionResponse(predicted_price=float(prediction))
+    
+    except Exception as e:
+        prediction_errors.inc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/metrics")
+async def metrics():
+    """Prometheus metrics endpoint"""
+    return Response(content=generate_latest(), media_type="text/plain")
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)</code></pre>
+            </section>
+
+            <!-- Step 5: Docker -->
+            <section class="content-section" id="docker">
+                <h2>🐳 Step 5: Containerization</h2>
+                
+                <pre><code class="language-dockerfile"># Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY src/ ./src/
+COPY models/ ./models/
+COPY data/processed/ ./data/processed/
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]</code></pre>
+
+                <pre><code class="language-bash"># Build and run
+docker build -t house-price-api:v1 .
+docker run -p 8000:8000 house-price-api:v1
+
+# Test
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "MedInc": 8.3,
+    "HouseAge": 41,
+    "AveRooms": 6.98,
+    "AveBedrms": 1.02,
+    "Population": 322,
+    "AveOccup": 2.55,
+    "Latitude": 37.88,
+    "Longitude": -122.23
+  }'</code></pre>
+            </section>
+
+            <!-- Step 6: Testing -->
+            <section class="content-section" id="testing">
+                <h2>✅ Step 6: Automated Testing</h2>
+                
+                <pre><code class="language-python"># tests/test_api.py
+"""
+API integration tests
+"""
+from fastapi.testclient import TestClient
+from src.api.main import app
+
+client = TestClient(app)
+
+def test_health_check():
+    """Test health endpoint"""
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json()["status"] == "healthy"
+
+def test_prediction():
+    """Test prediction endpoint"""
+    payload = {
+        "MedInc": 8.3,
+        "HouseAge": 41,
+        "AveRooms": 6.98,
+        "AveBedrms": 1.02,
+        "Population": 322,
+        "AveOccup": 2.55,
+        "Latitude": 37.88,
+        "Longitude": -122.23
+    }
+    
+    response = client.post("/predict", json=payload)
+    assert response.status_code == 200
+    
+    data = response.json()
+    assert "predicted_price" in data
+    assert isinstance(data["predicted_price"], float)
+    assert data["predicted_price"] > 0
+
+def test_invalid_input():
+    """Test validation"""
+    payload = {
+        "MedInc": -1,  # Invalid: negative income
+        "HouseAge": 41,
+        "AveRooms": 6.98,
+        "AveBedrms": 1.02,
+        "Population": 322,
+        "AveOccup": 2.55,
+        "Latitude": 37.88,
+        "Longitude": -122.23
+    }
+    
+    response = client.post("/predict", json=payload)
+    assert response.status_code == 422  # Validation error
+
+# Run tests
+# pytest tests/test_api.py -v</code></pre>
+            </section>
+
+            <!-- Step 7: Monitoring -->
+            <section class="content-section" id="monitoring">
+                <h2>📈 Step 7: Monitoring Dashboard</h2>
+                
+                <pre><code class="language-yaml"># docker-compose.yml
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+  
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+  
+  mlflow:
+    image: ghcr.io/mlflow/mlflow
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0 --port 5000</code></pre>
+
+                <pre><code class="language-yaml"># config/prometheus.yml
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'house_price_api'
+    static_configs:
+      - targets: ['api:8000']</code></pre>
+
+                <pre><code class="language-bash"># Start all services
+docker-compose up -d
+
+# Access:
+# API: http://localhost:8000/docs
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3000
+# MLflow: http://localhost:5000</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Project Completion Checklist</h2>
+                
+                <ul class="checklist">
+                    <li>✅ Data pipeline with validation and preprocessing</li>
+                    <li>✅ Model training with MLflow experiment tracking</li>
+                    <li>✅ Hyperparameter tuning logged to MLflow</li>
+                    <li>✅ FastAPI REST endpoint with validation</li>
+                    <li>✅ Prometheus metrics integration</li>
+                    <li>✅ Docker containerization</li>
+                    <li>✅ Automated unit and integration tests</li>
+                    <li>✅ Docker Compose orchestration</li>
+                    <li>✅ Grafana monitoring dashboard</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>🎉 Congratulations!</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        You've built a production-ready end-to-end ML pipeline! This project demonstrates data engineering, model training, deployment, and monitoring - core MLOps skills.
+                    </p>
+                </div>
+
+                <h3>Next Steps</h3>
+                <ul>
+                    <li><strong>Enhance:</strong> Add A/B testing, feature store integration</li>
+                    <li><strong>Scale:</strong> Deploy to Kubernetes with autoscaling</li>
+                    <li><strong>Monitor:</strong> Add drift detection with Evidently AI</li>
+                    <li><strong>Automate:</strong> Create CI/CD pipeline with GitHub Actions</li>
+                </ul>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="production-best-practices.html">← Previous: Production Best Practices</a>
+                <a href="project-real-time-prediction-system.html">Next: Project 2 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-docker.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

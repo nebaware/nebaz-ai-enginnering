@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 8: Meeting Management & Documentation | AI for Project Managers</title>
+    <meta name="description" content="Write agendas, capture action items, summarize meetings, and follow up effectively. Transform 2-hour meetings into 30-minute focused discussions.">
+    
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #10b981 0%, #0d9488 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-meta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-top: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-badge {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .tutorial-content h2 {
+            border-bottom: 3px solid #a7f3d0;
+        }
+        
+        /* Learning Objectives */
+        .learning-objectives {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            border: 2px solid #6ee7b7;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+        
+        .learning-objectives h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .objective-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #10b981;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .objective-item::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 5px solid #078930;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 5px solid #f59e0b;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #10b981;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Two Column Grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        /* Meeting Template Cards */
+        .meeting-template {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .meeting-template:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #10b981;
+        }
+        
+        .meeting-template h4 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .meeting-template .icon {
+            font-size: 2rem;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #1e293b !important;
+            border-radius: 0.75rem;
+            padding: 1.5rem !important;
+            margin: 2rem 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Practice Exercise */
+        .practice-exercise {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+        
+        .practice-exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #10b981;
+        }
+        
+        .key-takeaways h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-takeaways ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .key-takeaways li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+        
+        .key-takeaways li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        /* Navigation */
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1.5rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .tutorial-content h1 {
+                font-size: 2rem;
+            }
+            
+            .tutorial-content h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content h3 {
+                font-size: 1.35rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+            
+            .objectives-grid,
+            .two-column-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="quiz-option" data-value="B">B) By making meetings longer</div>
+                    <div class="quiz-option" data-value="C">C) By generating agendas and capturing action items</div>
+                    <div class="quiz-option" data-value="D">D) Meetings don't need AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>2. What can AI help with in meeting documentation?</h4>
+                    <div class="quiz-option" data-value="A">A) Avoiding documentation</div>
+                    <div class="quiz-option" data-value="B">B) Transcribing discussions and summarizing key points</div>
+                    <div class="quiz-option" data-value="C">C) Making notes unnecessarily complex</div>
+                    <div class="quiz-option" data-value="D">D) Documentation is manual only</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How can AI assist with meeting follow-up?</h4>
+                    <div class="quiz-option" data-value="A">A) Generating action item lists and follow-up emails</div>
+                    <div class="quiz-option" data-value="B">B) Forgetting action items</div>
+                    <div class="quiz-option" data-value="C">C) Avoiding accountability</div>
+                    <div class="quiz-option" data-value="D">D) Follow-up doesn't involve AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What should PMs remember about AI meeting notes?</h4>
+                    <div class="quiz-option" data-value="A">A) AI captures 100% of nuance</div>
+                    <div class="quiz-option" data-value="B">B) No review needed</div>
+                    <div class="quiz-option" data-value="C">C) AI understands all context</div>
+                    <div class="quiz-option" data-value="D">D) Review and add context that AI might miss</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. How can AI improve meeting preparation?</h4>
+                    <div class="quiz-option" data-value="A">A) By skipping preparation</div>
+                    <div class="quiz-option" data-value="B">B) By creating agendas and briefing materials</div>
+                    <div class="quiz-option" data-value="C">C) By scheduling random meetings</div>
+                    <div class="quiz-option" data-value="D">D) Preparation doesn't use AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="tutorial-nav">
+            <a href="team-leadership-coaching.html" class="prev">← Tutorial 7: Team Leadership & Coaching</a>
+            <a href="data-analysis-reporting.html" class="next">Module 9: Data Analysis & Reporting →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

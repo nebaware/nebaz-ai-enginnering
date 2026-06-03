@@ -1,0 +1,316 @@
+/* Certificate Request Form Styles */
+.certificate-section {
+    background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%);
+    border: 3px solid #078930;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    margin: 3rem auto;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.15);
+}
+
+.certificate-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.certificate-section h2 {
+    color: #065f46;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.certificate-section .subtitle {
+    color: #078930;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.certificate-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: #065f46;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #fef9c3;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #078930;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+.certificate-benefits {
+    background: #eff6ff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.certificate-benefits h4 {
+    color: #065f46;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+}
+
+.certificate-benefits ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #475569;
+    line-height: 1.8;
+}
+
+.certificate-benefits li {
+    margin-bottom: 0.5rem;
+}
+
+.submit-button {
+    background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+    color: white;
+    padding: 1rem 3rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    width: 100%;
+    max-width: 400px;
+}
+
+.submit-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+.submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.submit-button.loading {
+    position: relative;
+    color: transparent;
+}
+
+.submit-button.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.privacy-note {
+    color: #64748b;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    line-height: 1.5;
+}
+
+.success-message {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    display: none;
+}
+
+.success-message.show {
+    display: block;
+    animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-message h3 {
+    color: #065f46;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.success-message p {
+    color: #047857;
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.share-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.share-linkedin {
+    background: #0077b5;
+    color: white;
+}
+
+.share-twitter {
+    background: #1da1f2;
+    color: white;
+}
+
+.share-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.error-message {
+    background: #fee2e2;
+    border: 2px solid #ef4444;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    color: #991b1b;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .certificate-section {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #078930;
+}
+
+[data-theme="dark"] .certificate-section h2,
+[data-theme="dark"] .certificate-section .subtitle {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .certificate-form {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .form-group label {
+    color: #bfdbfe;
+}
+
+[data-theme="dark"] .form-group input {
+    background: #334155;
+    border-color: #475569;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .certificate-benefits {
+    background: #334155;
+}
+
+[data-theme="dark"] .certificate-benefits h4 {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .certificate-benefits ul {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .privacy-note {
+    color: #94a3b8;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .certificate-section {
+        padding: 2rem 1rem;
+        margin: 2rem 1rem;
+    }
+    
+    .certificate-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .certificate-form {
+        padding: 1.5rem 1rem;
+    }
+    
+    .submit-button {
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .share-buttons {
+        flex-direction: column;
+    }
+    
+    .share-button {
+        width: 100%;
+        justify-content: center;
+    }
+}

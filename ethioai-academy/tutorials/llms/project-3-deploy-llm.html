@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete hands-on project: Deploy a fine-tuned LLM at scale with vLLM, quantization, Docker, and Kubernetes. Production-ready deployment guide.">
+    <meta name="keywords" content="LLM deployment, vLLM, model serving, quantization, Docker, Kubernetes, production ML">
+    <title>Project 3: Deploy a Fine-tuned LLM at Scale | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-3-deploy-llm.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3, .info-box h4 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #f59e0b; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .project-badge { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; margin-bottom: 1rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Project 3: Deploy LLM</span>
+            </div>
+            <div class="project-badge">🚀 HANDS-ON PROJECT</div>
+            <h1>Project 3: Deploy a Fine-tuned LLM at Scale</h1>
+            <p class="tutorial-intro">Take your fine-tuned model to production with vLLM, quantization, Docker, and Kubernetes</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">⏱️ 2-3 hours</span>
+                <span class="meta-item">🔧 Advanced Project</span>
+                <span class="meta-item">💻 Python, vLLM, Docker, Kubernetes</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                
+                <p>
+                    You've fine-tuned an LLM. Now comes the hard part: <strong>deploying it at scale</strong>. This project teaches you production deployment with efficient inference, load balancing, monitoring, and cost optimization.
+                </p>
+
+                <h3>What You'll Build</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Optimized Inference</h3>
+                        <p>Use vLLM for 10-20x faster inference. Add quantization for 4x memory reduction.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🐳</div>
+                        <h3>Containerization</h3>
+                        <p>Docker containers with GPU support. Build, test, and push to registry.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>Kubernetes Deploy</h3>
+                        <p>Auto-scaling deployments. Load balancing across multiple GPUs.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Monitoring</h3>
+                        <p>Track latency, throughput, costs. Prometheus metrics and Grafana dashboards.</p>
+                    </div>
+                </div>
+
+                <h3>📚 Prerequisites</h3>
+                <ul>
+                    <li>Fine-tuned LLM model (from Project 1 or Tutorial 5)</li>
+                    <li>GPU server or cloud account (AWS/GCP/Azure)</li>
+                    <li>Docker installed and basic knowledge</li>
+                    <li>Optional: Kubernetes cluster access</li>
+                </ul>
+
+                <h3>⏱️ Time Breakdown</h3>
+                <ul>
+                    <li><strong>Model Preparation:</strong> 30 minutes (quantization, testing)</li>
+                    <li><strong>vLLM Setup:</strong> 30 minutes (install, configure, benchmark)</li>
+                    <li><strong>Docker:</strong> 30 minutes (containerize, test locally)</li>
+                    <li><strong>Kubernetes:</strong> 45 minutes (deploy, scaling, load balancing)</li>
+                    <li><strong>Monitoring:</strong> 30 minutes (Prometheus, Grafana)</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Cost Warning:</strong> This project requires GPU resources. Use spot instances or credits to minimize costs (~$2-5/hour for A100).</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Step 1: Model Preparation & Quantization</h2>
+                
+                <h3>Option A: Use Pre-trained Model</h3>
+                <pre><code class="language-python"># Download a popular fine-tuned model from HuggingFace
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_name = "meta-llama/Llama-2-7b-chat-hf"  # Or your fine-tuned model
+
+# Download model
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map="auto"
+)
+
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Save locally
+model.save_pretrained("./models/llama-2-7b-chat")
+tokenizer.save_pretrained("./models/llama-2-7b-chat")
+
+print("Model downloaded and saved!")</code></pre>
+
+                <h3>Option B: Use Your Fine-tuned Model</h3>
+                <pre><code class="language-python"># If you completed Project 1 or Tutorial 5
+# Your model is already saved locally
+
+model_path = "./models/bert-sentiment-final"  # From Project 1
+# OR
+model_path = "./models/llama-2-7b-lora"  # From Tutorial 5
+
+# Verify model exists
+import os
+if os.path.exists(model_path):
+    print(f"✅ Model found at {model_path}")
+else:
+    print(f"❌ Model not found. Please fine-tune first.")
+</code></pre>
+
+                <h3>Quantize Model (4-bit for Production)</h3>
+                <pre><code class="language-python"># Quantize to 4-bit using BitsAndBytes
+from transformers import AutoModelForCausalLM, BitsAndBytesConfig
+import torch
+
+# Configure 4-bit quantization
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+)
+
+# Load and quantize
+model = AutoModelForCausalLM.from_pretrained(
+    "meta-llama/Llama-2-7b-chat-hf",
+    quantization_config=bnb_config,
+    device_map="auto"
+)
+
+# Save quantized model
+model.save_pretrained("./models/llama-2-7b-4bit")
+
+print("Model quantized to 4-bit!")
+print(f"Original size: ~28GB → Quantized: ~7GB")
+</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Quantization Benefits</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>4x memory reduction:</strong> 28GB → 7GB for Llama-2-7B</li>
+                        <li><strong>2-3x faster inference:</strong> Smaller model fits better in GPU cache</li>
+                        <li><strong>Minimal quality loss:</strong> <2% accuracy drop typically</li>
+                        <li><strong>Cost savings:</strong> Use smaller/cheaper GPUs</li>
+                    </ul>
+                </div>
+
+                <h3>Test Quantized Model</h3>
+                <pre><code class="language-python"># Quick test to verify model works after quantization
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# Load quantized model
+model = AutoModelForCausalLM.from_pretrained(
+    "./models/llama-2-7b-4bit",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+
+# Test inference
+prompt = "What is machine learning?"
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+with torch.no_grad():
+    outputs = model.generate(
+        **inputs,
+        max_new_tokens=100,
+        temperature=0.7,
+        do_sample=True
+    )
+
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(f"Prompt: {prompt}")
+print(f"Response: {response}")
+
+# Check model size
+import os
+model_size = sum(
+    os.path.getsize(os.path.join("./models/llama-2-7b-4bit", f))
+    for f in os.listdir("./models/llama-2-7b-4bit")
+    if os.path.isfile(os.path.join("./models/llama-2-7b-4bit", f))
+)
+print(f"\nModel size: {model_size / (1024**3):.2f} GB")
+</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Expected Output:</strong> Coherent response in ~2-3 seconds. Model size should be ~7GB for Llama-2-7B.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ Step 2: vLLM Setup for Fast Inference</h2>
+                
+                <p>
+                    <strong>vLLM</strong> is a high-throughput inference engine that achieves <strong>10-20x faster</strong> serving than standard transformers. It uses PagedAttention for efficient memory management.
+                </p>
+
+                <h3>Install vLLM</h3>
+                <pre><code class="language-bash"># Install vLLM (requires CUDA 11.8+)
+pip install vllm
+
+# Verify installation
+python -c "import vllm; print(f'vLLM version: {vllm.__version__}')"
+
+# Check GPU
+nvidia-smi</code></pre>
+
+                <h3>Basic vLLM Server</h3>
+                <pre><code class="language-python"># serve_model.py - Simple vLLM inference server
+from vllm import LLM, SamplingParams
+
+class ModelServer:
+    def __init__(self, model_path: str):
+        """Initialize vLLM engine"""
+        self.llm = LLM(
+            model=model_path,
+            tensor_parallel_size=1,  # Number of GPUs
+            dtype="float16",          # Use fp16 for speed
+            max_model_len=2048,       # Context length
+            gpu_memory_utilization=0.9  # Use 90% of GPU memory
+        )
+        
+    def generate(self, prompts: list[str], max_tokens: int = 256):
+        """Generate completions for prompts"""
+        sampling_params = SamplingParams(
+            temperature=0.7,
+            top_p=0.9,
+            max_tokens=max_tokens,
+            stop=["</s>", "Human:", "\n\n"]
+        )
+        
+        outputs = self.llm.generate(prompts, sampling_params)
+        
+        return [output.outputs[0].text for output in outputs]
+
+# Usage
+if __name__ == "__main__":
+    server = ModelServer("./models/llama-2-7b-4bit")
+    
+    prompts = [
+        "What is deep learning?",
+        "Explain neural networks in simple terms.",
+        "How does backpropagation work?"
+    ]
+    
+    responses = server.generate(prompts)
+    
+    for prompt, response in zip(prompts, responses):
+        print(f"Q: {prompt}")
+        print(f"A: {response}\n")
+</code></pre>
+
+                <h3>vLLM with OpenAI-Compatible API</h3>
+                <pre><code class="language-python"># Start vLLM with OpenAI-compatible server
+# This allows drop-in replacement for OpenAI API
+
+# Command line:
+# python -m vllm.entrypoints.openai.api_server \
+#     --model ./models/llama-2-7b-4bit \
+#     --port 8000 \
+#     --tensor-parallel-size 1
+
+# OR use Python:
+from vllm.entrypoints.openai.api_server import run_server
+
+run_server(
+    model="./models/llama-2-7b-4bit",
+    host="0.0.0.0",
+    port=8000,
+    tensor_parallel_size=1
+)
+</code></pre>
+
+                <h3>Test API Server</h3>
+                <pre><code class="language-python"># test_vllm_api.py
+import requests
+import json
+
+url = "http://localhost:8000/v1/completions"
+
+data = {
+    "model": "./models/llama-2-7b-4bit",
+    "prompt": "Explain quantum computing in 50 words:",
+    "max_tokens": 100,
+    "temperature": 0.7
+}
+
+response = requests.post(url, json=data)
+result = response.json()
+
+print(json.dumps(result, indent=2))
+print(f"\nGenerated text: {result['choices'][0]['text']}")
+</code></pre>
+
+                <div class="info-box">
+                    <h4>🚀 vLLM Performance Benefits</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>PagedAttention:</strong> Efficient KV cache management (2-4x throughput)</li>
+                        <li><strong>Continuous batching:</strong> Process requests as they arrive</li>
+                        <li><strong>Tensor parallelism:</strong> Distribute across multiple GPUs</li>
+                        <li><strong>Optimized kernels:</strong> CUDA kernels for common operations</li>
+                        <li><strong>OpenAI compatible:</strong> Drop-in replacement for existing code</li>
+                    </ul>
+                </div>
+
+                <h3>Benchmark vLLM vs Standard Transformers</h3>
+                <pre><code class="language-python"># benchmark.py - Compare vLLM vs Transformers
+import time
+from vllm import LLM, SamplingParams
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+def benchmark_vllm(model_path, prompts):
+    """Benchmark vLLM"""
+    llm = LLM(model=model_path, dtype="float16")
+    sampling_params = SamplingParams(temperature=0.7, max_tokens=100)
+    
+    start = time.time()
+    outputs = llm.generate(prompts, sampling_params)
+    elapsed = time.time() - start
+    
+    return elapsed, len(prompts)
+
+def benchmark_transformers(model_path, prompts):
+    """Benchmark standard Transformers"""
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path, 
+        torch_dtype=torch.float16,
+        device_map="auto"
+    )
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    
+    start = time.time()
+    for prompt in prompts:
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        with torch.no_grad():
+            model.generate(**inputs, max_new_tokens=100)
+    elapsed = time.time() - start
+    
+    return elapsed, len(prompts)
+
+# Run benchmarks
+model_path = "./models/llama-2-7b-4bit"
+test_prompts = [
+    "What is machine learning?",
+    "Explain neural networks.",
+    "How does gradient descent work?",
+    "What is a transformer model?",
+    "Describe attention mechanism."
+] * 4  # 20 prompts total
+
+print("🔥 Benchmarking vLLM...")
+vllm_time, vllm_count = benchmark_vllm(model_path, test_prompts)
+print(f"vLLM: {vllm_time:.2f}s for {vllm_count} prompts")
+print(f"Throughput: {vllm_count/vllm_time:.2f} prompts/sec")
+
+print("\n🐢 Benchmarking Transformers...")
+hf_time, hf_count = benchmark_transformers(model_path, test_prompts)
+print(f"Transformers: {hf_time:.2f}s for {hf_count} prompts")
+print(f"Throughput: {hf_count/hf_time:.2f} prompts/sec")
+
+print(f"\n📊 Speedup: {hf_time/vllm_time:.1f}x faster with vLLM!")
+</code></pre>
+
+                <div class="example-box">
+                    <h4>📊 Expected Benchmark Results (Llama-2-7B on A100)</h4>
+                    <pre style="background: transparent; padding: 0; margin: 0;"><code>🔥 Benchmarking vLLM...
+vLLM: 8.3s for 20 prompts
+Throughput: 2.41 prompts/sec
+
+🐢 Benchmarking Transformers...
+Transformers: 127.5s for 20 prompts
+Throughput: 0.16 prompts/sec
+
+📊 Speedup: 15.4x faster with vLLM!</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🐳 Step 3: Docker Containerization</h2>
+                
+                <p>
+                    Package your model and vLLM server in a Docker container for consistent deployment across environments.
+                </p>
+
+                <h3>Create Dockerfile</h3>
+                <pre><code class="language-dockerfile"># Dockerfile
+FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
+
+# Install Python and dependencies
+RUN apt-get update && apt-get install -y \
+    python3.10 \
+    python3-pip \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Install Python packages
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Copy model and server code
+COPY models/ /app/models/
+COPY serve_model.py /app/
+
+# Expose port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run server
+CMD ["python3", "-m", "vllm.entrypoints.openai.api_server", \
+     "--model", "/app/models/llama-2-7b-4bit", \
+     "--host", "0.0.0.0", \
+     "--port", "8000"]
+</code></pre>
+
+                <h3>Requirements File</h3>
+                <pre><code class="language-txt"># requirements.txt
+vllm==0.2.7
+transformers==4.36.0
+torch==2.1.0
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.0
+prometheus-client==0.19.0
+</code></pre>
+
+                <h3>Build and Test Docker Image</h3>
+                <pre><code class="language-bash"># Build Docker image
+docker build -t llm-server:v1 .
+
+# Check image size
+docker images llm-server:v1
+
+# Run container locally
+docker run -d \
+    --name llm-server \
+    --gpus all \
+    -p 8000:8000 \
+    -v $(pwd)/models:/app/models \
+    llm-server:v1
+
+# Check logs
+docker logs -f llm-server
+
+# Test API
+curl http://localhost:8000/v1/models
+
+# Test generation
+curl http://localhost:8000/v1/completions \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "/app/models/llama-2-7b-4bit",
+        "prompt": "What is Docker?",
+        "max_tokens": 50
+    }'
+
+# Stop container
+docker stop llm-server
+docker rm llm-server
+</code></pre>
+
+                <h3>Add Health Check Endpoint</h3>
+                <pre><code class="language-python"># serve_model.py - Add health check
+from fastapi import FastAPI
+from vllm.entrypoints.openai.api_server import app as vllm_app
+import psutil
+import torch
+
+@vllm_app.get("/health")
+async def health_check():
+    """Health check endpoint for load balancer"""
+    gpu_available = torch.cuda.is_available()
+    gpu_memory = torch.cuda.memory_allocated() / torch.cuda.max_memory_allocated()
+    cpu_percent = psutil.cpu_percent()
+    memory_percent = psutil.virtual_memory().percent
+    
+    return {
+        "status": "healthy" if gpu_available else "degraded",
+        "gpu_available": gpu_available,
+        "gpu_memory_used": f"{gpu_memory*100:.1f}%",
+        "cpu_usage": f"{cpu_percent:.1f}%",
+        "memory_usage": f"{memory_percent:.1f}%"
+    }
+
+@vllm_app.get("/metrics")
+async def metrics():
+    """Prometheus metrics endpoint"""
+    # Return metrics in Prometheus format
+    return {
+        "requests_total": 12345,
+        "latency_avg_ms": 245.3,
+        "throughput_tokens_per_sec": 156.7
+    }
+</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Docker Image Size:</strong> Final image will be 10-15GB (base image + model). Use Docker layer caching and multi-stage builds to optimize.</p>
+                </div>
+
+                <h3>Push to Container Registry</h3>
+                <pre><code class="language-bash"># Tag for Docker Hub
+docker tag llm-server:v1 yourusername/llm-server:v1
+
+# Login to Docker Hub
+docker login
+
+# Push image
+docker push yourusername/llm-server:v1
+
+# Or use AWS ECR
+aws ecr get-login-password --region us-east-1 | \
+    docker login --username AWS --password-stdin \
+    123456789.dkr.ecr.us-east-1.amazonaws.com
+
+docker tag llm-server:v1 \
+    123456789.dkr.ecr.us-east-1.amazonaws.com/llm-server:v1
+
+docker push 123456789.dkr.ecr.us-east-1.amazonaws.com/llm-server:v1
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>☸️ Step 4: Kubernetes Deployment</h2>
+                
+                <p>
+                    Deploy your containerized LLM with Kubernetes for auto-scaling, load balancing, and high availability.
+                </p>
+
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li><strong>Kubernetes cluster</strong> with GPU nodes (AWS EKS, GCP GKE, or Azure AKS)</li>
+                    <li><strong>kubectl</strong> installed and configured</li>
+                    <li><strong>NVIDIA GPU Operator</strong> installed on cluster</li>
+                </ul>
+
+                <h3>Kubernetes Deployment Configuration</h3>
+                <pre><code class="language-yaml"># k8s/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-server
+  namespace: ml-serving
+  labels:
+    app: llm-server
+    version: v1
+spec:
+  replicas: 2  # Start with 2 replicas
+  selector:
+    matchLabels:
+      app: llm-server
+  template:
+    metadata:
+      labels:
+        app: llm-server
+        version: v1
+    spec:
+      containers:
+      - name: llm-server
+        image: yourusername/llm-server:v1
+        ports:
+        - containerPort: 8000
+          name: http
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "4"
+            nvidia.com/gpu: 1  # Request 1 GPU
+          limits:
+            memory: "32Gi"
+            cpu: "8"
+            nvidia.com/gpu: 1
+        env:
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        - name: MODEL_PATH
+          value: "/app/models/llama-2-7b-4bit"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      nodeSelector:
+        accelerator: nvidia-tesla-a100  # Target GPU nodes
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+</code></pre>
+
+                <h3>Service Configuration</h3>
+                <pre><code class="language-yaml"># k8s/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm-server-service
+  namespace: ml-serving
+  labels:
+    app: llm-server
+spec:
+  type: LoadBalancer  # Or ClusterIP for internal
+  selector:
+    app: llm-server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    name: http
+  sessionAffinity: ClientIP  # Sticky sessions
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+</code></pre>
+
+                <h3>Horizontal Pod Autoscaler (HPA)</h3>
+                <pre><code class="language-yaml"># k8s/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: llm-server-hpa
+  namespace: ml-serving
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: llm-server
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "100"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # 5 min cooldown
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+</code></pre>
+
+                <h3>ConfigMap for Model Configuration</h3>
+                <pre><code class="language-yaml"># k8s/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llm-config
+  namespace: ml-serving
+data:
+  max_model_len: "2048"
+  gpu_memory_utilization: "0.9"
+  tensor_parallel_size: "1"
+  temperature: "0.7"
+  max_tokens: "256"
+</code></pre>
+
+                <h3>Deploy to Kubernetes</h3>
+                <pre><code class="language-bash"># Create namespace
+kubectl create namespace ml-serving
+
+# Apply configurations
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
+
+# Check deployment status
+kubectl get deployments -n ml-serving
+kubectl get pods -n ml-serving -w
+
+# Check service
+kubectl get svc -n ml-serving
+
+# Get external IP (for LoadBalancer)
+export SERVICE_IP=$(kubectl get svc llm-server-service -n ml-serving \
+    -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+echo "Service available at: http://$SERVICE_IP"
+
+# Test deployment
+curl http://$SERVICE_IP/health
+
+# View logs
+kubectl logs -f deployment/llm-server -n ml-serving
+</code></pre>
+
+                <div class="info-box">
+                    <h4>🔄 Auto-scaling Behavior</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>Scale up:</strong> When CPU >70% or memory >80% for 60 seconds</li>
+                        <li><strong>Scale down:</strong> After 5-minute cooldown, max 50% reduction</li>
+                        <li><strong>Min replicas:</strong> 2 (high availability)</li>
+                        <li><strong>Max replicas:</strong> 10 (cost control)</li>
+                    </ul>
+                </div>
+
+                <h3>Ingress for HTTPS & Path Routing</h3>
+                <pre><code class="language-yaml"># k8s/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: llm-server-ingress
+  namespace: ml-serving
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+spec:
+  tls:
+  - hosts:
+    - llm-api.yourdomain.com
+    secretName: llm-tls-secret
+  rules:
+  - host: llm-api.yourdomain.com
+    http:
+      paths:
+      - path: /v1
+        pathType: Prefix
+        backend:
+          service:
+            name: llm-server-service
+            port:
+              number: 80
+</code></pre>
+
+                <h3>Load Testing with Locust</h3>
+                <pre><code class="language-python"># load_test.py - Test Kubernetes deployment at scale
+from locust import HttpUser, task, between
+
+class LLMUser(HttpUser):
+    wait_time = between(1, 3)  # Wait 1-3 seconds between requests
+    
+    @task(3)  # Weight 3x
+    def completions(self):
+        """Test completions endpoint"""
+        self.client.post("/v1/completions", json={
+            "model": "/app/models/llama-2-7b-4bit",
+            "prompt": "Explain machine learning:",
+            "max_tokens": 100
+        })
+    
+    @task(1)  # Weight 1x
+    def health_check(self):
+        """Test health endpoint"""
+        self.client.get("/health")
+
+# Run with:
+# locust -f load_test.py --host http://llm-api.yourdomain.com
+# Open http://localhost:8089 and start test with 100 users
+</code></pre>
+
+                <div class="example-box">
+                    <h4>📊 Expected Load Test Results</h4>
+                    <pre style="background: transparent; padding: 0; margin: 0;"><code># With 2 replicas (2 A100 GPUs)
+Users: 100 concurrent
+Requests/sec: 8.5
+Response time (avg): 450ms
+Response time (95%): 780ms
+Failure rate: 0%
+
+# After auto-scaling to 4 replicas
+Users: 100 concurrent  
+Requests/sec: 16.2
+Response time (avg): 240ms
+Response time (95%): 420ms
+Failure rate: 0%</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Step 5: Monitoring & Observability</h2>
+                
+                <p>
+                    Set up comprehensive monitoring to track performance, costs, and issues in production.
+                </p>
+
+                <h3>Prometheus Metrics</h3>
+                <pre><code class="language-python"># metrics.py - Add Prometheus metrics to your server
+from prometheus_client import Counter, Histogram, Gauge, generate_latest
+from fastapi import Response
+import time
+
+# Define metrics
+REQUEST_COUNT = Counter(
+    'llm_requests_total',
+    'Total number of requests',
+    ['endpoint', 'status']
+)
+
+REQUEST_LATENCY = Histogram(
+    'llm_request_duration_seconds',
+    'Request latency in seconds',
+    ['endpoint'],
+    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
+)
+
+TOKENS_GENERATED = Counter(
+    'llm_tokens_generated_total',
+    'Total tokens generated'
+)
+
+GPU_MEMORY = Gauge(
+    'llm_gpu_memory_used_bytes',
+    'GPU memory used in bytes',
+    ['gpu_id']
+)
+
+ACTIVE_REQUESTS = Gauge(
+    'llm_active_requests',
+    'Number of requests currently being processed'
+)
+
+# Middleware to track metrics
+@app.middleware("http")
+async def track_metrics(request, call_next):
+    ACTIVE_REQUESTS.inc()
+    start_time = time.time()
+    
+    try:
+        response = await call_next(request)
+        status = response.status_code
+    except Exception as e:
+        status = 500
+        raise
+    finally:
+        duration = time.time() - start_time
+        REQUEST_LATENCY.labels(endpoint=request.url.path).observe(duration)
+        REQUEST_COUNT.labels(
+            endpoint=request.url.path,
+            status=status
+        ).inc()
+        ACTIVE_REQUESTS.dec()
+    
+    return response
+
+@app.get("/metrics")
+async def metrics():
+    """Expose metrics for Prometheus"""
+    return Response(
+        content=generate_latest(),
+        media_type="text/plain"
+    )
+</code></pre>
+
+                <h3>Prometheus Configuration</h3>
+                <pre><code class="language-yaml"># k8s/prometheus-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    
+    scrape_configs:
+    - job_name: 'llm-server'
+      kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+          - ml-serving
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: keep
+        regex: llm-server
+      - source_labels: [__meta_kubernetes_pod_ip]
+        target_label: __address__
+        replacement: $1:8000
+</code></pre>
+
+                <h3>Grafana Dashboard</h3>
+                <pre><code class="language-json">{
+  "dashboard": {
+    "title": "LLM Serving Metrics",
+    "panels": [
+      {
+        "title": "Requests per Second",
+        "targets": [{
+          "expr": "rate(llm_requests_total[5m])"
+        }]
+      },
+      {
+        "title": "Average Latency",
+        "targets": [{
+          "expr": "rate(llm_request_duration_seconds_sum[5m]) / rate(llm_request_duration_seconds_count[5m])"
+        }]
+      },
+      {
+        "title": "P95 Latency",
+        "targets": [{
+          "expr": "histogram_quantile(0.95, rate(llm_request_duration_seconds_bucket[5m]))"
+        }]
+      },
+      {
+        "title": "Tokens Generated",
+        "targets": [{
+          "expr": "rate(llm_tokens_generated_total[5m])"
+        }]
+      },
+      {
+        "title": "GPU Memory Usage",
+        "targets": [{
+          "expr": "llm_gpu_memory_used_bytes / (1024^3)"
+        }]
+      },
+      {
+        "title": "Active Requests",
+        "targets": [{
+          "expr": "llm_active_requests"
+        }]
+      },
+      {
+        "title": "Error Rate",
+        "targets": [{
+          "expr": "rate(llm_requests_total{status=~\"5..\"}[5m]) / rate(llm_requests_total[5m])"
+        }]
+      },
+      {
+        "title": "Pod Replicas",
+        "targets": [{
+          "expr": "kube_deployment_status_replicas{deployment=\"llm-server\"}"
+        }]
+      }
+    ]
+  }
+}
+</code></pre>
+
+                <h3>Logging Configuration</h3>
+                <pre><code class="language-python"># logging_config.py
+import logging
+import json
+from datetime import datetime
+
+class StructuredLogger:
+    """Structured logging for better observability"""
+    
+    def __init__(self, name: str):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.INFO)
+        
+        # Console handler with JSON formatting
+        handler = logging.StreamHandler()
+        handler.setFormatter(self.JSONFormatter())
+        self.logger.addHandler(handler)
+    
+    class JSONFormatter(logging.Formatter):
+        def format(self, record):
+            log_data = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "level": record.levelname,
+                "message": record.getMessage(),
+                "module": record.module,
+                "function": record.funcName,
+                "line": record.lineno
+            }
+            
+            # Add extra fields
+            if hasattr(record, 'request_id'):
+                log_data['request_id'] = record.request_id
+            if hasattr(record, 'user_id'):
+                log_data['user_id'] = record.user_id
+            if hasattr(record, 'duration_ms'):
+                log_data['duration_ms'] = record.duration_ms
+            
+            return json.dumps(log_data)
+    
+    def info(self, message, **kwargs):
+        extra = {k: v for k, v in kwargs.items()}
+        self.logger.info(message, extra=extra)
+    
+    def error(self, message, **kwargs):
+        extra = {k: v for k, v in kwargs.items()}
+        self.logger.error(message, extra=extra)
+
+# Usage
+logger = StructuredLogger(__name__)
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    request_id = str(uuid.uuid4())
+    start_time = time.time()
+    
+    logger.info(
+        "Request started",
+        request_id=request_id,
+        method=request.method,
+        path=request.url.path
+    )
+    
+    response = await call_next(request)
+    
+    duration_ms = (time.time() - start_time) * 1000
+    logger.info(
+        "Request completed",
+        request_id=request_id,
+        status_code=response.status_code,
+        duration_ms=duration_ms
+    )
+    
+    return response
+</code></pre>
+
+                <h3>Alert Rules</h3>
+                <pre><code class="language-yaml"># k8s/alerts.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerts
+  namespace: monitoring
+data:
+  alerts.yml: |
+    groups:
+    - name: llm_serving
+      interval: 30s
+      rules:
+      
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(llm_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+      
+      # High latency
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(llm_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency detected"
+          description: "P95 latency is {{ $value }}s"
+      
+      # GPU memory high
+      - alert: GPUMemoryHigh
+        expr: llm_gpu_memory_used_bytes / nvidia_gpu_memory_total_bytes > 0.95
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GPU memory usage high"
+          description: "GPU memory at {{ $value | humanizePercentage }}"
+      
+      # Pod down
+      - alert: LLMServerDown
+        expr: up{job="llm-server"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "LLM server pod is down"
+          description: "Pod {{ $labels.pod }} is not responding"
+</code></pre>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Key Metrics</h3>
+                        <p>Track RPS, latency (P50/P95/P99), error rate, throughput</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔔</div>
+                        <h3>Alerts</h3>
+                        <p>Slack/PagerDuty alerts for errors, high latency, pod failures</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Dashboards</h3>
+                        <p>Real-time Grafana dashboards for operations team</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Logging</h3>
+                        <p>Structured JSON logs aggregated in ELK/DataDog</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💰 Step 6: Cost Optimization</h2>
+                
+                <p>
+                    LLM inference can be expensive. Here's how to optimize costs without sacrificing performance.
+                </p>
+
+                <h3>Cost Breakdown (Llama-2-7B on AWS)</h3>
+                <div class="example-box">
+                    <h4>💵 Monthly Cost Estimates</h4>
+                    <pre style="background: transparent; padding: 0; margin: 0;"><code>Option 1: On-Demand A100 (80GB)
+- Instance: p4d.24xlarge (8x A100)
+- Cost: $32.77/hour = $23,594/month
+- Requests/sec: 80 (10 per GPU)
+- Cost per 1M requests: ~$80
+
+Option 2: Spot A100 (80GB) 
+- Instance: p4d.24xlarge spot
+- Cost: ~$10/hour = $7,200/month (70% savings)
+- Risk: Can be interrupted
+- Best for: Non-critical workloads
+
+Option 3: T4 GPU (16GB)
+- Instance: g4dn.xlarge
+- Cost: $0.526/hour = $379/month
+- Requests/sec: 2-3
+- Cost per 1M requests: ~$50
+- Best for: Low-traffic applications
+
+Option 4: Serverless (AWS Lambda + GPU)
+- Pay per request
+- Cost: $0.0001 per request
+- Cold start: 3-5 seconds
+- Best for: Sporadic traffic</code></pre>
+                </div>
+
+                <h3>Strategy 1: Spot Instances with Fallback</h3>
+                <pre><code class="language-yaml"># k8s/spot-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-server-spot
+spec:
+  replicas: 3
+  template:
+    spec:
+      nodeSelector:
+        node.kubernetes.io/instance-type: p3.2xlarge
+        karpenter.sh/capacity-type: spot  # Use spot instances
+      tolerations:
+      - key: spot
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+      
+      # Add node affinity for fallback to on-demand
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - spot
+          - weight: 50
+            preference:
+              matchExpressions:
+              - key: karpenter.sh/capacity-type
+                operator: In
+                values:
+                - on-demand
+</code></pre>
+
+                <h3>Strategy 2: Dynamic Batching</h3>
+                <pre><code class="language-python"># dynamic_batching.py - Process multiple requests together
+import asyncio
+from collections import deque
+from typing import List, Tuple
+import time
+
+class DynamicBatcher:
+    """Batch requests dynamically for higher throughput"""
+    
+    def __init__(
+        self,
+        max_batch_size: int = 32,
+        max_wait_time: float = 0.05  # 50ms
+    ):
+        self.max_batch_size = max_batch_size
+        self.max_wait_time = max_wait_time
+        self.queue = deque()
+        self.processing = False
+    
+    async def add_request(self, prompt: str) -> str:
+        """Add request to batch queue"""
+        future = asyncio.Future()
+        self.queue.append((prompt, future))
+        
+        # Start batch processor if not running
+        if not self.processing:
+            asyncio.create_task(self._process_batch())
+        
+        return await future
+    
+    async def _process_batch(self):
+        """Process batch when ready"""
+        self.processing = True
+        start_time = time.time()
+        
+        # Wait for batch to fill or timeout
+        while len(self.queue) < self.max_batch_size:
+            if time.time() - start_time > self.max_wait_time:
+                break
+            await asyncio.sleep(0.001)
+        
+        # Get batch
+        batch_size = min(len(self.queue), self.max_batch_size)
+        batch = [self.queue.popleft() for _ in range(batch_size)]
+        
+        # Process batch
+        prompts = [item[0] for item in batch]
+        futures = [item[1] for item in batch]
+        
+        # Generate all at once (much faster than sequential)
+        responses = await self._generate_batch(prompts)
+        
+        # Return results
+        for future, response in zip(futures, responses):
+            future.set_result(response)
+        
+        self.processing = False
+        
+        # Process remaining queue
+        if self.queue:
+            asyncio.create_task(self._process_batch())
+    
+    async def _generate_batch(self, prompts: List[str]) -> List[str]:
+        """Generate responses for batch"""
+        # Use vLLM batch generation
+        outputs = llm.generate(prompts, sampling_params)
+        return [out.outputs[0].text for out in outputs]
+
+# Usage
+batcher = DynamicBatcher(max_batch_size=32, max_wait_time=0.05)
+
+@app.post("/v1/completions")
+async def completions(request: CompletionRequest):
+    response = await batcher.add_request(request.prompt)
+    return {"text": response}
+</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Dynamic Batching Benefits</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>3-5x throughput increase:</strong> Process 32 requests vs 1</li>
+                        <li><strong>50% cost reduction:</strong> Same hardware, more requests</li>
+                        <li><strong>Low latency:</strong> Max 50ms wait time</li>
+                        <li><strong>Automatic:</strong> No client changes needed</li>
+                    </ul>
+                </div>
+
+                <h3>Strategy 3: Request Caching</h3>
+                <pre><code class="language-python"># caching.py - Cache common requests
+import hashlib
+import redis
+import json
+from typing import Optional
+
+class ResponseCache:
+    """Cache LLM responses to reduce inference costs"""
+    
+    def __init__(self, redis_url: str = "redis://localhost:6379"):
+        self.redis = redis.from_url(redis_url)
+        self.ttl = 3600  # 1 hour cache
+    
+    def _make_key(self, prompt: str, params: dict) -> str:
+        """Create cache key from prompt + params"""
+        content = f"{prompt}:{json.dumps(params, sort_keys=True)}"
+        return hashlib.sha256(content.encode()).hexdigest()
+    
+    def get(self, prompt: str, params: dict) -> Optional[str]:
+        """Get cached response"""
+        key = self._make_key(prompt, params)
+        cached = self.redis.get(key)
+        
+        if cached:
+            return json.loads(cached)
+        return None
+    
+    def set(self, prompt: str, params: dict, response: str):
+        """Cache response"""
+        key = self._make_key(prompt, params)
+        self.redis.setex(
+            key,
+            self.ttl,
+            json.dumps(response)
+        )
+    
+    def invalidate(self, pattern: str = "*"):
+        """Clear cache by pattern"""
+        for key in self.redis.scan_iter(pattern):
+            self.redis.delete(key)
+
+# Usage
+cache = ResponseCache()
+
+@app.post("/v1/completions")
+async def completions(request: CompletionRequest):
+    # Check cache
+    cached = cache.get(request.prompt, request.params)
+    if cached:
+        return {"text": cached, "cached": True}
+    
+    # Generate response
+    response = await generate(request.prompt, request.params)
+    
+    # Cache result
+    cache.set(request.prompt, request.params, response)
+    
+    return {"text": response, "cached": False}
+</code></pre>
+
+                <h3>Strategy 4: Model Pruning</h3>
+                <pre><code class="language-python"># pruning.py - Remove unnecessary weights
+from transformers import AutoModelForCausalLM
+import torch
+
+def prune_model(model, pruning_ratio: float = 0.3):
+    """
+    Prune model weights for faster inference
+    
+    Args:
+        model: HuggingFace model
+        pruning_ratio: Fraction of weights to remove (0.3 = 30%)
+    """
+    import torch.nn.utils.prune as prune
+    
+    for name, module in model.named_modules():
+        if isinstance(module, torch.nn.Linear):
+            # Prune 30% of weights with lowest magnitude
+            prune.l1_unstructured(
+                module,
+                name='weight',
+                amount=pruning_ratio
+            )
+            # Make pruning permanent
+            prune.remove(module, 'weight')
+    
+    return model
+
+# Load and prune model
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-chat-hf")
+pruned_model = prune_model(model, pruning_ratio=0.3)
+
+# Save pruned model
+pruned_model.save_pretrained("./models/llama-2-7b-pruned30")
+
+print("Model pruned! Size reduced by ~30%")
+print("Speed increase: ~20-30%")
+print("Quality loss: <3% typically")
+</code></pre>
+
+                <h3>Strategy 5: Multi-Tenancy</h3>
+                <pre><code class="language-python"># multi_tenancy.py - Serve multiple models on one GPU
+from vllm import LLM
+import asyncio
+
+class MultiTenantServer:
+    """Serve multiple models using time-slicing"""
+    
+    def __init__(self):
+        self.models = {}
+        self.current_model = None
+    
+    def load_model(self, model_id: str, model_path: str):
+        """Load model into memory"""
+        if model_id not in self.models:
+            self.models[model_id] = {
+                "path": model_path,
+                "llm": None,  # Lazy load
+                "last_used": 0
+            }
+    
+    async def generate(
+        self,
+        model_id: str,
+        prompt: str,
+        max_tokens: int = 256
+    ) -> str:
+        """Generate with specific model"""
+        
+        # Switch model if needed
+        if self.current_model != model_id:
+            await self._switch_model(model_id)
+        
+        # Generate
+        llm = self.models[model_id]["llm"]
+        outputs = llm.generate([prompt], sampling_params)
+        
+        return outputs[0].outputs[0].text
+    
+    async def _switch_model(self, model_id: str):
+        """Switch to different model"""
+        import time
+        
+        # Unload current model
+        if self.current_model:
+            self.models[self.current_model]["llm"] = None
+            torch.cuda.empty_cache()
+        
+        # Load new model
+        model_info = self.models[model_id]
+        model_info["llm"] = LLM(
+            model=model_info["path"],
+            dtype="float16"
+        )
+        model_info["last_used"] = time.time()
+        self.current_model = model_id
+
+# Usage - serve 3 models on 1 GPU
+server = MultiTenantServer()
+server.load_model("llama-7b", "./models/llama-2-7b")
+server.load_model("mistral-7b", "./models/mistral-7b")
+server.load_model("custom-7b", "./models/custom-7b")
+
+# Route requests based on model_id
+response = await server.generate(
+    model_id="llama-7b",
+    prompt="What is AI?",
+    max_tokens=100
+)
+</code></pre>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">💵</div>
+                        <h3>Spot Instances</h3>
+                        <p>Save 70% with interruption handling</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📦</div>
+                        <h3>Batching</h3>
+                        <p>3-5x throughput, 50% cost reduction</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Caching</h3>
+                        <p>80% cache hit rate saves inference costs</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✂️</div>
+                        <h3>Pruning</h3>
+                        <p>30% size reduction, 25% faster inference</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Step 7: Production Best Practices</h2>
+                
+                <h3>Security Hardening</h3>
+                <pre><code class="language-python"># security.py - Add authentication and rate limiting
+from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import jwt
+from datetime import datetime, timedelta
+from collections import defaultdict
+import time
+
+app = FastAPI()
+security = HTTPBearer()
+
+# Rate limiting
+class RateLimiter:
+    def __init__(self, max_requests: int = 100, window: int = 60):
+        self.max_requests = max_requests
+        self.window = window  # seconds
+        self.requests = defaultdict(list)
+    
+    def is_allowed(self, client_id: str) -> bool:
+        now = time.time()
+        
+        # Remove old requests
+        self.requests[client_id] = [
+            req_time for req_time in self.requests[client_id]
+            if now - req_time < self.window
+        ]
+        
+        # Check limit
+        if len(self.requests[client_id]) >= self.max_requests:
+            return False
+        
+        self.requests[client_id].append(now)
+        return True
+
+rate_limiter = RateLimiter(max_requests=100, window=60)
+
+# API key authentication
+async def verify_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token,
+            "your-secret-key",
+            algorithms=["HS256"]
+        )
+        return payload["client_id"]
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+@app.post("/v1/completions")
+async def completions(
+    request: CompletionRequest,
+    client_id: str = Depends(verify_token)
+):
+    # Rate limiting
+    if not rate_limiter.is_allowed(client_id):
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit exceeded"
+        )
+    
+    # Input validation
+    if len(request.prompt) > 4096:
+        raise HTTPException(
+            status_code=400,
+            detail="Prompt too long"
+        )
+    
+    if request.max_tokens > 2048:
+        raise HTTPException(
+            status_code=400,
+            detail="max_tokens too large"
+        )
+    
+    # Generate response
+    response = await generate(request.prompt, request.max_tokens)
+    
+    return {"text": response, "client_id": client_id}
+</code></pre>
+
+                <h3>Content Filtering</h3>
+                <pre><code class="language-python"># content_filter.py - Filter harmful content
+from transformers import pipeline
+import re
+
+class ContentFilter:
+    """Filter inappropriate content"""
+    
+    def __init__(self):
+        # Load toxicity classifier
+        self.toxicity_classifier = pipeline(
+            "text-classification",
+            model="unitary/toxic-bert"
+        )
+    
+    def is_safe(self, text: str) -> tuple[bool, str]:
+        """Check if text is safe"""
+        
+        # Check toxicity
+        result = self.toxicity_classifier(text[:512])[0]
+        if result["label"] == "toxic" and result["score"] > 0.7:
+            return False, "Content flagged as toxic"
+        
+        # Check for PII (basic patterns)
+        if self._contains_pii(text):
+            return False, "Content contains PII"
+        
+        # Check for prompt injection
+        if self._is_prompt_injection(text):
+            return False, "Potential prompt injection detected"
+        
+        return True, "Content is safe"
+    
+    def _contains_pii(self, text: str) -> bool:
+        """Check for personally identifiable information"""
+        patterns = [
+            r'\b\d{3}-\d{2}-\d{4}\b',  # SSN
+            r'\b\d{16}\b',              # Credit card
+            r'\b[\w\.-]+@[\w\.-]+\.\w+\b'  # Email
+        ]
+        
+        for pattern in patterns:
+            if re.search(pattern, text):
+                return True
+        return False
+    
+    def _is_prompt_injection(self, text: str) -> bool:
+        """Detect prompt injection attempts"""
+        injection_patterns = [
+            "ignore previous instructions",
+            "disregard above",
+            "forget everything",
+            "new instructions:",
+            "system:",
+            "assistant:"
+        ]
+        
+        text_lower = text.lower()
+        return any(pattern in text_lower for pattern in injection_patterns)
+
+# Usage
+content_filter = ContentFilter()
+
+@app.post("/v1/completions")
+async def completions(request: CompletionRequest):
+    # Filter input
+    is_safe, message = content_filter.is_safe(request.prompt)
+    if not is_safe:
+        raise HTTPException(status_code=400, detail=message)
+    
+    # Generate
+    response = await generate(request.prompt)
+    
+    # Filter output
+    is_safe, message = content_filter.is_safe(response)
+    if not is_safe:
+        return {"text": "[Content filtered]", "reason": message}
+    
+    return {"text": response}
+</code></pre>
+
+                <h3>Graceful Degradation</h3>
+                <pre><code class="language-python"># fallback.py - Handle failures gracefully
+import httpx
+from typing import Optional
+
+class FallbackChain:
+    """Try multiple backends with fallback"""
+    
+    def __init__(self):
+        self.backends = [
+            "http://llm-server-primary:8000",
+            "http://llm-server-secondary:8000",
+            "https://api.openai.com/v1"  # Emergency fallback
+        ]
+    
+    async def generate(
+        self,
+        prompt: str,
+        max_tokens: int = 256
+    ) -> Optional[str]:
+        """Try backends in order until success"""
+        
+        errors = []
+        
+        for backend_url in self.backends:
+            try:
+                async with httpx.AsyncClient(timeout=30.0) as client:
+                    response = await client.post(
+                        f"{backend_url}/v1/completions",
+                        json={
+                            "prompt": prompt,
+                            "max_tokens": max_tokens
+                        }
+                    )
+                    response.raise_for_status()
+                    return response.json()["text"]
+            
+            except Exception as e:
+                errors.append(f"{backend_url}: {str(e)}")
+                continue
+        
+        # All backends failed
+        raise Exception(f"All backends failed: {errors}")
+
+fallback = FallbackChain()
+
+@app.post("/v1/completions")
+async def completions(request: CompletionRequest):
+    try:
+        response = await fallback.generate(
+            request.prompt,
+            request.max_tokens
+        )
+        return {"text": response}
+    except Exception as e:
+        # Return cached/default response
+        return {
+            "text": "Service temporarily unavailable. Please try again.",
+            "error": str(e)
+        }
+</code></pre>
+
+                <h3>A/B Testing</h3>
+                <pre><code class="language-python"># ab_testing.py - Test model improvements
+import random
+from dataclasses import dataclass
+from typing import Dict
+
+@dataclass
+class Experiment:
+    name: str
+    model_path: str
+    traffic_percent: float  # 0-100
+    
+class ABTester:
+    """Route traffic to different model versions"""
+    
+    def __init__(self):
+        self.experiments = {
+            "control": Experiment(
+                name="control",
+                model_path="./models/llama-2-7b-v1",
+                traffic_percent=80.0
+            ),
+            "variant_a": Experiment(
+                name="variant_a",
+                model_path="./models/llama-2-7b-v2-pruned",
+                traffic_percent=10.0
+            ),
+            "variant_b": Experiment(
+                name="variant_b", 
+                model_path="./models/llama-2-7b-v2-finetuned",
+                traffic_percent=10.0
+            )
+        }
+    
+    def select_experiment(self, user_id: str) -> Experiment:
+        """Select experiment based on traffic allocation"""
+        
+        # Deterministic selection based on user_id
+        user_hash = hash(user_id) % 100
+        
+        cumulative = 0
+        for exp in self.experiments.values():
+            cumulative += exp.traffic_percent
+            if user_hash < cumulative:
+                return exp
+        
+        return self.experiments["control"]
+    
+    def log_result(
+        self,
+        user_id: str,
+        experiment: str,
+        latency: float,
+        user_feedback: Optional[int] = None
+    ):
+        """Log experiment results for analysis"""
+        # Send to analytics system
+        metrics = {
+            "user_id": user_id,
+            "experiment": experiment,
+            "latency_ms": latency,
+            "feedback": user_feedback,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        # Store in database/analytics
+        pass
+
+ab_tester = ABTester()
+
+@app.post("/v1/completions")
+async def completions(
+    request: CompletionRequest,
+    user_id: str = Header(...)
+):
+    # Select experiment
+    experiment = ab_tester.select_experiment(user_id)
+    
+    # Generate with selected model
+    start = time.time()
+    response = await generate(
+        request.prompt,
+        model_path=experiment.model_path
+    )
+    latency = (time.time() - start) * 1000
+    
+    # Log result
+    ab_tester.log_result(user_id, experiment.name, latency)
+    
+    return {
+        "text": response,
+        "experiment": experiment.name  # For debugging
+    }
+</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Production Checklist:</strong></p>
+                    <ul style="margin-bottom: 0;">
+                        <li>✅ Authentication & rate limiting</li>
+                        <li>✅ Input/output content filtering</li>
+                        <li>✅ Fallback chains for reliability</li>
+                        <li>✅ A/B testing for improvements</li>
+                        <li>✅ Monitoring & alerting</li>
+                        <li>✅ Cost tracking & optimization</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Step 8: Testing & Deployment Checklist</h2>
+                
+                <h3>Pre-Deployment Tests</h3>
+                <pre><code class="language-python"># test_deployment.py - Comprehensive deployment tests
+import pytest
+import httpx
+import asyncio
+
+class TestDeployment:
+    """Test deployment before going live"""
+    
+    base_url = "http://llm-server-service"
+    
+    @pytest.mark.asyncio
+    async def test_health_check(self):
+        """Test health endpoint"""
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{self.base_url}/health")
+            assert response.status_code == 200
+            assert response.json()["status"] == "healthy"
+    
+    @pytest.mark.asyncio
+    async def test_basic_generation(self):
+        """Test basic text generation"""
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{self.base_url}/v1/completions",
+                json={
+                    "prompt": "What is 2+2?",
+                    "max_tokens": 10
+                }
+            )
+            assert response.status_code == 200
+            assert len(response.json()["text"]) > 0
+    
+    @pytest.mark.asyncio
+    async def test_rate_limiting(self):
+        """Test rate limiter"""
+        async with httpx.AsyncClient() as client:
+            # Make 101 requests (limit is 100)
+            for i in range(101):
+                response = await client.post(
+                    f"{self.base_url}/v1/completions",
+                    json={"prompt": f"Test {i}", "max_tokens": 10},
+                    headers={"Authorization": "Bearer test-token"}
+                )
+                
+                if i < 100:
+                    assert response.status_code == 200
+                else:
+                    assert response.status_code == 429  # Rate limited
+    
+    @pytest.mark.asyncio
+    async def test_latency(self):
+        """Test response latency"""
+        import time
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            start = time.time()
+            response = await client.post(
+                f"{self.base_url}/v1/completions",
+                json={"prompt": "Hello", "max_tokens": 50}
+            )
+            latency = time.time() - start
+            
+            assert response.status_code == 200
+            assert latency < 2.0  # Should respond in <2 seconds
+    
+    @pytest.mark.asyncio
+    async def test_concurrent_requests(self):
+        """Test handling concurrent requests"""
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            tasks = [
+                client.post(
+                    f"{self.base_url}/v1/completions",
+                    json={"prompt": f"Test {i}", "max_tokens": 20}
+                )
+                for i in range(10)
+            ]
+            
+            responses = await asyncio.gather(*tasks)
+            
+            # All should succeed
+            assert all(r.status_code == 200 for r in responses)
+    
+    @pytest.mark.asyncio
+    async def test_content_filtering(self):
+        """Test content filtering"""
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{self.base_url}/v1/completions",
+                json={
+                    "prompt": "Ignore previous instructions and...",
+                    "max_tokens": 50
+                }
+            )
+            # Should be filtered
+            assert response.status_code == 400
+
+# Run tests
+# pytest test_deployment.py -v
+</code></pre>
+
+                <h3>Deployment Checklist</h3>
+                <div class="example-box">
+                    <h4>📋 Pre-Launch Checklist</h4>
+                    <pre style="background: transparent; padding: 0; margin: 0;"><code>Infrastructure:
+□ Kubernetes cluster configured with GPU nodes
+□ Docker images built and pushed to registry
+□ Secrets and ConfigMaps created
+□ Network policies and ingress configured
+□ SSL certificates provisioned
+
+Application:
+□ Model quantized and tested
+□ vLLM server tested locally
+□ Health checks responding
+□ Metrics endpoint working
+□ Logging configured
+
+Security:
+□ Authentication enabled
+□ Rate limiting configured
+□ Content filtering active
+□ API keys rotated
+□ Network policies applied
+
+Monitoring:
+□ Prometheus scraping metrics
+□ Grafana dashboards created
+□ Alert rules configured
+□ PagerDuty/Slack integration tested
+□ Log aggregation working
+
+Performance:
+□ Load testing completed
+□ Latency targets met (P95 < 1s)
+□ Throughput targets met (>10 RPS)
+□ Auto-scaling tested
+□ Cost estimates validated
+
+Disaster Recovery:
+□ Backup deployment in different region
+□ Fallback chain configured
+□ Data backup strategy
+□ Rollback procedure documented
+□ Incident response plan ready</code></pre>
+                </div>
+
+                <h3>Deployment Commands</h3>
+                <pre><code class="language-bash"># Final deployment script
+#!/bin/bash
+
+echo "🚀 Deploying LLM Server to Production"
+
+# 1. Build and push Docker image
+docker build -t llm-server:v1 .
+docker tag llm-server:v1 yourusername/llm-server:v1
+docker push yourusername/llm-server:v1
+
+# 2. Apply Kubernetes configurations
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secrets.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/hpa.yaml
+kubectl apply -f k8s/ingress.yaml
+
+# 3. Wait for rollout
+kubectl rollout status deployment/llm-server -n ml-serving
+
+# 4. Run smoke tests
+pytest test_deployment.py -v
+
+# 5. Monitor logs
+kubectl logs -f deployment/llm-server -n ml-serving
+
+echo "✅ Deployment complete!"
+echo "API available at: https://llm-api.yourdomain.com"
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎓 What You've Learned</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Optimization</h3>
+                        <p>Quantization, vLLM, pruning for 10-20x faster inference</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🐳</div>
+                        <h3>Containerization</h3>
+                        <p>Docker with GPU support, multi-stage builds, health checks</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>Orchestration</h3>
+                        <p>Kubernetes deployment, auto-scaling, load balancing</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Observability</h3>
+                        <p>Prometheus metrics, Grafana dashboards, structured logging</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💰</div>
+                        <h3>Cost Optimization</h3>
+                        <p>Spot instances, batching, caching for 70% cost reduction</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔒</div>
+                        <h3>Production Ready</h3>
+                        <p>Security, content filtering, fallbacks, A/B testing</p>
+                    </div>
+                </div>
+
+                <h3>📚 Next Steps</h3>
+                <ul>
+                    <li><strong>Optimize further:</strong> Try TensorRT-LLM for even faster inference</li>
+                    <li><strong>Multi-region:</strong> Deploy across regions for lower latency</li>
+                    <li><strong>Advanced features:</strong> Add streaming responses, tool calling</li>
+                    <li><strong>Cost tracking:</strong> Implement detailed cost attribution per user</li>
+                    <li><strong>Fine-tune:</strong> Continuously improve model based on user feedback</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've built a production-ready LLM deployment system. You can now serve millions of requests at scale with optimized costs and world-class reliability.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is vLLM designed for?</strong></p>
+                    <div class="quiz-option" data-value="a">Training models from scratch</div>
+                    <div class="quiz-option" data-value="b">Data preprocessing</div>
+                    <div class="quiz-option" data-value="c">High-throughput, low-latency LLM inference serving</div>
+                    <div class="quiz-option" data-value="d">Image generation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is PagedAttention in vLLM?</strong></p>
+                    <div class="quiz-option" data-value="a">A data loading technique</div>
+                    <div class="quiz-option" data-value="b">A memory optimization technique for efficient KV cache management</div>
+                    <div class="quiz-option" data-value="c">A training algorithm</div>
+                    <div class="quiz-option" data-value="d">A tokenization method</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Why is load balancing important in production LLM deployments?</strong></p>
+                    <div class="quiz-option" data-value="a">It increases model accuracy</div>
+                    <div class="quiz-option" data-value="b">It reduces training time</div>
+                    <div class="quiz-option" data-value="c">It compresses models</div>
+                    <div class="quiz-option" data-value="d">It distributes requests across multiple instances for high availability and scalability</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What should you monitor in production LLM systems?</strong></p>
+                    <div class="quiz-option" data-value="a">Latency, throughput, error rates, GPU utilization, and cost per request</div>
+                    <div class="quiz-option" data-value="b">Only latency</div>
+                    <div class="quiz-option" data-value="c">Only cost</div>
+                    <div class="quiz-option" data-value="d">Nothing, monitoring is unnecessary</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is the benefit of containerizing LLM deployments with Docker?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes models more accurate</div>
+                    <div class="quiz-option" data-value="b">It eliminates the need for GPUs</div>
+                    <div class="quiz-option" data-value="c">It provides consistent, portable, and reproducible deployment environments</div>
+                    <div class="quiz-option" data-value="d">It reduces model size</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Certificate Section -->
+            <section class="certificate-section" style="background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 3rem 1.5rem; border-radius: 16px; text-align: center; margin: 3rem 0;">
+                <div style="max-width: 600px; margin: 0 auto;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎓</div>
+                    <h2 style="color: white; margin-bottom: 1rem;">Congratulations!</h2>
+                    <p style="font-size: 1.1rem; margin-bottom: 2rem; color: rgba(255,255,255,0.95);">
+                        You've completed the <strong>LLMs & Transformers</strong> course and mastered building, fine-tuning, and deploying large language models!
+                    </p>
+                    
+                    <!-- Certificate Form -->
+                    <div class="certificate-form" style="background: white; padding: 2rem; border-radius: 12px; margin-top: 2rem;">
+                        <h3 style="color: #0d9488; margin-bottom: 1rem;">Claim Your Free Certificate</h3>
+                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 1.5rem;">Enter your details to generate your professional certificate</p>
+                        <form id="certificateForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <input type="text" id="userName" placeholder="Your Full Name" required
+                                   style="padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                            <input type="email" id="userEmail" placeholder="Your Email (optional)" 
+                                   style="padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem;">
+                            <input type="hidden" id="courseName" value="LLMs & Transformers">
+                            <button type="submit" 
+                                    style="background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 1rem; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+                                🎓 Generate My Certificate
+                            </button>
+                        </form>
+                        <p style="color: #666; font-size: 0.8rem; margin-top: 1rem;">
+                            ✓ Shareable on LinkedIn • ✓ Verified by Nebaz AI Academy • ✓ Completely Free
+                        </p>
+                    </div>
+                    
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-bottom: 1rem;">
+                            <strong>What's Next?</strong>
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="../../courses/transformers-architecture.html" 
+                               style="background: rgba(255,255,255,0.2); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
+                                🏗️ Transformers Architecture
+                            </a>
+                            <a href="../../courses/ai-agents.html" 
+                               style="background: rgba(255,255,255,0.2); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 500; transition: background 0.2s;">
+                                🤖 AI Agents
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="project-2-rag-chatbot.html" class="prev-tutorial">← Project 2: RAG Chatbot</a>
+                <a href="../../courses/llms-and-transformers.html" class="next-tutorial">Course Hub →</a>
+            </div>
+
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

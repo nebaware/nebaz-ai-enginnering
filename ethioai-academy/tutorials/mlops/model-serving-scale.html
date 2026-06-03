@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master production model serving with BentoML, TorchServe, and TensorFlow Serving. Learn batch vs real-time inference, load balancing, A/B testing, and blue-green deployments for MLOps.">
+    <meta name="keywords" content="model serving, BentoML, TorchServe, TensorFlow Serving, batch inference, real-time inference, load balancing, A/B testing, canary deployment, blue-green deployment, MLOps">
+    <title>Model Serving at Scale - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="model-serving-scale.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Model Serving at Scale</span>
+            </div>
+            <h1>Model Serving at Scale</h1>
+            <p class="tutorial-intro">Master production serving with BentoML, TorchServe, and TensorFlow Serving. Learn batch vs real-time inference, load balancing, A/B testing, and deployment strategies</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 7</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🚀 Beyond Basic Deployment</h2>
+                <p>
+                    You've deployed your model to the cloud. It works! But now you're facing production challenges: How do you serve 10,000 requests per second? How do you roll out a new model version without downtime? How do you A/B test different models? How do you ensure predictions complete in under 100ms?
+                </p>
+                <p>
+                    <strong>Model serving frameworks</strong> solve these production-scale challenges with specialized tools for ML inference. They provide batching, caching, model versioning, traffic routing, and performance optimizations that generic web frameworks don't offer.
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Production Serving Challenges:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Latency spikes under high load</li>
+                        <li>Inefficient use of expensive GPU resources</li>
+                        <li>Downtime during model updates</li>
+                        <li>No way to compare model versions in production</li>
+                        <li>Manual rollbacks when new models fail</li>
+                        <li>Difficulty serving multiple models efficiently</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Framework Comparison -->
+            <section class="content-section" id="framework-comparison">
+                <h2>🔧 Serving Framework Comparison</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>BentoML</th>
+                            <th>TorchServe</th>
+                            <th>TF Serving</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Framework Support</strong></td>
+                            <td>✅ All (sklearn, PyTorch, TF, XGBoost)</td>
+                            <td>PyTorch only</td>
+                            <td>TensorFlow only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ease of Use</strong></td>
+                            <td>✅ Easiest</td>
+                            <td>Moderate</td>
+                            <td>Complex</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Performance</strong></td>
+                            <td>Excellent</td>
+                            <td>✅ Best for PyTorch</td>
+                            <td>✅ Best for TF</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Batching</strong></td>
+                            <td>✅ Adaptive</td>
+                            <td>✅ Dynamic</td>
+                            <td>✅ Built-in</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Model Versioning</strong></td>
+                            <td>✅ Built-in</td>
+                            <td>✅ Built-in</td>
+                            <td>✅ Built-in</td>
+                        </tr>
+                        <tr>
+                            <td><strong>A/B Testing</strong></td>
+                            <td>✅ Native</td>
+                            <td>Via config</td>
+                            <td>Via external proxy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Learning Curve</strong></td>
+                            <td>✅ Low</td>
+                            <td>Moderate</td>
+                            <td>Steep</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best For</strong></td>
+                            <td>✅ Multi-framework, Python-first</td>
+                            <td>PyTorch production</td>
+                            <td>TensorFlow at scale</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p><strong>💡 Which to Choose?</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>BentoML:</strong> Best for most use cases, especially if using multiple frameworks</li>
+                        <li><strong>TorchServe:</strong> If you're PyTorch-only and need maximum performance</li>
+                        <li><strong>TensorFlow Serving:</strong> If you're TensorFlow-only and need ultra-low latency</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- BentoML -->
+            <section class="content-section" id="bentoml">
+                <h2>🍱 BentoML: Universal Model Serving</h2>
+                
+                <h3>Why BentoML?</h3>
+                <p>
+                    BentoML is the most user-friendly ML serving framework. It supports any framework, provides automatic API generation, adaptive batching, and easy deployment to any cloud.
+                </p>
+
+                <h3>Installation</h3>
+                <pre><code class="language-bash">pip install bentoml</code></pre>
+
+                <h3>Serving a Scikit-learn Model</h3>
+                <pre><code class="language-python">"""
+BentoML service for sklearn model
+File: service.py
+"""
+import bentoml
+import numpy as np
+from bentoml.io import NumpyNdarray, JSON
+
+# Save model to BentoML model store
+# model = train_model()
+# bentoml.sklearn.save_model("iris_classifier", model)
+
+# Create service
+iris_classifier_runner = bentoml.sklearn.get("iris_classifier:latest").to_runner()
+svc = bentoml.Service("iris_classifier", runners=[iris_classifier_runner])
+
+@svc.api(input=NumpyNdarray(), output=JSON())
+async def classify(input_series: np.ndarray) -> dict:
+    """Classify iris species"""
+    result = await iris_classifier_runner.predict.async_run(input_series)
+    return {
+        "prediction": int(result[0]),
+        "species": ["setosa", "versicolor", "virginica"][result[0]]
+    }</code></pre>
+
+                <h3>Running BentoML Service</h3>
+                <pre><code class="language-bash"># Serve locally
+bentoml serve service:svc --reload
+
+# API available at http://localhost:3000
+
+# Test with curl
+curl -X POST http://localhost:3000/classify \
+  -H "Content-Type: application/json" \
+  -d '[[5.1, 3.5, 1.4, 0.2]]'
+
+# Build containerized service
+bentoml build
+
+# Containerize
+bentoml containerize iris_classifier:latest
+
+# Run container
+docker run -p 3000:3000 iris_classifier:latest</code></pre>
+
+                <h3>PyTorch Model with BentoML</h3>
+                <pre><code class="language-python">"""
+BentoML service for PyTorch model
+"""
+import bentoml
+import torch
+from bentoml.io import JSON, Image
+from PIL import Image as PILImage
+
+# Save PyTorch model
+# bentoml.pytorch.save_model("resnet50", model)
+
+# Load model runner
+resnet_runner = bentoml.pytorch.get("resnet50:latest").to_runner()
+svc = bentoml.Service("image_classifier", runners=[resnet_runner])
+
+@svc.api(input=Image(), output=JSON())
+async def predict_image(img: PILImage.Image) -> dict:
+    """Classify image"""
+    # Preprocess
+    img_tensor = preprocess(img)
+    
+    # Predict (automatic batching!)
+    output = await resnet_runner.async_run(img_tensor)
+    
+    # Get top prediction
+    _, predicted = torch.max(output, 1)
+    
+    return {
+        "class_id": int(predicted[0]),
+        "confidence": float(torch.softmax(output, dim=1)[0][predicted[0]])
+    }</code></pre>
+
+                <h3>Adaptive Batching</h3>
+                <pre><code class="language-python">"""
+BentoML automatically batches requests for efficiency
+"""
+import bentoml
+
+# Configure batching
+iris_runner = bentoml.sklearn.get("iris_classifier:latest").to_runner(
+    max_batch_size=32,      # Max batch size
+    max_latency_ms=100,     # Max wait time
+)
+
+# BentoML will:
+# 1. Collect requests for up to 100ms
+# 2. Batch up to 32 requests together
+# 3. Run inference once for the batch
+# 4. Return individual results
+
+# Result: 10x throughput improvement!</code></pre>
+
+                <h3>Model Store & Versioning</h3>
+                <pre><code class="language-bash"># List models
+bentoml models list
+
+# Get specific version
+bentoml models get iris_classifier:v1.0.0
+
+# Delete old versions
+bentoml models delete iris_classifier:old_version
+
+# Export model
+bentoml models export iris_classifier:latest ./model.bentomodel
+
+# Import model
+bentoml models import ./model.bentomodel</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ BentoML Benefits:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Automatic API generation and OpenAPI docs</li>
+                        <li>Adaptive batching for throughput optimization</li>
+                        <li>Easy deployment to any platform</li>
+                        <li>Model versioning and management</li>
+                        <li>Multi-model serving in one service</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- TorchServe -->
+            <section class="content-section" id="torchserve">
+                <h2>🔥 TorchServe: PyTorch Production Serving</h2>
+                
+                <h3>What is TorchServe?</h3>
+                <p>
+                    TorchServe is PyTorch's official serving solution, optimized for PyTorch models with features like multi-model serving, A/B testing, and metrics.
+                </p>
+
+                <h3>Installation</h3>
+                <pre><code class="language-bash">pip install torchserve torch-model-archiver torch-workflow-archiver</code></pre>
+
+                <h3>Creating a Model Archive</h3>
+                <pre><code class="language-python"># custom_handler.py
+import torch
+import torch.nn.functional as F
+from torchvision import transforms
+from ts.torch_handler.base_handler import BaseHandler
+
+class ImageClassifier(BaseHandler):
+    """
+    Custom handler for image classification
+    """
+    
+    def __init__(self):
+        super().__init__()
+        self.transform = transforms.Compose([
+            transforms.Resize(256),
+            transforms.CenterCrop(224),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+        ])
+    
+    def preprocess(self, data):
+        """Transform raw input into model input"""
+        images = []
+        for row in data:
+            image = row.get("data") or row.get("body")
+            image = self.transform(image)
+            images.append(image)
+        return torch.stack(images)
+    
+    def inference(self, data):
+        """Run inference"""
+        with torch.no_grad():
+            results = self.model(data)
+        return results
+    
+    def postprocess(self, data):
+        """Transform model output to response"""
+        probabilities = F.softmax(data, dim=1)
+        top_prob, top_class = torch.topk(probabilities, 1)
+        
+        return [
+            {
+                "class": int(top_class[i]),
+                "probability": float(top_prob[i])
+            }
+            for i in range(len(top_class))
+        ]</code></pre>
+
+                <h3>Creating Model Archive</h3>
+                <pre><code class="language-bash"># Archive model for TorchServe
+torch-model-archiver \
+  --model-name resnet50 \
+  --version 1.0 \
+  --model-file model.py \
+  --serialized-file resnet50.pth \
+  --handler custom_handler.py \
+  --extra-files index_to_name.json \
+  --export-path model_store/</code></pre>
+
+                <h3>Starting TorchServe</h3>
+                <pre><code class="language-bash"># Start server
+torchserve --start \
+  --model-store model_store \
+  --models resnet50=resnet50.mar
+
+# Check status
+curl http://localhost:8080/ping
+
+# List models
+curl http://localhost:8081/models
+
+# Make prediction
+curl -X POST http://localhost:8080/predictions/resnet50 \
+  -T kitten.jpg
+
+# Stop server
+torchserve --stop</code></pre>
+
+                <h3>Configuration for Production</h3>
+                <pre><code class="language-properties"># config.properties
+inference_address=http://0.0.0.0:8080
+management_address=http://0.0.0.0:8081
+metrics_address=http://0.0.0.0:8082
+
+# Performance tuning
+number_of_netty_threads=32
+job_queue_size=1000
+max_request_size=104857600  # 100MB
+max_response_size=104857600
+
+# Batching
+default_workers_per_model=4
+batch_size=8
+max_batch_delay=100  # milliseconds
+
+# Logging
+log_dir=/var/log/torchserve
+metrics_format=prometheus</code></pre>
+
+                <h3>Model Versioning & A/B Testing</h3>
+                <pre><code class="language-bash"># Register multiple versions
+curl -X POST "http://localhost:8081/models?url=resnet50_v1.mar&model_name=resnet50&initial_workers=2"
+curl -X POST "http://localhost:8081/models?url=resnet50_v2.mar&model_name=resnet50&initial_workers=2"
+
+# Set default version
+curl -X PUT "http://localhost:8081/models/resnet50/1.0/set-default"
+
+# Scale workers
+curl -X PUT "http://localhost:8081/models/resnet50?min_worker=3&max_worker=10"
+
+# Unregister model
+curl -X DELETE "http://localhost:8081/models/resnet50/1.0"</code></pre>
+
+                <h3>Monitoring with Prometheus</h3>
+                <pre><code class="language-bash"># View metrics
+curl http://localhost:8082/metrics
+
+# Metrics available:
+# - ts_inference_latency_microseconds
+# - ts_queue_latency_microseconds
+# - ts_inference_requests_total
+# - Requests_2XX, 4XX, 5XX
+# - CPUUtilization, MemoryUtilization
+# - GPUMemoryUtilization, GPUUtilization</code></pre>
+            </section>
+
+            <!-- TensorFlow Serving -->
+            <section class="content-section" id="tensorflow-serving">
+                <h2>🧠 TensorFlow Serving</h2>
+                
+                <h3>Overview</h3>
+                <p>
+                    TensorFlow Serving is a high-performance serving system designed specifically for TensorFlow models. It's used by Google for serving models at massive scale.
+                </p>
+
+                <h3>Preparing Model for Serving</h3>
+                <pre><code class="language-python">"""
+Save TensorFlow model for serving
+"""
+import tensorflow as tf
+
+# Train model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy')
+model.fit(x_train, y_train, epochs=5)
+
+# Save in SavedModel format
+model_path = 'models/my_model/1'  # Version 1
+model.save(model_path)
+
+# Directory structure:
+# models/
+# └── my_model/
+#     └── 1/
+#         ├── saved_model.pb
+#         └── variables/</code></pre>
+
+                <h3>Running TensorFlow Serving</h3>
+                <pre><code class="language-bash"># Using Docker
+docker pull tensorflow/serving
+
+# Serve model
+docker run -p 8501:8501 \
+  --mount type=bind,source=$(pwd)/models,target=/models \
+  -e MODEL_NAME=my_model \
+  -t tensorflow/serving
+
+# REST API available at http://localhost:8501/v1/models/my_model
+
+# Make prediction (REST)
+curl -X POST http://localhost:8501/v1/models/my_model:predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instances": [[1.0, 2.0, 3.0, 4.0]]
+  }'</code></pre>
+
+                <h3>Using gRPC for Better Performance</h3>
+                <pre><code class="language-python">"""
+gRPC client for TensorFlow Serving
+"""
+import grpc
+import tensorflow as tf
+from tensorflow_serving.apis import predict_pb2
+from tensorflow_serving.apis import prediction_service_pb2_grpc
+import numpy as np
+
+# Create gRPC channel
+channel = grpc.insecure_channel('localhost:8500')
+stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
+
+# Create request
+request = predict_pb2.PredictRequest()
+request.model_spec.name = 'my_model'
+request.model_spec.signature_name = 'serving_default'
+
+# Input data
+input_data = np.array([[1.0, 2.0, 3.0, 4.0]], dtype=np.float32)
+request.inputs['input'].CopyFrom(
+    tf.make_tensor_proto(input_data, shape=input_data.shape)
+)
+
+# Make prediction
+result = stub.Predict(request, 10.0)  # 10 second timeout
+
+# gRPC is 2-3x faster than REST for large tensors!</code></pre>
+
+                <h3>Model Versioning</h3>
+                <pre><code class="language-bash"># Directory structure with versions
+models/
+└── my_model/
+    ├── 1/  # Version 1
+    │   └── saved_model.pb
+    ├── 2/  # Version 2
+    │   └── saved_model.pb
+    └── 3/  # Version 3 (latest)
+        └── saved_model.pb
+
+# TensorFlow Serving automatically:
+# - Detects new versions
+# - Loads new version
+# - Serves latest version
+# - Keeps old versions for rollback
+
+# Specify version in request
+curl -X POST http://localhost:8501/v1/models/my_model/versions/2:predict \
+  -d '{"instances": [[1.0, 2.0, 3.0, 4.0]]}'</code></pre>
+
+                <h3>Batching Configuration</h3>
+                <pre><code class="language-protobuf"># batching_config.txt
+max_batch_size { value: 32 }
+batch_timeout_micros { value: 100000 }  # 100ms
+max_enqueued_batches { value: 100 }
+num_batch_threads { value: 4 }</code></pre>
+
+                <pre><code class="language-bash"># Start with batching
+docker run -p 8501:8501 \
+  --mount type=bind,source=$(pwd)/models,target=/models \
+  --mount type=bind,source=$(pwd)/batching_config.txt,target=/config/batching_config.txt \
+  -e MODEL_NAME=my_model \
+  -t tensorflow/serving \
+  --enable_batching=true \
+  --batching_parameters_file=/config/batching_config.txt</code></pre>
+            </section>
+
+            <!-- Batch vs Real-time -->
+            <section class="content-section" id="batch-realtime">
+                <h2>⚖️ Batch vs Real-Time Inference</h2>
+                
+                <h3>When to Use Each</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Real-Time</th>
+                            <th>Batch</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Latency</strong></td>
+                            <td>Milliseconds</td>
+                            <td>Minutes to hours</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Use Cases</strong></td>
+                            <td>User-facing apps, fraud detection</td>
+                            <td>Recommendations, analytics, ETL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost</strong></td>
+                            <td>Higher (always-on servers)</td>
+                            <td>✅ Lower (run periodically)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complexity</strong></td>
+                            <td>Higher</td>
+                            <td>✅ Lower</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Throughput</strong></td>
+                            <td>Lower per request</td>
+                            <td>✅ Much higher</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infrastructure</strong></td>
+                            <td>Load balancers, auto-scaling</td>
+                            <td>Simple job scheduler</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Batch Inference Example</h3>
+                <pre><code class="language-python">"""
+Batch inference for recommendations
+"""
+import joblib
+import pandas as pd
+from concurrent.futures import ThreadPoolExecutor
+
+model = joblib.load('recommendation_model.joblib')
+
+def batch_predict(input_file, output_file, batch_size=10000):
+    """Process large dataset in batches"""
+    
+    # Read data
+    df = pd.read_csv(input_file)
+    predictions = []
+    
+    # Process in chunks
+    for i in range(0, len(df), batch_size):
+        batch = df.iloc[i:i+batch_size]
+        
+        # Parallel prediction
+        batch_predictions = model.predict(batch)
+        predictions.extend(batch_predictions)
+        
+        print(f"Processed {i+batch_size}/{len(df)}")
+    
+    # Save results
+    df['prediction'] = predictions
+    df.to_csv(output_file, index=False)
+    print(f"✅ Saved predictions to {output_file}")
+
+# Run batch job
+batch_predict(
+    'users.csv',
+    'user_recommendations.csv',
+    batch_size=10000
+)
+
+# Schedule with cron
+# 0 2 * * * python batch_inference.py  # Run at 2 AM daily</code></pre>
+
+                <h3>Hybrid: Real-Time with Batch Preprocessing</h3>
+                <pre><code class="language-python">"""
+Precompute embeddings in batch, serve in real-time
+"""
+import faiss
+import numpy as np
+
+# BATCH: Precompute user/item embeddings
+def batch_compute_embeddings():
+    """Run daily to update embeddings"""
+    users = load_all_users()
+    embeddings = model.encode(users)
+    
+    # Build FAISS index for fast similarity search
+    index = faiss.IndexFlatL2(embedding_dim)
+    index.add(embeddings)
+    
+    faiss.write_index(index, 'embeddings.index')
+
+# REAL-TIME: Fast lookup
+def realtime_recommend(user_id):
+    """Real-time recommendations using precomputed index"""
+    index = faiss.read_index('embeddings.index')
+    user_embedding = get_user_embedding(user_id)
+    
+    # Fast nearest neighbor search
+    distances, indices = index.search(user_embedding, k=10)
+    
+    return indices[0]  # Top 10 recommendations in < 5ms!</code></pre>
+            </section>
+
+            <!-- Load Balancing & Deployment Strategies -->
+            <section class="content-section" id="deployment-strategies">
+                <h2>🔄 Deployment Strategies</h2>
+                
+                <h3>1. Blue-Green Deployment</h3>
+                <p>
+                    Run two identical production environments. Route traffic to one (blue) while preparing the other (green). Switch instantly if needed.
+                </p>
+
+                <pre><code class="language-yaml"># kubernetes blue-green deployment
+# Blue deployment (current production)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-model-blue
+  labels:
+    version: blue
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ml-model
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: ml-model
+        version: blue
+    spec:
+      containers:
+      - name: model
+        image: ml-model:v1.0
+        ports:
+        - containerPort: 8080
+
+---
+# Service (routes to active version)
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-model-service
+spec:
+  selector:
+    app: ml-model
+    version: blue  # Change to 'green' to switch
+  ports:
+  - port: 80
+    targetPort: 8080</code></pre>
+
+                <h3>2. Canary Deployment</h3>
+                <p>
+                    Gradually roll out new version to small percentage of traffic. Monitor metrics. Increase percentage if successful.
+                </p>
+
+                <pre><code class="language-yaml"># Istio VirtualService for canary
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ml-model
+spec:
+  hosts:
+  - ml-model
+  http:
+  - match:
+    - headers:
+        x-version:
+          exact: v2
+    route:
+    - destination:
+        host: ml-model
+        subset: v2
+  - route:
+    - destination:
+        host: ml-model
+        subset: v1
+      weight: 90  # 90% to v1
+    - destination:
+        host: ml-model
+        subset: v2
+      weight: 10  # 10% to v2 (canary)</code></pre>
+
+                <h3>3. A/B Testing</h3>
+                <p>
+                    Split traffic between model versions based on user attributes or random selection. Compare business metrics.
+                </p>
+
+                <pre><code class="language-python">"""
+A/B testing with BentoML
+"""
+import bentoml
+import random
+
+model_a_runner = bentoml.sklearn.get("model_a:latest").to_runner()
+model_b_runner = bentoml.sklearn.get("model_b:latest").to_runner()
+
+svc = bentoml.Service("ab_test", runners=[model_a_runner, model_b_runner])
+
+@svc.api(input=JSON(), output=JSON())
+async def predict(request: dict) -> dict:
+    user_id = request['user_id']
+    features = request['features']
+    
+    # Consistent hashing for user assignment
+    if hash(user_id) % 2 == 0:
+        model = model_a_runner
+        version = 'A'
+    else:
+        model = model_b_runner
+        version = 'B'
+    
+    prediction = await model.predict.async_run(features)
+    
+    # Log for analysis
+    log_ab_test(user_id, version, prediction)
+    
+    return {
+        'prediction': prediction,
+        'model_version': version
+    }</code></pre>
+
+                <h3>4. Shadow Mode</h3>
+                <p>
+                    New model receives copy of production traffic but predictions aren't used. Compare with production model offline.
+                </p>
+
+                <pre><code class="language-python">"""
+Shadow mode deployment
+"""
+import asyncio
+
+@svc.api(input=JSON(), output=JSON())
+async def predict_with_shadow(request: dict) -> dict:
+    # Production prediction
+    prod_prediction = await prod_model.predict.async_run(request['features'])
+    
+    # Shadow prediction (don't wait for it)
+    asyncio.create_task(
+        shadow_predict(request, prod_prediction)
+    )
+    
+    # Return production result immediately
+    return prod_prediction
+
+async def shadow_predict(request, prod_result):
+    """Run shadow model and compare"""
+    shadow_result = await shadow_model.predict.async_run(request['features'])
+    
+    # Log comparison
+    log_shadow_comparison(
+        prod_result=prod_result,
+        shadow_result=shadow_result,
+        features=request['features']
+    )</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Deployment Strategy Selection:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>Blue-Green:</strong> Zero-downtime deployments, instant rollback</li>
+                        <li><strong>Canary:</strong> Gradual rollout, low risk</li>
+                        <li><strong>A/B Testing:</strong> Compare business impact of models</li>
+                        <li><strong>Shadow:</strong> Validate new model without user impact</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Load Balancing -->
+            <section class="content-section" id="load-balancing">
+                <h2>⚖️ Load Balancing for ML Models</h2>
+                
+                <h3>NGINX Configuration</h3>
+                <pre><code class="language-nginx"># nginx.conf for ML model load balancing
+upstream ml_models {
+    least_conn;  # Route to server with fewest connections
+    
+    server model1:8080 weight=3;
+    server model2:8080 weight=2;
+    server model3:8080 weight=1;
+    
+    # Health checks
+    server model4:8080 backup;
+}
+
+server {
+    listen 80;
+    
+    location /predict {
+        proxy_pass http://ml_models;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        
+        # Timeouts for long predictions
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+        
+        # Request buffering
+        client_max_body_size 100M;
+    }
+    
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+    }
+}</code></pre>
+
+                <h3>Horizontal Pod Autoscaling (HPA)</h3>
+                <pre><code class="language-yaml"># Kubernetes HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-model-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "1000"
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # Wait 5min before scale down
+    scaleUp:
+      stabilizationWindowSeconds: 0    # Scale up immediately</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered production model serving at scale:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🍱</div>
+                        <h3>BentoML</h3>
+                        <p>Universal framework with adaptive batching and easy deployment</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔥</div>
+                        <h3>TorchServe</h3>
+                        <h3>Optimized PyTorch serving with model management</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>TF Serving</h3>
+                        <p>High-performance TensorFlow inference at scale</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>Batch vs Real-Time</h3>
+                        <p>Choose the right approach for your use case</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Deployment Strategies</h3>
+                        <p>Blue-green, canary, A/B testing, shadow mode</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Load Balancing</h3>
+                        <p>Auto-scaling and traffic distribution</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Use specialized serving frameworks for production ML inference</li>
+                    <li>BentoML for multi-framework, TorchServe for PyTorch, TF Serving for TensorFlow</li>
+                    <li>Leverage adaptive batching for throughput optimization</li>
+                    <li>Choose batch inference for periodic, high-volume workloads</li>
+                    <li>Use canary deployments for safe rollouts</li>
+                    <li>Implement A/B testing to compare model versions</li>
+                    <li>Configure auto-scaling based on traffic patterns</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your models are serving at scale! Next, you'll learn orchestration and ML pipelines - automating the entire ML lifecycle from data ingestion to model deployment with tools like Airflow and Kubeflow.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q1: What's the main advantage of using BentoML over a generic FastAPI service?</strong></p>
+                    <div class="quiz-option" data-value="a">It's faster</div>
+                    <div class="quiz-option" data-value="b">It provides adaptive batching, model versioning, and framework-agnostic serving built specifically for ML</div>
+                    <div class="quiz-option" data-value="c">It's free</div>
+                    <div class="quiz-option" data-value="d">It only works with scikit-learn</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q2: When should you use batch inference instead of real-time inference?</strong></p>
+                    <div class="quiz-option" data-value="a">Always, it's better</div>
+                    <div class="quiz-option" data-value="b">For user-facing applications</div>
+                    <div class="quiz-option" data-value="c">For periodic, high-volume workloads like daily recommendations where latency isn't critical</div>
+                    <div class="quiz-option" data-value="d">Never use batch inference</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: What is a canary deployment?</strong></p>
+                    <div class="quiz-option" data-value="a">Gradually rolling out a new model version to a small percentage of traffic and monitoring before full rollout</div>
+                    <div class="quiz-option" data-value="b">Deploying to a yellow server</div>
+                    <div class="quiz-option" data-value="c">A type of bird-themed deployment</div>
+                    <div class="quiz-option" data-value="d">Instant full traffic switch</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What's the benefit of adaptive batching in model serving?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes models more accurate</div>
+                    <div class="quiz-option" data-value="b">It reduces model size</div>
+                    <div class="quiz-option" data-value="c">It makes training faster</div>
+                    <div class="quiz-option" data-value="d">It significantly increases throughput by processing multiple requests together while keeping latency low</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q5: What's shadow mode deployment?</strong></p>
+                    <div class="quiz-option" data-value="a">Deploying at night</div>
+                    <div class="quiz-option" data-value="b">Running a new model on production traffic without using its predictions, to validate performance before real deployment</div>
+                    <div class="quiz-option" data-value="c">Hiding the model from users</div>
+                    <div class="quiz-option" data-value="d">Using dark themes</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="cloud-deployment.html">← Previous: Cloud Deployment</a>
+                <a href="orchestration-ml-pipelines.html">Next: Orchestration & ML Pipelines →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-nginx.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

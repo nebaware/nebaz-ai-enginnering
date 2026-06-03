@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Attention mechanisms and Transformers. Learn the revolutionary architecture behind GPT, BERT, and modern large language models.">
+    <meta name="keywords" content="attention mechanism, transformers, BERT, GPT, self-attention, NLP, deep learning">
+    <title>Attention & Transformers - Deep Learning Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="attention-and-transformers.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Attention & Transformers</span>
+            </div>
+            <h1>Attention & Transformers</h1>
+            <p class="tutorial-intro">Master the revolutionary architecture behind GPT, BERT, and modern AI. Learn self-attention and how Transformers process sequences in parallel</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 5</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Deep Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 The Transformer Revolution</h2>
+                
+                <p>
+                    In June 2017, a team of Google researchers published a paper titled <strong>"Attention is All You Need"</strong> that would fundamentally transform artificial intelligence. The Transformer architecture they introduced replaced RNNs and LSTMs entirely, becoming the foundation for virtually every state-of-the-art AI system today: GPT-4, Claude, Gemini, BERT, ChatGPT, and countless others.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 The Big Breakthrough:</strong> Transformers process <strong>all positions simultaneously</strong> using attention, not sequentially like RNNs. This enables:</p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>⚡ <strong>Massive parallelization:</strong> Train on thousands of GPUs at once</li>
+                        <li>📏 <strong>Long-range dependencies:</strong> Handle 100,000+ token sequences</li>
+                        <li>🎯 <strong>Better performance:</strong> State-of-the-art on virtually all NLP tasks</li>
+                        <li>🚀 <strong>Scalability:</strong> Grow to 100B+ parameters efficiently</li>
+                    </ul>
+                </div>
+
+                <h3>Why RNNs Failed to Scale</h3>
+                <p>
+                    Before Transformers, RNNs and LSTMs dominated sequential modeling. But they had fundamental limitations:
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ RNN/LSTM Problems</strong><br><br>
+                        • <strong>Sequential processing:</strong> Must wait for step t-1 before computing step t → no parallelization<br>
+                        • <strong>Limited context:</strong> Struggle with sequences > 100 tokens<br>
+                        • <strong>Slow training:</strong> Can't use full GPU power<br>
+                        • <strong>Vanishing gradients:</strong> Hard to learn very long dependencies<br>
+                        • <strong>Memory bottleneck:</strong> Compress entire history into fixed-size hidden state
+                    </div>
+                    <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 6px;">
+                        <strong>✅ Transformer Solutions</strong><br><br>
+                        • <strong>Parallel processing:</strong> Compute all positions at once → 100x faster training<br>
+                        • <strong>Unlimited context:</strong> Handle 100,000+ tokens efficiently<br>
+                        • <strong>Fast training:</strong> Saturate thousands of GPUs<br>
+                        • <strong>Clean gradients:</strong> Direct connections via attention<br>
+                        • <strong>No bottleneck:</strong> Every position can access any other position directly
+                    </div>
+                </div>
+
+                <h3>The Impact: From Research to Reality</h3>
+                <div class="example-box">
+                    <strong>Timeline of Transformer Dominance:</strong><br><br>
+                    
+                    <strong>2017:</strong> Original Transformer paper (machine translation)<br>
+                    <strong>2018:</strong> BERT revolutionizes NLP understanding tasks<br>
+                    <strong>2019:</strong> GPT-2 shows large-scale language modeling potential<br>
+                    <strong>2020:</strong> GPT-3 demonstrates few-shot learning with 175B parameters<br>
+                    <strong>2021:</strong> Vision Transformers (ViT) beat CNNs on image tasks<br>
+                    <strong>2022:</strong> ChatGPT brings LLMs to mainstream (100M users in 2 months)<br>
+                    <strong>2023-2024:</strong> GPT-4, Claude 3, Gemini Ultra → multimodal AI<br>
+                    <strong>2025:</strong> Transformers in audio, video, robotics, drug discovery, and beyond<br><br>
+
+                    <strong>Key insight:</strong> Transformers aren't just better—they're <em>fundamentally different</em>. They enabled the AI revolution by making it possible to train on internet-scale data efficiently.
+                </div>
+
+                <h3>What Makes Transformers Special?</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Parallel Processing</h3>
+                        <p>Process entire sequence at once, not word-by-word. Train on 1000s of GPUs simultaneously.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Self-Attention</h3>
+                        <p>Every word directly attends to every other word. No information bottleneck.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📏</div>
+                        <h3>Long Context</h3>
+                        <p>Handle 100,000+ tokens with techniques like sparse attention and efficient implementations.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Transfer Learning</h3>
+                        <p>Pre-train once on massive data, fine-tune for any task. Democratizes AI development.</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>🎓 Learning Goal:</strong> By the end of this tutorial, you'll understand:</p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ How attention mechanisms work (Query, Key, Value)</li>
+                        <li>✅ Self-attention and multi-head attention</li>
+                        <li>✅ Complete Transformer architecture (encoder, decoder, positional encoding)</li>
+                        <li>✅ Why Transformers outperform RNNs</li>
+                        <li>✅ Different Transformer variants (BERT, GPT, T5)</li>
+                        <li>✅ How to implement and use Transformers</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>👀 The Attention Mechanism: The Core Innovation</h2>
+                
+                <div class="info-box">
+                    <p><strong>💡 Core Idea:</strong> Attention allows the model to <strong>dynamically focus on relevant parts</strong> of the input. Instead of processing word-by-word sequentially, it calculates relationships between <strong>ALL positions simultaneously</strong>.</p>
+                    <p style="margin-top: 0.75rem;">Think of it like reading a paragraph and being able to instantly reference any word while understanding the current word—no need to remember everything in a fixed-size memory!</p>
+                </div>
+
+                <h3>Intuitive Example: Translation with Attention</h3>
+                <div class="example-box">
+                    <strong>Translating:</strong> "The cat sat on the mat" → "Le chat était assis sur le tapis"<br><br>
+                    
+                    <strong>Without Attention (RNN):</strong><br>
+                    • Encoder processes word-by-word: "The" → "cat" → "sat" → "on" → "the" → "mat"<br>
+                    • Final hidden state must remember entire sentence<br>
+                    • Decoder generates translation from this single fixed vector<br>
+                    • <strong>Problem:</strong> Information bottleneck! Long sentences lose details.<br><br>
+
+                    <strong>With Attention (Transformer):</strong><br>
+                    When generating "assis" (sat):<br>
+                    • Attends <strong>strongly</strong> to "sat" (0.7 weight)<br>
+                    • Attends <strong>moderately</strong> to "cat" (0.2 weight) — subject agreement<br>
+                    • Attends <strong>weakly</strong> to other words (0.1 total)<br>
+                    • <strong>Result:</strong> Direct access to relevant source words, no bottleneck!
+                </div>
+
+                <h3>The Mathematics: Scaled Dot-Product Attention</h3>
+                <p>
+                    Attention uses three learned linear projections called <strong>Query</strong>, <strong>Key</strong>, and <strong>Value</strong>. This is the famous QKV attention.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Attention Formula:</strong><br><br>
+                    <code style="font-size: 1.1rem;">Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>) V</code><br><br>
+                    
+                    Where:<br>
+                    • <strong>Q (Query):</strong> "What am I looking for?" (shape: seq_len × d<sub>k</sub>)<br>
+                    • <strong>K (Key):</strong> "What do I represent?" (shape: seq_len × d<sub>k</sub>)<br>
+                    • <strong>V (Value):</strong> "What information do I carry?" (shape: seq_len × d<sub>v</sub>)<br>
+                    • <strong>d<sub>k</sub>:</strong> Dimension of queries/keys (scaling factor)<br><br>
+                    
+                    <strong>Step-by-step:</strong><br>
+                    1. Compute similarity: QK<sup>T</sup> → scores matrix (seq_len × seq_len)<br>
+                    2. Scale by √d<sub>k</sub> to prevent vanishing gradients in softmax<br>
+                    3. Normalize with softmax: each row sums to 1 (attention weights)<br>
+                    4. Weight values: multiply weights × V to get output
+                </div>
+
+                <h3>Concrete Example with Numbers</h3>
+                <div class="example-box">
+                    <strong>Sentence:</strong> "The cat sat"<br>
+                    <strong>Goal:</strong> Understand what "sat" should attend to<br><br>
+
+                    <strong>Step 1: Create Q, K, V matrices</strong><br>
+                    Assume d<sub>k</sub> = 3 (tiny for illustration; real models use 64-128)<br><br>
+                    
+                    <code style="background: #f8fafc; padding: 0.5rem; display: block; margin: 0.5rem 0;">
+                    Word embeddings (simplified 3D vectors):<br>
+                    "The" = [1.0, 0.2, 0.1]<br>
+                    "cat" = [0.5, 1.2, 0.8]<br>
+                    "sat" = [0.3, 0.4, 1.5]
+                    </code><br>
+
+                    Apply learned weight matrices W<sub>Q</sub>, W<sub>K</sub>, W<sub>V</sub> (learned during training):<br><br>
+
+                    <code style="background: #f8fafc; padding: 0.5rem; display: block; margin: 0.5rem 0;">
+                    Q = embeddings × W<sub>Q</sub>:  ["The": [0.8, 0.3, 0.2], "cat": [1.1, 0.9, 0.4], "sat": [0.7, 1.2, 0.6]]<br>
+                    K = embeddings × W<sub>K</sub>:  ["The": [0.9, 0.1, 0.3], "cat": [0.6, 1.3, 0.5], "sat": [0.4, 0.5, 1.4]]<br>
+                    V = embeddings × W<sub>V</sub>:  ["The": [1.1, 0.3, 0.2], "cat": [0.7, 1.4, 0.6], "sat": [0.5, 0.6, 1.8]]
+                    </code><br>
+
+                    <strong>Step 2: Compute attention scores for "sat"</strong><br>
+                    Q<sub>sat</sub> · K<sub>The</sub><sup>T</sup> = [0.7, 1.2, 0.6] · [0.9, 0.1, 0.3] = 0.63 + 0.12 + 0.18 = 0.93<br>
+                    Q<sub>sat</sub> · K<sub>cat</sub><sup>T</sup> = [0.7, 1.2, 0.6] · [0.6, 1.3, 0.5] = 0.42 + 1.56 + 0.30 = 2.28<br>
+                    Q<sub>sat</sub> · K<sub>sat</sub><sup>T</sup> = [0.7, 1.2, 0.6] · [0.4, 0.5, 1.4] = 0.28 + 0.60 + 0.84 = 1.72<br><br>
+
+                    <strong>Step 3: Scale by √d<sub>k</sub> = √3 ≈ 1.73</strong><br>
+                    Scaled scores: [0.93/1.73, 2.28/1.73, 1.72/1.73] = [0.54, 1.32, 0.99]<br><br>
+
+                    <strong>Step 4: Apply softmax</strong><br>
+                    Weights: softmax([0.54, 1.32, 0.99]) = [0.14, 0.54, 0.32]<br><br>
+
+                    <strong>Interpretation:</strong> When processing "sat":<br>
+                    • Attend to "The": 14% (low - not very relevant)<br>
+                    • Attend to "cat": 54% (high - subject of the verb!)<br>
+                    • Attend to "sat": 32% (moderate - self-attention)<br><br>
+
+                    <strong>Step 5: Weighted sum of values</strong><br>
+                    Output = 0.14×V<sub>The</sub> + 0.54×V<sub>cat</sub> + 0.32×V<sub>sat</sub><br>
+                    Output = 0.14×[1.1,0.3,0.2] + 0.54×[0.7,1.4,0.6] + 0.32×[0.5,0.6,1.8]<br>
+                    Output = [0.154,0.042,0.028] + [0.378,0.756,0.324] + [0.160,0.192,0.576]<br>
+                    Output = [0.692, 0.990, 0.928]<br><br>
+
+                    <strong>Result:</strong> The output for "sat" is now enriched with information from "cat" (heavily weighted) and context from other words!
+                </div>
+
+                <h3>Why Scaling by √d<sub>k</sub>?</h3>
+                <div class="warning-box">
+                    <p><strong>⚠️ Critical Detail:</strong> Without scaling, dot products grow large when d<sub>k</sub> is large.</p>
+                    <p style="margin-top: 0.75rem;"><strong>Problem:</strong> Large dot products → large logits → softmax saturates → vanishing gradients</p>
+                    <p style="margin-top: 0.5rem;"><strong>Example:</strong> If d<sub>k</sub> = 512, unscaled dot products can reach 100+. After softmax, one weight ≈ 1.0, others ≈ 0 → gradient flow broken.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Solution:</strong> Divide by √d<sub>k</sub> = √512 ≈ 22.6 → dot products stay in reasonable range → healthy gradients!</p>
+                </div>
+
+                <h3>Self-Attention: Every Position Attends to Every Position</h3>
+                <p>
+                    In Transformers, Q, K, and V all come from the <strong>same input</strong> sequence. This is called <strong>self-attention</strong> (vs cross-attention in encoder-decoder models).
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Attention Matrix Visualization:</strong><br><br>
+                    For "The cat sat on the mat":<br><br>
+                    <code style="font-family: monospace; font-size: 0.85rem;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;&nbsp;cat&nbsp;&nbsp;sat&nbsp;&nbsp;on&nbsp;&nbsp;&nbsp;the&nbsp;&nbsp;mat<br>
+                    The&nbsp;[0.3&nbsp;&nbsp;0.1&nbsp;&nbsp;0.1&nbsp;&nbsp;0.1&nbsp;&nbsp;0.2&nbsp;&nbsp;0.2]  ← "The" attends weakly to all<br>
+                    cat&nbsp;[0.2&nbsp;&nbsp;0.4&nbsp;&nbsp;0.3&nbsp;&nbsp;0.0&nbsp;&nbsp;0.0&nbsp;&nbsp;0.1]  ← "cat" attends to itself + verb<br>
+                    sat&nbsp;[0.1&nbsp;&nbsp;0.5&nbsp;&nbsp;0.2&nbsp;&nbsp;0.1&nbsp;&nbsp;0.0&nbsp;&nbsp;0.1]  ← "sat" strongly attends to "cat"<br>
+                    on&nbsp;&nbsp;[0.1&nbsp;&nbsp;0.1&nbsp;&nbsp;0.2&nbsp;&nbsp;0.3&nbsp;&nbsp;0.1&nbsp;&nbsp;0.2]  ← "on" attends to verb + object<br>
+                    the&nbsp;[0.2&nbsp;&nbsp;0.1&nbsp;&nbsp;0.1&nbsp;&nbsp;0.2&nbsp;&nbsp;0.3&nbsp;&nbsp;0.1]  ← "the" attends to nearby<br>
+                    mat&nbsp;[0.1&nbsp;&nbsp;0.1&nbsp;&nbsp;0.2&nbsp;&nbsp;0.3&nbsp;&nbsp;0.2&nbsp;&nbsp;0.1]  ← "mat" attends to prep + verb
+                    </code><br><br>
+
+                    Each row shows attention weights (sums to 1.0). Darker values = stronger attention.<br>
+                    Notice: No sequential constraint! "sat" directly attends to "cat" without processing "The" first.
+                </div>
+
+                <h3>Implementation: Attention from Scratch</h3>
+                <pre><code class="language-python">import numpy as np
+import torch
+import torch.nn.functional as F
+
+def scaled_dot_product_attention(Q, K, V, mask=None):
+    """
+    Compute scaled dot-product attention.
+    
+    Args:
+        Q: Query matrix (batch, seq_len, d_k)
+        K: Key matrix (batch, seq_len, d_k)
+        V: Value matrix (batch, seq_len, d_v)
+        mask: Optional mask (batch, seq_len, seq_len)
+    
+    Returns:
+        Output: Attention output (batch, seq_len, d_v)
+        Weights: Attention weights (batch, seq_len, seq_len)
+    """
+    # Get dimension for scaling
+    d_k = Q.size(-1)
+    
+    # Step 1: Compute attention scores (QK^T)
+    # Shape: (batch, seq_len, d_k) @ (batch, d_k, seq_len) → (batch, seq_len, seq_len)
+    scores = torch.matmul(Q, K.transpose(-2, -1))
+    
+    # Step 2: Scale by sqrt(d_k)
+    scores = scores / np.sqrt(d_k)
+    
+    # Step 3: Apply mask if provided (e.g., for causal attention in GPT)
+    if mask is not None:
+        scores = scores.masked_fill(mask == 0, float('-inf'))
+    
+    # Step 4: Apply softmax to get attention weights
+    # Each row sums to 1.0
+    weights = F.softmax(scores, dim=-1)
+    
+    # Step 5: Weighted sum of values
+    # Shape: (batch, seq_len, seq_len) @ (batch, seq_len, d_v) → (batch, seq_len, d_v)
+    output = torch.matmul(weights, V)
+    
+    return output, weights
+
+# ============ EXAMPLE USAGE ============
+batch_size = 2
+seq_len = 6  # "The cat sat on the mat"
+d_model = 512  # Model dimension (typical for Transformer)
+
+# Simulate input embeddings
+embeddings = torch.randn(batch_size, seq_len, d_model)
+
+# Create Q, K, V with learned projection matrices
+W_Q = torch.randn(d_model, d_model)
+W_K = torch.randn(d_model, d_model)
+W_V = torch.randn(d_model, d_model)
+
+Q = torch.matmul(embeddings, W_Q)
+K = torch.matmul(embeddings, W_K)
+V = torch.matmul(embeddings, W_V)
+
+# Compute attention
+output, weights = scaled_dot_product_attention(Q, K, V)
+
+print(f"Output shape: {output.shape}")        # (2, 6, 512)
+print(f"Attention weights shape: {weights.shape}")  # (2, 6, 6)
+
+# Inspect attention pattern for first batch, position 2 ("sat")
+print("\nAttention weights for 'sat' (position 2):")
+print(weights[0, 2, :])  # Should show high weight for position 1 ("cat")</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Key Takeaways:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Query-Key-Value:</strong> Q asks "what?", K provides "here!", V gives "the info"</li>
+                        <li><strong>Dot product:</strong> Measures similarity between queries and keys</li>
+                        <li><strong>Softmax:</strong> Converts scores to probability distribution (weights sum to 1)</li>
+                        <li><strong>Parallel:</strong> All positions computed simultaneously → massive speedup</li>
+                        <li><strong>No recurrence:</strong> Direct connections enable clean gradient flow</li>
+                        <li><strong>Interpretable:</strong> Attention weights show what model focuses on</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ Complete Transformer Architecture</h2>
+                
+                <p>
+                    The full Transformer combines multiple components into a powerful architecture. Let's build it piece by piece, understanding each component's role.
+                </p>
+
+                <h3>1. Multi-Head Attention: Multiple Perspectives</h3>
+                <p>
+                    Instead of one attention mechanism, Transformers use <strong>multiple attention heads in parallel</strong>. Each head learns different relationships!
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 Intuition:</strong> When reading "The bank can guarantee deposits", different heads focus on different meanings:</p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Head 1:</strong> "bank" → "deposits" (financial institution context)</li>
+                        <li><strong>Head 2:</strong> "can" → "guarantee" (modal verb + action)</li>
+                        <li><strong>Head 3:</strong> "The" → "bank" (determiner + noun)</li>
+                        <li><strong>Head 4:</strong> Overall sentence structure and syntax</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">Each head specializes in different linguistic patterns—syntax, semantics, coreference, etc.</p>
+                </div>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Multi-Head Attention Formula:</strong><br><br>
+                    
+                    For h attention heads:<br><br>
+                    
+                    head<sub>i</sub> = Attention(QW<sub>i</sub><sup>Q</sup>, KW<sub>i</sub><sup>K</sup>, VW<sub>i</sub><sup>V</sup>)<br><br>
+                    
+                    MultiHead(Q, K, V) = Concat(head<sub>1</sub>, ..., head<sub>h</sub>)W<sup>O</sup><br><br>
+                    
+                    Where:<br>
+                    • Each head has its own W<sub>i</sub><sup>Q</sup>, W<sub>i</sub><sup>K</sup>, W<sub>i</sub><sup>V</sup> projection matrices<br>
+                    • Typical: 8 or 16 heads (GPT-3 uses 96 heads!)<br>
+                    • Each head has dimension d<sub>k</sub> = d<sub>model</sub> / h<br>
+                    • Final W<sup>O</sup> matrix combines all heads
+                </div>
+
+                <h4>Example: 8 Heads with d_model = 512</h4>
+                <div class="example-box">
+                    <strong>Configuration:</strong><br>
+                    • Model dimension: d<sub>model</sub> = 512<br>
+                    • Number of heads: h = 8<br>
+                    • Dimension per head: d<sub>k</sub> = 512 / 8 = 64<br><br>
+
+                    <strong>Process:</strong><br>
+                    1. Split 512-dim embedding into 8 × 64-dim chunks<br>
+                    2. Each chunk processed by separate attention head<br>
+                    3. Head 1 learns subject-verb relationships (64 dims)<br>
+                    4. Head 2 learns semantic similarity (64 dims)<br>
+                    5. ... (6 more heads learning different patterns)<br>
+                    6. Concatenate all 8 outputs: 8 × 64 = 512 dims<br>
+                    7. Project with W<sup>O</sup> to final 512-dim output<br><br>
+
+                    <strong>Benefit:</strong> 8x more pattern types learned without increasing computation!<br>
+                    (8 heads × 64 dims has same compute as 1 head × 512 dims)
+                </div>
+
+                <pre><code class="language-python">import torch
+import torch.nn as nn
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model=512, num_heads=8):
+        super().__init__()
+        assert d_model % num_heads == 0, "d_model must be divisible by num_heads"
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads  # 512 / 8 = 64
+        
+        # Linear projections for Q, K, V (all heads at once)
+        self.W_Q = nn.Linear(d_model, d_model)
+        self.W_K = nn.Linear(d_model, d_model)
+        self.W_V = nn.Linear(d_model, d_model)
+        
+        # Output projection
+        self.W_O = nn.Linear(d_model, d_model)
+        
+    def forward(self, Q, K, V, mask=None):
+        batch_size = Q.size(0)
+        
+        # 1. Linear projections
+        # Shape: (batch, seq_len, d_model)
+        Q = self.W_Q(Q)
+        K = self.W_K(K)
+        V = self.W_V(V)
+        
+        # 2. Split into multiple heads
+        # Shape: (batch, seq_len, d_model) → (batch, seq_len, num_heads, d_k)
+        Q = Q.view(batch_size, -1, self.num_heads, self.d_k)
+        K = K.view(batch_size, -1, self.num_heads, self.d_k)
+        V = V.view(batch_size, -1, self.num_heads, self.d_k)
+        
+        # Transpose for attention: (batch, num_heads, seq_len, d_k)
+        Q = Q.transpose(1, 2)
+        K = K.transpose(1, 2)
+        V = V.transpose(1, 2)
+        
+        # 3. Apply scaled dot-product attention for each head
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / np.sqrt(self.d_k)
+        
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+        weights = torch.softmax(scores, dim=-1)
+        attention_output = torch.matmul(weights, V)
+        
+        # 4. Concatenate heads
+        # (batch, num_heads, seq_len, d_k) → (batch, seq_len, num_heads, d_k)
+        attention_output = attention_output.transpose(1, 2).contiguous()
+        
+        # (batch, seq_len, num_heads, d_k) → (batch, seq_len, d_model)
+        attention_output = attention_output.view(batch_size, -1, self.d_model)
+        
+        # 5. Final linear projection
+        output = self.W_O(attention_output)
+        
+        return output, weights</code></pre>
+
+                <h3>2. Positional Encoding: Where Am I?</h3>
+                <p>
+                    <strong>Problem:</strong> Attention has no notion of order! "Cat chased dog" = "Dog chased cat" in pure attention.<br>
+                    <strong>Solution:</strong> Add positional information to embeddings.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Sinusoidal Positional Encoding:</strong><br><br>
+                    
+                    PE<sub>(pos, 2i)</sub> = sin(pos / 10000<sup>2i/d<sub>model</sub></sup>)<br>
+                    PE<sub>(pos, 2i+1)</sub> = cos(pos / 10000<sup>2i/d<sub>model</sub></sup>)<br><br>
+                    
+                    Where:<br>
+                    • pos = position in sequence (0, 1, 2, ...)<br>
+                    • i = dimension index (0, 1, 2, ..., d<sub>model</sub>/2)<br>
+                    • Even dimensions use sine, odd use cosine<br>
+                    • Different frequencies for each dimension<br><br>
+
+                    <strong>Why this formula?</strong><br>
+                    • Allows model to learn relative positions (PE<sub>pos+k</sub> is linear function of PE<sub>pos</sub>)<br>
+                    • Extrapolates to unseen sequence lengths<br>
+                    • Each position gets unique encoding
+                </div>
+
+                <pre><code class="language-python">import numpy as np
+import torch
+
+def get_positional_encoding(max_seq_len, d_model):
+    """
+    Generate sinusoidal positional encodings.
+    
+    Args:
+        max_seq_len: Maximum sequence length
+        d_model: Model dimension (512 typical)
+    
+    Returns:
+        Positional encoding matrix (max_seq_len, d_model)
+    """
+    position = np.arange(max_seq_len)[:, np.newaxis]  # (max_seq_len, 1)
+    div_term = np.exp(np.arange(0, d_model, 2) * -(np.log(10000.0) / d_model))
+    
+    pe = np.zeros((max_seq_len, d_model))
+    pe[:, 0::2] = np.sin(position * div_term)  # Even dimensions
+    pe[:, 1::2] = np.cos(position * div_term)  # Odd dimensions
+    
+    return torch.FloatTensor(pe)
+
+# Visualize positional encoding patterns
+pe = get_positional_encoding(100, 512)
+print(f"Positional encoding shape: {pe.shape}")  # (100, 512)
+
+# Position 0 and position 1 have different patterns
+print(f"Position 0: {pe[0, :8]}")  # First 8 dims
+print(f"Position 1: {pe[1, :8]}")  # Different values!</code></pre>
+
+                <h3>3. Feed-Forward Network: Non-Linear Transformation</h3>
+                <p>
+                    After attention, each position passes through a <strong>2-layer feed-forward network</strong> (same network applied to each position independently).
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    FFN(x) = max(0, xW<sub>1</sub> + b<sub>1</sub>)W<sub>2</sub> + b<sub>2</sub><br><br>
+                    
+                    Typical dimensions:<br>
+                    • Input: d<sub>model</sub> = 512<br>
+                    • Hidden: d<sub>ff</sub> = 2048 (4x expansion!)<br>
+                    • Output: d<sub>model</sub> = 512<br><br>
+                    
+                    <strong>Purpose:</strong> Add non-linearity and model complexity. Attention is linear, FFN adds expressiveness!
+                </div>
+
+                <pre><code class="language-python">class FeedForward(nn.Module):
+    def __init__(self, d_model=512, d_ff=2048, dropout=0.1):
+        super().__init__()
+        self.linear1 = nn.Linear(d_model, d_ff)
+        self.linear2 = nn.Linear(d_ff, d_model)
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x):
+        # x: (batch, seq_len, d_model)
+        x = self.linear1(x)              # (batch, seq_len, d_ff)
+        x = torch.relu(x)                # ReLU activation
+        x = self.dropout(x)
+        x = self.linear2(x)              # (batch, seq_len, d_model)
+        return x</code></pre>
+
+                <h3>4. Layer Normalization: Stabilize Training</h3>
+                <p>
+                    Normalize activations to have mean=0, variance=1. Critical for training deep Transformers (GPT-3 has 96 layers!).
+                </p>
+
+                <pre><code class="language-python">class LayerNorm(nn.Module):
+    def __init__(self, d_model, eps=1e-6):
+        super().__init__()
+        self.gamma = nn.Parameter(torch.ones(d_model))  # Scale
+        self.beta = nn.Parameter(torch.zeros(d_model))  # Shift
+        self.eps = eps
+        
+    def forward(self, x):
+        mean = x.mean(-1, keepdim=True)
+        std = x.std(-1, keepdim=True)
+        return self.gamma * (x - mean) / (std + self.eps) + self.beta</code></pre>
+
+                <h3>5. Residual Connections: Skip Connections</h3>
+                <p>
+                    Add input to output of each sub-layer. Enables gradient flow in very deep networks.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    output = LayerNorm(x + Sublayer(x))<br><br>
+                    
+                    <strong>Why it works:</strong><br>
+                    • Direct path for gradients to flow backwards<br>
+                    • Each layer learns residual (what to add), not full transformation<br>
+                    • Allows training 100+ layer models
+                </div>
+
+                <h3>Putting It All Together: Transformer Block</h3>
+                <pre><code class="language-python">class TransformerBlock(nn.Module):
+    """
+    Complete Transformer encoder block with:
+    - Multi-head self-attention
+    - Feed-forward network
+    - Layer normalization
+    - Residual connections
+    """
+    def __init__(self, d_model=512, num_heads=8, d_ff=2048, dropout=0.1):
+        super().__init__()
+        self.attention = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = FeedForward(d_model, d_ff, dropout)
+        self.norm1 = LayerNorm(d_model)
+        self.norm2 = LayerNorm(d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+        
+    def forward(self, x, mask=None):
+        # 1. Multi-head self-attention with residual + norm
+        attention_output, _ = self.attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout1(attention_output))
+        
+        # 2. Feed-forward with residual + norm
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout2(ff_output))
+        
+        return x
+
+# Stack multiple blocks for full Transformer
+class Transformer(nn.Module):
+    def __init__(self, vocab_size, d_model=512, num_heads=8, num_layers=6, 
+                 d_ff=2048, max_seq_len=512, dropout=0.1):
+        super().__init__()
+        
+        # Token + positional embeddings
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.pos_encoding = get_positional_encoding(max_seq_len, d_model)
+        self.dropout = nn.Dropout(dropout)
+        
+        # Stack of Transformer blocks
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        # Output projection
+        self.norm = LayerNorm(d_model)
+        self.output = nn.Linear(d_model, vocab_size)
+        
+    def forward(self, x, mask=None):
+        # x: (batch, seq_len) - token IDs
+        seq_len = x.size(1)
+        
+        # Embedding + positional encoding
+        x = self.embedding(x)  # (batch, seq_len, d_model)
+        x = x + self.pos_encoding[:seq_len, :].to(x.device)
+        x = self.dropout(x)
+        
+        # Pass through Transformer blocks
+        for block in self.blocks:
+            x = block(x, mask)
+        
+        # Output projection
+        x = self.norm(x)
+        logits = self.output(x)  # (batch, seq_len, vocab_size)
+        
+        return logits</code></pre>
+
+                <h3>The Complete Architecture Visualized</h3>
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; font-family: monospace; font-size: 0.9rem;">
+                    Input Tokens: ["The", "cat", "sat"]<br>
+                    &nbsp;&nbsp;↓<br>
+                    Token Embedding (vocab_size → d_model)<br>
+                    &nbsp;&nbsp;+<br>
+                    Positional Encoding (add position info)<br>
+                    &nbsp;&nbsp;↓<br>
+                    ┌─────────────────────────────────┐<br>
+                    │ Transformer Block 1             │<br>
+                    │  • Multi-Head Self-Attention    │<br>
+                    │  • Add & Norm (residual)        │<br>
+                    │  • Feed-Forward Network         │<br>
+                    │  • Add & Norm (residual)        │<br>
+                    └─────────────────────────────────┘<br>
+                    &nbsp;&nbsp;↓<br>
+                    ┌─────────────────────────────────┐<br>
+                    │ Transformer Block 2             │<br>
+                    │  • (same structure)             │<br>
+                    └─────────────────────────────────┘<br>
+                    &nbsp;&nbsp;↓<br>
+                    ... (4 more blocks) ...<br>
+                    &nbsp;&nbsp;↓<br>
+                    ┌─────────────────────────────────┐<br>
+                    │ Transformer Block 6             │<br>
+                    └─────────────────────────────────┘<br>
+                    &nbsp;&nbsp;↓<br>
+                    Layer Normalization<br>
+                    &nbsp;&nbsp;↓<br>
+                    Linear (d_model → vocab_size)<br>
+                    &nbsp;&nbsp;↓<br>
+                    Output Logits (probabilities for next token)<br>
+                </div>
+
+                <div class="success-box">
+                    <p><strong>✅ Key Architecture Components:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Multi-Head Attention:</strong> 8-16 parallel heads learn different patterns</li>
+                        <li><strong>Positional Encoding:</strong> Sinusoidal functions inject position information</li>
+                        <li><strong>Feed-Forward:</strong> 2-layer MLP with 4x expansion (512 → 2048 → 512)</li>
+                        <li><strong>Layer Norm:</strong> Stabilizes training, mean=0 std=1</li>
+                        <li><strong>Residual Connections:</strong> x + Sublayer(x) enables deep stacking</li>
+                        <li><strong>Parallel Processing:</strong> All positions computed simultaneously</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🤖 Transformer Variants: BERT, GPT, T5</h2>
+                
+                <p>
+                    The original Transformer had both encoder and decoder. Modern models specialize: encoder-only for understanding, decoder-only for generation, or encoder-decoder for translation tasks.
+                </p>
+
+                <h3>1. Encoder-Only: BERT (Bidirectional Encoder Representations)</h3>
+                <p>
+                    <strong>BERT</strong> (Google, 2018) uses only the Transformer encoder. Processes text <strong>bidirectionally</strong>—sees both past and future context simultaneously.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>Architecture</strong><br><br>
+                        • Stack of Transformer encoder blocks only<br>
+                        • BERT-Base: 12 layers, 768 dims, 110M params<br>
+                        • BERT-Large: 24 layers, 1024 dims, 340M params<br>
+                        • Bidirectional attention (sees full context)
+                    </div>
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>Pre-training Tasks</strong><br><br>
+                        • <strong>Masked Language Model (MLM):</strong> Predict masked words<br>
+                        &nbsp;&nbsp;"The [MASK] sat on the mat" → "cat"<br>
+                        • <strong>Next Sentence Prediction:</strong> Does sentence B follow A?<br>
+                        • Trained on BookCorpus + Wikipedia
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Best For:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ <strong>Text Classification:</strong> Sentiment analysis, spam detection, intent classification</li>
+                        <li>✅ <strong>Named Entity Recognition (NER):</strong> Extract people, organizations, locations</li>
+                        <li>✅ <strong>Question Answering:</strong> Find answers in documents (SQuAD dataset)</li>
+                        <li>✅ <strong>Semantic Similarity:</strong> Compare sentence meanings</li>
+                        <li>✅ <strong>Token Classification:</strong> POS tagging, chunking</li>
+                        <li>❌ <strong>NOT for text generation:</strong> Encoder only, no autoregressive generation</li>
+                    </ul>
+                </div>
+
+                <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer
+import torch
+
+# ============ LOAD PRE-TRAINED BERT ============
+model_name = "bert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(
+    model_name,
+    num_labels=2  # Binary classification (positive/negative)
+)
+
+# ============ PREPARE DATA ============
+texts = [
+    "This movie was fantastic! I loved every minute.",
+    "Terrible film, waste of time and money.",
+    "Pretty good, would recommend to friends."
+]
+labels = [1, 0, 1]  # 1 = positive, 0 = negative
+
+# Tokenize
+encodings = tokenizer(
+    texts,
+    padding=True,
+    truncation=True,
+    max_length=128,
+    return_tensors='pt'
+)
+
+# ============ FINE-TUNE ON YOUR DATA ============
+# (In practice, use Trainer API with train/eval datasets)
+outputs = model(**encodings, labels=torch.tensor(labels))
+loss = outputs.loss
+logits = outputs.logits
+
+print(f"Loss: {loss.item()}")
+print(f"Predictions: {torch.argmax(logits, dim=1)}")
+
+# ============ INFERENCE ============
+new_text = "Amazing experience, highly recommend!"
+inputs = tokenizer(new_text, return_tensors='pt')
+with torch.no_grad():
+    outputs = model(**inputs)
+    prediction = torch.argmax(outputs.logits, dim=1)
+    
+sentiment = "Positive" if prediction == 1 else "Negative"
+print(f"Sentiment: {sentiment}")</code></pre>
+
+                <h3>2. Decoder-Only: GPT (Generative Pre-trained Transformer)</h3>
+                <p>
+                    <strong>GPT</strong> (OpenAI, 2018-2023) uses only the Transformer decoder. Processes text <strong>left-to-right</strong>—generates one token at a time, conditioning on previous tokens.
+                </p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>Architecture</strong><br><br>
+                        • Stack of Transformer decoder blocks only<br>
+                        • GPT-2: 48 layers, 1600 dims, 1.5B params<br>
+                        • GPT-3: 96 layers, 12288 dims, 175B params<br>
+                        • Causal (unidirectional) attention → can't see future
+                    </div>
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px;">
+                        <strong>Pre-training Task</strong><br><br>
+                        • <strong>Causal Language Modeling:</strong> Predict next token<br>
+                        &nbsp;&nbsp;"The cat sat" → "on"<br>
+                        &nbsp;&nbsp;"The cat sat on" → "the"<br>
+                        • Trained on WebText (GPT-2), internet-scale (GPT-3)
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Best For:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ <strong>Text Generation:</strong> Creative writing, stories, articles</li>
+                        <li>✅ <strong>Chatbots:</strong> Conversational AI (ChatGPT, Claude)</li>
+                        <li>✅ <strong>Code Generation:</strong> GitHub Copilot, programming assistants</li>
+                        <li>✅ <strong>Few-Shot Learning:</strong> Solve tasks from examples in prompt</li>
+                        <li>✅ <strong>Text Completion:</strong> Autocomplete, suggestions</li>
+                        <li>✅ <strong>Zero-Shot Tasks:</strong> GPT-3+ can do tasks without fine-tuning</li>
+                    </ul>
+                </div>
+
+                <pre><code class="language-python">from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+
+# ============ LOAD PRE-TRAINED GPT ============
+model_name = "gpt2"  # or "gpt2-medium", "gpt2-large", "gpt2-xl"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+# Set pad token (GPT-2 doesn't have one by default)
+tokenizer.pad_token = tokenizer.eos_token
+
+# ============ TEXT GENERATION ============
+prompt = "Once upon a time in a distant galaxy,"
+
+# Encode prompt
+input_ids = tokenizer.encode(prompt, return_tensors='pt')
+
+# Generate with different strategies
+outputs = model.generate(
+    input_ids,
+    max_length=100,              # Maximum length
+    num_return_sequences=3,      # Generate 3 variations
+    temperature=0.8,             # Randomness (0.0 = deterministic, 1.0+ = creative)
+    top_k=50,                    # Sample from top 50 tokens
+    top_p=0.95,                  # Nucleus sampling (top 95% probability mass)
+    do_sample=True,              # Enable sampling
+    pad_token_id=tokenizer.eos_token_id
+)
+
+# Decode and print
+for i, output in enumerate(outputs):
+    text = tokenizer.decode(output, skip_special_tokens=True)
+    print(f"\n=== Generation {i+1} ===")
+    print(text)
+
+# ============ FEW-SHOT PROMPTING ============
+few_shot_prompt = """Translate English to French:
+English: Hello, how are you?
+French: Bonjour, comment allez-vous?
+
+English: I love learning AI.
+French: J'aime apprendre l'IA.
+
+English: The weather is beautiful today.
+French:"""
+
+input_ids = tokenizer.encode(few_shot_prompt, return_tensors='pt')
+output = model.generate(input_ids, max_length=150, temperature=0.3)
+print(tokenizer.decode(output[0], skip_special_tokens=True))</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Causal Masking in GPT:</strong></p>
+                    <p style="margin-top: 0.75rem;">GPT uses <strong>causal attention mask</strong> to prevent looking at future tokens:</p>
+                    <pre style="background: #fef2f2; padding: 1rem; margin-top: 0.5rem; color: #444;"><code># Attention mask for "The cat sat"
+      The   cat   sat
+The   ✅    ❌    ❌     (can only see "The")
+cat   ✅    ✅    ❌     (can see "The cat")
+sat   ✅    ✅    ✅     (can see all previous)
+
+# This enables autoregressive generation!</code></pre>
+                </div>
+
+                <h3>3. Encoder-Decoder: T5 (Text-to-Text Transfer Transformer)</h3>
+                <p>
+                    <strong>T5</strong> (Google, 2019) uses the full Transformer architecture (encoder + decoder). Frames <strong>every task as text-to-text</strong>!
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Text-to-Text Framework:</strong><br><br>
+                    
+                    <strong>Translation:</strong><br>
+                    Input: "translate English to German: Hello world"<br>
+                    Output: "Hallo Welt"<br><br>
+
+                    <strong>Summarization:</strong><br>
+                    Input: "summarize: [long article text]"<br>
+                    Output: "[short summary]"<br><br>
+
+                    <strong>Question Answering:</strong><br>
+                    Input: "question: What is the capital? context: France is a country..."<br>
+                    Output: "Paris"<br><br>
+
+                    <strong>Classification:</strong><br>
+                    Input: "sentiment: This movie was terrible"<br>
+                    Output: "negative"
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Best For:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ <strong>Machine Translation:</strong> Encoder processes source, decoder generates target</li>
+                        <li>✅ <strong>Summarization:</strong> Compress long documents to short summaries</li>
+                        <li>✅ <strong>Question Answering:</strong> Generate answers (not just extract spans)</li>
+                        <li>✅ <strong>Data-to-Text:</strong> Generate descriptions from structured data</li>
+                        <li>✅ <strong>Paraphrasing:</strong> Rewrite text while preserving meaning</li>
+                    </ul>
+                </div>
+
+                <pre><code class="language-python">from transformers import T5Tokenizer, T5ForConditionalGeneration
+
+# ============ LOAD T5 ============
+model_name = "t5-small"  # or "t5-base", "t5-large", "t5-3b", "t5-11b"
+tokenizer = T5Tokenizer.from_pretrained(model_name)
+model = T5ForConditionalGeneration.from_pretrained(model_name)
+
+# ============ SUMMARIZATION ============
+article = """The Transformer architecture has revolutionized natural language processing. 
+Introduced in 2017, it relies entirely on attention mechanisms, eschewing recurrence. 
+This allows for much more parallelization and has led to models like BERT and GPT-3."""
+
+input_text = "summarize: " + article
+input_ids = tokenizer.encode(input_text, return_tensors='pt', max_length=512, truncation=True)
+
+# Generate summary
+summary_ids = model.generate(
+    input_ids,
+    max_length=50,
+    num_beams=4,           # Beam search for better quality
+    early_stopping=True
+)
+summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+print(f"Summary: {summary}")
+
+# ============ TRANSLATION ============
+input_text = "translate English to French: How are you today?"
+input_ids = tokenizer.encode(input_text, return_tensors='pt')
+
+translation_ids = model.generate(input_ids, max_length=50)
+translation = tokenizer.decode(translation_ids[0], skip_special_tokens=True)
+print(f"Translation: {translation}")
+
+# ============ QUESTION ANSWERING ============
+context = "Paris is the capital and largest city of France. It has a population of 2.2 million."
+question = "What is the capital of France?"
+input_text = f"question: {question} context: {context}"
+
+input_ids = tokenizer.encode(input_text, return_tensors='pt', max_length=512)
+answer_ids = model.generate(input_ids, max_length=20)
+answer = tokenizer.decode(answer_ids[0], skip_special_tokens=True)
+print(f"Answer: {answer}")</code></pre>
+
+                <h3>Comparison: BERT vs GPT vs T5</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Aspect</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">BERT (Encoder-Only)</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">GPT (Decoder-Only)</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">T5 (Encoder-Decoder)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Attention Type</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bidirectional (sees all)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Causal (left-to-right)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Bi (encoder) + Causal (decoder)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Pre-training</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Masked LM + NSP</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Next token prediction</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Span corruption (fill in blanks)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Best For</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Classification, NER, Q&A</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Generation, chat, few-shot</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Translation, summarization</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Generation</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">❌ No (encoder only)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Yes (autoregressive)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Yes (seq2seq)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Understanding</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Excellent (full context)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">⚠️ Good (but causal only)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">✅ Excellent (encoder)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Parameters</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">110M-340M</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">117M-175B (GPT-3)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">60M-11B</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Example Use</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sentiment analysis API</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">ChatGPT, Copilot</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Google Translate</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p><strong>✅ Quick Decision Guide:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li><strong>Need to classify/extract?</strong> → Use BERT (or RoBERTa, ALBERT)</li>
+                        <li><strong>Need to generate text?</strong> → Use GPT (or GPT-2, GPT-3, LLaMA)</li>
+                        <li><strong>Need sequence-to-sequence?</strong> → Use T5 (or BART, mT5)</li>
+                        <li><strong>Need both understanding + generation?</strong> → Use modern instruct-tuned LLMs (GPT-4, Claude)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary & Key Takeaways</h2>
+                
+                <p>
+                    Congratulations! You've mastered the Transformer architecture—the foundation of modern AI. Let's consolidate everything you've learned.
+                </p>
+
+                <h3>Core Concepts Mastered</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Attention Mechanism</h3>
+                        <p><strong>Formula:</strong> Attention(Q, K, V) = softmax(QK<sup>T</sup>/√d<sub>k</sub>)V</p>
+                        <p><strong>Purpose:</strong> Focus on relevant positions dynamically</p>
+                        <p><strong>Benefit:</strong> No sequential bottleneck, direct connections</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Multi-Head Attention</h3>
+                        <p><strong>Concept:</strong> 8-16 parallel attention heads</p>
+                        <p><strong>Purpose:</strong> Learn different relationship patterns</p>
+                        <p><strong>Example:</strong> syntax, semantics, coreference, etc.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">📍</div>
+                        <h3>Positional Encoding</h3>
+                        <p><strong>Method:</strong> Sinusoidal functions (sin/cos)</p>
+                        <p><strong>Purpose:</strong> Inject position information</p>
+                        <p><strong>Why needed:</strong> Attention has no notion of order</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Parallel Processing</h3>
+                        <p><strong>Key innovation:</strong> Process all tokens simultaneously</p>
+                        <p><strong>vs RNN:</strong> 100x faster training</p>
+                        <p><strong>Enables:</strong> Internet-scale pre-training</p>
+                    </div>
+                </div>
+
+                <h3>Architecture Components</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: #078930; color: white;">
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Component</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Purpose</th>
+                            <th style="padding: 0.75rem; border: 1px solid #ddd;">Key Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Multi-Head Attention</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Focus on relevant positions</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">8 heads, d<sub>k</sub>=64 each (typical)</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Feed-Forward Network</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Add non-linearity</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">512 → 2048 → 512 (4x expansion)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Layer Normalization</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Stabilize training</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Mean=0, Std=1 per layer</td>
+                        </tr>
+                        <tr style="background: #f9fafb;">
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Residual Connections</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Enable deep networks</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">x + Sublayer(x) pattern</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>Positional Encoding</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Inject position info</td>
+                            <td style="padding: 0.75rem; border: 1px solid #ddd;">Sinusoidal functions</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Transformer Variants Quick Reference</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>🔍 BERT</strong><br>
+                        <strong>Encoder-Only</strong><br><br>
+                        <strong>Attention:</strong> Bidirectional<br>
+                        <strong>Task:</strong> Understanding<br>
+                        <strong>Use cases:</strong><br>
+                        • Sentiment analysis<br>
+                        • NER<br>
+                        • Classification<br>
+                        • Q&A (extraction)<br><br>
+                        <strong>Examples:</strong><br>
+                        BERT, RoBERTa, ALBERT, DistilBERT
+                    </div>
+
+                    <div style="background: #d1fae5; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>✍️ GPT</strong><br>
+                        <strong>Decoder-Only</strong><br><br>
+                        <strong>Attention:</strong> Causal (left-to-right)<br>
+                        <strong>Task:</strong> Generation<br>
+                        <strong>Use cases:</strong><br>
+                        • Text generation<br>
+                        • Chat<br>
+                        • Code generation<br>
+                        • Few-shot learning<br><br>
+                        <strong>Examples:</strong><br>
+                        GPT-2, GPT-3, GPT-4, LLaMA, Claude
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 1.25rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>🔄 T5</strong><br>
+                        <strong>Encoder-Decoder</strong><br><br>
+                        <strong>Attention:</strong> Both types<br>
+                        <strong>Task:</strong> Seq2seq<br>
+                        <strong>Use cases:</strong><br>
+                        • Translation<br>
+                        • Summarization<br>
+                        • Q&A (generation)<br>
+                        • Paraphrasing<br><br>
+                        <strong>Examples:</strong><br>
+                        T5, BART, mBART, mT5
+                    </div>
+                </div>
+
+                <h3>Why Transformers Dominate: The Full Picture</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ RNN/LSTM Limitations</strong><br><br>
+                        • Sequential processing (slow)<br>
+                        • Limited context (~100 tokens)<br>
+                        • Vanishing gradients<br>
+                        • Memory bottleneck<br>
+                        • Can't parallelize training<br>
+                        • Difficult to scale
+                    </div>
+                    <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 6px;">
+                        <strong>✅ Transformer Advantages</strong><br><br>
+                        • Parallel processing (100x faster)<br>
+                        • Unlimited context (100,000+ tokens)<br>
+                        • Clean gradient flow<br>
+                        • Direct connections via attention<br>
+                        • Saturate thousands of GPUs<br>
+                        • Scale to 175B+ parameters
+                    </div>
+                </div>
+
+                <h3>Mental Models & Decision Trees</h3>
+                <div class="example-box">
+                    <strong>🎯 Choosing the Right Model:</strong><br><br>
+                    
+                    <strong>Question 1: What's your task?</strong><br>
+                    • <strong>Classify/Extract information?</strong> → BERT-style encoder<br>
+                    &nbsp;&nbsp;Examples: Sentiment, NER, intent classification<br><br>
+                    
+                    • <strong>Generate new text?</strong> → GPT-style decoder<br>
+                    &nbsp;&nbsp;Examples: Writing, chat, code completion<br><br>
+                    
+                    • <strong>Transform one sequence to another?</strong> → T5-style encoder-decoder<br>
+                    &nbsp;&nbsp;Examples: Translation, summarization<br><br>
+
+                    <strong>Question 2: Do you need bidirectional context?</strong><br>
+                    • <strong>Yes (full sentence available):</strong> BERT/T5<br>
+                    • <strong>No (generate left-to-right):</strong> GPT<br><br>
+
+                    <strong>Question 3: How much data/compute?</strong><br>
+                    • <strong>Limited:</strong> Use smaller models (BERT-base, DistilBERT)<br>
+                    • <strong>Abundant:</strong> Scale up (BERT-large, GPT-3)<br><br>
+
+                    <strong>Question 4: Fine-tune or few-shot?</strong><br>
+                    • <strong>Have labeled data:</strong> Fine-tune BERT/GPT/T5<br>
+                    • <strong>Few examples only:</strong> Use large GPT with prompting
+                </div>
+
+                <h3>Common Pitfalls & Best Practices</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Pitfall: Out of Memory</strong><br>
+                        <em>Training crashes with CUDA OOM</em><br><br>
+                        <strong>Solutions:</strong><br>
+                        • Reduce batch size<br>
+                        • Use gradient accumulation<br>
+                        • Enable mixed precision (fp16)<br>
+                        • Try gradient checkpointing<br>
+                        • Use smaller model variant
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Pitfall: Slow Inference</strong><br>
+                        <em>Takes too long to generate</em><br><br>
+                        <strong>Solutions:</strong><br>
+                        • Use model distillation (DistilBERT)<br>
+                        • Quantization (int8, int4)<br>
+                        • Reduce max sequence length<br>
+                        • Batch predictions<br>
+                        • Consider smaller model
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Pitfall: Poor Fine-tuning</strong><br>
+                        <em>Model overfits or doesn't learn</em><br><br>
+                        <strong>Solutions:</strong><br>
+                        • Use lower learning rate (1e-5 to 5e-5)<br>
+                        • Add warmup steps<br>
+                        • More training data<br>
+                        • Try different pre-trained model<br>
+                        • Freeze early layers
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 4px solid #ef4444; padding: 1.25rem; border-radius: 6px;">
+                        <strong>❌ Pitfall: Sequence Length Issues</strong><br>
+                        <em>Input exceeds max length (512/1024)</em><br><br>
+                        <strong>Solutions:</strong><br>
+                        • Truncate intelligently (keep important parts)<br>
+                        • Use hierarchical processing<br>
+                        • Try Longformer/BigBird (longer context)<br>
+                        • Split into chunks and aggregate
+                    </div>
+                </div>
+
+                <h3>Practice Projects</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">😊</div>
+                        <h3>Project 1: Sentiment Classifier</h3>
+                        <p><strong>Goal:</strong> Fine-tune BERT for sentiment analysis</p>
+                        <p><strong>Dataset:</strong> IMDB reviews (Hugging Face)</p>
+                        <p><strong>Skills:</strong> Tokenization, fine-tuning, evaluation</p>
+                        <p><strong>Bonus:</strong> Compare BERT vs RoBERTa vs DistilBERT</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✍️</div>
+                        <h3>Project 2: Text Generator</h3>
+                        <p><strong>Goal:</strong> Generate creative stories with GPT-2</p>
+                        <p><strong>Dataset:</strong> Pre-trained GPT-2 (no training needed!)</p>
+                        <p><strong>Skills:</strong> Prompting, sampling strategies, temperature</p>
+                        <p><strong>Bonus:</strong> Implement top-k and nucleus sampling</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>Project 3: Translator</h3>
+                        <p><strong>Goal:</strong> Fine-tune T5 for translation</p>
+                        <p><strong>Dataset:</strong> WMT translation datasets</p>
+                        <p><strong>Skills:</strong> Seq2seq, BLEU evaluation, beam search</p>
+                        <p><strong>Bonus:</strong> Try multiple language pairs</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Project 4: Q&A System</h3>
+                        <p><strong>Goal:</strong> Build extractive Q&A with BERT</p>
+                        <p><strong>Dataset:</strong> SQuAD 2.0 (Stanford)</p>
+                        <p><strong>Skills:</strong> Span extraction, F1 score, confidence</p>
+                        <p><strong>Bonus:</strong> Add "no answer" detection</p>
+                    </div>
+                </div>
+
+                <h3>What You've Mastered</h3>
+                <div class="success-box">
+                    <p><strong>🎓 Congratulations! You now understand:</strong></p>
+                    <ul style="margin-top: 0.75rem; line-height: 2;">
+                        <li>✅ <strong>Attention mechanism:</strong> Query-Key-Value, scaled dot-product, why it works</li>
+                        <li>✅ <strong>Self-attention:</strong> Every position attends to every position</li>
+                        <li>✅ <strong>Multi-head attention:</strong> Multiple perspectives in parallel</li>
+                        <li>✅ <strong>Positional encoding:</strong> Sinusoidal injection of position info</li>
+                        <li>✅ <strong>Transformer architecture:</strong> Encoder blocks, decoder blocks, residual connections</li>
+                        <li>✅ <strong>Model variants:</strong> BERT (encoder), GPT (decoder), T5 (both)</li>
+                        <li>✅ <strong>Implementation:</strong> How to use transformers in practice</li>
+                        <li>✅ <strong>Design decisions:</strong> When to use which architecture</li>
+                    </ul>
+                </div>
+
+                <h3>The Transformer Impact</h3>
+                <div style="background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                    <strong style="font-size: 1.3rem;">🚀 The AI Revolution, Enabled by Transformers:</strong><br><br>
+                    
+                    <strong>2017:</strong> Attention is All You Need paper<br>
+                    <strong>2018:</strong> BERT revolutionizes NLP understanding<br>
+                    <strong>2019:</strong> GPT-2 shows emergence with scale<br>
+                    <strong>2020:</strong> GPT-3 achieves few-shot learning<br>
+                    <strong>2021:</strong> Vision Transformers beat CNNs<br>
+                    <strong>2022:</strong> ChatGPT reaches 100M users in 2 months<br>
+                    <strong>2023-2025:</strong> Multimodal AI, agents, reasoning systems<br><br>
+
+                    <strong>Key Insight:</strong> Transformers didn't just improve performance—they fundamentally changed what's possible with AI by enabling:<br>
+                    • Internet-scale pre-training (175B+ parameters)<br>
+                    • Transfer learning across domains<br>
+                    • Few-shot and zero-shot capabilities<br>
+                    • Emergent abilities at scale<br>
+                    • Foundation models for AGI research
+                </div>
+
+                <h3>What's Next?</h3>
+                <p>
+                    You've conquered the architecture that powers modern AI! In the next tutorial, <strong>Transfer Learning & Fine-tuning</strong>, you'll learn how to:
+                </p>
+                <ul>
+                    <li>🎯 Leverage pre-trained models for your tasks</li>
+                    <li>🔧 Fine-tune BERT, GPT, and T5 on custom data</li>
+                    <li>⚡ Use adapters and LoRA for efficient fine-tuning</li>
+                    <li>📊 Evaluate and deploy your models</li>
+                    <li>💡 Build production ML systems with transfer learning</li>
+                </ul>
+
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 2rem; border-radius: 8px; margin: 2rem 0; text-align: center;">
+                    <h3 style="margin-top: 0;">🎉 Outstanding Achievement!</h3>
+                    <p style="font-size: 1.1rem; margin: 1rem 0;">
+                        You've mastered Transformers—the most important architecture in modern AI! You now understand the technology behind GPT-4, Claude, BERT, and every major AI breakthrough of the past 8 years.
+                    </p>
+                    <p style="margin: 0; opacity: 0.95;">
+                        <strong>Next:</strong> Learn how to harness pre-trained Transformers for your own applications! 🚀
+                    </p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of attention mechanisms and transformers!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="C">
+                        <h4>1. What is the primary purpose of the attention mechanism?</h4>
+                        <div class="quiz-option" data-value="A">A) To reduce model size</div>
+                        <div class="quiz-option" data-value="B">B) To speed up training</div>
+                        <div class="quiz-option" data-value="C">C) To allow models to focus on relevant parts of the input</div>
+                        <div class="quiz-option" data-value="D">D) To eliminate the need for training data</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>2. In self-attention, what are the three key components?</h4>
+                        <div class="quiz-option" data-value="A">A) Input, output, and hidden state</div>
+                        <div class="quiz-option" data-value="B">B) Query, key, and value</div>
+                        <div class="quiz-option" data-value="C">C) Encoder, decoder, and attention</div>
+                        <div class="quiz-option" data-value="D">D) Forward, backward, and update</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>3. What is a key advantage of Transformers over RNNs?</h4>
+                        <div class="quiz-option" data-value="A">A) They require less training data</div>
+                        <div class="quiz-option" data-value="B">B) They use less memory</div>
+                        <div class="quiz-option" data-value="C">C) They are easier to implement</div>
+                        <div class="quiz-option" data-value="D">D) They can process sequences in parallel</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>4. What does the encoder in a Transformer do?</h4>
+                        <div class="quiz-option" data-value="A">A) Processes and encodes the input sequence into a representation</div>
+                        <div class="quiz-option" data-value="B">B) Generates the output sequence</div>
+                        <div class="quiz-option" data-value="C">C) Calculates the loss function</div>
+                        <div class="quiz-option" data-value="D">D) Applies regularization to prevent overfitting</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What problem does multi-head attention help solve?</h4>
+                        <div class="quiz-option" data-value="A">A) Reduces computational cost</div>
+                        <div class="quiz-option" data-value="B">B) Allows the model to attend to different aspects of the input simultaneously</div>
+                        <div class="quiz-option" data-value="C">C) Eliminates the need for positional encoding</div>
+                        <div class="quiz-option" data-value="D">D) Prevents overfitting</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="recurrent-neural-networks.html" class="btn btn-secondary">← Previous: Recurrent Neural Networks</a>
+                <a href="transfer-learning-and-fine-tuning.html" class="btn btn-primary">Next: Transfer Learning →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

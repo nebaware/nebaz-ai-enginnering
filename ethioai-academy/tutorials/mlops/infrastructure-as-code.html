@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Infrastructure as Code for ML with Terraform, CloudFormation, automated environment provisioning, and secrets management with Vault. Build reproducible ML infrastructure.">
+    <meta name="keywords" content="Infrastructure as Code, IaC, Terraform, CloudFormation, Vault, secrets management, MLOps, cloud infrastructure, automation">
+    <title>Infrastructure as Code - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="infrastructure-as-code.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Infrastructure as Code</span>
+            </div>
+            <h1>Infrastructure as Code for ML</h1>
+            <p class="tutorial-intro">Automate ML infrastructure with Terraform and CloudFormation. Build reproducible environments, manage secrets with Vault, and eliminate manual configuration</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 10</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>🏗️ The Infrastructure Problem</h2>
+                <p>
+                    Your ML pipeline works perfectly in development. Now you need to deploy to staging and production. You:
+                </p>
+                <ul>
+                    <li>Manually click through AWS console creating S3 buckets, IAM roles, EC2 instances</li>
+                    <li>Document each step in a 20-page runbook</li>
+                    <li>Recreate everything for staging (slightly different)</li>
+                    <li>Someone needs to update a security group - which one was it?</li>
+                    <li>Disaster recovery? Start clicking again...</li>
+                </ul>
+
+                <p>
+                    <strong>Infrastructure as Code (IaC)</strong> treats infrastructure like software. You define infrastructure in code files, version control them, and automatically provision identical environments. Changes are code reviews, not manual clicks.
+                </p>
+
+                <div class="info-box">
+                    <p><strong>💡 IaC Benefits:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Reproducibility: Create identical environments every time</li>
+                        <li>Version Control: Track infrastructure changes in Git</li>
+                        <li>Documentation: Code is documentation</li>
+                        <li>Automation: No manual provisioning</li>
+                        <li>Testing: Test infrastructure changes before production</li>
+                        <li>Disaster Recovery: Rebuild entire infrastructure from code</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Terraform Basics -->
+            <section class="content-section" id="terraform">
+                <h2>🌍 Terraform for ML Infrastructure</h2>
+                
+                <h3>What is Terraform?</h3>
+                <p>
+                    Terraform is a cloud-agnostic IaC tool. Write infrastructure in HCL (HashiCorp Configuration Language), and Terraform provisions resources across AWS, Google Cloud, Azure, and 1000+ providers.
+                </p>
+
+                <h3>Installation</h3>
+                <pre><code class="language-bash"># Install Terraform (macOS)
+brew install terraform
+
+# Verify installation
+terraform version
+
+# Initialize AWS credentials
+export AWS_ACCESS_KEY_ID="your-key"
+export AWS_SECRET_ACCESS_KEY="your-secret"
+export AWS_DEFAULT_REGION="us-west-2"</code></pre>
+
+                <h3>Your First Terraform Configuration</h3>
+                <pre><code class="language-hcl"># main.tf - Create S3 bucket for ML data
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+# S3 bucket for training data
+resource "aws_s3_bucket" "ml_data" {
+  bucket = "my-ml-data-bucket"
+  
+  tags = {
+    Name        = "ML Training Data"
+    Environment = "production"
+    Project     = "ml-pipeline"
+  }
+}
+
+# Enable versioning
+resource "aws_s3_bucket_versioning" "ml_data_versioning" {
+  bucket = aws_s3_bucket.ml_data.id
+  
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# Block public access
+resource "aws_s3_bucket_public_access_block" "ml_data_public_access" {
+  bucket = aws_s3_bucket.ml_data.id
+  
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}</code></pre>
+
+                <pre><code class="language-bash"># Terraform workflow
+terraform init      # Initialize providers
+terraform plan      # Preview changes
+terraform apply     # Apply changes
+terraform destroy   # Destroy infrastructure</code></pre>
+
+                <h3>Complete ML Infrastructure</h3>
+                <pre><code class="language-hcl"># ml-infrastructure.tf
+# Variables for reusability
+variable "project_name" {
+  description = "Project name"
+  default     = "ml-pipeline"
+}
+
+variable "environment" {
+  description = "Environment (dev/staging/prod)"
+  default     = "production"
+}
+
+# S3 buckets for different stages
+resource "aws_s3_bucket" "raw_data" {
+  bucket = "${var.project_name}-raw-data-${var.environment}"
+}
+
+resource "aws_s3_bucket" "processed_data" {
+  bucket = "${var.project_name}-processed-data-${var.environment}"
+}
+
+resource "aws_s3_bucket" "models" {
+  bucket = "${var.project_name}-models-${var.environment}"
+}
+
+# IAM role for ML training job
+resource "aws_iam_role" "ml_training_role" {
+  name = "${var.project_name}-training-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "sagemaker.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# IAM policy for S3 access
+resource "aws_iam_policy" "ml_s3_access" {
+  name = "${var.project_name}-s3-access"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "${aws_s3_bucket.raw_data.arn}/*",
+          "${aws_s3_bucket.processed_data.arn}/*",
+          "${aws_s3_bucket.models.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach policy to role
+resource "aws_iam_role_policy_attachment" "ml_s3_attach" {
+  role       = aws_iam_role.ml_training_role.name
+  policy_arn = aws_iam_policy.ml_s3_access.arn
+}
+
+# EC2 instance for training
+resource "aws_instance" "ml_training" {
+  ami           = "ami-0c55b159cbfafe1f0"  # Deep Learning AMI
+  instance_type = "p3.2xlarge"  # GPU instance
+  
+  iam_instance_profile = aws_iam_instance_profile.ml_training_profile.name
+  
+  root_block_device {
+    volume_size = 100  # GB
+    volume_type = "gp3"
+  }
+  
+  tags = {
+    Name = "${var.project_name}-training-${var.environment}"
+  }
+  
+  user_data = <<-EOF
+              #!/bin/bash
+              pip install -r /app/requirements.txt
+              python /app/train.py
+              EOF
+}
+
+# IAM instance profile
+resource "aws_iam_instance_profile" "ml_training_profile" {
+  name = "${var.project_name}-training-profile"
+  role = aws_iam_role.ml_training_role.name
+}
+
+# RDS database for metadata
+resource "aws_db_instance" "ml_metadata" {
+  identifier           = "${var.project_name}-metadata"
+  engine              = "postgres"
+  engine_version      = "15.3"
+  instance_class      = "db.t3.micro"
+  allocated_storage   = 20
+  
+  db_name  = "mlmetadata"
+  username = "admin"
+  password = var.db_password  # From variable
+  
+  skip_final_snapshot = true
+  
+  tags = {
+    Name = "${var.project_name}-metadata-${var.environment}"
+  }
+}
+
+# Outputs
+output "raw_data_bucket" {
+  value = aws_s3_bucket.raw_data.bucket
+}
+
+output "models_bucket" {
+  value = aws_s3_bucket.models.bucket
+}
+
+output "training_instance_ip" {
+  value = aws_instance.ml_training.public_ip
+}
+
+output "database_endpoint" {
+  value = aws_db_instance.ml_metadata.endpoint
+}</code></pre>
+
+                <h3>Multi-Environment with Workspaces</h3>
+                <pre><code class="language-bash"># Create workspaces for different environments
+terraform workspace new dev
+terraform workspace new staging
+terraform workspace new production
+
+# Switch workspace
+terraform workspace select production
+
+# Apply to specific environment
+terraform apply -var="environment=production"
+
+# Each workspace has separate state!</code></pre>
+
+                <h3>Modules for Reusability</h3>
+                <pre><code class="language-hcl"># modules/ml-storage/main.tf
+variable "project_name" {}
+variable "environment" {}
+
+resource "aws_s3_bucket" "data" {
+  bucket = "${var.project_name}-${var.environment}"
+}
+
+resource "aws_s3_bucket_versioning" "data_versioning" {
+  bucket = aws_s3_bucket.data.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+output "bucket_name" {
+  value = aws_s3_bucket.data.bucket
+}
+
+output "bucket_arn" {
+  value = aws_s3_bucket.data.arn
+}</code></pre>
+
+                <pre><code class="language-hcl"># main.tf - Use module
+module "raw_data_storage" {
+  source = "./modules/ml-storage"
+  
+  project_name = "ml-pipeline"
+  environment  = "production"
+}
+
+module "models_storage" {
+  source = "./modules/ml-storage"
+  
+  project_name = "ml-models"
+  environment  = "production"
+}</code></pre>
+            </section>
+
+            <!-- AWS CloudFormation -->
+            <section class="content-section" id="cloudformation">
+                <h2>☁️ AWS CloudFormation</h2>
+                
+                <h3>CloudFormation vs Terraform</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Terraform</th>
+                            <th>CloudFormation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cloud Support</strong></td>
+                            <td>✅ Multi-cloud</td>
+                            <td>AWS only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Language</strong></td>
+                            <td>HCL</td>
+                            <td>YAML/JSON</td>
+                        </tr>
+                        <tr>
+                            <td><strong>State Management</strong></td>
+                            <td>Requires state file</td>
+                            <td>✅ Managed by AWS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AWS Integration</strong></td>
+                            <td>Good</td>
+                            <td>✅ Native</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Community</strong></td>
+                            <td>✅ Larger</td>
+                            <td>AWS-focused</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>CloudFormation Template</h3>
+                <pre><code class="language-yaml"># ml-infrastructure.yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ML Pipeline Infrastructure
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: ml-pipeline
+    Description: Project name prefix
+  
+  Environment:
+    Type: String
+    Default: production
+    AllowedValues:
+      - dev
+      - staging
+      - production
+    Description: Environment name
+
+Resources:
+  # S3 Bucket for training data
+  TrainingDataBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${ProjectName}-data-${Environment}'
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-data'
+        - Key: Environment
+          Value: !Ref Environment
+  
+  # S3 Bucket for models
+  ModelsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${ProjectName}-models-${Environment}'
+      VersioningConfiguration:
+        Status: Enabled
+  
+  # IAM Role for SageMaker
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${ProjectName}-sagemaker-role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                Resource:
+                  - !GetAtt TrainingDataBucket.Arn
+                  - !Sub '${TrainingDataBucket.Arn}/*'
+                  - !GetAtt ModelsBucket.Arn
+                  - !Sub '${ModelsBucket.Arn}/*'
+  
+  # ECR Repository for Docker images
+  MLModelRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Sub '${ProjectName}-models'
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+  
+  # ECS Cluster for model serving
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub '${ProjectName}-cluster-${Environment}'
+      CapacityProviders:
+        - FARGATE
+        - FARGATE_SPOT
+      DefaultCapacityProviderStrategy:
+        - CapacityProvider: FARGATE
+          Weight: 1
+  
+  # VPC for ML workloads
+  MLVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-vpc'
+
+Outputs:
+  DataBucketName:
+    Description: Training data bucket
+    Value: !Ref TrainingDataBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-DataBucket'
+  
+  ModelsBucketName:
+    Description: Models bucket
+    Value: !Ref ModelsBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-ModelsBucket'
+  
+  SageMakerRoleArn:
+    Description: SageMaker execution role ARN
+    Value: !GetAtt SageMakerExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-SageMakerRole'</code></pre>
+
+                <pre><code class="language-bash"># Deploy CloudFormation stack
+aws cloudformation create-stack \
+  --stack-name ml-infrastructure-prod \
+  --template-body file://ml-infrastructure.yaml \
+  --parameters ParameterKey=Environment,ParameterValue=production \
+  --capabilities CAPABILITY_NAMED_IAM
+
+# Update stack
+aws cloudformation update-stack \
+  --stack-name ml-infrastructure-prod \
+  --template-body file://ml-infrastructure.yaml
+
+# Delete stack
+aws cloudformation delete-stack \
+  --stack-name ml-infrastructure-prod
+
+# View stack outputs
+aws cloudformation describe-stacks \
+  --stack-name ml-infrastructure-prod \
+  --query 'Stacks[0].Outputs'</code></pre>
+            </section>
+
+            <!-- Secrets Management -->
+            <section class="content-section" id="secrets">
+                <h2>🔐 Secrets Management with Vault</h2>
+                
+                <h3>Why Vault?</h3>
+                <p>
+                    Never hardcode secrets (API keys, passwords, credentials) in code or config files. HashiCorp Vault provides centralized secrets management with encryption, access control, and audit logs.
+                </p>
+
+                <h3>Install Vault</h3>
+                <pre><code class="language-bash"># Install Vault
+brew install vault
+
+# Start Vault dev server (development only)
+vault server -dev
+
+# Set environment variable
+export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_TOKEN='<dev-token-from-output>'</code></pre>
+
+                <h3>Store and Retrieve Secrets</h3>
+                <pre><code class="language-bash"># Write secrets
+vault kv put secret/ml-pipeline/db \
+  username=admin \
+  password=secure-password-123
+
+vault kv put secret/ml-pipeline/aws \
+  access_key=AKIAIOSFODNN7EXAMPLE \
+  secret_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# Read secrets
+vault kv get secret/ml-pipeline/db
+
+# Get specific field
+vault kv get -field=password secret/ml-pipeline/db
+
+# List secrets
+vault kv list secret/ml-pipeline</code></pre>
+
+                <h3>Use Vault in Python</h3>
+                <pre><code class="language-python">"""
+Access secrets from Vault in Python
+"""
+import hvac
+
+# Initialize Vault client
+client = hvac.Client(
+    url='http://127.0.0.1:8200',
+    token='your-vault-token'
+)
+
+# Read database credentials
+db_secrets = client.secrets.kv.v2.read_secret_version(
+    path='ml-pipeline/db'
+)
+
+db_username = db_secrets['data']['data']['username']
+db_password = db_secrets['data']['data']['password']
+
+# Use credentials
+import psycopg2
+conn = psycopg2.connect(
+    host='ml-db.example.com',
+    database='mlmetadata',
+    user=db_username,
+    password=db_password
+)
+
+# Read AWS credentials
+aws_secrets = client.secrets.kv.v2.read_secret_version(
+    path='ml-pipeline/aws'
+)
+
+import boto3
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=aws_secrets['data']['data']['access_key'],
+    aws_secret_access_key=aws_secrets['data']['data']['secret_key']
+)</code></pre>
+
+                <h3>Vault with Terraform</h3>
+                <pre><code class="language-hcl"># Configure Vault provider
+provider "vault" {
+  address = "http://127.0.0.1:8200"
+  token   = var.vault_token
+}
+
+# Read secret from Vault
+data "vault_generic_secret" "db_creds" {
+  path = "secret/data/ml-pipeline/db"
+}
+
+# Use secret in resource
+resource "aws_db_instance" "ml_metadata" {
+  # ... other configuration
+  
+  username = data.vault_generic_secret.db_creds.data["username"]
+  password = data.vault_generic_secret.db_creds.data["password"]
+}
+
+# Write secret to Vault
+resource "vault_generic_secret" "api_key" {
+  path = "secret/ml-pipeline/api"
+  
+  data_json = jsonencode({
+    api_key = random_password.api_key.result
+  })
+}
+
+resource "random_password" "api_key" {
+  length  = 32
+  special = true
+}</code></pre>
+
+                <h3>AWS Secrets Manager Alternative</h3>
+                <pre><code class="language-bash"># Create secret in AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name ml-pipeline/db-credentials \
+  --secret-string '{"username":"admin","password":"secure-pass"}'
+
+# Retrieve secret
+aws secretsmanager get-secret-value \
+  --secret-id ml-pipeline/db-credentials</code></pre>
+
+                <pre><code class="language-python"># Access from Python
+import boto3
+import json
+
+client = boto3.client('secretsmanager', region_name='us-west-2')
+
+response = client.get_secret_value(SecretId='ml-pipeline/db-credentials')
+secrets = json.loads(response['SecretString'])
+
+db_username = secrets['username']
+db_password = secrets['password']</code></pre>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section" id="best-practices">
+                <h2>✅ IaC Best Practices</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📁</div>
+                        <h3>Version Control</h3>
+                        <p>Store IaC in Git. Every infrastructure change is code review + commit history</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔒</div>
+                        <h3>Never Commit Secrets</h3>
+                        <p>Use .gitignore for terraform.tfstate and *.tfvars. Store secrets in Vault/Secrets Manager</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📦</div>
+                        <h3>Remote State</h3>
+                        <p>Store Terraform state in S3 with DynamoDB locking for team collaboration</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🏷️</div>
+                        <h3>Tagging</h3>
+                        <p>Tag all resources with project, environment, owner for cost tracking</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🧪</div>
+                        <h3>Test Changes</h3>
+                        <p>Always run terraform plan before apply. Test in dev before production</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📚</div>
+                        <h3>Use Modules</h3>
+                        <p>Create reusable modules for common patterns (ML storage, compute, networking)</p>
+                    </div>
+                </div>
+
+                <h3>Remote State Configuration</h3>
+                <pre><code class="language-hcl"># backend.tf - Store state in S3
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state-bucket"
+    key            = "ml-pipeline/terraform.tfstate"
+    region         = "us-west-2"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
+}</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Security Considerations:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Never store secrets in Terraform files or state</li>
+                        <li>Enable state encryption (S3 bucket encryption)</li>
+                        <li>Use IAM roles/policies for least-privilege access</li>
+                        <li>Enable CloudTrail/audit logging for infrastructure changes</li>
+                        <li>Regularly rotate secrets and credentials</li>
+                        <li>Use separate AWS accounts for dev/staging/prod</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered Infrastructure as Code for ML:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🌍</div>
+                        <h3>Terraform</h3>
+                        <p>Multi-cloud IaC with HCL, modules, and workspaces</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">☁️</div>
+                        <h3>CloudFormation</h3>
+                        <p>AWS-native infrastructure provisioning with YAML</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔐</div>
+                        <h3>Secrets Management</h3>
+                        <p>Vault and AWS Secrets Manager for secure credentials</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">♻️</div>
+                        <h3>Reproducibility</h3>
+                        <p>Create identical environments from code</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📋</div>
+                        <h3>Version Control</h3>
+                        <p>Track all infrastructure changes in Git</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Automation</h3>
+                        <p>Eliminate manual provisioning and configuration</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Infrastructure as Code makes ML systems reproducible and maintainable</li>
+                    <li>Terraform provides multi-cloud support with modules and workspaces</li>
+                    <li>CloudFormation offers native AWS integration with managed state</li>
+                    <li>Never hardcode secrets - use Vault or Secrets Manager</li>
+                    <li>Store Terraform state remotely with locking for team collaboration</li>
+                    <li>Tag all resources for cost tracking and management</li>
+                    <li>Test infrastructure changes in dev before production</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your infrastructure is now code! Next, you'll learn model monitoring and observability - tracking model performance, detecting drift, and ensuring production models stay healthy.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q1: What is the main benefit of Infrastructure as Code?</strong></p>
+                    <div class="quiz-option" data-value="a">It's faster than manual provisioning</div>
+                    <div class="quiz-option" data-value="b">It creates reproducible, version-controlled infrastructure that can be automatically provisioned</div>
+                    <div class="quiz-option" data-value="c">It's required by AWS</div>
+                    <div class="quiz-option" data-value="d">It reduces cloud costs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q2: What's the main advantage of Terraform over CloudFormation?</strong></p>
+                    <div class="quiz-option" data-value="a">Multi-cloud support - works with AWS, Google Cloud, Azure, and many other providers</div>
+                    <div class="quiz-option" data-value="b">It's faster</div>
+                    <div class="quiz-option" data-value="c">Better AWS integration</div>
+                    <div class="quiz-option" data-value="d">Managed state without configuration</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q3: Where should you store sensitive credentials like database passwords?</strong></p>
+                    <div class="quiz-option" data-value="a">In Terraform .tf files</div>
+                    <div class="quiz-option" data-value="b">In Git repository</div>
+                    <div class="quiz-option" data-value="c">In secrets management systems like Vault or AWS Secrets Manager</div>
+                    <div class="quiz-option" data-value="d">In environment variables in code</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What is the purpose of Terraform state?</strong></p>
+                    <div class="quiz-option" data-value="a">To store secrets</div>
+                    <div class="quiz-option" data-value="b">To run the infrastructure</div>
+                    <div class="quiz-option" data-value="c">To deploy applications</div>
+                    <div class="quiz-option" data-value="d">To track the current state of infrastructure and enable updates</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q5: What should you do before running 'terraform apply' in production?</strong></p>
+                    <div class="quiz-option" data-value="a">Nothing, just apply</div>
+                    <div class="quiz-option" data-value="b">Run 'terraform plan' to preview changes and test in dev/staging first</div>
+                    <div class="quiz-option" data-value="c">Delete existing infrastructure</div>
+                    <div class="quiz-option" data-value="d">Backup your laptop</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="kubernetes-for-ml.html">← Previous: Kubernetes for ML</a>
+                <a href="model-monitoring.html">Next: Model Monitoring →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-hcl.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about AI ethics, bias, fairness, transparency, and accountability. Understand how to build responsible AI systems.">
+    <title>Tutorial 10: AI Ethics & Responsibility - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .mirror-analogy {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px solid #078930;
+            text-align: center;
+        }
+        
+        .mirror-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ethical-failures {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .failure-case {
+            background: #fef2f2;
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .failure-title {
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+        
+        .failure-impact {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .ethical-principles {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .principle-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-top: 4px solid #078930;
+        }
+        
+        .principle-icon {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .principle-title {
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+        
+        .bias-types {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .bias-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .bias-name {
+            color: #f59e0b;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .checklist-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .ethics-checklist {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        
+        .ethics-checklist li {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+        
+        .ethics-checklist li::before {
+            content: "✓";
+            font-size: 1.5rem;
+            color: #10b981;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 10</span>
+            </div>
+            <h1>Tutorial 10: AI Ethics & Responsibility</h1>
+            <p class="tutorial-intro">Understand bias, fairness, transparency, and accountability in AI systems</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 4</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>A hiring algorithm rejects 80% of female candidates. A facial recognition system misidentifies Black individuals at 10x higher rates. A loan approval AI denies mortgages to qualified minority applicants.</p>
+                
+                <p><strong>None of these AIs were programmed to discriminate.</strong> They simply learned from biased human data. This is the dark side of AI — and why ethics isn't optional.</p>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ The Stakes Are High:</strong> Unlike bugs in software, AI bias can perpetuate historical injustices at massive scale. When AI decisions affect hiring, lending, criminal justice, and healthcare, ethical failures cause real harm to real people.</p>
+                </div>
+            </section>
+
+            <!-- The Mirror Analogy -->
+            <section class="content-section">
+                <h2>🪞 The Mirror Analogy</h2>
+                
+                <div class="mirror-analogy">
+                    <div class="mirror-icon">🪞</div>
+                    <h3>AI is a Mirror Reflecting Society's Data</h3>
+                    <p style="font-size: 1.125rem; max-width: 600px; margin: 1rem auto;">If the reflection is ugly — showing discrimination, bias, or unfairness — <strong>we must fix both the mirror (AI algorithm) and what it reflects (training data)</strong>.</p>
+                </div>
+                
+                <p><strong>Why AI amplifies human bias:</strong></p>
+                <ul>
+                    <li>📊 <strong>Historical data contains historical bias:</strong> Past hiring data reflects gender discrimination → AI learns to discriminate</li>
+                    <li>🔄 <strong>Feedback loops:</strong> Biased AI decisions create more biased data → cycle worsens over time</li>
+                    <li>⚡ <strong>Scale and speed:</strong> Human bias affects dozens; AI bias affects millions instantly</li>
+                    <li>🎭 <strong>Invisible discrimination:</strong> "The algorithm decided" hides responsibility</li>
+                </ul>
+                
+                <div class="info-box">
+                    <p><strong>💡 Key Insight:</strong> AI doesn't create new biases — it learns and amplifies existing ones. Building ethical AI means confronting uncomfortable truths about society's data.</p>
+                </div>
+            </section>
+
+            <!-- Real Ethical Failures -->
+            <section class="content-section">
+                <h2>🚨 Real-World AI Ethics Failures</h2>
+                
+                <div class="ethical-failures">
+                    <div class="failure-case">
+                        <div class="failure-title">Case 1: Amazon's Hiring AI (2018)</div>
+                        <p><strong>What happened:</strong> Amazon built AI to screen resumes and rank candidates. It automatically downranked resumes containing the word "women's" (as in "women's chess club") and graduates of all-women's colleges.</p>
+                        <p><strong>Root cause:</strong> Trained on 10 years of Amazon hiring data — which was 80% male engineers. AI learned "male = qualified."</p>
+                        <div class="failure-impact">
+                            <strong>Impact:</strong> Perpetuated gender discrimination. Amazon scrapped the entire project. Lesson: Historical bias in data → biased AI.
+                        </div>
+                    </div>
+                    
+                    <div class="failure-case">
+                        <div class="failure-title">Case 2: COMPAS Criminal Risk Assessment</div>
+                        <p><strong>What happened:</strong> COMPAS AI predicts likelihood of reoffending to help judges set bail and sentencing. ProPublica investigation found it falsely labeled Black defendants as "high risk" at twice the rate of white defendants.</p>
+                        <p><strong>Root cause:</strong> Training data reflected systemic racism in criminal justice — Black Americans are policed and arrested more, creating biased "recidivism" data.</p>
+                        <div class="failure-impact">
+                            <strong>Impact:</strong> Longer sentences for Black defendants. Amplified existing injustice. Still in use despite controversy.
+                        </div>
+                    </div>
+                    
+                    <div class="failure-case">
+                        <div class="failure-title">Case 3: Facial Recognition Bias</div>
+                        <p><strong>What happened:</strong> MIT/Stanford study (2018) found major facial recognition systems (IBM, Microsoft, Amazon) had error rates:</p>
+                        <ul>
+                            <li>White males: <1% error rate</li>
+                            <li>Black females: 35% error rate (35x worse)</li>
+                        </ul>
+                        <p><strong>Root cause:</strong> Training datasets were 75%+ male and 80%+ white. AI literally couldn't "see" diverse faces.</p>
+                        <div class="failure-impact">
+                            <strong>Impact:</strong> False arrests, surveillance injustice. Led to IBM, Microsoft, Amazon halting facial recognition sales to police (2020).
+                        </div>
+                    </div>
+                    
+                    <div class="failure-case">
+                        <div class="failure-title">Case 4: Healthcare Algorithm Bias (2019)</div>
+                        <p><strong>What happened:</strong> Major hospital system used AI to allocate healthcare resources. Algorithm prioritized white patients over equally sick Black patients.</p>
+                        <p><strong>Root cause:</strong> AI trained on "healthcare costs" as proxy for "healthcare needs." Black patients historically face barriers to care → lower costs → AI assumed they were healthier.</p>
+                        <div class="failure-impact">
+                            <strong>Impact:</strong> Reduced care for Black patients who needed it most. Study estimated bias affected millions of patients.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>🔍 Common Thread:</strong> All these failures shared the same pattern: <strong>biased data + lack of diverse perspectives during development + no testing for fairness = harmful AI</strong>.</p>
+                </div>
+            </section>
+
+            <!-- Five Ethical Principles -->
+            <section class="content-section">
+                <h2>⚖️ Five Pillars of Ethical AI</h2>
+                
+                <div class="ethical-principles">
+                    <div class="principle-card">
+                        <div class="principle-icon">🎯</div>
+                        <h3 class="principle-title">1. Fairness</h3>
+                        <p><strong>Principle:</strong> AI should treat all groups equitably, not perpetuate discrimination.</p>
+                        <p><strong>In practice:</strong> Test accuracy across demographics (race, gender, age). Ensure equal false positive/negative rates.</p>
+                        <p><strong>Example:</strong> Loan approval AI tested separately for each demographic group.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">🔍</div>
+                        <h3 class="principle-title">2. Transparency</h3>
+                        <p><strong>Principle:</strong> Users should understand how AI makes decisions ("explainability").</p>
+                        <p><strong>In practice:</strong> Provide explanations: "Loan denied because: credit score, debt-to-income ratio."</p>
+                        <p><strong>Example:</strong> Medical AI shows which image regions influenced diagnosis.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">👤</div>
+                        <h3 class="principle-title">3. Accountability</h3>
+                        <p><strong>Principle:</strong> Clear responsibility when AI fails. No hiding behind "the algorithm decided."</p>
+                        <p><strong>In practice:</strong> Designate AI owners. Audit trails. Appeal processes for decisions.</p>
+                        <p><strong>Example:</strong> Banks must provide human review of AI loan denials.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">🔒</div>
+                        <h3 class="principle-title">4. Privacy</h3>
+                        <p><strong>Principle:</strong> Protect user data. Minimize collection. Secure storage. Obtain consent.</p>
+                        <p><strong>In practice:</strong> Anonymize data. Encryption. GDPR/CCPA compliance. Data deletion rights.</p>
+                        <p><strong>Example:</strong> Healthcare AI using de-identified patient records.</p>
+                    </div>
+                    
+                    <div class="principle-card">
+                        <div class="principle-icon">🛡️</div>
+                        <h3 class="principle-title">5. Safety & Reliability</h3>
+                        <p><strong>Principle:</strong> AI should be robust, tested, and fail gracefully. Human oversight for critical decisions.</p>
+                        <p><strong>In practice:</strong> Rigorous testing. Edge case handling. Human-in-the-loop for high-stakes decisions.</p>
+                        <p><strong>Example:</strong> Self-driving cars require 10B+ miles of testing before deployment.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Types of Bias -->
+            <section class="content-section">
+                <h2>📊 Types of AI Bias</h2>
+                
+                <div class="bias-types">
+                    <h3 style="margin-bottom: 1rem;">Understanding Where Bias Enters AI Systems</h3>
+                    
+                    <div class="bias-item">
+                        <div class="bias-name">1. Historical Bias</div>
+                        <p>Past societal discrimination embedded in training data.</p>
+                        <p><strong>Example:</strong> AI learns from historical hiring decisions that favored men → perpetuates gender bias.</p>
+                    </div>
+                    
+                    <div class="bias-item">
+                        <div class="bias-name">2. Representation Bias</div>
+                        <p>Training data doesn't represent all groups equally.</p>
+                        <p><strong>Example:</strong> Facial recognition trained mostly on white faces → fails on other races.</p>
+                    </div>
+                    
+                    <div class="bias-item">
+                        <div class="bias-name">3. Measurement Bias</div>
+                        <p>Using flawed proxies for what you actually want to measure.</p>
+                        <p><strong>Example:</strong> Using "arrests" to predict "criminality" — arrests reflect policing patterns, not actual crime rates.</p>
+                    </div>
+                    
+                    <div class="bias-item">
+                        <div class="bias-name">4. Aggregation Bias</div>
+                        <p>One-size-fits-all models ignore important group differences.</p>
+                        <p><strong>Example:</strong> Medical AI trained on adult data used for children → inaccurate diagnoses.</p>
+                    </div>
+                    
+                    <div class="bias-item">
+                        <div class="bias-name">5. Evaluation Bias</div>
+                        <p>Testing AI on unrepresentative data that doesn't match real-world usage.</p>
+                        <p><strong>Example:</strong> Testing voice AI only on native English speakers → fails with accents.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Building Ethical AI -->
+            <section class="content-section">
+                <h2>✅ How to Build Ethical AI</h2>
+                
+                <div class="checklist-section">
+                    <h3>Practical Checklist for Responsible AI Development</h3>
+                    
+                    <ul class="ethics-checklist">
+                        <li><strong>Diverse teams:</strong> Include people of different backgrounds, genders, races in AI development</li>
+                        <li><strong>Representative data:</strong> Ensure training data includes all demographics proportionally</li>
+                        <li><strong>Bias audits:</strong> Test model performance separately for each demographic group</li>
+                        <li><strong>Explainability:</strong> Build models that can explain their decisions (not just black boxes)</li>
+                        <li><strong>Human oversight:</strong> Require human review for high-stakes decisions (healthcare, criminal justice, hiring)</li>
+                        <li><strong>Fairness metrics:</strong> Measure equal opportunity, demographic parity, calibration across groups</li>
+                        <li><strong>Red team testing:</strong> Hire adversarial testers to find edge cases and failure modes</li>
+                        <li><strong>User consent:</strong> Clear opt-in for data collection. Easy opt-out. Data deletion rights</li>
+                        <li><strong>Appeal processes:</strong> Allow humans to challenge AI decisions</li>
+                        <li><strong>Continuous monitoring:</strong> Track real-world performance. Look for bias drift over time</li>
+                        <li><strong>Third-party audits:</strong> External ethics reviews before deployment</li>
+                        <li><strong>Clear documentation:</strong> Publish model cards describing limitations, intended use, known biases</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Spot the Ethical Issues</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Scenario Analysis: Evaluate These AI Deployments</h3>
+                    
+                    <p><strong>For each scenario, identify:</strong></p>
+                    <ol>
+                        <li>What ethical principles are violated?</li>
+                        <li>What harms could occur?</li>
+                        <li>How would you fix it?</li>
+                    </ol>
+                    
+                    <h4 style="margin-top: 1.5rem;">Scenario 1: School Surveillance AI</h4>
+                    <p>A school district deploys facial recognition cameras to "improve security." The system flags students exhibiting "suspicious behavior" and alerts security. No opt-out for students/parents. No public explanation of what "suspicious" means.</p>
+                    <p><em>Your analysis: _________________</em></p>
+                    
+                    <h4 style="margin-top: 1.5rem;">Scenario 2: AI Resume Screener</h4>
+                    <p>A company uses AI to rank job candidates. Top 10% get interviews. The AI was trained on past successful employees (90% male). No demographic testing was performed. Candidates receive no explanation for rejection.</p>
+                    <p><em>Your analysis: _________________</em></p>
+                    
+                    <h4 style="margin-top: 1.5rem;">Scenario 3: Predictive Policing</h4>
+                    <p>Police use AI to predict "high-crime areas" and increase patrols there. AI trained on historical arrest data (which shows higher arrests in minority neighborhoods due to historical over-policing). More patrols → more arrests → AI predicts even higher crime → more patrols. Cycle continues.</p>
+                    <p><em>Your analysis: _________________</em></p>
+                </div>
+                
+                <div class="info-box" style="margin-top: 1.5rem;">
+                    <p><strong>💡 Key Questions to Always Ask:</strong></p>
+                    <ul>
+                        <li>Who is harmed if this AI fails?</li>
+                        <li>Whose perspectives are missing from the development team?</li>
+                        <li>Is the training data representative?</li>
+                        <li>Can decisions be explained and appealed?</li>
+                        <li>Is there human oversight for critical decisions?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Write Your AI Ethics Charter</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Create Your Personal AI Ethics Guidelines</h3>
+                    
+                    <p><strong>Task:</strong> Write a 5-principle "AI Ethics Charter" for your workplace, school, or personal projects.</p>
+                    
+                    <p><strong>Your charter should include:</strong></p>
+                    <ol>
+                        <li><strong>Principle 1: [Your title]</strong>
+                            <br>What it means, why it matters, how you'll implement it
+                        </li>
+                        <li><strong>Principle 2: [Your title]</strong>
+                            <br>Specific actions to ensure compliance
+                        </li>
+                        <li><strong>Principle 3: [Your title]</strong>
+                            <br>Red lines you won't cross
+                        </li>
+                        <li><strong>Principle 4: [Your title]</strong>
+                            <br>Who is accountable for enforcement
+                        </li>
+                        <li><strong>Principle 5: [Your title]</strong>
+                            <br>How you'll measure success
+                        </li>
+                    </ol>
+                    
+                    <p><strong>Example principle:</strong></p>
+                    <p style="background: white; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                        <strong>"Principle 1: Diverse Representation"</strong><br>
+                        <em>Meaning:</em> All AI training data must include diverse demographics proportional to the target user population.<br>
+                        <em>Implementation:</em> Before training, audit dataset demographics. If any group is <10% represented, collect more data for that group.<br>
+                        <em>Accountability:</em> Data team lead approves all training datasets with signed diversity report.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Ethics is the New Seatbelt</h2>
+                
+                <ul>
+                    <li>✅ <strong>AI amplifies human bias</strong> — historical discrimination in data → discriminatory AI</li>
+                    <li>✅ <strong>Real failures, real harm</strong> — Amazon hiring, COMPAS, facial recognition cases</li>
+                    <li>✅ <strong>Five ethical pillars</strong> — fairness, transparency, accountability, privacy, safety</li>
+                    <li>✅ <strong>Five bias types</strong> — historical, representation, measurement, aggregation, evaluation</li>
+                    <li>✅ <strong>Practical solutions</strong> — diverse teams, representative data, bias audits, human oversight</li>
+                    <li>✅ <strong>Ethics isn't optional</strong> — it's infrastructure, like seatbelts in cars</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> AI ethics isn't about perfection — it's about intention, vigilance, and accountability. Build diverse teams, test for bias, provide transparency, enable appeals, and monitor continuously. The goal isn't zero bias (impossible), but minimizing harm and maximizing fairness.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: Why did Amazon's hiring AI discriminate against women?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It was programmed to prefer male candidates</div>
+                            <div class="quiz-option" data-value="b">It learned from 10 years of biased hiring data (80% male)</div>
+                            <div class="quiz-option" data-value="c">It randomly selected candidates</div>
+                            <div class="quiz-option" data-value="d">The algorithm was broken</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 2: What's the most common error rate difference in facial recognition?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">No difference across demographics</div>
+                            <div class="quiz-option" data-value="b">2x worse for minorities</div>
+                            <div class="quiz-option" data-value="c">35x worse for Black females vs white males</div>
+                            <div class="quiz-option" data-value="d">Facial recognition doesn't work at all</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What does "transparency" mean in AI ethics?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Users can understand how AI makes decisions (explainability)</div>
+                            <div class="quiz-option" data-value="b">AI code is open source</div>
+                            <div class="quiz-option" data-value="c">AI is invisible to users</div>
+                            <div class="quiz-option" data-value="d">Data is publicly available</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What type of bias occurs when training data doesn't represent all groups?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Historical bias</div>
+                            <div class="quiz-option" data-value="b">Representation bias</div>
+                            <div class="quiz-option" data-value="c">Measurement bias</div>
+                            <div class="quiz-option" data-value="d">Aggregation bias</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What's the best approach to building ethical AI?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Ignore ethics until after deployment</div>
+                            <div class="quiz-option" data-value="b">Only worry about ethics if someone complains</div>
+                            <div class="quiz-option" data-value="c">Diverse teams, bias audits, transparency, human oversight from day one</div>
+                            <div class="quiz-option" data-value="d">Ethics is impossible, so don't try</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Your AI Career Path</h2>
+                
+                <p>You understand how to build responsible AI. Now let's explore <strong>your place in the AI revolution</strong>. What careers exist? What skills do you need? How can non-technical people thrive in AI?</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Module 11:</strong> Discover diverse AI career paths — from technical roles to creative positions. Learn what skills employers want and how to prepare for the AI-driven future.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="ai-project-workflow.html" class="prev">← Module 9: AI Project Workflow</a>
+                    <a href="ai-careers.html" class="next">Module 11: AI Careers →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

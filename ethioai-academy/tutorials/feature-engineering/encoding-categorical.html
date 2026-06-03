@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master categorical encoding techniques including one-hot, label, ordinal, target, and frequency encoding. Learn when to use each method with practical examples.">
+    <title>Encoding Categorical Variables - Feature Engineering Tutorial - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../index.html" class="nav-brand">
+                <span class="gradient-text">🤖 Nebaz AI Academy</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../courses/feature-engineering.html">Feature Engineering</a></li>
+                <li><a href="../../index.html#courses">All Courses</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="breadcrumb" style="margin-bottom: 1rem;">
+                <a href="../../index.html" style="color: rgba(255,255,255,0.8);">Home</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <a href="../../courses/feature-engineering.html" style="color: rgba(255,255,255,0.8);">Feature Engineering</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <span style="color: white;">Encoding Categorical Variables</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">
+                🏷️ Encoding Categorical Variables
+            </h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Ethiopian SMEs adopting ChatGPT for customer support in Amharic — evaluate hallucination risk before production.</em></p>
+</div>
+            <p style="font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto;">
+                Transform categorical data into numerical format for machine learning
+            </p>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; font-size: 0.95rem;">
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    📚 Tutorial 2 of 8
+                </span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    ⏱️ 70 minutes
+                </span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">
+                    📊 Beginner
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        
+        <!-- Introduction -->
+        <section>
+            <p>Machine learning algorithms work with numbers, not text. When your dataset contains categorical variables like "Color", "City", or "Product Type", you need to convert them into numerical format. This process is called <strong>categorical encoding</strong>, and choosing the right encoding method can significantly impact your model's performance.</p>
+
+            <div class="info-box">
+                <h4>🎯 What You'll Learn</h4>
+                <ul>
+                    <li>Five essential encoding techniques and when to use each</li>
+                    <li>Handling ordinal vs nominal categorical variables</li>
+                    <li>Avoiding common encoding pitfalls (dummy variable trap, data leakage)</li>
+                    <li>Implementing encoders in scikit-learn and category_encoders</li>
+                    <li>Encoding in production pipelines</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Understanding Categorical Variables -->
+        <section>
+            <h2>Understanding Categorical Variables</h2>
+            
+            <p>Before encoding, it's crucial to understand the type of categorical variable you're working with.</p>
+
+            <h3>Nominal vs Ordinal Categories</h3>
+            
+            <p><strong>Nominal categories</strong> have no inherent order:</p>
+            <ul>
+                <li><strong>Color:</strong> Red, Blue, Green (no natural ordering)</li>
+                <li><strong>City:</strong> New York, London, Tokyo</li>
+                <li><strong>Product Type:</strong> Electronics, Clothing, Food</li>
+            </ul>
+
+            <p><strong>Ordinal categories</strong> have a meaningful order:</p>
+            <ul>
+                <li><strong>Education:</strong> High School < Bachelor's < Master's < PhD</li>
+                <li><strong>Rating:</strong> Poor < Fair < Good < Excellent</li>
+                <li><strong>Size:</strong> Small < Medium < Large < XL</li>
+            </ul>
+
+            <div class="warning-box">
+                <h4>⚠️ Common Mistake</h4>
+                <p>Using label encoding (0, 1, 2...) for nominal categories creates false ordinal relationships. The model will think "Blue" is somehow "between" "Red" and "Green"!</p>
+            </div>
+
+<pre><code class="language-python"># Example: Identifying categorical types
+import pandas as pd
+import numpy as np
+
+# Create sample dataset
+df = pd.DataFrame({
+    'color': ['Red', 'Blue', 'Green', 'Red', 'Blue'],
+    'size': ['Small', 'Medium', 'Large', 'Small', 'XL'],
+    'city': ['NYC', 'LA', 'SF', 'NYC', 'LA'],
+    'rating': ['Poor', 'Good', 'Excellent', 'Fair', 'Good']
+})
+
+print("Categorical columns:")
+print(df.dtypes)
+print("\nUnique values:")
+for col in df.columns:
+    print(f"{col}: {df[col].unique()}")
+
+# Output:
+# color      object
+# size       object
+# city       object
+# rating     object
+# 
+# Unique values:
+# color: ['Red' 'Blue' 'Green']          # Nominal
+# size: ['Small' 'Medium' 'Large' 'XL']  # Ordinal
+# city: ['NYC' 'LA' 'SF']                # Nominal
+# rating: ['Poor' 'Good' 'Excellent' 'Fair']  # Ordinal
+</code></pre>
+        </section>
+
+        <!-- Method 1: One-Hot Encoding -->
+        <section>
+            <h2>Method 1: One-Hot Encoding (Dummy Variables)</h2>
+            
+            <p><strong>Best for:</strong> Nominal categories with low cardinality (few unique values)</p>
+            
+            <p>One-hot encoding creates a new binary column for each category. Only one column has a value of 1 (hot), while others are 0.</p>
+
+            <h3>How It Works</h3>
+
+<pre><code class="language-python"># Original data
+colors = ['Red', 'Blue', 'Green', 'Red']
+
+# After one-hot encoding:
+# Red  Blue  Green
+#  1    0     0      (Red)
+#  0    1     0      (Blue)
+#  0    0     1      (Green)
+#  1    0     0      (Red)
+</code></pre>
+
+            <h3>Implementation with Pandas</h3>
+
+<pre><code class="language-python">import pandas as pd
+
+# Simple one-hot encoding
+df = pd.DataFrame({'color': ['Red', 'Blue', 'Green', 'Red', 'Blue']})
+
+# Method 1: Using pd.get_dummies()
+df_encoded = pd.get_dummies(df, columns=['color'], prefix='color')
+print(df_encoded)
+
+#    color_Blue  color_Green  color_Red
+# 0           0            0          1
+# 1           1            0          0
+# 2           0            1          0
+# 3           0            0          1
+# 4           1            0          0
+
+# Method 2: Drop first column to avoid multicollinearity
+df_encoded = pd.get_dummies(df, columns=['color'], prefix='color', drop_first=True)
+print(df_encoded)
+
+#    color_Green  color_Red
+# 0            0          1
+# 1            0          0
+# 2            1          0
+# 3            0          1
+# 4            0          0
+</code></pre>
+
+            <h3>Implementation with Scikit-learn</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import OneHotEncoder
+import numpy as np
+
+# Create encoder
+encoder = OneHotEncoder(sparse_output=False, drop='first')
+
+# Sample data
+data = np.array(['Red', 'Blue', 'Green', 'Red', 'Blue']).reshape(-1, 1)
+
+# Fit and transform
+encoded = encoder.fit_transform(data)
+print("Encoded shape:", encoded.shape)
+print("Categories:", encoder.categories_)
+print("\nEncoded data:")
+print(encoded)
+
+# Get feature names
+feature_names = encoder.get_feature_names_out(['color'])
+print("\nFeature names:", feature_names)
+
+# Output:
+# Encoded shape: (5, 2)
+# Categories: [array(['Blue', 'Green', 'Red'], dtype='<U5')]
+# 
+# Encoded data:
+# [[0. 1.]  # Red   (Blue=0, Green=0, Red=1 but Red dropped, so Green=0, Red=1)
+#  [0. 0.]  # Blue  (Blue is reference)
+#  [1. 0.]  # Green
+#  [0. 1.]  # Red
+#  [0. 0.]] # Blue
+</code></pre>
+
+            <div class="info-box">
+                <h4>💡 The Dummy Variable Trap</h4>
+                <p>When using one-hot encoding with linear models, always drop one category (using <code>drop_first=True</code>). This prevents perfect multicollinearity where columns are linearly dependent.</p>
+                <p><strong>Why?</strong> If you have Red, Blue, and Green columns, knowing two tells you the third: if Red=0 and Blue=0, then Green must be 1.</p>
+            </div>
+
+            <h3>Pros and Cons</h3>
+            
+            <p><strong>✅ Advantages:</strong></p>
+            <ul>
+                <li>No false ordinal relationships created</li>
+                <li>Works well with linear models</li>
+                <li>Easy to interpret</li>
+            </ul>
+
+            <p><strong>❌ Disadvantages:</strong></p>
+            <ul>
+                <li>Creates many columns (curse of dimensionality) with high cardinality</li>
+                <li>Sparse matrices (mostly zeros) require more memory</li>
+                <li>Poor for categories with 50+ unique values</li>
+            </ul>
+        </section>
+
+        <!-- Method 2: Label Encoding -->
+        <section>
+            <h2>Method 2: Label Encoding</h2>
+            
+            <p><strong>Best for:</strong> Ordinal categories (with natural order) and tree-based models</p>
+            
+            <p>Label encoding assigns each category a unique integer (0, 1, 2, 3...). Simple and memory-efficient, but creates ordinal relationships.</p>
+
+            <h3>Implementation</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import LabelEncoder
+
+# For ordinal categories (has order)
+education = ['High School', 'Bachelor', 'Master', 'PhD', 'Bachelor', 'Master']
+
+encoder = LabelEncoder()
+encoded = encoder.fit_transform(education)
+
+print("Original:", education)
+print("Encoded:", encoded)
+print("Classes:", encoder.classes_)
+
+# Output:
+# Original: ['High School', 'Bachelor', 'Master', 'PhD', 'Bachelor', 'Master']
+# Encoded: [2 0 3 4 0 3]
+# Classes: ['Bachelor' 'High School' 'Master' 'PhD']
+
+# Note: Alphabetical order! We need to fix this for true ordinal data
+</code></pre>
+
+            <h3>Handling True Ordinal Data</h3>
+
+<pre><code class="language-python">import pandas as pd
+
+# Define the correct order
+education_order = ['High School', 'Bachelor', 'Master', 'PhD']
+
+# Method 1: Using pandas Categorical with ordered=True
+df = pd.DataFrame({'education': ['Bachelor', 'Master', 'High School', 'PhD', 'Bachelor']})
+
+df['education_encoded'] = pd.Categorical(
+    df['education'],
+    categories=education_order,
+    ordered=True
+).codes
+
+print(df)
+
+#      education  education_encoded
+# 0     Bachelor                  1
+# 1       Master                  2
+# 2  High School                  0
+# 3          PhD                  3
+# 4     Bachelor                  1
+
+# Method 2: Using OrdinalEncoder from scikit-learn
+from sklearn.preprocessing import OrdinalEncoder
+
+encoder = OrdinalEncoder(categories=[education_order])
+df['education_encoded2'] = encoder.fit_transform(df[['education']])
+
+print("\nWith OrdinalEncoder:")
+print(df)
+</code></pre>
+
+            <h3>When to Use Label Encoding</h3>
+
+            <div class="success-box">
+                <h4>✅ Good Use Cases</h4>
+                <ul>
+                    <li><strong>Tree-based models:</strong> Random Forest, XGBoost, LightGBM can handle label encoded data well because they split on thresholds</li>
+                    <li><strong>Ordinal categories:</strong> When there's a clear ranking (Small → Medium → Large)</li>
+                    <li><strong>Target variable:</strong> For classification tasks (converting class labels)</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>❌ Avoid For</h4>
+                <ul>
+                    <li><strong>Nominal categories with linear models:</strong> Creates false ordinal relationships</li>
+                    <li><strong>High cardinality nominal data:</strong> Random integer assignments are meaningless</li>
+                </ul>
+            </div>
+
+<pre><code class="language-python"># Example: Label encoding with tree models
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+import numpy as np
+
+# Sample data: City (nominal) and Purchase (target)
+cities = ['NYC', 'LA', 'SF', 'NYC', 'LA', 'SF', 'NYC', 'LA']
+purchases = [1, 0, 1, 1, 0, 1, 1, 0]
+
+# Label encode cities
+le = LabelEncoder()
+cities_encoded = le.fit_transform(cities).reshape(-1, 1)
+
+# Train Random Forest (tree-based model handles label encoding)
+rf = RandomForestClassifier(random_state=42)
+rf.fit(cities_encoded, purchases)
+
+print("Feature importance:", rf.feature_importances_)
+print("Accuracy:", rf.score(cities_encoded, purchases))
+
+# Trees will split: "if city <= 1.5 then..."
+# This works because trees find patterns, not linear relationships
+</code></pre>
+        </section>
+
+        <!-- Method 3: Ordinal Encoding -->
+        <section>
+            <h2>Method 3: Ordinal Encoding</h2>
+            
+            <p><strong>Best for:</strong> Categories with explicit ranking/order</p>
+            
+            <p>Ordinal encoding is similar to label encoding but allows you to explicitly define the order. Perfect for categories like "Low", "Medium", "High".</p>
+
+<pre><code class="language-python">from sklearn.preprocessing import OrdinalEncoder
+import pandas as pd
+
+# Data with multiple ordinal features
+df = pd.DataFrame({
+    'size': ['M', 'L', 'S', 'XL', 'M', 'S'],
+    'priority': ['Low', 'High', 'Medium', 'Low', 'High', 'Medium'],
+    'rating': ['Fair', 'Excellent', 'Poor', 'Good', 'Excellent', 'Fair']
+})
+
+# Define ordering for each feature
+size_order = ['S', 'M', 'L', 'XL']
+priority_order = ['Low', 'Medium', 'High']
+rating_order = ['Poor', 'Fair', 'Good', 'Excellent']
+
+# Create encoder with explicit categories
+encoder = OrdinalEncoder(
+    categories=[size_order, priority_order, rating_order]
+)
+
+# Fit and transform
+df_encoded = pd.DataFrame(
+    encoder.fit_transform(df),
+    columns=['size_enc', 'priority_enc', 'rating_enc']
+)
+
+# Combine with original
+result = pd.concat([df, df_encoded], axis=1)
+print(result)
+
+#   size priority     rating  size_enc  priority_enc  rating_enc
+# 0    M      Low       Fair       1.0           0.0         1.0
+# 1    L     High  Excellent       2.0           2.0         3.0
+# 2    S   Medium       Poor       0.0           1.0         0.0
+# 3   XL      Low       Good       3.0           0.0         2.0
+# 4    M     High  Excellent       1.0           2.0         3.0
+# 5    S   Medium       Fair       0.0           1.0         1.0
+</code></pre>
+
+            <h3>Handling Unknown Categories</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import OrdinalEncoder
+
+# Training data
+train_data = pd.DataFrame({'size': ['S', 'M', 'L']})
+
+# Create encoder that handles unknown categories
+encoder = OrdinalEncoder(
+    categories=[['S', 'M', 'L', 'XL']],
+    handle_unknown='use_encoded_value',
+    unknown_value=-1  # Assign -1 to unknown categories
+)
+
+encoder.fit(train_data)
+
+# Test data with new category
+test_data = pd.DataFrame({'size': ['M', 'XXL', 'L']})  # XXL is unknown
+encoded_test = encoder.transform(test_data)
+
+print("Test data encoded:")
+print(encoded_test)
+
+# Output:
+# [[ 1.]   # M
+#  [-1.]   # XXL (unknown)
+#  [ 2.]]  # L
+</code></pre>
+        </section>
+
+        <!-- Method 4: Target Encoding -->
+        <section>
+            <h2>Method 4: Target Encoding (Mean Encoding)</h2>
+            
+            <p><strong>Best for:</strong> High cardinality nominal categories (many unique values)</p>
+            
+            <p>Target encoding replaces each category with the mean of the target variable for that category. Very powerful but requires careful implementation to avoid data leakage.</p>
+
+            <h3>How It Works</h3>
+
+<pre><code class="language-python"># Example: City and Purchase behavior
+# City    | Purchase
+# NYC     | 1
+# LA      | 0
+# NYC     | 1
+# SF      | 1
+# LA      | 0
+# NYC     | 1
+
+# Target encoding calculates mean purchase rate per city:
+# NYC: (1+1+1)/3 = 1.0
+# LA:  (0+0)/2   = 0.0
+# SF:  (1)/1     = 1.0
+
+# Then replaces city names with these values
+</code></pre>
+
+            <h3>Basic Implementation</h3>
+
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+# Sample data
+df = pd.DataFrame({
+    'city': ['NYC', 'LA', 'SF', 'NYC', 'LA', 'SF', 'NYC', 'Chicago'],
+    'purchase': [1, 0, 1, 1, 0, 1, 1, 0]
+})
+
+# Calculate mean purchase rate per city
+target_means = df.groupby('city')['purchase'].mean()
+print("Target means per city:")
+print(target_means)
+
+# Output:
+# city
+# Chicago    0.0
+# LA         0.0
+# NYC        1.0
+# SF         1.0
+
+# Apply target encoding
+df['city_encoded'] = df['city'].map(target_means)
+print("\nEncoded data:")
+print(df)
+</code></pre>
+
+            <div class="warning-box">
+                <h4>⚠️ Critical: Avoiding Data Leakage</h4>
+                <p><strong>The Problem:</strong> Basic target encoding uses information from the target variable, which causes overfitting. The model learns to memorize training patterns rather than generalize.</p>
+                <p><strong>Solution:</strong> Use cross-validation or leave-one-out encoding.</p>
+            </div>
+
+            <h3>Proper Implementation: K-Fold Target Encoding</h3>
+
+<pre><code class="language-python">from sklearn.model_selection import KFold
+import pandas as pd
+import numpy as np
+
+def target_encode_kfold(df, categorical_col, target_col, n_folds=5):
+    """
+    Perform target encoding with K-fold cross-validation to prevent leakage.
+    """
+    # Initialize encoded column
+    encoded_col = np.zeros(len(df))
+    
+    # Calculate global mean for unseen categories
+    global_mean = df[target_col].mean()
+    
+    kf = KFold(n_splits=n_folds, shuffle=True, random_state=42)
+    
+    for train_idx, val_idx in kf.split(df):
+        # Split data
+        train_df = df.iloc[train_idx]
+        
+        # Calculate target means from training fold only
+        target_means = train_df.groupby(categorical_col)[target_col].mean()
+        
+        # Apply to validation fold
+        encoded_col[val_idx] = df.iloc[val_idx][categorical_col].map(target_means)
+        
+        # Fill unknown categories with global mean
+        encoded_col[val_idx] = np.where(
+            np.isnan(encoded_col[val_idx]),
+            global_mean,
+            encoded_col[val_idx]
+        )
+    
+    return encoded_col
+
+# Example usage
+df = pd.DataFrame({
+    'city': ['NYC', 'LA', 'SF'] * 30 + ['Chicago'] * 10,
+    'purchase': np.random.binomial(1, 0.6, 100)
+})
+
+df['city_encoded'] = target_encode_kfold(df, 'city', 'purchase', n_folds=5)
+print(df.head(10))
+print("\nEncoding statistics:")
+print(df.groupby('city')['city_encoded'].mean())
+</code></pre>
+
+            <h3>Using Category Encoders Library</h3>
+
+<pre><code class="language-python"># Install: pip install category_encoders
+from category_encoders import TargetEncoder
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+# Sample high-cardinality data
+df = pd.DataFrame({
+    'product_id': [f'P{i%50}' for i in range(1000)],  # 50 unique products
+    'sales': np.random.randint(0, 2, 1000)
+})
+
+# Split data
+X = df[['product_id']]
+y = df['sales']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create target encoder with smoothing
+encoder = TargetEncoder(smoothing=1.0)  # Smoothing prevents overfitting
+
+# Fit on training data only
+encoder.fit(X_train, y_train)
+
+# Transform both sets
+X_train_encoded = encoder.transform(X_train)
+X_test_encoded = encoder.transform(X_test)
+
+print("Training set encoded:")
+print(X_train_encoded.head())
+print("\nTest set encoded:")
+print(X_test_encoded.head())
+</code></pre>
+
+            <h3>Pros and Cons</h3>
+            
+            <p><strong>✅ Advantages:</strong></p>
+            <ul>
+                <li>Handles high cardinality (100s or 1000s of categories) efficiently</li>
+                <li>Creates only one column per feature (no dimensionality explosion)</li>
+                <li>Captures relationship between category and target</li>
+            </ul>
+
+            <p><strong>❌ Disadvantages:</strong></p>
+            <ul>
+                <li>Risk of data leakage if not implemented carefully</li>
+                <li>Can overfit on rare categories</li>
+                <li>Only works for supervised learning (requires target variable)</li>
+            </ul>
+        </section>
+
+        <!-- Method 5: Frequency Encoding -->
+        <section>
+            <h2>Method 5: Frequency Encoding</h2>
+            
+            <p><strong>Best for:</strong> High cardinality nominal categories, unsupervised learning</p>
+            
+            <p>Frequency encoding replaces each category with its frequency count or percentage in the dataset. Simple, fast, and no data leakage risk.</p>
+
+            <h3>Implementation</h3>
+
+<pre><code class="language-python">import pandas as pd
+
+# Sample data with high cardinality
+df = pd.DataFrame({
+    'user_id': ['U1', 'U2', 'U1', 'U3', 'U1', 'U2', 'U4', 'U1'],
+    'product': ['A', 'B', 'A', 'C', 'A', 'B', 'D', 'A']
+})
+
+# Method 1: Count frequency
+df['user_frequency'] = df['user_id'].map(df['user_id'].value_counts())
+df['product_frequency'] = df['product'].map(df['product'].value_counts())
+
+print("Frequency encoding:")
+print(df)
+
+#   user_id product  user_frequency  product_frequency
+# 0      U1       A               4                  4
+# 1      U2       B               2                  2
+# 2      U1       A               4                  4
+# 3      U3       C               1                  1
+# 4      U1       A               4                  4
+# 5      U2       B               2                  2
+# 6      U4       D               1                  1
+# 7      U1       A               4                  4
+
+# Method 2: Normalize to percentage
+df['user_freq_pct'] = df['user_id'].map(
+    df['user_id'].value_counts(normalize=True)
+)
+
+print("\nNormalized frequency:")
+print(df[['user_id', 'user_frequency', 'user_freq_pct']])
+</code></pre>
+
+            <h3>Handling Training and Test Sets</h3>
+
+<pre><code class="language-python">from sklearn.base import BaseEstimator, TransformerMixin
+
+class FrequencyEncoder(BaseEstimator, TransformerMixin):
+    """
+    Frequency encoder that handles train/test splits properly.
+    """
+    def __init__(self, normalize=False):
+        self.normalize = normalize
+        self.frequency_map = {}
+    
+    def fit(self, X, y=None):
+        """Learn frequency mapping from training data."""
+        for col in X.columns:
+            if self.normalize:
+                self.frequency_map[col] = X[col].value_counts(normalize=True).to_dict()
+            else:
+                self.frequency_map[col] = X[col].value_counts().to_dict()
+        return self
+    
+    def transform(self, X):
+        """Apply frequency encoding."""
+        X_encoded = X.copy()
+        for col in X.columns:
+            # Map known categories, unknown get 0
+            X_encoded[col] = X[col].map(self.frequency_map[col]).fillna(0)
+        return X_encoded
+
+# Example usage
+from sklearn.model_selection import train_test_split
+
+# Generate data
+df = pd.DataFrame({
+    'city': ['NYC'] * 50 + ['LA'] * 30 + ['SF'] * 20 + ['Chicago'] * 10
+})
+
+# Split data
+train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
+
+# Fit encoder on training data
+encoder = FrequencyEncoder(normalize=True)
+encoder.fit(train_df[['city']])
+
+# Transform both sets
+train_encoded = encoder.transform(train_df[['city']])
+test_encoded = encoder.transform(test_df[['city']])
+
+print("Training frequencies:")
+print(encoder.frequency_map)
+print("\nTest set encoded (first 5 rows):")
+print(test_encoded.head())
+</code></pre>
+
+            <h3>When to Use Frequency Encoding</h3>
+
+            <div class="success-box">
+                <h4>✅ Good Use Cases</h4>
+                <ul>
+                    <li><strong>High cardinality features:</strong> User IDs, product IDs with 1000+ unique values</li>
+                    <li><strong>Unsupervised learning:</strong> No target variable available (unlike target encoding)</li>
+                    <li><strong>Time series:</strong> Capture popularity trends over time</li>
+                    <li><strong>Quick baseline:</strong> Fast and simple implementation</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Comparing Encoding Methods -->
+        <section>
+            <h2>Comparing Encoding Methods</h2>
+            
+            <p>Here's a practical comparison to help you choose the right encoding method:</p>
+
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+
+# Generate sample data
+np.random.seed(42)
+n_samples = 1000
+
+df = pd.DataFrame({
+    'category_low': np.random.choice(['A', 'B', 'C'], n_samples),  # 3 categories
+    'category_high': np.random.choice([f'Cat_{i}' for i in range(50)], n_samples),  # 50 categories
+    'target': np.random.binomial(1, 0.5, n_samples)
+})
+
+# Test different encoding methods
+results = []
+
+# 1. One-Hot Encoding (low cardinality)
+ohe = OneHotEncoder(sparse_output=False, drop='first')
+X_onehot = ohe.fit_transform(df[['category_low']])
+
+lr = LogisticRegression(max_iter=1000)
+score_lr_onehot = cross_val_score(lr, X_onehot, df['target'], cv=5, scoring='accuracy').mean()
+results.append(('One-Hot + Logistic Regression (low card)', score_lr_onehot))
+
+# 2. Label Encoding (tree-based model)
+le = LabelEncoder()
+X_label = le.fit_transform(df['category_high']).reshape(-1, 1)
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+score_rf_label = cross_val_score(rf, X_label, df['target'], cv=5, scoring='accuracy').mean()
+results.append(('Label + Random Forest (high card)', score_rf_label))
+
+# 3. Frequency Encoding (high cardinality)
+freq_map = df['category_high'].value_counts(normalize=True).to_dict()
+X_freq = df['category_high'].map(freq_map).values.reshape(-1, 1)
+
+gb = GradientBoostingClassifier(random_state=42)
+score_gb_freq = cross_val_score(gb, X_freq, df['target'], cv=5, scoring='accuracy').mean()
+results.append(('Frequency + Gradient Boosting (high card)', score_gb_freq))
+
+# Display results
+print("Encoding Method Comparison:")
+print("=" * 60)
+for method, score in results:
+    print(f"{method:50s} {score:.4f}")
+
+# Output will vary but shows relative performance
+</code></pre>
+
+            <div class="info-box">
+                <h4>📊 Quick Decision Guide</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Scenario</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Best Method</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Why?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Nominal, 2-10 categories, Linear model</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>One-Hot</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">No false ordinal relationships</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Ordinal with clear order</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Ordinal</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Preserves meaningful ranking</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Nominal, any size, Tree model</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Label</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Trees handle it well, memory efficient</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">High cardinality (50+), Supervised</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Target</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Captures target relationship, 1 column</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">High cardinality, Unsupervised</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Frequency</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">No target needed, simple, fast</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Production Pipeline -->
+        <section>
+            <h2>Building a Production-Ready Encoding Pipeline</h2>
+            
+            <p>In real projects, you need to handle multiple categorical features with different encoding strategies in a single pipeline.</p>
+
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
+import numpy as np
+
+# Sample dataset
+df = pd.DataFrame({
+    'color': np.random.choice(['Red', 'Blue', 'Green'], 1000),
+    'size': np.random.choice(['S', 'M', 'L', 'XL'], 1000),
+    'education': np.random.choice(['HS', 'Bachelor', 'Master', 'PhD'], 1000),
+    'city': np.random.choice([f'City_{i}' for i in range(20)], 1000),
+    'price': np.random.uniform(10, 100, 1000),
+    'target': np.random.binomial(1, 0.5, 1000)
+})
+
+# Define column types
+nominal_low = ['color']  # One-hot encode
+ordinal = ['size', 'education']  # Ordinal encode
+nominal_high = ['city']  # Label encode for tree model
+numeric = ['price']
+
+# Define ordinal mappings
+size_order = [['S', 'M', 'L', 'XL']]
+education_order = [['HS', 'Bachelor', 'Master', 'PhD']]
+
+# Create preprocessing pipeline
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('onehot', OneHotEncoder(drop='first', sparse_output=False), nominal_low),
+        ('ordinal', OrdinalEncoder(categories=size_order + education_order), ordinal),
+        ('label', OrdinalEncoder(), nominal_high),  # For tree models
+        ('numeric', 'passthrough', numeric)
+    ],
+    remainder='drop'  # Drop any other columns
+)
+
+# Create full pipeline
+pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))
+])
+
+# Train
+X = df.drop('target', axis=1)
+y = df['target']
+pipeline.fit(X, y)
+
+# Predict on new data
+new_data = pd.DataFrame({
+    'color': ['Red'],
+    'size': ['L'],
+    'education': ['Master'],
+    'city': ['City_5'],
+    'price': [45.0]
+})
+
+prediction = pipeline.predict(new_data)
+print(f"Prediction: {prediction[0]}")
+print(f"Model score: {pipeline.score(X, y):.4f}")
+</code></pre>
+
+            <h3>Saving and Loading Encoders</h3>
+
+<pre><code class="language-python">import joblib
+
+# Save the entire pipeline (includes fitted encoders)
+joblib.dump(pipeline, 'encoding_pipeline.pkl')
+
+# Load and use later
+loaded_pipeline = joblib.load('encoding_pipeline.pkl')
+
+# Make predictions with loaded pipeline
+new_predictions = loaded_pipeline.predict(new_data)
+print(f"Prediction from loaded model: {new_predictions[0]}")
+
+# The pipeline remembers:
+# - Category mappings
+# - Ordinal orders
+# - Unknown category handling
+# - Feature names and order
+</code></pre>
+        </section>
+
+        <!-- Common Pitfalls -->
+        <section>
+            <h2>Common Pitfalls and How to Avoid Them</h2>
+
+            <h3>1. Data Leakage in Target Encoding</h3>
+
+            <div class="warning-box">
+                <h4>❌ Wrong Way</h4>
+<pre><code class="language-python"># WRONG: Calculating target means on entire dataset
+target_means = df.groupby('category')['target'].mean()
+df['category_encoded'] = df['category'].map(target_means)
+
+# Then splitting train/test
+# Result: Test data leakage! Model has seen test target values
+</code></pre>
+
+                <h4>✅ Right Way</h4>
+<pre><code class="language-python"># RIGHT: Calculate on training data only
+train_target_means = train_df.groupby('category')['target'].mean()
+train_df['category_encoded'] = train_df['category'].map(train_target_means)
+test_df['category_encoded'] = test_df['category'].map(train_target_means)
+</code></pre>
+            </div>
+
+            <h3>2. Forgetting to Drop First Column in One-Hot Encoding</h3>
+
+<pre><code class="language-python"># For linear models, always drop one category
+# ❌ Wrong: Creates multicollinearity
+df_encoded = pd.get_dummies(df, columns=['color'])  # 3 columns created
+
+# ✅ Right: Drops first category
+df_encoded = pd.get_dummies(df, columns=['color'], drop_first=True)  # 2 columns
+</code></pre>
+
+            <h3>3. Using Label Encoding for Nominal Categories with Linear Models</h3>
+
+<pre><code class="language-python"># ❌ Wrong: Color has no order, but label encoding creates one
+colors = ['Red', 'Blue', 'Green']
+# Encoded as [0, 1, 2] - implies Red < Blue < Green
+# Linear model will treat Red+Green/2 = Blue (nonsense!)
+
+# ✅ Right: Use one-hot encoding for nominal + linear models
+df_encoded = pd.get_dummies(df, columns=['color'], drop_first=True)
+</code></pre>
+
+            <h3>4. Not Handling Unknown Categories in Production</h3>
+
+<pre><code class="language-python">from sklearn.preprocessing import OneHotEncoder
+
+# ✅ Handle unknown categories gracefully
+encoder = OneHotEncoder(
+    handle_unknown='ignore',  # Don't error on new categories
+    sparse_output=False
+)
+
+# Train on limited categories
+train = pd.DataFrame({'city': ['NYC', 'LA', 'SF']})
+encoder.fit(train)
+
+# Test with new category
+test = pd.DataFrame({'city': ['NYC', 'Chicago']})  # Chicago is new
+encoded = encoder.transform(test)
+# Chicago gets [0, 0, 0] - all zeros (ignored)
+</code></pre>
+        </section>
+
+        <!-- Quiz -->
+        <section>
+            <h2>🧠 Knowledge Check</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 1: When should you use one-hot encoding?</h4>
+                    <div class="quiz-option" data-value="a">For ordinal categories with clear ranking</div>
+                    <div class="quiz-option" data-value="b">For high cardinality nominal features (100+ categories)</div>
+                    <div class="quiz-option" data-value="c">For nominal categories with low cardinality (2-10 categories)</div>
+                    <div class="quiz-option" data-value="d">Always, it's the best encoding method</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <h4>Question 2: What is the dummy variable trap?</h4>
+                    <div class="quiz-option" data-value="a">When you encode too many categories</div>
+                    <div class="quiz-option" data-value="b">Perfect multicollinearity caused by keeping all one-hot encoded columns</div>
+                    <div class="quiz-option" data-value="c">Using label encoding for nominal categories</div>
+                    <div class="quiz-option" data-value="d">Forgetting to encode categorical variables</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <h4>Question 3: Which encoding method is safe to use with tree-based models and nominal categories?</h4>
+                    <div class="quiz-option" data-value="a">Only one-hot encoding</div>
+                    <div class="quiz-option" data-value="b">Only target encoding</div>
+                    <div class="quiz-option" data-value="c">Never use encoding with tree models</div>
+                    <div class="quiz-option" data-value="d">Label encoding works well because trees split on thresholds</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 4: What's the main risk of target encoding?</h4>
+                    <div class="quiz-option" data-value="a">Creates too many features</div>
+                    <div class="quiz-option" data-value="b">Can't handle ordinal categories</div>
+                    <div class="quiz-option" data-value="c">Data leakage if not implemented with cross-validation</div>
+                    <div class="quiz-option" data-value="d">Only works with binary classification</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <h4>Question 5: You have a 'User_ID' feature with 10,000 unique values for a supervised learning task. Best encoding?</h4>
+                    <div class="quiz-option" data-value="a">One-hot encoding (creates 10,000 columns)</div>
+                    <div class="quiz-option" data-value="b">Target encoding with K-fold cross-validation</div>
+                    <div class="quiz-option" data-value="c">Ordinal encoding with explicit order</div>
+                    <div class="quiz-option" data-value="d">Drop the feature, too many categories</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <h4>Question 6: For education levels (High School, Bachelor, Master, PhD), which encoding preserves order?</h4>
+                    <div class="quiz-option" data-value="a">Ordinal encoding with explicit category order</div>
+                    <div class="quiz-option" data-value="b">One-hot encoding</div>
+                    <div class="quiz-option" data-value="c">Frequency encoding</div>
+                    <div class="quiz-option" data-value="d">Target encoding</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <h4>Question 7: When should you use frequency encoding?</h4>
+                    <div class="quiz-option" data-value="a">Only for ordinal categories</div>
+                    <div class="quiz-option" data-value="b">When you need to preserve category order</div>
+                    <div class="quiz-option" data-value="c">For high cardinality features in unsupervised learning (no target)</div>
+                    <div class="quiz-option" data-value="d">Never, target encoding is always better</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <h4>Question 8: In a production pipeline, how should you handle categories in test data not seen during training?</h4>
+                    <div class="quiz-option" data-value="a">Error out immediately</div>
+                    <div class="quiz-option" data-value="b">Ignore the entire row</div>
+                    <div class="quiz-option" data-value="c">Assign a random value</div>
+                    <div class="quiz-option" data-value="d">Use handle_unknown='ignore' or assign a default value like -1 or global mean</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Practice Exercises -->
+        <section>
+            <h2>💻 Practice Exercises</h2>
+
+            <div class="info-box">
+                <h4>Exercise 1: Multi-Method Encoding</h4>
+                <p>Given this dataset, apply appropriate encoding for each feature:</p>
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({
+    'country': ['USA', 'UK', 'Canada', 'USA', 'Germany'],  # Nominal, low cardinality
+    'rating': ['Poor', 'Good', 'Excellent', 'Fair', 'Good'],  # Ordinal
+    'product_id': [f'P{i}' for i in range(100)]*5,  # Nominal, high cardinality
+    'sales': np.random.randint(0, 2, 500)  # Target variable
+})
+
+# TODO:
+# 1. One-hot encode 'country'
+# 2. Ordinal encode 'rating' (Poor < Fair < Good < Excellent)
+# 3. Target encode 'product_id' with K-fold
+# 4. Create a pipeline that combines all encodings
+# 5. Evaluate with a Random Forest classifier
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 2: Handling Unknown Categories</h4>
+                <p>Create an encoder that handles new categories in production:</p>
+<pre><code class="language-python"># Training data
+train_df = pd.DataFrame({
+    'city': ['NYC', 'LA', 'SF', 'NYC', 'LA'],
+    'size': ['S', 'M', 'L', 'M', 'S']
+})
+
+# Test data with unknown categories
+test_df = pd.DataFrame({
+    'city': ['NYC', 'Chicago', 'LA'],  # Chicago is new
+    'size': ['M', 'XXL', 'S']  # XXL is new
+})
+
+# TODO:
+# 1. Create encoders that handle unknown categories
+# 2. For city: use frequency encoding, assign 0 to unknown
+# 3. For size: use ordinal encoding, assign -1 to unknown
+# 4. Transform both train and test sets
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 3: Avoiding Data Leakage</h4>
+                <p>Fix this leaky target encoding implementation:</p>
+<pre><code class="language-python"># WRONG implementation (has data leakage)
+df = pd.DataFrame({
+    'category': ['A', 'B', 'C', 'A', 'B', 'C'] * 100,
+    'target': np.random.binomial(1, 0.5, 600)
+})
+
+# Calculate target means on entire dataset
+target_means = df.groupby('category')['target'].mean()
+df['category_encoded'] = df['category'].map(target_means)
+
+# Then split
+train_df = df[:500]
+test_df = df[500:]
+
+# TODO:
+# 1. Identify the data leakage problem
+# 2. Fix it using proper train/test split
+# 3. Implement K-fold target encoding
+# 4. Compare scores with leaky vs proper implementation
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 4: Encoding Comparison</h4>
+                <p>Compare different encoding methods on the same dataset:</p>
+<pre><code class="language-python">from sklearn.datasets import fetch_openml
+
+# Load categorical dataset (adult income dataset)
+data = fetch_openml('adult', version=2, as_frame=True)
+df = data.frame
+
+# Features: workclass, education, marital-status, occupation, etc.
+# Target: income (>50K or <=50K)
+
+# TODO:
+# 1. Apply different encodings to 'occupation' (15 unique values)
+#    - One-hot encoding
+#    - Label encoding
+#    - Target encoding
+#    - Frequency encoding
+# 2. Train Logistic Regression with each encoding
+# 3. Train Random Forest with each encoding
+# 4. Compare accuracy scores
+# 5. Analyze which encoding works best for which model
+</code></pre>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 5: Production Pipeline</h4>
+                <p>Build a complete production-ready encoding pipeline:</p>
+<pre><code class="language-python"># TODO:
+# 1. Create a dataset with mixed categorical types:
+#    - 2 nominal low cardinality features
+#    - 1 ordinal feature
+#    - 1 nominal high cardinality feature (50+ categories)
+#    - 3 numeric features
+# 
+# 2. Build a ColumnTransformer that:
+#    - One-hot encodes nominal low cardinality
+#    - Ordinal encodes ordinal feature
+#    - Target encodes high cardinality feature
+#    - StandardScales numeric features
+#
+# 3. Create a Pipeline with the transformer + classifier
+# 4. Implement proper train/test split
+# 5. Save the pipeline with joblib
+# 6. Load and make predictions on new data
+# 7. Add error handling for unknown categories
+</code></pre>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section>
+            <h2>📝 Summary</h2>
+            
+            <p>You've learned five powerful encoding techniques for transforming categorical variables:</p>
+
+            <div class="success-box">
+                <h4>Key Takeaways</h4>
+                <ul>
+                    <li><strong>One-Hot Encoding:</strong> Best for nominal categories with 2-10 unique values. Creates binary columns. Drop one column for linear models to avoid dummy variable trap.</li>
+                    
+                    <li><strong>Label Encoding:</strong> Assigns integers 0, 1, 2... Good for tree-based models and ordinal data, but creates false ordinal relationships for nominal categories with linear models.</li>
+                    
+                    <li><strong>Ordinal Encoding:</strong> Like label encoding but with explicit ordering. Essential for true ordinal features like "Small < Medium < Large".</li>
+                    
+                    <li><strong>Target Encoding:</strong> Replaces categories with mean target value. Powerful for high cardinality (100+ categories), but requires K-fold implementation to prevent data leakage.</li>
+                    
+                    <li><strong>Frequency Encoding:</strong> Replaces with frequency/count. Good for high cardinality in unsupervised learning. Simple and no leakage risk.</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Decision Framework</h4>
+                <ol>
+                    <li><strong>Identify category type:</strong> Nominal (no order) vs Ordinal (has order)</li>
+                    <li><strong>Count unique values:</strong> Low (2-10) vs High (50+) cardinality</li>
+                    <li><strong>Consider model type:</strong> Linear models need one-hot, tree models handle label encoding</li>
+                    <li><strong>Check for target variable:</strong> Target encoding only for supervised learning</li>
+                    <li><strong>Prevent data leakage:</strong> Always fit encoders on training data only</li>
+                </ol>
+            </div>
+
+            <p>Next tutorial, you'll learn about <strong>Feature Scaling and Normalization</strong> - preparing numerical features for machine learning algorithms. See you there! 🚀</p>
+        </section>
+
+        <!-- Navigation -->
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; text-align: center;">
+            <h3 style="color: white; margin-bottom: 1rem;">🎯 Ready for the Next Challenge?</h3>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 1.5rem;">Continue your feature engineering journey</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="data-preprocessing.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">
+                    ← Previous: Data Preprocessing
+                </a>
+                <a href="../../courses/feature-engineering.html" class="btn" style="background: white; color: #667eea;">
+                    📚 Course Hub
+                </a>
+                <a href="#" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white; opacity: 0.5; cursor: not-allowed;">
+                    Next: Feature Scaling →
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nebaz AI Academy</h3>
+                    <p>Master AI, Machine Learning, and Python through hands-on tutorials.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../../index.html">Home</a></li>
+                        <li><a href="../../index.html#courses">All Courses</a></li>
+                        <li><a href="../../courses/feature-engineering.html">Feature Engineering</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://scikit-learn.org/stable/modules/preprocessing.html" target="_blank">Scikit-learn Docs</a></li>
+                        <li><a href="https://contrib.scikit-learn.org/category_encoders/" target="_blank">Category Encoders</a></li>
+                        <li><a href="https://pandas.pydata.org/docs/" target="_blank">Pandas Documentation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nebaz AI Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

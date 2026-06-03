@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 9: Data Analysis & Reporting | AI for Project Managers</title>
+    <meta name="description" content="Analyze project data, create visualizations, build dashboards, and generate insights that drive better decision-making.">
+    
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #a855f7 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-meta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-badge {
+            padding: 0.4rem 1rem;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .tutorial-content h2 {
+            border-bottom: 3px solid #ddd6fe;
+        }
+        
+        /* Learning Objectives */
+        .learning-objectives {
+            background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .learning-objectives h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .objective-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid #078930;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .objective-item::before {
+            content: "✓";
+            color: #078930;
+            font-weight: bold;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 5px solid #078930;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 5px solid #f59e0b;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 5px solid #10b981;
+            padding: 1.75rem;
+            margin: 2.5rem 0;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Two Column Grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+        
+        /* Metric Cards */
+        .metric-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: #078930;
+        }
+        
+        .metric-card h4 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .metric-card .icon {
+            font-size: 2rem;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #078930;
+            margin: 0.5rem 0;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #1e293b !important;
+            border-radius: 0.75rem;
+            padding: 1.5rem !important;
+            margin: 2rem 0;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        
+        /* Practice Exercise */
+        .practice-exercise {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+        }
+        
+        .practice-exercise h3 {
+            color: #92400e;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Key Takeaways */
+        .key-takeaways {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            margin: 4rem 0;
+            border: 2px solid #10b981;
+        }
+        
+        .key-takeaways h3 {
+            color: #065f46;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .key-takeaways ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .key-takeaways li {
+            padding-left: 2rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+        
+        .key-takeaways li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        /* Navigation */
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1.5rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .tutorial-content h1 {
+                font-size: 2rem;
+            }
+            
+            .tutorial-content h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content h3 {
+                font-size: 1.35rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+            
+            .objectives-grid,
+            .two-column-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+            
+            .metric-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-project-managers.html">AI for Project Managers</a> → 
+                Module 9
+            </div>
+            <h1 class="page-title">Tutorial 9: Data Analysis & Reporting</h1>
+            <p class="tutorial-intro">Analyze project data, create visualizations, build dashboards, and generate insights that drive better decision-making.</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📚 Week 5</span>
+                <span class="meta-item">🎯 Advanced</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <!-- Learning Objectives -->
+        <div class="learning-objectives">
+            <h3>🎯 What You'll Master</h3>
+            <div class="objectives-grid">
+                <div class="objective-item">
+                    Transform raw project data into actionable insights using AI
+                </div>
+                <div class="objective-item">
+                    Generate executive dashboards that tell compelling data stories
+                </div>
+                <div class="objective-item">
+                    Identify trends, patterns, and anomalies in project metrics
+                </div>
+                <div class="objective-item">
+                    Create data-driven recommendations that influence decisions
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <h2>The Data Analysis Blind Spot</h2>
+        
+        <p>
+            Project Managers collect mountains of data: velocity metrics, budget burn rates, sprint performance, team capacity, 
+            risk registers. But <strong>collecting data ≠ using data</strong>. Most PMs lack the analytical skills to turn 
+            spreadsheets into insights that drive better decisions.
+        </p>
+
+        <div class="warning-box">
+            <h4>📉 The Data Problem:</h4>
+            <ul>
+                <li><strong>Data Overload:</strong> Tracking 20+ metrics but only reporting 3-4 basic ones</li>
+                <li><strong>Analysis Paralysis:</strong> Spending 5+ hours building reports manually in Excel</li>
+                <li><strong>Surface-Level Insights:</strong> "We're 10% over budget" without understanding why</li>
+                <li><strong>Missed Patterns:</strong> Not spotting trends until it's too late to course-correct</li>
+                <li><strong>Executive Mismatch:</strong> Presenting data leadership doesn't care about</li>
+            </ul>
+            <p><strong>Result:</strong> Data exists but doesn't inform decisions.</p>
+        </div>
+
+        <p>
+            ChatGPT acts as your <strong>data analyst</strong>—helping you identify meaningful patterns, generate visualizations, 
+            and translate numbers into narratives that executives understand and act on.
+        </p>
+
+        <!-- Key Metrics Analysis -->
+        <h2>📈 1. Analyzing Project Performance Metrics</h2>
+
+        <p>
+            The first step is understanding <strong>which metrics matter</strong> and what they're telling you. AI helps you 
+            move beyond surface-level reporting to root cause analysis.
+        </p>
+
+        <h3>Essential PM Metrics by Category</h3>
+
+        <div class="metric-card">
+            <h4><span class="icon">⏱️</span> Schedule Performance</h4>
+            <ul>
+                <li><strong>Sprint Velocity:</strong> Story points completed per sprint (trend over time)</li>
+                <li><strong>Cycle Time:</strong> Average days from start to completion</li>
+                <li><strong>Schedule Variance (SV):</strong> Planned vs actual timeline</li>
+                <li><strong>Milestone Hit Rate:</strong> % of milestones delivered on time</li>
+            </ul>
+        </div>
+
+        <div class="metric-card">
+            <h4><span class="icon">💰</span> Budget & Cost</h4>
+            <ul>
+                <li><strong>Burn Rate:</strong> Monthly spending vs budget</li>
+                <li><strong>Cost Variance (CV):</strong> Budgeted vs actual cost</li>
+                <li><strong>Cost Per Story Point:</strong> Efficiency metric</li>
+                <li><strong>Forecast at Completion:</strong> Projected total cost</li>
+            </ul>
+        </div>
+
+        <div class="metric-card">
+            <h4><span class="icon">🐛</span> Quality Metrics</h4>
+            <ul>
+                <li><strong>Defect Density:</strong> Bugs per 1000 lines of code</li>
+                <li><strong>Escaped Defects:</strong> Bugs found in production</li>
+                <li><strong>Test Coverage:</strong> % of code covered by tests</li>
+                <li><strong>Mean Time to Resolve (MTTR):</strong> Average bug fix time</li>
+            </ul>
+        </div>
+
+        <div class="metric-card">
+            <h4><span class="icon">👥</span> Team Health</h4>
+            <ul>
+                <li><strong>Team Capacity:</strong> Available hours vs allocated</li>
+                <li><strong>Utilization Rate:</strong> % of time on project work</li>
+                <li><strong>Turnover Risk:</strong> Team stability indicators</li>
+                <li><strong>Satisfaction Scores:</strong> Team morale tracking</li>
+            </ul>
+        </div>
+
+        <h3>ChatGPT Metrics Analysis Prompt</h3>
+
+        <pre><code class="language-plaintext">Analyze these project metrics and provide insights:
+
+Project: [E-commerce Platform Redesign]
+Duration: [16 weeks, currently in Week 10]
+
+SCHEDULE METRICS:
+- Sprint Velocity: [Week 1-4: 32 pts, Week 5-7: 28 pts, Week 8-10: 22 pts]
+- Planned vs Actual: [Behind by 12 story points cumulative]
+- Milestone Hit Rate: [4/7 milestones delivered on time = 57%]
+
+BUDGET METRICS:
+- Total Budget: [$500K]
+- Spent to Date: [$340K (68% of budget at 62.5% timeline)]
+- Monthly Burn: [Month 1: $100K, Month 2: $120K, Month 3: $120K]
+- Forecast at Completion: [$550K (10% over budget)]
+
+QUALITY METRICS:
+- Bugs Found: [Sprint 1-3: 12 bugs, Sprint 4-6: 28 bugs, Sprint 7-9: 45 bugs]
+- Escaped Defects: [3 critical bugs found in staging]
+- Test Coverage: [62% (target: 80%)]
+
+TEAM HEALTH:
+- Team Size: [12 people]
+- Turnover: [1 developer left Week 7, replacement started Week 9]
+- Utilization: [85% average]
+
+Analyze:
+1. What trends or patterns are concerning?
+2. What's the root cause of declining performance?
+3. What risks do these metrics indicate?
+4. What actions should I take immediately?
+5. What should I communicate to executives?
+
+Be specific and actionable.</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Metrics Analysis:</h4>
+            
+            <div class="info-box">
+                <h4>🚨 Critical Findings:</h4>
+                
+                <p><strong>1. VELOCITY DECLINING 31% (Red Flag)</strong></p>
+                <ul>
+                    <li><strong>Trend:</strong> Velocity dropped from 32 pts → 28 pts → 22 pts (31% decline)</li>
+                    <li><strong>Root Cause:</strong> Developer departure in Week 7 + increasing technical debt</li>
+                    <li><strong>Impact:</strong> 12 story points behind = ~1.5 weeks delay at current velocity</li>
+                    <li><strong>Action:</strong> Reduce scope by 10-15 story points OR extend timeline by 2 weeks</li>
+                </ul>
+                
+                <p style="margin-top: 1.5rem;"><strong>2. BUG RATE TRIPLING (Quality Crisis)</strong></p>
+                <ul>
+                    <li><strong>Trend:</strong> 12 bugs → 28 bugs → 45 bugs (275% increase)</li>
+                    <li><strong>Root Cause:</strong> Rushing features + 62% test coverage (below 80% target)</li>
+                    <li><strong>Impact:</strong> 3 critical bugs already escaped to staging; risk of launch delay</li>
+                    <li><strong>Action:</strong> Dedicate next sprint to bug fixes + increase test coverage to 75%+</li>
+                </ul>
+                
+                <p style="margin-top: 1.5rem;"><strong>3. BUDGET OVERRUN LIKELY (10% Over)</strong></p>
+                <ul>
+                    <li><strong>Trend:</strong> 68% budget spent at 62.5% timeline = burning 9% faster than planned</li>
+                    <li><strong>Root Cause:</strong> Replacement developer costs + overtime to meet deadlines</li>
+                    <li><strong>Impact:</strong> Forecast $550K vs $500K budget = $50K overage</li>
+                    <li><strong>Action:</strong> Negotiate scope reduction to stay within budget OR secure additional $50K</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <h4>💡 Root Cause Summary:</h4>
+                <p><strong>The Developer Departure in Week 7 Had Cascading Effects:</strong></p>
+                <ol>
+                    <li><strong>Velocity Loss:</strong> Lost experienced developer mid-project</li>
+                    <li><strong>Quality Issues:</strong> Team rushed to compensate, cutting corners on testing</li>
+                    <li><strong>Budget Burn:</strong> Replacement cost + overtime increased spending</li>
+                    <li><strong>Morale Impact:</strong> Team working 85% utilization under pressure</li>
+                </ol>
+                <p><strong>This is a <em>resource risk</em> that materialized and wasn't adequately mitigated.</strong></p>
+            </div>
+            
+            <div class="success-box">
+                <h4>🎯 Recommended Actions (Priority Order):</h4>
+                
+                <p><strong>IMMEDIATE (This Week):</strong></p>
+                <ol>
+                    <li><strong>Scope Negotiation:</strong> Meet with stakeholders to cut 12-15 story points (lowest value features)</li>
+                    <li><strong>Bug Sprint:</strong> Dedicate next sprint (Week 11) to bug fixes only—no new features</li>
+                    <li><strong>Test Coverage Push:</strong> Require all new code to have 80%+ test coverage</li>
+                </ol>
+                
+                <p style="margin-top: 1.5rem;"><strong>SHORT-TERM (Next 2 Weeks):</strong></p>
+                <ol>
+                    <li><strong>Timeline Adjustment:</strong> Extend launch by 2 weeks (Week 18 instead of 16)</li>
+                    <li><strong>Budget Approval:</strong> Request $50K additional budget OR identify cost cuts</li>
+                    <li><strong>Team Capacity:</strong> Reduce utilization target to 75% to prevent further burnout</li>
+                </ol>
+                
+                <p style="margin-top: 1.5rem;"><strong>ONGOING:</strong></p>
+                <ol>
+                    <li><strong>Weekly Velocity Tracking:</strong> Monitor if velocity stabilizes at 24-26 pts</li>
+                    <li><strong>Bug Triage Meetings:</strong> Daily 15-min bug reviews until count drops below 20</li>
+                    <li><strong>Onboarding Check:</strong> Ensure new developer is productive (pair programming, mentorship)</li>
+                </ol>
+            </div>
+            
+            <div class="info-box">
+                <h4>📢 Executive Communication (What to Say):</h4>
+                
+                <p><strong>Subject: Project Status Update — Timeline & Budget Adjustment Needed</strong></p>
+                
+                <p><em>"We've encountered a quality and velocity challenge following our developer departure in Week 7. 
+                Bug rates have tripled, and velocity has declined 31%. To deliver a quality product, I recommend:</em></p>
+                
+                <ol>
+                    <li><em>2-week timeline extension (launch Week 18 instead of 16)</em></li>
+                    <li><em>Reduce scope by 12 story points (removing lowest-priority features)</em></li>
+                    <li><em>$50K budget increase OR identify features to cut to stay within $500K</em></li>
+                </ol>
+                
+                <p><em>This ensures we launch with acceptable quality vs rushing a buggy product. Happy to discuss trade-offs."</em></p>
+            </div>
+        </div>
+
+        <!-- Trend Identification -->
+        <h2>📉 2. Identifying Trends & Patterns</h2>
+
+        <p>
+            Historical data reveals patterns that predict future outcomes. AI helps you spot trends before they become crises.
+        </p>
+
+        <h3>Trend Analysis Prompt</h3>
+
+        <pre><code class="language-plaintext">Analyze these historical trends and make predictions:
+
+Project Sprint Velocity (Last 12 Sprints):
+Sprint 1: 28 pts
+Sprint 2: 30 pts
+Sprint 3: 32 pts
+Sprint 4: 31 pts
+Sprint 5: 29 pts
+Sprint 6: 27 pts
+Sprint 7: 25 pts
+Sprint 8: 22 pts
+Sprint 9: 21 pts
+Sprint 10: 20 pts
+Sprint 11: 19 pts
+Sprint 12: 18 pts (current)
+
+Team Changes:
+- Sprint 3: Added 2 junior developers
+- Sprint 7: Senior developer left
+- Sprint 9: New senior developer started
+
+Questions:
+1. What trends do you see in velocity over time?
+2. How did team changes impact performance?
+3. What's the projected velocity for Sprints 13-16?
+4. When will the team recover to Sprint 1-4 levels (28-32 pts)?
+5. Should we be concerned about burnout or technical debt?
+
+Provide data-driven predictions with confidence levels.</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI Trend Analysis:</h4>
+            
+            <p><strong>📊 Velocity Trend Breakdown:</strong></p>
+            
+            <div class="two-column-grid">
+                <div class="info-box">
+                    <h4>Phase 1: Growth (Sprints 1-3)</h4>
+                    <p><strong>Velocity:</strong> 28 → 30 → 32 pts (+14%)</p>
+                    <p><strong>Cause:</strong> Team ramping up, building momentum</p>
+                    <p><strong>Event:</strong> 2 junior devs added Sprint 3</p>
+                </div>
+                
+                <div class="warning-box">
+                    <h4>Phase 2: Plateau (Sprints 4-6)</h4>
+                    <p><strong>Velocity:</strong> 31 → 29 → 27 pts (-13%)</p>
+                    <p><strong>Cause:</strong> Junior dev onboarding overhead</p>
+                    <p><strong>Signal:</strong> Normal dip when adding team members</p>
+                </div>
+            </div>
+            
+            <div class="two-column-grid">
+                <div class="warning-box">
+                    <h4>Phase 3: Decline (Sprints 7-9)</h4>
+                    <p><strong>Velocity:</strong> 25 → 22 → 21 pts (-16%)</p>
+                    <p><strong>Cause:</strong> Senior dev departure Sprint 7</p>
+                    <p><strong>Impact:</strong> Lost domain knowledge + handoff delays</p>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.75rem; border-radius: 1rem; border: 2px solid #ef4444;">
+                    <h4 style="color: #991b1b; margin-top: 0;">Phase 4: Crisis (Sprints 10-12)</h4>
+                    <p><strong>Velocity:</strong> 20 → 19 → 18 pts (-10%)</p>
+                    <p><strong>Cause:</strong> Technical debt + burnout</p>
+                    <p><strong>Warning:</strong> Still declining despite new hire</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4>🔮 Projections for Sprints 13-16:</h4>
+                
+                <p><strong>Scenario 1: No Intervention (40% confidence)</strong></p>
+                <ul>
+                    <li>Sprint 13: 17 pts</li>
+                    <li>Sprint 14: 16 pts</li>
+                    <li>Sprint 15: 15 pts</li>
+                    <li>Sprint 16: 15 pts</li>
+                    <li><strong>Risk:</strong> Velocity continues declining to 15 pts (53% below peak)</li>
+                </ul>
+                
+                <p style="margin-top: 1.5rem;"><strong>Scenario 2: Intervention (Bug Sprint + Scope Cut) (70% confidence)</strong></p>
+                <ul>
+                    <li>Sprint 13: 0 pts (dedicated bug fix sprint)</li>
+                    <li>Sprint 14: 22 pts (bounce back as tech debt clears)</li>
+                    <li>Sprint 15: 24 pts</li>
+                    <li>Sprint 16: 25 pts</li>
+                    <li><strong>Recovery:</strong> Return to Sprint 5-7 levels (25-27 pts) by Sprint 16</li>
+                </ul>
+                
+                <p style="margin-top: 1.5rem;"><strong>Scenario 3: Aggressive Recovery (Scope Cut + Team Rest) (50% confidence)</strong></p>
+                <ul>
+                    <li>Sprint 13: 0 pts (bug fixes)</li>
+                    <li>Sprint 14: 20 pts (gradual ramp)</li>
+                    <li>Sprint 15: 26 pts</li>
+                    <li>Sprint 16: 28 pts</li>
+                    <li><strong>Full Recovery:</strong> Back to Sprint 1 baseline (28 pts) by Sprint 16</li>
+                </ul>
+            </div>
+            
+            <div class="warning-box">
+                <h4>⚠️ Burnout & Technical Debt Indicators:</h4>
+                
+                <p><strong>YES, Multiple Red Flags Present:</strong></p>
+                <ol>
+                    <li><strong>Consistent Decline (6 Sprints):</strong> Velocity down 44% from peak (32 → 18 pts)</li>
+                    <li><strong>New Hire Not Helping:</strong> Senior dev joined Sprint 9, but velocity still dropping</li>
+                    <li><strong>Quality Issues:</strong> Likely accumulating technical debt (implied by continued decline)</li>
+                    <li><strong>Team Exhaustion:</strong> Working harder but producing less = burnout signal</li>
+                </ol>
+                
+                <p><strong>Recommendation:</strong> Immediate intervention required. Without action, expect velocity to 
+                bottom out at 15 pts (47% below sustainable levels).</p>
+            </div>
+        </div>
+
+        <!-- Executive Dashboards -->
+        <h2>📊 3. Building Executive Dashboards</h2>
+
+        <p>
+            Executives don't want 20 pages of data—they want <strong>one-page dashboards with key insights</strong>. AI helps 
+            you design dashboards that tell a story and drive decisions.
+        </p>
+
+        <h3>Dashboard Design Prompt</h3>
+
+        <pre><code class="language-plaintext">Design an executive dashboard for this project:
+
+Project: [Mobile App Launch]
+Audience: [C-suite executives (CEO, CFO, CTO)]
+Frequency: [Monthly update]
+
+Key Metrics to Include:
+- Schedule: [On track / X weeks behind]
+- Budget: [X% spent, $Y remaining]
+- Quality: [Defect count, test coverage]
+- Team: [Headcount, utilization, turnover]
+- Risks: [High-priority risks]
+- Milestones: [Next 3 milestones with dates]
+
+Executive Questions to Answer:
+1. Are we going to launch on time?
+2. Will we stay within budget?
+3. What are the biggest risks?
+4. What decisions do you need from me?
+
+Design:
+- Single-page visual layout
+- Traffic light indicators (Red/Yellow/Green)
+- 3-5 key insights at top
+- Minimal text, maximum clarity
+- Focus on trends, not raw numbers
+
+Provide dashboard structure and content.</code></pre>
+
+        <div class="success-box">
+            <h4>✨ AI-Generated Executive Dashboard:</h4>
+            
+            <div style="background: white; padding: 2rem; border-radius: 1rem; border: 2px solid #078930; margin: 2rem 0;">
+                <h3 style="margin-top: 0; text-align: center; color: #065f46;">Mobile App Launch — Executive Dashboard</h3>
+                <p style="text-align: center; color: #64748b;"><strong>Reporting Period:</strong> January 2024 | <strong>Project Week:</strong> 10 of 16</p>
+                
+                <hr style="margin: 1.5rem 0; border: 1px solid #e2e8f0;">
+                
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; border-left: 5px solid #f59e0b;">
+                    <h4 style="margin-top: 0; color: #92400e;">🎯 Executive Summary</h4>
+                    <ul style="margin-bottom: 0;">
+                        <li><strong>Status:</strong> 🟡 YELLOW — Minor delays, on track for recovery</li>
+                        <li><strong>Key Issue:</strong> Developer departure caused 2-week slip; mitigated with scope cut</li>
+                        <li><strong>Decision Needed:</strong> Approve 2-week timeline extension OR $50K budget increase</li>
+                    </ul>
+                </div>
+                
+                <div class="two-column-grid">
+                    <div class="metric-card">
+                        <h4>📅 Schedule</h4>
+                        <div class="metric-value">🟡 2wks</div>
+                        <p><strong>Status:</strong> Behind by 2 weeks</p>
+                        <p><strong>Mitigation:</strong> Cut 12 story points from scope</p>
+                        <p><strong>New Launch:</strong> Week 18 (March 15)</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>💰 Budget</h4>
+                        <div class="metric-value">🟡 68%</div>
+                        <p><strong>Spent:</strong> $340K of $500K</p>
+                        <p><strong>Forecast:</strong> $550K (10% over)</p>
+                        <p><strong>Action:</strong> Need $50K approval OR cut features</p>
+                    </div>
+                </div>
+                
+                <div class="two-column-grid">
+                    <div class="metric-card">
+                        <h4>🐛 Quality</h4>
+                        <div class="metric-value">🔴 45</div>
+                        <p><strong>Active Bugs:</strong> 45 (tripled in 6 weeks)</p>
+                        <p><strong>Test Coverage:</strong> 62% (target: 80%)</p>
+                        <p><strong>Action:</strong> Dedicating Sprint 11 to bug fixes</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h4>👥 Team Health</h4>
+                        <div class="metric-value">🟡 85%</div>
+                        <p><strong>Utilization:</strong> 85% (high risk of burnout)</p>
+                        <p><strong>Headcount:</strong> 12 (1 departure, 1 new hire)</p>
+                        <p><strong>Action:</strong> Reduce to 75% utilization</p>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 1.5rem; border-radius: 0.75rem; margin-top: 2rem; border-left: 5px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">⚠️ Top 3 Risks</h4>
+                    <ol style="margin-bottom: 0;">
+                        <li><strong>Quality Crisis (HIGH):</strong> Bug rate tripling may delay launch further if not addressed</li>
+                        <li><strong>Budget Overrun (MEDIUM):</strong> Trending 10% over; need approval or scope cut</li>
+                        <li><strong>Team Burnout (MEDIUM):</strong> 85% utilization unsustainable; risk of more turnover</li>
+                    </ol>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 0.75rem; margin-top: 2rem; border-left: 5px solid #078930;">
+                    <h4 style="margin-top: 0; color: #065f46;">📍 Next 3 Milestones</h4>
+                    <table style="width: 100%; margin-top: 1rem;">
+                        <tr>
+                            <td><strong>Sprint 11 (Week 11):</strong></td>
+                            <td>Bug Fix Sprint — Clear 70% of active bugs</td>
+                            <td><strong>Feb 1</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>UAT Launch (Week 14):</strong></td>
+                            <td>Begin user acceptance testing with 50 beta users</td>
+                            <td><strong>Feb 22</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Production Launch (Week 18):</strong></td>
+                            <td>Go-live with full feature set (minus 12 pts cut)</td>
+                            <td><strong>Mar 15</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 1.5rem; border-radius: 0.75rem; margin-top: 2rem; border-left: 5px solid #10b981;">
+                    <h4 style="margin-top: 0; color: #065f46;">✅ Decisions Needed This Week</h4>
+                    <ol style="margin-bottom: 0;">
+                        <li><strong>Timeline Extension:</strong> Approve 2-week delay (March 15 launch)</li>
+                        <li><strong>Budget Increase:</strong> Approve $50K additional budget OR identify $50K in scope cuts</li>
+                        <li><strong>Feature Prioritization:</strong> Sign off on 12 story points to cut from scope</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Exercise -->
+        <div class="practice-exercise">
+            <h3>🎯 Practice Exercise: Root Cause Analysis from Data</h3>
+            
+            <p><strong>Scenario:</strong></p>
+            <p>
+                You're analyzing Q4 project data and notice customer satisfaction scores dropped from 8.5/10 to 6.2/10 
+                over 3 months. Leadership wants to know why and what to do about it.
+            </p>
+            
+            <p><strong>Data Provided:</strong></p>
+            <ul>
+                <li><strong>Oct:</strong> NPS 8.5, 12 support tickets/week, 2 bugs reported</li>
+                <li><strong>Nov:</strong> NPS 7.8, 28 support tickets/week, 8 bugs reported</li>
+                <li><strong>Dec:</strong> NPS 6.2, 45 support tickets/week, 15 bugs reported</li>
+                <li><strong>Team Changes:</strong> 2 developers left in November</li>
+                <li><strong>Releases:</strong> Major feature launch mid-November (rushed)</li>
+            </ul>
+            
+            <p><strong>Your Task:</strong></p>
+            <ol>
+                <li><strong>Identify the correlation:</strong> Which metrics are connected?</li>
+                <li><strong>Find the root cause:</strong> What triggered the decline?</li>
+                <li><strong>Quantify the impact:</strong> How much revenue is at risk?</li>
+                <li><strong>Recommend actions:</strong> What should leadership do immediately?</li>
+            </ol>
+
+            <details style="margin-top: 1.5rem;">
+                <summary style="cursor: pointer; font-weight: 600; color: #92400e; font-size: 1.1rem;">
+                    View AI Analysis ↓
+                </summary>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h4>Root Cause Analysis:</h4>
+                    
+                    <p><strong>📊 Correlation Analysis:</strong></p>
+                    <ul>
+                        <li><strong>NPS Drop (27%):</strong> 8.5 → 6.2 = -2.3 points (27% decline)</li>
+                        <li><strong>Support Tickets (275% increase):</strong> 12/wk → 45/wk</li>
+                        <li><strong>Bug Reports (650% increase):</strong> 2 → 15 bugs</li>
+                        <li><strong>Correlation:</strong> As bugs increased, so did support tickets and NPS declined</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>🔍 Root Cause:</strong></p>
+                    <p><strong>The November feature launch was rushed due to developer departures:</strong></p>
+                    <ol>
+                        <li>2 developers left → reduced QA capacity</li>
+                        <li>Feature launch rushed to meet deadline</li>
+                        <li>Insufficient testing → 15 bugs shipped to production</li>
+                        <li>Bugs caused user frustration → NPS dropped</li>
+                        <li>Support team overwhelmed → slower ticket resolution → more frustration</li>
+                    </ol>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>💰 Revenue Impact:</strong></p>
+                    <ul>
+                        <li>NPS drop from 8.5 to 6.2 = 27% decline</li>
+                        <li>Typical correlation: 10-point NPS drop = 5-10% churn increase</li>
+                        <li>If customer base = 1,000 accounts at $5K/yr = $5M ARR</li>
+                        <li><strong>Estimated churn risk:</strong> $250K-$500K ARR (5-10%)</li>
+                    </ul>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>✅ Recommended Actions:</strong></p>
+                    <ol>
+                        <li><strong>Immediate (This Week):</strong> Fix all 15 bugs in production</li>
+                        <li><strong>Week 2:</strong> Proactive customer outreach to affected accounts</li>
+                        <li><strong>Week 3:</strong> Implement mandatory QA process for all releases</li>
+                        <li><strong>Month 2:</strong> Track NPS recovery; target 7.5+ by Feb</li>
+                    </ol>
+                </div>
+            </details>
+        </div>
+
+        <!-- Key Takeaways -->
+        <div class="key-takeaways">
+            <h3>🎓 Key Takeaways</h3>
+            <ul>
+                <li><strong>Data Without Analysis Is Useless:</strong> Collecting metrics doesn't drive decisions—insights do</li>
+                <li><strong>Trends Beat Snapshots:</strong> Historical patterns predict future outcomes better than point-in-time data</li>
+                <li><strong>Root Cause > Surface Symptoms:</strong> "We're behind schedule" isn't analysis—understanding WHY is</li>
+                <li><strong>Executive Dashboards Tell Stories:</strong> One-page visual narratives beat 20-page reports</li>
+                <li><strong>AI as Your Analyst:</strong> ChatGPT helps you identify patterns humans miss in complex datasets</li>
+            </ul>
+        </div>
+
+        <div class="success-box">
+            <h4>🎉 Congratulations! You've Completed the Course!</h4>
+            <p>
+                You've mastered all 9 modules of AI for Project Managers. You can now use AI to plan projects, manage risks, 
+                lead teams, run meetings, and analyze data—transforming how you work and multiplying your productivity.
+            </p>
+            <p><strong>What You've Learned:</strong></p>
+            <ul style="margin-left: 1.5rem;">
+                <li>✅ Generate project plans, WBS, and timelines in minutes</li>
+                <li>✅ Run Agile ceremonies with AI-powered prompts</li>
+                <li>✅ Communicate effectively with stakeholders at all levels</li>
+                <li>✅ Write professional emails that get results</li>
+                <li>✅ Identify and mitigate 50+ project risks proactively</li>
+                <li>✅ Navigate difficult conversations with confidence</li>
+                <li>✅ Run productive meetings with clear outcomes</li>
+                <li>✅ Transform data into actionable insights</li>
+            </ul>
+            <p style="margin-bottom: 0;">
+                <strong>Keep practicing, keep iterating, and remember: AI is your co-pilot, not your replacement. 
+                You bring the judgment, experience, and human touch. AI amplifies your capabilities. 🚀</strong>
+            </p>
+        </div>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of AI for data analysis and reporting!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="C">
+                    <h4>1. How can AI help PMs with data analysis?</h4>
+                    <div class="quiz-option" data-value="A">A) By replacing all analytical thinking</div>
+                    <div class="quiz-option" data-value="B">B) Data analysis doesn't need AI</div>
+                    <div class="quiz-option" data-value="C">C) By identifying patterns and generating insights from project data</div>
+                    <div class="quiz-option" data-value="D">D) By making data more complex</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>2. What can AI assist with in project reporting?</h4>
+                    <div class="quiz-option" data-value="A">A) Making reports longer</div>
+                    <div class="quiz-option" data-value="B">B) Creating visualizations and executive summaries</div>
+                    <div class="quiz-option" data-value="C">C) Hiding important metrics</div>
+                    <div class="quiz-option" data-value="D">D) Reporting is manual only</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How should PMs use AI for metrics analysis?</h4>
+                    <div class="quiz-option" data-value="A">A) Identify trends and anomalies in performance data</div>
+                    <div class="quiz-option" data-value="B">B) Ignore metrics entirely</div>
+                    <div class="quiz-option" data-value="C">C) Accept all AI interpretations without validation</div>
+                    <div class="quiz-option" data-value="D">D) Metrics don't need analysis</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What is important when using AI for forecasting?</h4>
+                    <div class="quiz-option" data-value="A">A) AI forecasts are always perfect</div>
+                    <div class="quiz-option" data-value="B">B) No data validation needed</div>
+                    <div class="quiz-option" data-value="C">C) Ignore uncertainty ranges</div>
+                    <div class="quiz-option" data-value="D">D) Consider data quality and validate predictions with project context</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. How can AI improve dashboard creation?</h4>
+                    <div class="quiz-option" data-value="A">A) By making dashboards confusing</div>
+                    <div class="quiz-option" data-value="B">B) By suggesting relevant KPIs and visualization types</div>
+                    <div class="quiz-option" data-value="C">C) Dashboards don't use AI</div>
+                    <div class="quiz-option" data-value="D">D) By showing all possible data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+            <!-- Certificate Request Section -->
+            <link rel="stylesheet" href="../../certificates/certificate.css">
+            <section class="certificate-section">
+                <div class="certificate-icon">🎓</div>
+                <h2>Get Your Completion Certificate</h2>
+                <p class="subtitle">Showcase your AI-powered project management skills!</p>
+                
+                <div class="certificate-benefits">
+                    <h4>📜 Your certificate includes:</h4>
+                    <ul>
+                        <li>✅ Official completion verification</li>
+                        <li>✅ Unique certificate ID</li>
+                        <li>✅ Shareable on LinkedIn, Twitter, and resume</li>
+                        <li>✅ Public verification page</li>
+                        <li>✅ Professional PDF download</li>
+                    </ul>
+                </div>
+                
+                <form class="certificate-form certificate-request-form" data-course="AI for Project Managers">
+                    <div class="form-group">
+                        <label for="cert-name-ai-for-project-managers">Full Name (as it should appear on certificate) *</label>
+                        <input 
+                            type="text" 
+                            id="cert-name-ai-for-project-managers"
+                            name="name" 
+                            placeholder="e.g., John Smith" 
+                            required 
+                            maxlength="100"
+                            autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cert-email-ai-for-project-managers">Email Address (we'll send your certificate here) *</label>
+                        <input 
+                            type="email" 
+                            id="cert-email-ai-for-project-managers"
+                            name="email" 
+                            placeholder="e.g., john@example.com" 
+                            required 
+                            maxlength="255"
+                            autocomplete="email">
+                    </div>
+                    
+                    <button type="submit" class="submit-button">
+                        🎓 Generate My Certificate
+                    </button>
+                    
+                    <div class="error-message"></div>
+                </form>
+                
+                <div class="success-message"></div>
+            </section>
+
+        <div class="tutorial-nav">
+            <a href="meeting-management-documentation.html" class="prev">← Tutorial 8: Meeting Management & Documentation</a>
+            <a href="../../courses/ai-for-project-managers.html" class="next">Back to Course Overview →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    <script src="../../certificates/certificate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master data preprocessing fundamentals for ML. Learn to handle missing values, detect outliers, clean messy data, and assess data quality with Python examples.">
+    <meta name="keywords" content="data preprocessing, missing values, outlier detection, data cleaning, imputation strategies, data quality, feature engineering, machine learning">
+    <title>Data Preprocessing Fundamentals - Feature Engineering | Nebaz AI Academy</title>
+    <link rel="canonical" href="data-preprocessing.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #b45309;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #f59e0b;
+        }
+        
+        .content-section h3 {
+            color: #d97706;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #f59e0b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #d97706;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/feature-engineering.html">Feature Engineering</a> → 
+                <span>Data Preprocessing Fundamentals</span>
+            </div>
+            <h1>Data Preprocessing Fundamentals</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>Pipeline design</li><li>Train/serve skew</li></ul>
+  
+</div>
+            <p class="tutorial-intro">
+                Clean, prepare, and transform raw data into ML-ready datasets
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 1</span>
+                <span class="meta-item">📊 Beginner</span>
+                <span class="meta-item">⏱️ 65 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 8 tutorials to earn your Free Feature Engineering Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Data Preprocessing Matters</h2>
+                    <p>
+                        "Garbage in, garbage out" is the iron law of machine learning. Your model can only be as good as your data. Real-world data is messy: missing values, outliers, inconsistencies, duplicates, wrong data types. Before building any model, you must clean and prepare your data.
+                    </p>
+                    <p>
+                        Data scientists spend 60-80% of their time on data preprocessing—not because they're slow, but because it's that important. A mediocre model on clean data will outperform a sophisticated model on messy data. Master preprocessing, and you'll build better models faster.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Amazon found that data quality issues cost them $1.7M per year. A healthcare ML system misdiagnosed patients because of inconsistent units (kg vs lbs). A trading algorithm lost millions due to undetected outliers. Preprocessing isn't glamorous, but it's where models are won or lost.</p>
+                    </div>
+                </section>
+
+                <!-- Understanding Your Data -->
+                <section class="content-section">
+                    <h2>🔍 Understanding Your Data</h2>
+                    <p>
+                        Before cleaning anything, you need to understand what you're working with. Let's explore a dataset systematically.
+                    </p>
+                    
+                    <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset (we'll create a messy one for practice)
+np.random.seed(42)
+
+# Create realistic messy dataset
+n_samples = 1000
+
+data = {
+    'age': np.random.randint(18, 80, n_samples),
+    'income': np.random.normal(50000, 20000, n_samples),
+    'credit_score': np.random.randint(300, 850, n_samples),
+    'years_employed': np.random.randint(0, 40, n_samples),
+    'education': np.random.choice(['High School', 'Bachelor', 'Master', 'PhD', None], n_samples, p=[0.3, 0.4, 0.2, 0.05, 0.05]),
+    'loan_approved': np.random.choice([0, 1], n_samples, p=[0.4, 0.6])
+}
+
+df = pd.DataFrame(data)
+
+# Introduce realistic problems
+# Missing values
+df.loc[np.random.choice(df.index, 50), 'income'] = np.nan
+df.loc[np.random.choice(df.index, 30), 'credit_score'] = np.nan
+
+# Outliers
+df.loc[np.random.choice(df.index, 10), 'income'] = np.random.uniform(200000, 500000, 10)
+df.loc[np.random.choice(df.index, 5), 'age'] = np.random.randint(100, 120, 5)
+
+# Duplicates
+df = pd.concat([df, df.iloc[:20]], ignore_index=True)
+
+print("🔍 Data Exploration: Loan Approval Dataset")
+print("="*70)
+
+# 1. Basic Information
+print("\n1️⃣ BASIC INFORMATION")
+print(f"Shape: {df.shape[0]} rows × {df.shape[1]} columns")
+print(f"\nData types:")
+print(df.dtypes)
+
+# 2. First/Last rows
+print("\n2️⃣ FIRST 5 ROWS")
+print(df.head())
+
+# 3. Summary statistics
+print("\n3️⃣ SUMMARY STATISTICS")
+print(df.describe())
+
+# 4. Missing values
+print("\n4️⃣ MISSING VALUES")
+missing = df.isnull().sum()
+missing_pct = (missing / len(df) * 100).round(2)
+missing_df = pd.DataFrame({
+    'Missing Count': missing,
+    'Percentage': missing_pct
+})
+print(missing_df[missing_df['Missing Count'] > 0])
+
+# 5. Duplicates
+print(f"\n5️⃣ DUPLICATE ROWS")
+duplicates = df.duplicated().sum()
+print(f"Number of duplicate rows: {duplicates}")
+
+# 6. Unique values
+print("\n6️⃣ UNIQUE VALUES PER COLUMN")
+for col in df.columns:
+    print(f"{col}: {df[col].nunique()} unique values")
+
+# 7. Value distributions
+print("\n7️⃣ CATEGORICAL DISTRIBUTIONS")
+for col in df.select_dtypes(include=['object']).columns:
+    print(f"\n{col}:")
+    print(df[col].value_counts())</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Data Exploration Checklist</strong>
+                        <p>Always check: 1) Shape (rows × columns), 2) Data types (numeric vs categorical), 3) Missing values (count and percentage), 4) Duplicates, 5) Summary statistics (min, max, mean, std), 6) Unique values, 7) Class balance (for classification), 8) Distributions (histograms, box plots).</p>
+                    </div>
+                </section>
+
+                <!-- Handling Missing Values -->
+                <section class="content-section">
+                    <h2>🕳️ Handling Missing Values</h2>
+                    <p>
+                        Missing data is inevitable. The strategy you choose depends on: 1) How much is missing (5% vs 50%), 2) Why it's missing (random vs systematic), 3) Variable type (numeric vs categorical), 4) Algorithm requirements (some handle NaN, others don't).
+                    </p>
+                    
+                    <h3>Strategy 1: Delete Missing Data</h3>
+                    <pre><code class="language-python"># When to delete: < 5% missing, data is MCAR (Missing Completely At Random)
+
+print("🗑️ Deletion Strategies")
+print("="*70)
+
+print(f"\nOriginal shape: {df.shape}")
+
+# Option 1: Drop rows with any missing values
+df_dropna_any = df.dropna()
+print(f"After dropna(): {df_dropna_any.shape}")
+print(f"Rows lost: {df.shape[0] - df_dropna_any.shape[0]} ({(df.shape[0] - df_dropna_any.shape[0])/df.shape[0]*100:.1f}%)")
+
+# Option 2: Drop rows with missing in specific columns
+df_dropna_subset = df.dropna(subset=['income', 'credit_score'])
+print(f"\nAfter dropna(subset=['income', 'credit_score']): {df_dropna_subset.shape}")
+
+# Option 3: Drop columns with too much missing data
+threshold = 0.5  # Drop if > 50% missing
+df_drop_cols = df.dropna(thresh=int(threshold * len(df)), axis=1)
+print(f"\nColumns with > {threshold*100}% missing dropped: {df_drop_cols.shape}")
+
+print("\n⚖️ Tradeoff:")
+print("  ✅ Pros: Simple, no assumptions, preserves data distribution")
+print("  ❌ Cons: Loses information, can introduce bias, reduces sample size")</code></pre>
+
+                    <h3>Strategy 2: Imputation (Filling Missing Values)</h3>
+                    <pre><code class="language-python">from sklearn.impute import SimpleImputer, KNNImputer
+
+print("\n🔧 Imputation Strategies")
+print("="*70)
+
+# Create copy for imputation
+df_imputed = df.copy()
+
+# 1. MEAN IMPUTATION (for numeric data)
+print("\n1️⃣ Mean Imputation")
+mean_imputer = SimpleImputer(strategy='mean')
+df_imputed['income_mean'] = mean_imputer.fit_transform(df[['income']])
+print(f"Original mean: {df['income'].mean():.2f}")
+print(f"After imputation: {df_imputed['income_mean'].mean():.2f}")
+print("⚠️  Warning: Reduces variance, can distort distributions")
+
+# 2. MEDIAN IMPUTATION (robust to outliers)
+print("\n2️⃣ Median Imputation (Better for skewed data)")
+median_imputer = SimpleImputer(strategy='median')
+df_imputed['income_median'] = median_imputer.fit_transform(df[['income']])
+print(f"Original median: {df['income'].median():.2f}")
+print(f"After imputation: {df_imputed['income_median'].median():.2f}")
+print("✅ Robust to outliers, preserves median")
+
+# 3. MODE IMPUTATION (for categorical data)
+print("\n3️⃣ Mode Imputation (for categorical)")
+mode_imputer = SimpleImputer(strategy='most_frequent')
+df_imputed['education_mode'] = mode_imputer.fit_transform(df[['education']])
+print(f"Most frequent: {df['education'].mode()[0]}")
+print("✅ Simple, works for categorical data")
+
+# 4. CONSTANT IMPUTATION (domain knowledge)
+print("\n4️⃣ Constant Imputation (domain-specific)")
+constant_imputer = SimpleImputer(strategy='constant', fill_value=0)
+df_imputed['years_employed_zero'] = constant_imputer.fit_transform(df[['years_employed']])
+print("Use when missing = meaningful (e.g., 0 years employed = unemployed)")
+
+# 5. KNN IMPUTATION (advanced - uses similar records)
+print("\n5️⃣ KNN Imputation (uses neighboring values)")
+knn_imputer = KNNImputer(n_neighbors=5)
+numeric_cols = ['age', 'income', 'credit_score', 'years_employed']
+df_imputed[numeric_cols] = knn_imputer.fit_transform(df[numeric_cols])
+print("✅ Preserves relationships between features")
+print("❌ Computationally expensive, sensitive to scale")
+
+# 6. FORWARD FILL / BACKWARD FILL (for time series)
+print("\n6️⃣ Forward Fill (time series only)")
+df_time = df.sort_values('age')  # Simulating time
+df_time['income_ffill'] = df_time['income'].fillna(method='ffill')
+print("Use for time series: carry forward last observed value")
+
+print("\n📊 Comparison:")
+comparison = pd.DataFrame({
+    'Original': df['income'].describe(),
+    'Mean': df_imputed['income_mean'].describe(),
+    'Median': df_imputed['income_median'].describe(),
+    'KNN': df_imputed['income'].describe()
+})
+print(comparison)</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ Imputation Best Practices</strong>
+                        <p><strong>Numeric data:</strong> Median for skewed, Mean for normal, KNN for relationships. <strong>Categorical data:</strong> Mode or create "Missing" category. <strong>Time series:</strong> Forward fill or interpolation. <strong>Never:</strong> Impute before train/test split (causes data leakage!). Always fit imputer on train, transform both train and test.</p>
+                    </div>
+                </section>
+
+                <!-- Detecting Outliers -->
+                <section class="content-section">
+                    <h2>📊 Detecting and Handling Outliers</h2>
+                    <p>
+                        Outliers are extreme values that deviate significantly from other observations. They can be: 1) Genuine extreme values (billionaire in income data), 2) Measurement errors (age = 200), 3) Data entry mistakes (income = -50000). Not all outliers are bad—context matters!
+                    </p>
+                    
+                    <h3>Method 1: Statistical Methods</h3>
+                    <pre><code class="language-python">print("🔍 Outlier Detection Methods")
+print("="*70)
+
+# Clean data for outlier analysis
+df_clean = df.dropna(subset=['income', 'age', 'credit_score'])
+
+# 1. Z-SCORE METHOD (assumes normal distribution)
+print("\n1️⃣ Z-Score Method")
+from scipy import stats
+
+z_scores = np.abs(stats.zscore(df_clean['income']))
+threshold = 3  # 3 standard deviations
+outliers_z = df_clean[z_scores > threshold]
+print(f"Outliers detected (|z| > {threshold}): {len(outliers_z)}")
+print(f"Percentage: {len(outliers_z)/len(df_clean)*100:.2f}%")
+print(f"\nOutlier income range: ${outliers_z['income'].min():.0f} - ${outliers_z['income'].max():.0f}")
+print(f"Normal income range: ${df_clean[z_scores <= threshold]['income'].min():.0f} - ${df_clean[z_scores <= threshold]['income'].max():.0f}")
+
+# 2. IQR METHOD (robust, works for skewed distributions)
+print("\n2️⃣ IQR (Interquartile Range) Method")
+Q1 = df_clean['income'].quantile(0.25)
+Q3 = df_clean['income'].quantile(0.75)
+IQR = Q3 - Q1
+
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+outliers_iqr = df_clean[(df_clean['income'] < lower_bound) | (df_clean['income'] > upper_bound)]
+print(f"Q1: ${Q1:.0f}, Q3: ${Q3:.0f}, IQR: ${IQR:.0f}")
+print(f"Bounds: [${lower_bound:.0f}, ${upper_bound:.0f}]")
+print(f"Outliers detected: {len(outliers_iqr)}")
+print("✅ More robust than z-score for skewed data")
+
+# 3. DOMAIN-BASED METHOD (use business logic)
+print("\n3️⃣ Domain-Based Rules")
+age_outliers = df_clean[df_clean['age'] > 100]
+income_outliers = df_clean[df_clean['income'] < 0]
+credit_outliers = df_clean[(df_clean['credit_score'] < 300) | (df_clean['credit_score'] > 850)]
+
+print(f"Impossible ages (>100): {len(age_outliers)}")
+print(f"Negative income: {len(income_outliers)}")
+print(f"Invalid credit scores: {len(credit_outliers)}")
+print("✅ Most reliable - uses domain knowledge")
+
+# Visualize outliers
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# Box plot
+axes[0].boxplot(df_clean['income'])
+axes[0].set_title('Box Plot: Income')
+axes[0].set_ylabel('Income ($)')
+axes[0].axhline(lower_bound, color='r', linestyle='--', label='Lower bound')
+axes[0].axhline(upper_bound, color='r', linestyle='--', label='Upper bound')
+axes[0].legend()
+
+# Histogram
+axes[1].hist(df_clean['income'], bins=50, edgecolor='black')
+axes[1].axvline(lower_bound, color='r', linestyle='--', linewidth=2)
+axes[1].axvline(upper_bound, color='r', linestyle='--', linewidth=2)
+axes[1].set_title('Histogram: Income Distribution')
+axes[1].set_xlabel('Income ($)')
+axes[1].set_ylabel('Frequency')
+
+# Scatter plot with outliers highlighted
+is_outlier = (df_clean['income'] < lower_bound) | (df_clean['income'] > upper_bound)
+axes[2].scatter(df_clean[~is_outlier]['age'], df_clean[~is_outlier]['income'], 
+                alpha=0.5, label='Normal', s=20)
+axes[2].scatter(df_clean[is_outlier]['age'], df_clean[is_outlier]['income'], 
+                color='red', alpha=0.7, label='Outlier', s=50)
+axes[2].set_title('Age vs Income (Outliers in Red)')
+axes[2].set_xlabel('Age')
+axes[2].set_ylabel('Income ($)')
+axes[2].legend()
+
+plt.tight_layout()
+# plt.show()
+
+print("\n💡 Visual Inspection:")
+print("  - Box plots show outliers as points beyond whiskers")
+print("  - Histograms reveal distribution shape and extreme values")
+print("  - Scatter plots show multivariate outliers")</code></pre>
+
+                    <h3>Handling Outliers</h3>
+                    <pre><code class="language-python">print("\n🔧 Outlier Handling Strategies")
+print("="*70)
+
+df_outliers = df_clean.copy()
+
+# Strategy 1: REMOVE OUTLIERS
+print("\n1️⃣ Remove Outliers")
+df_no_outliers = df_outliers[(df_outliers['income'] >= lower_bound) & 
+                               (df_outliers['income'] <= upper_bound)]
+print(f"Original: {len(df_outliers)} rows")
+print(f"After removal: {len(df_no_outliers)} rows")
+print(f"Removed: {len(df_outliers) - len(df_no_outliers)} rows ({(len(df_outliers) - len(df_no_outliers))/len(df_outliers)*100:.1f}%)")
+print("✅ Use when: Outliers are errors, small percentage")
+print("❌ Caution: May lose valuable information")
+
+# Strategy 2: CAP OUTLIERS (Winsorization)
+print("\n2️⃣ Cap/Floor Outliers (Winsorization)")
+df_capped = df_outliers.copy()
+df_capped['income_capped'] = df_capped['income'].clip(lower=lower_bound, upper=upper_bound)
+print(f"Values below ${lower_bound:.0f} set to ${lower_bound:.0f}")
+print(f"Values above ${upper_bound:.0f} set to ${upper_bound:.0f}")
+print("✅ Retains all data points, reduces extreme influence")
+
+# Strategy 3: TRANSFORM (log, sqrt)
+print("\n3️⃣ Transform Data")
+df_outliers['income_log'] = np.log1p(df_outliers['income'])  # log(1+x) to handle zeros
+print("Log transformation reduces impact of extreme values")
+print(f"Original range: ${df_outliers['income'].min():.0f} - ${df_outliers['income'].max():.0f}")
+print(f"Log range: {df_outliers['income_log'].min():.2f} - {df_outliers['income_log'].max():.2f}")
+print("✅ Changes scale, makes distribution more normal")
+
+# Strategy 4: SEPARATE MODELING
+print("\n4️⃣ Treat Separately")
+print("Train separate models for normal and outlier segments")
+print("✅ Use when: Outliers are legitimate but different (luxury homes vs normal)")
+
+# Compare distributions
+print("\n📊 Impact on Statistics:")
+comparison = pd.DataFrame({
+    'Original': df_outliers['income'].describe(),
+    'No Outliers': df_no_outliers['income'].describe(),
+    'Capped': df_capped['income_capped'].describe(),
+    'Log Transform': df_outliers['income_log'].describe()
+})
+print(comparison)</code></pre>
+                </section>
+
+                <!-- Data Type Conversions -->
+                <section class="content-section">
+                    <h2>🔄 Data Type Conversions</h2>
+                    <p>
+                        Wrong data types cause errors and waste memory. Pandas sometimes infers incorrectly. Always verify and correct data types.
+                    </p>
+                    
+                    <pre><code class="language-python">print("🔄 Data Type Conversions")
+print("="*70)
+
+# Create sample with wrong types
+df_types = pd.DataFrame({
+    'customer_id': ['001', '002', '003', '004'],
+    'age': ['25', '30', '45', '22'],  # Should be int
+    'salary': ['50000.5', '60000.0', '75000.25', '45000.0'],  # Should be float
+    'join_date': ['2020-01-15', '2021-03-20', '2019-11-05', '2022-06-10'],  # Should be datetime
+    'is_premium': ['True', 'False', 'True', 'False'],  # Should be bool
+    'category': ['1', '2', '1', '3']  # Should stay as category/string
+})
+
+print("BEFORE:")
+print(df_types.dtypes)
+print(f"\nMemory usage: {df_types.memory_usage(deep=True).sum()} bytes")
+
+# Convert types
+df_types['age'] = df_types['age'].astype(int)
+df_types['salary'] = df_types['salary'].astype(float)
+df_types['join_date'] = pd.to_datetime(df_types['join_date'])
+df_types['is_premium'] = df_types['is_premium'].map({'True': True, 'False': False})
+df_types['category'] = df_types['category'].astype('category')  # Saves memory!
+
+print("\nAFTER:")
+print(df_types.dtypes)
+print(f"\nMemory usage: {df_types.memory_usage(deep=True).sum()} bytes")
+
+# Extract datetime features
+df_types['year'] = df_types['join_date'].dt.year
+df_types['month'] = df_types['join_date'].dt.month
+df_types['day_of_week'] = df_types['join_date'].dt.dayofweek
+df_types['days_since_join'] = (pd.Timestamp.now() - df_types['join_date']).dt.days
+
+print("\n📅 Datetime Features Extracted:")
+print(df_types[['join_date', 'year', 'month', 'day_of_week', 'days_since_join']])
+
+print("\n💡 Key Points:")
+print("  - Category dtype saves memory for strings with few unique values")
+print("  - Datetime allows powerful date arithmetic and feature extraction")
+print("  - Wrong types prevent mathematical operations and cause errors")</code></pre>
+                </section>
+
+                <!-- Handling Duplicates -->
+                <section class="content-section">
+                    <h2>🔁 Handling Duplicates</h2>
+                    <p>
+                        Duplicate rows inflate your dataset, bias your model, and waste computation. Always check for and handle duplicates appropriately.
+                    </p>
+                    
+                    <pre><code class="language-python">print("🔁 Duplicate Detection and Handling")
+print("="*70)
+
+print(f"\nOriginal dataset: {len(df)} rows")
+
+# Check for duplicates
+duplicates = df.duplicated()
+print(f"Duplicate rows: {duplicates.sum()}")
+
+# Find which rows are duplicated
+duplicate_rows = df[df.duplicated(keep=False)]  # keep=False shows all duplicates
+print(f"\nAll instances of duplicated rows: {len(duplicate_rows)}")
+
+# Remove duplicates (keep first occurrence)
+df_deduplicated = df.drop_duplicates()
+print(f"\nAfter removing duplicates: {len(df_deduplicated)} rows")
+print(f"Removed: {len(df) - len(df_deduplicated)} rows")
+
+# Check duplicates based on specific columns
+print("\n🔍 Checking duplicates on specific columns:")
+df_deduplicated_subset = df.drop_duplicates(subset=['age', 'income', 'credit_score'])
+print(f"Unique by (age, income, credit_score): {len(df_deduplicated_subset)} rows")
+
+# Keep last instead of first
+df_keep_last = df.drop_duplicates(keep='last')
+print(f"\nKeeping last occurrence: {len(df_keep_last)} rows")
+
+print("\n💡 Strategy:")
+print("  - Keep='first': Default, keeps first occurrence")
+print("  - Keep='last': Keeps most recent (if data has temporal order)")
+print("  - Keep=False: Removes all duplicates (use cautiously)")
+print("  - subset: Check duplicates on specific columns only")</code></pre>
+                </section>
+
+                <!-- Data Consistency -->
+                <section class="content-section">
+                    <h2>✅ Data Consistency Checks</h2>
+                    <p>
+                        Inconsistent data sneaks in through human error, system bugs, or integration issues. Always validate business logic constraints.
+                    </p>
+                    
+                    <pre><code class="language-python">print("✅ Data Consistency Validation")
+print("="*70)
+
+df_check = df_clean.copy()
+
+# 1. Range checks
+print("\n1️⃣ Range Validation")
+age_invalid = df_check[(df_check['age'] < 18) | (df_check['age'] > 100)]
+print(f"Invalid ages: {len(age_invalid)}")
+
+credit_invalid = df_check[(df_check['credit_score'] < 300) | (df_check['credit_score'] > 850)]
+print(f"Invalid credit scores: {len(credit_invalid)}")
+
+income_invalid = df_check[df_check['income'] < 0]
+print(f"Negative incomes: {len(income_invalid)}")
+
+# 2. Relationship checks
+print("\n2️⃣ Relationship Validation")
+years_vs_age = df_check[df_check['years_employed'] > df_check['age'] - 18]
+print(f"Years employed > possible working years: {len(years_vs_age)}")
+if len(years_vs_age) > 0:
+    print("❌ Data issue: Can't work more years than age - 18!")
+
+# 3. Category validation
+print("\n3️⃣ Category Validation")
+valid_education = ['High School', 'Bachelor', 'Master', 'PhD']
+invalid_education = df_check[~df_check['education'].isin(valid_education + [None])]
+print(f"Invalid education values: {len(invalid_education)}")
+
+# 4. Completeness checks
+print("\n4️⃣ Completeness Checks")
+essential_columns = ['age', 'income', 'credit_score']
+incomplete_rows = df_check[df_check[essential_columns].isnull().any(axis=1)]
+print(f"Rows with missing essential data: {len(incomplete_rows)}")
+
+# 5. Create validation report
+print("\n📋 Data Quality Report:")
+quality_report = {
+    'Total Rows': len(df_check),
+    'Complete Rows': len(df_check.dropna()),
+    'Rows with Missing': len(df_check) - len(df_check.dropna()),
+    'Duplicate Rows': df_check.duplicated().sum(),
+    'Invalid Ages': len(age_invalid),
+    'Invalid Credit': len(credit_invalid),
+    'Negative Income': len(income_invalid),
+    'Logic Errors': len(years_vs_age)
+}
+
+for metric, value in quality_report.items():
+    status = "✅" if value == 0 or metric in ['Total Rows', 'Complete Rows'] else "⚠️"
+    print(f"  {status} {metric}: {value}")
+
+# Calculate data quality score
+issues = sum([v for k, v in quality_report.items() if k not in ['Total Rows', 'Complete Rows']])
+quality_score = (1 - issues / len(df_check)) * 100
+print(f"\n🎯 Overall Data Quality Score: {quality_score:.1f}%")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Common Data Quality Issues</strong>
+                        <p><strong>Inconsistent formatting:</strong> "New York", "new york", "NY" should be standardized. <strong>Wrong units:</strong> Height in cm vs inches, weight in kg vs lbs. <strong>Impossible values:</strong> Age > 150, negative prices. <strong>Temporal issues:</strong> End date before start date. <strong>Category typos:</strong> "Californ ia" vs "California".</p>
+                    </div>
+                </section>
+
+                <!-- Complete Preprocessing Pipeline -->
+                <section class="content-section">
+                    <h2>🔧 Complete Preprocessing Pipeline</h2>
+                    <p>
+                        Now let's put everything together into a reusable preprocessing pipeline using scikit-learn's Pipeline and ColumnTransformer.
+                    </p>
+                    
+                    <pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+print("🔧 Building Complete Preprocessing Pipeline")
+print("="*70)
+
+# Define column types
+numeric_features = ['age', 'income', 'credit_score', 'years_employed']
+categorical_features = ['education']
+
+# Numeric pipeline
+numeric_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='median')),  # Handle missing values
+    ('scaler', StandardScaler())  # Standardize
+])
+
+# Categorical pipeline
+categorical_transformer = Pipeline(steps=[
+    ('imputer', SimpleImputer(strategy='constant', fill_value='Unknown')),  # Handle missing
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))  # Encode
+])
+
+# Combine into ColumnTransformer
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numeric_transformer, numeric_features),
+        ('cat', categorical_transformer, categorical_features)
+    ])
+
+# Prepare data
+from sklearn.model_selection import train_test_split
+
+X = df[numeric_features + categorical_features]
+y = df['loan_approved']
+
+# Split BEFORE preprocessing (to avoid data leakage!)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print(f"Training set: {X_train.shape}")
+print(f"Test set: {X_test.shape}")
+
+# Fit on training data, transform both
+X_train_processed = preprocessor.fit_transform(X_train)
+X_test_processed = preprocessor.transform(X_test)
+
+print(f"\nAfter preprocessing:")
+print(f"Training features shape: {X_train_processed.shape}")
+print(f"Test features shape: {X_test_processed.shape}")
+
+# Feature names after transformation
+feature_names = (numeric_features + 
+                 list(preprocessor.named_transformers_['cat']
+                     .named_steps['onehot']
+                     .get_feature_names_out(categorical_features)))
+
+print(f"\nFeatures created: {len(feature_names)}")
+print("Feature names:", feature_names[:10], "...")
+
+print("\n💡 Pipeline Benefits:")
+print("  ✅ Reproducible: Same transformations every time")
+print("  ✅ No data leakage: Fit on train, transform on test")
+print("  ✅ Production-ready: Save with joblib, use in deployment")
+print("  ✅ Cleaner code: One fit_transform call instead of many")
+
+# Save pipeline for deployment
+import joblib
+joblib.dump(preprocessor, 'preprocessing_pipeline.pkl')
+print("\n💾 Pipeline saved to 'preprocessing_pipeline.pkl'")
+
+# Load and use later
+loaded_preprocessor = joblib.load('preprocessing_pipeline.pkl')
+new_data_processed = loaded_preprocessor.transform(X_test[:5])
+print(f"\nLoaded pipeline and processed {new_data_processed.shape[0]} samples")</code></pre>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <h3>Exercise 1: Missing Value Strategy</h3>
+                    <p><strong>Dataset:</strong> Housing prices with 15% missing sqft, 8% missing year_built, 20% missing garage_type.</p>
+                    <ol>
+                        <li>Decide strategy for each column (delete, mean, median, mode, KNN)</li>
+                        <li>Justify your choices based on missingness percentage and variable type</li>
+                        <li>Implement imputation and compare results</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Outlier Analysis</h3>
+                    <p><strong>Data:</strong> Salary dataset with values ranging $20k-$2M. Most salaries are $40k-$120k.</p>
+                    <ol>
+                        <li>Use IQR method to detect outliers</li>
+                        <li>Compare with z-score method (z > 3)</li>
+                        <li>Decide: Are high salaries errors or legitimate? How would you handle them?</li>
+                        <li>Show impact on mean vs median</li>
+                    </ol>
+                    
+                    <h3>Exercise 3: Data Quality Report</h3>
+                    <p><strong>Challenge:</strong> Create a function `data_quality_report(df)` that returns:</p>
+                    <ul>
+                        <li>Missing value percentage per column</li>
+                        <li>Number of duplicates</li>
+                        <li>Outliers per numeric column (IQR method)</li>
+                        <li>Invalid categorical values</li>
+                        <li>Overall quality score (0-100)</li>
+                    </ul>
+                    
+                    <h3>Exercise 4: Preprocessing Pipeline</h3>
+                    <p><strong>Dataset:</strong> Customer churn with numeric (age, tenure, charges) and categorical (gender, contract, internet_service).</p>
+                    <ol>
+                        <li>Build scikit-learn pipeline with:</li>
+                        <ul>
+                            <li>Median imputation for numeric</li>
+                            <li>Mode imputation for categorical</li>
+                            <li>StandardScaler for numeric</li>
+                            <li>OneHotEncoder for categorical</li>
+                        </ul>
+                        <li>Split data into train/test</li>
+                        <li>Fit pipeline on train only</li>
+                        <li>Transform both train and test</li>
+                        <li>Verify no data leakage</li>
+                    </ol>
+                    
+                    <h3>Exercise 5: Real-World Messy Data</h3>
+                    <p><strong>Scenario:</strong> You receive customer data with:</p>
+                    <ul>
+                        <li>Inconsistent country names ("USA", "United States", "US", "U.S.A.")</li>
+                        <li>Phone numbers in different formats</li>
+                        <li>Mixed date formats ("12/31/2022", "2022-12-31", "Dec 31, 2022")</li>
+                        <li>Currency symbols in price fields ("$100", "100 USD")</li>
+                    </ul>
+                    <p>Clean and standardize this data programmatically.</p>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>You've mastered data preprocessing—the foundation of feature engineering and successful ML projects:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🔍 Data Exploration</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Check shape, types, missing values, duplicates, distributions. Understand your data before cleaning!</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🕳️ Missing Values</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Delete, impute (mean/median/mode), KNN, or forward fill. Strategy depends on amount and type.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📊 Outliers</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Detect with IQR, z-score, or domain rules. Remove, cap, transform, or model separately.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🔄 Data Types</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Convert to correct types. Use category for memory efficiency. Extract datetime features.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🔁 Duplicates</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Check and remove duplicates. Keep first, last, or specific columns only.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🔧 Pipelines</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Build reproducible preprocessing with scikit-learn Pipeline. Prevents data leakage!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Takeaway</strong>
+                        <p>Data preprocessing isn't optional—it's where ML success is determined. Always: 1) Explore data thoroughly first, 2) Handle missing values appropriately, 3) Detect and manage outliers, 4) Validate data consistency, 5) Build reproducible pipelines, 6) Fit on train, transform on test (no data leakage!). Clean data beats fancy algorithms every time!</p>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 1:</strong> When should you use median imputation instead of mean imputation for missing numeric values?</p>
+                            <div class="quiz-option" data-value="a">a) When data is normally distributed</div>
+                            <div class="quiz-option" data-value="b">b) When data is skewed or has outliers</div>
+                            <div class="quiz-option" data-value="c">c) When data is categorical</div>
+                            <div class="quiz-option" data-value="d">d) Never, always use mean</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 2:</strong> What is the IQR method for outlier detection?</p>
+                            <div class="quiz-option" data-value="a">a) Values more than 3 standard deviations from mean</div>
+                            <div class="quiz-option" data-value="b">b) Values in the bottom 1% and top 1%</div>
+                            <div class="quiz-option" data-value="c">c) Values below Q1 - 1.5×IQR or above Q3 + 1.5×IQR</div>
+                            <div class="quiz-option" data-value="d">d) Any value that looks unusual</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 3:</strong> Why is it critical to fit preprocessing transformations on training data only?</p>
+                            <div class="quiz-option" data-value="a">a) To prevent data leakage and overly optimistic performance estimates</div>
+                            <div class="quiz-option" data-value="b">b) To save computation time</div>
+                            <div class="quiz-option" data-value="c">c) Because test data might not be available</div>
+                            <div class="quiz-option" data-value="d">d) It doesn't matter where you fit</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 4:</strong> Which strategy is best for handling categorical missing values?</p>
+                            <div class="quiz-option" data-value="a">a) Replace with mean</div>
+                            <div class="quiz-option" data-value="b">a) Delete all rows with missing categories</div>
+                            <div class="quiz-option" data-value="c">c) Replace with median</div>
+                            <div class="quiz-option" data-value="d">d) Replace with mode or create "Missing" category</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 5:</strong> What does winsorization do to outliers?</p>
+                            <div class="quiz-option" data-value="a">a) Removes them entirely</div>
+                            <div class="quiz-option" data-value="b">b) Caps them at upper/lower bounds</div>
+                            <div class="quiz-option" data-value="c">c) Replaces them with mean</div>
+                            <div class="quiz-option" data-value="d">d) Transforms them logarithmically</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 6:</strong> When checking for duplicates, what does keep='first' do?</p>
+                            <div class="quiz-option" data-value="a">a) Keeps all duplicate rows</div>
+                            <div class="quiz-option" data-value="b">b) Removes all occurrences of duplicates</div>
+                            <div class="quiz-option" data-value="c">c) Keeps first occurrence, removes subsequent duplicates</div>
+                            <div class="quiz-option" data-value="d">d) Keeps the row with lowest index</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 7:</strong> Why use 'category' dtype for categorical columns in pandas?</p>
+                            <div class="quiz-option" data-value="a">a) Saves memory and speeds up operations</div>
+                            <div class="quiz-option" data-value="b">b) Required for machine learning</div>
+                            <div class="quiz-option" data-value="c">c) Makes data more accurate</div>
+                            <div class="quiz-option" data-value="d">d) No real benefit, just convention</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 8:</strong> In a preprocessing pipeline, transformations should be applied:</p>
+                            <div class="quiz-option" data-value="a">a) To the entire dataset before splitting</div>
+                            <div class="quiz-option" data-value="b">b) Only to the training set</div>
+                            <div class="quiz-option" data-value="c">c) Fitted on train set, then transformed on both train and test</div>
+                            <div class="quiz-option" data-value="d">d) Separately fitted and transformed for train and test</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <span class="nav-button disabled">← Previous: None</span>
+                    <a href="../../courses/feature-engineering.html" class="nav-button">Back to Course</a>
+                    <span class="nav-button disabled">Next: Coming Soon →</span>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

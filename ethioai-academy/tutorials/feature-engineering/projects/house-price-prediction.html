@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a complete house price prediction system with feature engineering: handle missing values, encode neighborhoods, create features, scale data.">
+    <title>House Price Prediction Project - Feature Engineering - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../../css/mobile-enhancements.css">
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="../../../index.html" class="nav-brand">
+                <span class="gradient-text">🤖 Nebaz AI Academy</span>
+            </a>
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="../../../index.html">Home</a></li>
+                <li><a href="../../../courses/feature-engineering.html">Feature Engineering</a></li>
+                <li><a href="../../../index.html#courses">All Courses</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="breadcrumb" style="margin-bottom: 1rem;">
+                <a href="../../../index.html" style="color: rgba(255,255,255,0.8);">Home</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <a href="../../../courses/feature-engineering.html" style="color: rgba(255,255,255,0.8);">Feature Engineering</a>
+                <span style="color: rgba(255,255,255,0.6); margin: 0 0.5rem;">/</span>
+                <span style="color: white;">House Price Prediction</span>
+            </div>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">
+                🏠 House Price Prediction Project
+            </h1>
+            <p style="font-size: 1.2rem; opacity: 0.95; max-width: 700px; margin: 0 auto;">
+                Build a complete regression model with advanced feature engineering
+            </p>
+            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; font-size: 0.95rem;">
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">🎯 Beginner Project</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">⏱️ 2-3 hours</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 2rem;">📊 Regression</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <section>
+            <h2>Project Overview</h2>
+            <p>Predict house prices using the famous Ames Housing dataset. You'll apply data preprocessing, categorical encoding, feature scaling, and build a complete ML pipeline.</p>
+
+            <div class="info-box">
+                <h4>🎯 Learning Objectives</h4>
+                <ul>
+                    <li>Handle missing values using multiple imputation strategies</li>
+                    <li>Encode categorical variables (neighborhoods, quality ratings)</li>
+                    <li>Create new features (house age, total square footage)</li>
+                    <li>Apply feature scaling for regression models</li>
+                    <li>Build and evaluate a complete pipeline</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Step 1: Load and Explore Data</h2>
+
+<pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+
+# Load dataset (download from Kaggle: House Prices - Advanced Regression Techniques)
+# Or use sklearn's California housing for quick start
+from sklearn.datasets import fetch_california_housing
+
+# Using California housing as example
+housing = fetch_california_housing(as_frame=True)
+df = housing.frame
+
+# Add some categorical features for practice
+np.random.seed(42)
+df['Neighborhood'] = np.random.choice(['Downtown', 'Suburbs', 'Rural'], len(df))
+df['HouseStyle'] = np.random.choice(['1Story', '2Story', 'SplitLevel'], len(df))
+
+print(f"Dataset shape: {df.shape}")
+print("\nFirst few rows:")
+print(df.head())
+
+print("\nBasic statistics:")
+print(df.describe())
+
+print("\nMissing values:")
+print(df.isnull().sum())
+
+# Target variable
+target = 'MedHouseVal'
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 2: Handle Missing Values</h2>
+
+<pre><code class="language-python">from sklearn.impute import SimpleImputer
+
+# Introduce some missing values for demonstration
+df_missing = df.copy()
+for col in ['AveRooms', 'AveBedrms', 'Population']:
+    mask = np.random.rand(len(df_missing)) < 0.05  # 5% missing
+    df_missing.loc[mask, col] = np.nan
+
+print("Missing values:")
+print(df_missing.isnull().sum())
+
+# Imputation strategy
+numeric_cols = df_missing.select_dtypes(include=[np.number]).columns.tolist()
+numeric_cols.remove(target)
+
+# Median imputation for numeric features
+median_imputer = SimpleImputer(strategy='median')
+df_missing[numeric_cols] = median_imputer.fit_transform(df_missing[numeric_cols])
+
+print("\nAfter imputation:")
+print(df_missing.isnull().sum())
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 3: Feature Engineering</h2>
+
+<pre><code class="language-python"># Create new features
+df_engineered = df_missing.copy()
+
+# 1. Total rooms per household
+df_engineered['TotalRoomsPerHouse'] = df_engineered['AveRooms'] * df_engineered['HouseAge']
+
+# 2. Bedroom ratio
+df_engineered['BedroomRatio'] = df_engineered['AveBedrms'] / df_engineered['AveRooms']
+
+# 3. Population density
+df_engineered['PopulationDensity'] = df_engineered['Population'] / df_engineered['AveRooms']
+
+# 4. Income per room (affordability indicator)
+df_engineered['IncomePerRoom'] = df_engineered['MedInc'] / df_engineered['AveRooms']
+
+# 5. Age categories (binning)
+df_engineered['AgeCategory'] = pd.cut(
+    df_engineered['HouseAge'], 
+    bins=[0, 10, 25, 50, 100],
+    labels=['New', 'Modern', 'Old', 'VeryOld']
+)
+
+print("New features created:")
+print(df_engineered[['TotalRoomsPerHouse', 'BedroomRatio', 'PopulationDensity', 
+                      'IncomePerRoom', 'AgeCategory']].head())
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 4: Encode Categorical Variables</h2>
+
+<pre><code class="language-python">from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+
+# One-Hot Encoding for nominal variables
+ohe = OneHotEncoder(sparse_output=False, drop='first', handle_unknown='ignore')
+neighborhood_encoded = ohe.fit_transform(df_engineered[['Neighborhood', 'HouseStyle']])
+
+# Create DataFrame with encoded columns
+neighborhood_cols = ohe.get_feature_names_out(['Neighborhood', 'HouseStyle'])
+df_encoded = pd.DataFrame(neighborhood_encoded, columns=neighborhood_cols, index=df_engineered.index)
+
+# Label Encoding for ordinal variable (AgeCategory)
+le = LabelEncoder()
+df_engineered['AgeCategory_Encoded'] = le.fit_transform(df_engineered['AgeCategory'])
+
+# Combine all features
+df_final = pd.concat([
+    df_engineered.drop(['Neighborhood', 'HouseStyle', 'AgeCategory'], axis=1),
+    df_encoded
+], axis=1)
+
+print(f"Final dataset shape: {df_final.shape}")
+print("\nFeature columns:")
+print(df_final.columns.tolist())
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 5: Feature Scaling & Split Data</h2>
+
+<pre><code class="language-python">from sklearn.preprocessing import StandardScaler
+
+# Separate features and target
+X = df_final.drop(target, axis=1)
+y = df_final[target]
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Convert back to DataFrame for readability
+X_train_scaled = pd.DataFrame(X_train_scaled, columns=X.columns, index=X_train.index)
+X_test_scaled = pd.DataFrame(X_test_scaled, columns=X.columns, index=X_test.index)
+
+print(f"Training set: {X_train_scaled.shape}")
+print(f"Test set: {X_test_scaled.shape}")
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 6: Build Complete Pipeline</h2>
+
+<pre><code class="language-python">from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import Ridge
+
+# Start fresh with original data
+X = df[df.columns.difference([target])]
+y = df[target]
+
+# Identify column types
+numeric_features = ['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms', 
+                    'Population', 'AveOccup', 'Latitude', 'Longitude']
+categorical_features = ['Neighborhood', 'HouseStyle']
+
+# Preprocessing pipelines
+numeric_transformer = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('scaler', StandardScaler())
+])
+
+categorical_transformer = Pipeline([
+    ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+    ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore'))
+])
+
+# Combine preprocessing
+preprocessor = ColumnTransformer([
+    ('num', numeric_transformer, numeric_features),
+    ('cat', categorical_transformer, categorical_features)
+])
+
+# Complete pipeline
+pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('regressor', Ridge(alpha=1.0))
+])
+
+# Split and train
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+pipeline.fit(X_train, y_train)
+
+print("Pipeline trained successfully!")
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 7: Evaluate Model</h2>
+
+<pre><code class="language-python">from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Make predictions
+y_pred = pipeline.predict(X_test)
+
+# Calculate metrics
+mae = mean_absolute_error(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print("Model Performance:")
+print(f"MAE: ${mae:.2f}")
+print(f"RMSE: ${rmse:.2f}")
+print(f"R² Score: {r2:.4f}")
+
+# Visualize predictions
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, alpha=0.5)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--', lw=2)
+plt.xlabel('Actual Price')
+plt.ylabel('Predicted Price')
+plt.title('Actual vs Predicted House Prices')
+plt.tight_layout()
+plt.show()
+</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 8: Feature Importance Analysis</h2>
+
+<pre><code class="language-python"># Train Random Forest to get feature importances
+rf_pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(n_estimators=100, random_state=42))
+])
+
+rf_pipeline.fit(X_train, y_train)
+
+# Get feature names after transformation
+feature_names = (numeric_features + 
+                list(rf_pipeline.named_steps['preprocessor']
+                     .named_transformers_['cat']
+                     .named_steps['onehot']
+                     .get_feature_names_out(categorical_features)))
+
+# Feature importances
+importances = rf_pipeline.named_steps['regressor'].feature_importances_
+feature_importance_df = pd.DataFrame({
+    'feature': feature_names,
+    'importance': importances
+}).sort_values('importance', ascending=False)
+
+print("\nTop 10 Most Important Features:")
+print(feature_importance_df.head(10))
+
+# Visualize
+plt.figure(figsize=(10, 6))
+feature_importance_df.head(10).plot(x='feature', y='importance', kind='barh')
+plt.xlabel('Importance')
+plt.title('Top 10 Feature Importances')
+plt.tight_layout()
+plt.show()
+</code></pre>
+        </section>
+
+        <section>
+            <h2>🎯 Challenge Exercises</h2>
+            
+            <div class="info-box">
+                <h4>Exercise 1: Advanced Feature Engineering</h4>
+                <p>Create polynomial features (e.g., MedInc², MedInc × AveRooms) and test if they improve model performance.</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 2: Feature Selection</h4>
+                <p>Apply RFE (Recursive Feature Elimination) to select the top 10 features. Compare performance with all features.</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 3: Handle Outliers</h4>
+                <p>Detect outliers in house prices using IQR method and decide whether to remove or cap them.</p>
+            </div>
+
+            <div class="info-box">
+                <h4>Exercise 4: Try Different Models</h4>
+                <p>Compare Ridge, Lasso, Random Forest, and Gradient Boosting. Which performs best?</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>📝 Project Summary</h2>
+            
+            <div class="success-box">
+                <h4>What You've Built</h4>
+                <ul>
+                    <li>✅ Complete data preprocessing pipeline with imputation</li>
+                    <li>✅ Feature engineering: created 5+ new features</li>
+                    <li>✅ Categorical encoding for neighborhoods and styles</li>
+                    <li>✅ Feature scaling with StandardScaler</li>
+                    <li>✅ End-to-end ML pipeline with sklearn</li>
+                    <li>✅ Model evaluation with multiple metrics</li>
+                    <li>✅ Feature importance analysis</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h4>💡 Key Takeaways</h4>
+                <ul>
+                    <li>Always explore data before feature engineering</li>
+                    <li>Handle missing values before creating new features</li>
+                    <li>Use pipelines to prevent data leakage</li>
+                    <li>Feature engineering can significantly improve model performance</li>
+                    <li>Document your feature creation process for reproducibility</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🚀 Next Steps</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div style="padding: 1.5rem; background: #ecfdf5; border-left: 4px solid #078930; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">📊 More Practice</h4>
+                    <p style="margin: 0; color: #475569;">Try the Ames Housing dataset from Kaggle for more challenging feature engineering</p>
+                </div>
+                <div style="padding: 1.5rem; background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">🔬 Advanced Topics</h4>
+                    <p style="margin: 0; color: #475569;">Learn about automated feature engineering with Featuretools</p>
+                </div>
+                <div style="padding: 1.5rem; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #92400e;">💳 Next Project</h4>
+                    <p style="margin: 0; color: #475569;">Try the Credit Card Fraud Detection project for imbalanced data</p>
+                </div>
+            </div>
+        </section>
+
+        <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; text-align: center;">
+            <h3 style="color: white; margin-bottom: 1rem;">🎉 Project Complete!</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="../../../courses/feature-engineering.html" class="btn" style="background: white; color: #667eea;">📚 Back to Course</a>
+                <a href="credit-card-fraud-detection.html" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid white;">Next Project: Fraud Detection →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Nebaz AI Academy</h3>
+                    <p>Master AI, Machine Learning, and Python through hands-on tutorials.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Nebaz AI Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

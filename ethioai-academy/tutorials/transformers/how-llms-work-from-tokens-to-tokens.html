@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How LLMs Work: From Tokens to Tokens - Complete pipeline of modern language models. Understand tokenization, embeddings, attention, and output generation.">
+    <meta name="keywords" content="LLM architecture, tokenization, embeddings, forward pass, inference, model scaling, emergent abilities">
+    <title>How LLMs Work: From Tokens to Tokens | Transformers Architecture | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <nav class="navbar"></nav>
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a><span class="separator">/</span>
+                <a href="../../courses/transformers-architecture.html">Transformers</a><span class="separator">/</span>
+                <span class="current">How LLMs Work: From Tokens to Tokens</span>
+            </nav>
+        </div>
+    </div>
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the Transformers Architecture course.
+    </section>
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #078930 0%, #065f46 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">How LLMs Work: From Tokens to Tokens</h1>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 7</span>
+                    <span style="color: rgba(255,255,255,0.9);">🔴 Advanced</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    The complete journey: how ChatGPT, Claude, and all modern LLMs actually work
+                </p>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Transformers Architecture Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <section class="content-section">
+                <h2>The Big Picture: What Is An LLM Really?</h2>
+                <p>
+                    An LLM (Large Language Model) is fundamentally a <strong>massive neural network that predicts the next token</strong> given a sequence of previous tokens. This deceptively simple objective - next-token prediction - is the foundation of ChatGPT, Claude, GPT-4, and every modern AI assistant.
+                </p>
+
+                <div style="background: linear-gradient(135deg, #ecfdf5 0%, #bfdbfe 100%); padding: 2rem; border-radius: 12px; margin: 2rem 0; border: 2px solid #078930;">
+                    <h3 style="margin-top: 0; color: #065f46;">🎯 The Core Function</h3>
+                    <pre style="background: white; padding: 1.5rem; border-radius: 8px;"><code class="language-text">Input:  "The capital of France is"
+                                  ↓
+              [LLM thinks for a moment...]
+                                  ↓
+Output: P("Paris" | context) = 0.87  ← Very confident!
+        P("Lyon" | context) = 0.05
+        P("Nice" | context) = 0.02
+        P("London" | context) = 0.01  ← Wrong, low probability
+        P(other 50,000 words) = 0.05
+                                  ↓
+        Sample from distribution → "Paris"</code></pre>
+                </div>
+
+                <h3>Mathematical Definition</h3>
+                <pre><code class="language-python">import torch
+
+# LLM is a function: Tokens → Probability Distribution
+def llm(input_tokens):
+    """
+    Args:
+        input_tokens: List of token IDs [142, 2368, 3332, ...]
+    
+    Returns:
+        probabilities: [vocab_size] tensor summing to 1.0
+                      P(next_token | input_tokens)
+    """
+    # Step 1: Convert tokens to embeddings
+    embeddings = embed(input_tokens)  # [seq_len, d_model]
+    
+    # Step 2: Process through transformer layers
+    hidden_states = transformer_layers(embeddings)  # [seq_len, d_model]
+    
+    # Step 3: Project last token to vocabulary
+    logits = output_projection(hidden_states[-1])  # [vocab_size]
+    
+    # Step 4: Convert to probabilities
+    probabilities = softmax(logits)  # [vocab_size], sums to 1.0
+    
+    return probabilities
+
+
+# Example usage
+print("=" * 70)
+print("LLM as Probability Distribution")
+print("=" * 70)
+
+# Input: "What is machine learning?"
+input_text = "What is machine learning?"
+input_tokens = tokenize(input_text)  # [2061, 318, 4572, 4673, 30]
+print(f"Input: {input_text}")
+print(f"Tokens: {input_tokens}")
+
+# LLM predicts next token
+probs = llm(input_tokens)
+print(f"\nProbability distribution over {len(probs):,} possible next tokens")
+
+# Top 5 predictions
+top_5_probs, top_5_tokens = torch.topk(probs, 5)
+print("\nTop 5 predictions:")
+for prob, token in zip(top_5_probs, top_5_tokens):
+    word = detokenize(token)
+    print(f"  {word:15s}: {prob:.4f} ({prob*100:.2f}%)")
+
+# Output:
+# Top 5 predictions:
+#   Machine        : 0.2847 (28.47%)  ← Most likely
+#   It             : 0.1823 (18.23%)
+#   A              : 0.0956 (9.56%)
+#   Learning       : 0.0734 (7.34%)
+#   The            : 0.0521 (5.21%)</code></pre>
+
+                <div class="success-box">
+                    <h4>💡 The Fundamental Insight</h4>
+                    <p style="margin: 0;"><strong>Everything emerges from next-token prediction:</strong></p>
+                    <ul style="margin: 0.5rem 0; line-height: 1.8;">
+                        <li><strong>Translation:</strong> Predict French tokens after English context</li>
+                        <li><strong>Reasoning:</strong> Predict logical next step in chain-of-thought</li>
+                        <li><strong>Coding:</strong> Predict syntactically correct next code token</li>
+                        <li><strong>Creativity:</strong> Predict plausible continuations of stories</li>
+                        <li><strong>Knowledge:</strong> Predict factually correct completions</li>
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 0.95rem; font-style: italic;">No separate "reasoning module" or "knowledge base" - just predict next token really, really well.</p>
+                </div>
+
+                <h3>Autoregressive Generation: The Loop</h3>
+                <pre><code class="language-python">def generate_text(prompt, max_tokens=100):
+    """
+    Generate text autoregressively: one token at a time.
+    """
+    tokens = tokenize(prompt)
+    generated_tokens = tokens.copy()
+    
+    print(f"Starting with: {detokenize(tokens)}")
+    print("\nGenerating...")
+    
+    for step in range(max_tokens):
+        # Step 1: Get probabilities for next token
+        probs = llm(generated_tokens)
+        
+        # Step 2: Sample next token
+        next_token = sample(probs, temperature=0.7, top_p=0.9)
+        
+        # Step 3: Append to sequence
+        generated_tokens.append(next_token)
+        
+        # Step 4: Check for stop
+        if next_token == END_TOKEN:
+            break
+        
+        # Progress update
+        if step % 10 == 0:
+            current_text = detokenize(generated_tokens)
+            print(f"Step {step}: {current_text}")
+    
+    return detokenize(generated_tokens)
+
+
+# Example run
+result = generate_text("The future of AI is")
+
+# Output (example):
+# Starting with: The future of AI is
+# 
+# Generating...
+# Step 0: The future of AI is bright
+# Step 10: The future of AI is bright and full of possibilities. As
+# Step 20: The future of AI is bright and full of possibilities. As machine learning algorithms become
+# Step 30: The future of AI is bright and full of possibilities. As machine learning algorithms become more sophisticated, we
+# ...
+#
+# Each step: Run entire model, predict 1 token, append, repeat</code></pre>
+
+                <div style="background: #fef2f2; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border: 2px solid #ef4444;">
+                    <h4 style="margin-top: 0; color: #991b1b;">⚠️ Key Limitation: Sequential Generation</h4>
+                    <p style="color: #7f1d1d; margin: 0;">Unlike training (where all tokens are processed in parallel), <strong>generation is sequential</strong>. To generate 100 tokens, you must run the model 100 times. This is why:</p>
+                    <ul style="color: #7f1d1d; margin: 0.5rem 0; line-height: 1.8;">
+                        <li>ChatGPT responses "stream" one token at a time</li>
+                        <li>LLM inference is expensive (compute + memory)</li>
+                        <li>Response time = num_tokens × time_per_token</li>
+                        <li>Optimization focuses on making each forward pass faster</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 1: Tokenization</h2>
+                <p>
+                    Text is converted to tokens. Modern models use Byte-Pair Encoding (BPE) or similar subword tokenization:
+                </p>
+
+                <pre><code class="language-python">
+# Example: GPT-3 tokenization
+text = "Hello, world!"
+
+# Tokenizer breaks into subwords
+tokens = [
+    "Hello",     # token_id: 15496
+    ",",         # token_id: 11
+    " world",    # token_id: 995
+    "!"          # token_id: 0
+]
+
+token_ids = [15496, 11, 995, 0]
+# Now we have integers that the model can process
+
+# Key insight: tokens ≠ characters
+# One token ≈ 4 characters for English
+# So "Hello, world!" (13 chars) ≈ 4 tokens
+</code></pre>
+
+                <p>
+                    Why not just characters?
+                </p>
+
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Efficiency:</strong> Fewer tokens = faster processing</li>
+                    <li><strong>Semantics:</strong> Subwords capture meaning better than characters</li>
+                    <li><strong>Vocabulary Size:</strong> ~50k tokens instead of millions of rare words</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>Cost:</strong> Subword tokenization means the model "thinks" in chunks, not characters. This is why LLMs sometimes struggle with token-level tasks.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 2: Embedding Lookup</h2>
+                <p>
+                    Convert token IDs to dense vectors:
+                </p>
+
+                <pre><code class="language-python">
+# Token embeddings: learned during training
+# Typical: 50k vocabulary × 768D embedding vectors
+embedding_matrix = torch.randn(50000, 768)
+
+token_ids = [15496, 11, 995, 0]  # "Hello, world!"
+
+# Lookup embeddings
+embeddings = embedding_matrix[token_ids]
+# Shape: [4, 768]
+# Each token is now a 768-dimensional vector
+
+# Add positional information
+positions = torch.arange(4)  # [0, 1, 2, 3]
+pos_embeddings = pos_embedding_matrix[positions]
+# Shape: [4, 768]
+
+# Combine
+x = embeddings + pos_embeddings
+# Now each token knows: "what are you?" + "where in sequence?"
+</code></pre>
+
+                <p>
+                    The embedding space is learned. Similar tokens (semantically or syntactically) have similar embeddings.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 3: Forward Through Transformer Layers</h2>
+                <p>
+                    The magic happens here. Input embeddings flow through 12-40 transformer layers:
+                </p>
+
+                <pre><code class="language-python">
+# Initial embeddings: [batch_size, seq_len, d_model]
+# Example: [1, 4, 768]
+x = embeddings + pos_embeddings
+
+# Layer 1
+├─ Multi-head attention (8 heads)
+│  └─ Each token attends to all previous tokens
+│  └─ Learn which tokens are relevant
+├─ Feed-forward network
+│  └─ Position-wise transformations
+└─ Residual + Layer Norm
+Result: [1, 4, 768] (same shape)
+
+# Layer 2
+├─ Multi-head attention
+├─ Feed-forward
+└─ Residual + Layer Norm
+Result: [1, 4, 768]
+
+# Layers 3-40: Same structure, different learned parameters
+
+# Final layer output
+x = [1, 4, 768]
+</code></pre>
+
+                <p>
+                    Each layer refines representations. Early layers learn syntactic patterns, later layers learn semantic meanings.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>What's Happening in Attention?</h2>
+                <p>
+                    In each attention head, tokens "talk" to each other:
+                </p>
+
+                <pre><code class="language-text">Sentence: "The cat sat on the mat"
+
+Token "sat":
+  "The" (1.2%)  ← Low attention (not very relevant)
+  "cat" (45%)   ← High attention (who's doing the action?)
+  "sat" (22%)   ← Some attention to self
+  "on" (8%)     ← Low attention
+  "the" (3%)    ← Low attention
+  "mat" (20.8%) ← Moderate attention (where?)
+
+Output for "sat" = 0.012*"The" + 0.45*"cat" + 0.22*"sat" + ...
+                 = context-aware representation of "sat"
+</code></pre>
+
+                <p>
+                    This happens in parallel across 8+ heads, each learning different relationships. Then they're combined:
+                </p>
+
+                <pre><code class="language-python">
+# After multi-head attention
+output = torch.cat([head_1, head_2, ..., head_8], dim=-1)
+# [batch, seq_len, 768]
+
+# Project back through output linear layer
+output = output_projection(output)
+# [batch, seq_len, 768]
+
+# Add residual connection
+x = x + output
+# Original signal preserved + new attention information
+
+# Normalize
+x = layer_norm(x)
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 4: Output Layer & Probability Distribution</h2>
+                <p>
+                    After all layers, convert to vocabulary probabilities:
+                </p>
+
+                <pre><code class="language-python">
+# After 40 layers of processing
+x = [1, 4, 768]  # 4 tokens, each refined and contextualized
+
+# Take last token's representation
+last_token_repr = x[:, -1, :]  # [1, 768]
+
+# Project to vocabulary
+logits = output_projection(last_token_repr)
+# [1, 50000] - score for each possible next token
+
+# Convert to probabilities
+probabilities = F.softmax(logits, dim=-1)
+# [1, 50000] - sums to 1.0
+
+# Top-5 most likely next tokens
+top_5_probs, top_5_ids = torch.topk(probabilities, 5)
+
+# Example:
+# Token 12: "I" (prob: 0.25)
+# Token 451: "it" (prob: 0.18)
+# Token 89: "there" (prob: 0.15)
+# Token 340: "the" (prob: 0.12)
+# Token 756: "we" (prob: 0.08)
+</code></pre>
+
+                <p>
+                    The model "predicts" the next token by assigning probabilities. Higher probability = more confident.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Step 5: Sampling & Repetition</h2>
+                <p>
+                    Sample from the probability distribution to get next token:
+                </p>
+
+                <pre><code class="language-python">
+# Sample with top-p filtering
+next_token_id = sample_top_p(probabilities, p=0.9)
+# Example: returns 12 (token "I")
+
+# Append to sequence
+sequence = torch.cat([sequence, next_token_id.unsqueeze(0)])
+# "Hello, world! I"
+
+# REPEAT from Step 2 with new sequence
+new_embeddings = embedding_matrix[sequence]  # Now 5 tokens
+new_x = transformer_layers(new_embeddings)
+new_logits = output_projection(new_x[:, -1, :])  # Only last token
+next_token_id = sample_top_p(new_logits)
+# Now gets 2nd generated token
+
+# Continue until:
+# 1. Max length reached
+# 2. End-of-sequence token sampled
+# 3. Stop signal received
+</code></pre>
+
+                <div class="info-box">
+                    <strong>Autoregressive = Sequential:</strong> Must generate one token at a time, feeding each back into the model. This is why LLM inference is "slow" (milliseconds per token).
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Complete End-to-End Example</h2>
+                <pre><code class="language-python">
+import torch
+import torch.nn.functional as F
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
+
+# Load pre-trained model
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+model = GPT2LMHeadModel.from_pretrained("gpt2")
+
+# Input
+prompt = "The future of AI is"
+
+# Step 1: Tokenize
+input_ids = tokenizer.encode(prompt, return_tensors="pt")
+# [[464, 2003, 286, 7590, 318]] (5 tokens)
+
+# Step 2-4: Forward through model
+with torch.no_grad():
+    outputs = model(input_ids)
+    logits = outputs.logits  # [1, 5, 50257]
+
+# Step 5: Sample next token
+next_token_logits = logits[0, -1, :] / 0.7  # Apply temperature
+next_token_probs = F.softmax(next_token_logits, dim=-1)
+
+# Top-p sampling
+sorted_probs, sorted_indices = torch.sort(next_token_probs, descending=True)
+cum_probs = torch.cumsum(sorted_probs, dim=-1)
+sorted_indices_to_keep = cum_probs <= 0.9
+sorted_indices_to_keep[0] = True  # Always keep best
+filtered_indices = sorted_indices[sorted_indices_to_keep]
+
+# Sample
+next_token_id = filtered_indices[torch.multinomial(
+    next_token_probs[filtered_indices], 1
+)]
+
+# Step 6: Repeat!
+# Append and continue...
+
+# For full generation:
+@torch.no_grad()
+def generate(model, tokenizer, prompt, max_length=50):
+    input_ids = tokenizer.encode(prompt, return_tensors="pt")
+    
+    for _ in range(max_length):
+        outputs = model(input_ids)
+        next_token_logits = outputs.logits[0, -1, :] / 0.7
+        
+        next_token_probs = F.softmax(next_token_logits, dim=-1)
+        next_token_id = torch.multinomial(next_token_probs, 1)
+        
+        input_ids = torch.cat([input_ids, next_token_id.unsqueeze(0)], dim=1)
+        
+        if next_token_id == tokenizer.eos_token_id:
+            break
+    
+    return tokenizer.decode(input_ids[0])
+
+# Generate!
+result = generate(model, tokenizer, "The future of AI is")
+print(result)
+# Output: "The future of AI is not a matter of if, but when. AI..."
+</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>Scaling Laws: Why Bigger = Better</h2>
+                <p>
+                    A remarkable discovery: model capabilities don't just improve linearly with scale - they follow power laws:
+                </p>
+
+                <pre><code class="language-text">Loss ≈ a * N^(-α) + b
+
+where N = number of parameters
+
+Examples (from OpenAI, DeepMind papers):
+GPT-2: 1.5B params → ~2% error rate
+GPT-3: 175B params → ~0.1% error rate (1700x better!)
+
+Not 1.5x better, but 170x better!
+All from just predicting next tokens
+</code></pre>
+
+                <p>
+                    This is why companies are building 1T, 10T parameter models. Scaling seems to be the path to intelligence.
+                </p>
+
+                <div class="success-box">
+                    <strong>Emergent Abilities:</strong> New capabilities appear at scale:
+                    <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>1B params: Good at copying</li>
+                        <li>10B params: Basic reasoning</li>
+                        <li>100B+ params: Complex reasoning, creative writing</li>
+                        <li>Trillion+ params: Potential AGI properties?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Training: The Secret Sauce</h2>
+                <p>
+                    What makes an LLM powerful? Training on massive amounts of text:
+                </p>
+
+                <pre><code class="language-text">GPT-3 Training:
+- 300 billion tokens of text
+- From: Internet, books, papers, etc.
+- Cost: ~$10 million
+- Time: ~2 months on 1000+ TPUs
+- Objective: Predict next token on random sequence positions
+
+This is it. Just next-token prediction.
+No labels. No supervised examples.
+Raw unsupervised learning at scale.
+</code></pre>
+
+                <p>
+                    Why does this work? Predicting text requires:
+                </p>
+
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Language Understanding:</strong> Parse grammar, syntax</li>
+                    <li><strong>World Knowledge:</strong> Know facts to predict sensible continuations</li>
+                    <li><strong>Reasoning:</strong> Multi-step thinking for complex texts</li>
+                    <li><strong>Common Sense:</strong> Understand human values and expectations</li>
+                </ul>
+
+                <p>
+                    All of this emerges naturally from the training objective.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Inference: The Challenge</h2>
+                <p>
+                    Training is expensive (one-time). Inference is the ongoing cost:
+                </p>
+
+                <pre><code class="language-python">
+# GPU memory needed:
+GPT-3 (175B params): ~350GB in float32
+Claude (100B+ params): ~200GB
+
+# Forward pass time per token:
+- Single GPU (H100): ~50ms per token
+- Batch of 64 inputs: ~100ms total
+- Throughput: ~640 tokens/sec
+
+# This is why:
+- Models are quantized (8-bit, 4-bit)
+- Batching is used
+- KV-cache is critical for speed
+</code></pre>
+
+                <div class="warning-box">
+                    <strong>⚠️ Key Bottleneck:</strong> LLMs are memory-bound, not compute-bound. Moving weights around is more expensive than computations. This is why inference optimization is an active research area.
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>KV-Cache: Making Inference Fast</h2>
+                <p>
+                    Without KV-cache, generating N tokens requires O(N²) forward passes. With KV-cache, it's O(N):
+                </p>
+
+                <pre><code class="language-python">
+# WITHOUT KV-cache (naive):
+input_ids = [token_1]
+output_1 = model(input_ids)  # Compute attention from scratch
+next_token = sample(output_1)
+
+input_ids = [token_1, token_2]
+output_2 = model(input_ids)  # RE-compute attention for token_1!
+next_token = sample(output_2)
+
+# This is wasteful! We already computed attention for token_1
+
+# WITH KV-cache (smart):
+input_ids = [token_1]
+cache = {}
+output_1 = model(input_ids, cache=cache)
+# cache now stores: K and V for token_1
+
+next_token = sample(output_1)
+
+input_ids = [token_2]  # Only new token!
+output_2 = model(input_ids, cache=cache)
+# Use cached K,V for token_1, only compute for token_2!
+
+# Same result, massive speedup
+</code></pre>
+
+                <p>
+                    Difference: Without cache, generating 100 tokens requires computing 100+99+98+...+1 = 5050 token forward passes. With cache: 100 passes. 50x speedup!
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Why Do LLMs Sometimes Fail?</h2>
+                <p>
+                    Understanding limitations:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div class="concept-card">
+                        <strong>❌ Hallucination</strong>
+                        <p>Confident wrong answers. No grounding to reality, just predicting plausible-seeming text.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>❌ Token Limit</strong>
+                        <p>Can't process arbitrarily long sequences. Memory-bound by sequence length.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>❌ Training Data Cutoff</strong>
+                        <p>Knowledge frozen at training time. Can't know current events.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>❌ Reasoning Limits</strong>
+                        <p>Next-token prediction can't do multi-step reasoning reliably.</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>❌ Tokenization Artifacts</strong>
+                        <p>Struggles with tasks needing character-level awareness (counting, spelling).</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>❌ Training Bias</strong>
+                        <p>Inherits biases from training data (gender, nationality, etc.).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>The Future: What's Next?</h2>
+                <p>
+                    Current directions in LLM research:
+                </p>
+
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li><strong>Longer Context:</strong> From 2K tokens → 100K → 1M+ tokens (better memory models)</li>
+                    <li><strong>Faster Inference:</strong> Distillation, quantization, speculative decoding</li>
+                    <li><strong>Better Reasoning:</strong> Chain-of-thought, retrieval-augmented generation (RAG)</li>
+                    <li><strong>Multimodal:</strong> Vision + text + audio in single model</li>
+                    <li><strong>Efficient Training:</strong> Reduce compute from 10M → 1M GPUs for training</li>
+                    <li><strong>Specialization:</strong> Task-specific fine-tuning instead of one-model-for-all</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>The Big Takeaway</h2>
+                <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 2rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p style="font-size: 1.1rem; margin: 0; color: #15803d;">
+                        <strong>LLMs are Not Magic</strong>
+                    </p>
+                    <p style="margin-top: 1rem; color: #15803d;">
+                        They're neural networks that predict the next token. But at sufficient scale, with sufficient data, this simple objective creates:
+                    </p>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem; color: #15803d;">
+                        <li>Language understanding</li>
+                        <li>Reasoning ability</li>
+                        <li>Knowledge of the world</li>
+                        <li>Creative generation</li>
+                        <li>Problem-solving skills</li>
+                    </ul>
+                    <p style="margin-top: 1rem; color: #15803d; font-style: italic;">
+                        This is emergence: complex behavior from simple components.
+                    </p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Tokenization:</strong> Text → Token IDs (subword BPE)</li>
+                        <li><strong>Embedding:</strong> Token IDs → Dense vectors</li>
+                        <li><strong>Positional Info:</strong> Add position embeddings</li>
+                        <li><strong>Transformer Layers:</strong> Multi-head attention + Feed-forward (12-40 layers)</li>
+                        <li><strong>Output Projection:</strong> Last token → Vocabulary probabilities</li>
+                        <li><strong>Sampling:</strong> Select next token from distribution</li>
+                        <li><strong>Autoregressive:</strong> Repeat for each token in output</li>
+                        <li><strong>Training:</strong> Predict next tokens on massive text corpus</li>
+                        <li><strong>Scaling:</strong> Bigger models learn better (power law)</li>
+                        <li><strong>Emergence:</strong> Simple objective creates complex capabilities</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>You've Completed the Course! 🎉</h2>
+                <div style="background: linear-gradient(135deg, #fde047 0%, #facc15 100%); padding: 2rem; border-radius: 8px; margin: 1.5rem 0; text-align: center;">
+                    <p style="font-size: 1.2rem; margin: 0; color: #854d0e;">
+                        <strong>Congratulations!</strong>
+                    </p>
+                    <p style="margin-top: 1rem; color: #854d0e;">
+                        You've learned:
+                    </p>
+                    <ul style="margin: 1rem 0; padding-left: 1.5rem; color: #854d0e; text-align: left; display: inline-block;">
+                        <li>✅ Why RNNs failed (vanishing gradients, sequential bottleneck)</li>
+                        <li>✅ Attention mechanism & self-attention mathematics</li>
+                        <li>✅ Multi-head attention & positional encoding</li>
+                        <li>✅ Complete transformer architecture (encoder-decoder)</li>
+                        <li>✅ Decoder-only models & generation techniques</li>
+                        <li>✅ Complete LLM pipeline & how modern AI works</li>
+                    </ul>
+                    <p style="margin-top: 1.5rem; color: #854d0e;">
+                        You now understand the foundations of every modern AI system.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the first step in LLM processing?</strong></p>
+                    <div class="quiz-option" data-value="a">Attention computation</div>
+                    <div class="quiz-option" data-value="b">Output generation</div>
+                    <div class="quiz-option" data-value="c">Tokenization - converting text into token IDs</div>
+                    <div class="quiz-option" data-value="d">Training the model</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What do token embeddings convert tokens into?</strong></p>
+                    <div class="quiz-option" data-value="a">Images</div>
+                    <div class="quiz-option" data-value="b">Dense vector representations</div>
+                    <div class="quiz-option" data-value="c">Audio signals</div>
+                    <div class="quiz-option" data-value="d">Binary code</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: How do LLMs generate the next token?</strong></p>
+                    <div class="quiz-option" data-value="a">Random selection</div>
+                    <div class="quiz-option" data-value="b">Copying from input</div>
+                    <div class="quiz-option" data-value="c">Looking up in a database</div>
+                    <div class="quiz-option" data-value="d">Computing probability distribution over vocabulary and sampling</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is the final layer of an LLM that produces token probabilities?</strong></p>
+                    <div class="quiz-option" data-value="a">Language modeling head (linear layer + softmax)</div>
+                    <div class="quiz-option" data-value="b">Attention layer</div>
+                    <div class="quiz-option" data-value="c">Embedding layer</div>
+                    <div class="quiz-option" data-value="d">Normalization layer</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What happens after an LLM generates a token?</strong></p>
+                    <div class="quiz-option" data-value="a">The model resets</div>
+                    <div class="quiz-option" data-value="b">Generation stops immediately</div>
+                    <div class="quiz-option" data-value="c">The token is appended to the sequence and the process repeats autoregressively</div>
+                    <div class="quiz-option" data-value="d">All tokens are regenerated</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="decoder-only-models-and-language-generation.html" style="text-decoration: none; color: #078930; font-weight: 600;">← Previous: Decoder-Only Models</a>
+                <a href="../../courses/transformers-architecture.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <span style="color: #999;">End of Course →</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

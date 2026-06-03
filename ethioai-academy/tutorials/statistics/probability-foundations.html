@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master probability foundations for AI: understand probability basics, conditional probability, independence, and Bayes' theorem with practical Python examples and ML applications.">
+    <meta name="keywords" content="probability basics, conditional probability, Bayes theorem, probability rules, independence, AI statistics, machine learning probability, Python probability">
+    <title>Probability Foundations & Rules - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="probability-foundations.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .content-section h3 {
+            color: #078930;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #078930;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #065f46;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Probability Foundations</span>
+            </div>
+            <h1>Probability Foundations & Rules</h1>
+            <p class="tutorial-intro">
+                Master probability concepts that power AI decision-making, uncertainty quantification, and probabilistic models
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 2</span>
+                <span class="meta-item">📊 Beginner</span>
+                <span class="meta-item">⏱️ 70 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 6 tutorials to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Probability Matters in AI</h2>
+                    <p>
+                        Every AI system deals with uncertainty. Will a user click this ad? Is this email spam? What's the chance it will rain tomorrow? Probability is the mathematical language we use to quantify uncertainty and make optimal decisions when we can't be 100% certain.
+                    </p>
+                    <p>
+                        Modern AI algorithms like Naive Bayes classifiers, Hidden Markov Models, and Bayesian Neural Networks are built entirely on probability theory. Even deep learning uses probabilistic concepts like dropout (random neuron deactivation) and cross-entropy loss (measuring probability distributions).
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Google's spam filter uses probability to classify emails with 99.9% accuracy. Netflix recommends shows by calculating the probability you'll enjoy them. Self-driving cars predict pedestrian movements using probabilistic models. Understanding probability is essential for building intelligent systems.</p>
+                    </div>
+                </section>
+
+                <!-- What is Probability -->
+                <section class="content-section">
+                    <h2>🎲 What is Probability?</h2>
+                    <p>
+                        Probability measures the likelihood of an event occurring, expressed as a number between 0 and 1 (or 0% to 100%). A probability of 0 means impossible, 1 means certain, and 0.5 means equally likely to happen or not happen.
+                    </p>
+                    
+                    <h3>Basic Probability Formula</h3>
+                    <p>For equally likely outcomes:</p>
+                    <pre><code class="language-python"># P(Event) = Number of favorable outcomes / Total number of possible outcomes
+
+# Example: Rolling a die
+# What's the probability of rolling a 4?
+favorable_outcomes = 1  # Only one way to roll a 4
+total_outcomes = 6      # Die has 6 sides
+probability = favorable_outcomes / total_outcomes
+print(f"P(rolling a 4) = {probability:.4f}")  # 0.1667 or 16.67%
+
+# What's the probability of rolling an even number?
+favorable_outcomes = 3  # Can roll 2, 4, or 6
+total_outcomes = 6
+probability = favorable_outcomes / total_outcomes
+print(f"P(even number) = {probability:.4f}")  # 0.5000 or 50%</code></pre>
+
+                    <h3>Key Probability Rules</h3>
+                    <ul>
+                        <li><strong>Rule 1: Probabilities are between 0 and 1</strong> - 0 ≤ P(A) ≤ 1</li>
+                        <li><strong>Rule 2: Sum of all probabilities = 1</strong> - All possible outcomes sum to 100%</li>
+                        <li><strong>Rule 3: Complement Rule</strong> - P(not A) = 1 - P(A)</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import random
+import numpy as np
+
+# Simulate 10,000 coin flips to verify probability converges to 0.5
+num_flips = 10000
+heads_count = 0
+
+for _ in range(num_flips):
+    flip = random.choice(['Heads', 'Tails'])
+    if flip == 'Heads':
+        heads_count += 1
+
+# Law of Large Numbers: As trials increase, empirical probability → theoretical probability
+probability_heads = heads_count / num_flips
+print(f"After {num_flips} flips:")
+print(f"Heads appeared {heads_count} times")
+print(f"P(Heads) = {probability_heads:.4f}")  # Should be close to 0.5000
+print(f"Theoretical probability = 0.5000")
+
+# Complement rule example
+probability_tails = 1 - probability_heads
+print(f"P(Tails) = {probability_tails:.4f}")</code></pre>
+                </section>
+
+                <!-- Conditional Probability -->
+                <section class="content-section">
+                    <h2>🔗 Conditional Probability</h2>
+                    <p>
+                        Conditional probability asks: "What's the probability of A happening, given that B has already happened?" This is written as P(A|B), read as "probability of A given B."
+                    </p>
+                    
+                    <h3>The Formula</h3>
+                    <p><strong>P(A|B) = P(A and B) / P(B)</strong></p>
+                    <p>This is crucial in AI for classification, recommendation systems, and decision making under uncertainty.</p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Intuition</strong>
+                        <p>Imagine 100 people: 60 like coffee, 40 like tea. Among coffee lovers, 30 also like coding. What's P(likes coding | likes coffee)? We restrict our sample space to just the 60 coffee lovers, and 30 of them code. So P(coding|coffee) = 30/60 = 0.5 or 50%.</p>
+                    </div>
+                    
+                    <pre><code class="language-python"># Email spam classification example
+# Given an email contains the word "lottery", what's the probability it's spam?
+
+# Historical data (counts from 10,000 emails)
+total_emails = 10000
+spam_emails = 2000
+contains_lottery = 500
+spam_and_lottery = 450
+
+# P(Spam) - prior probability
+p_spam = spam_emails / total_emails
+print(f"P(Spam) = {p_spam:.4f}")  # 0.2000 or 20%
+
+# P(Lottery) - probability email contains "lottery"
+p_lottery = contains_lottery / total_emails
+print(f"P(Lottery) = {p_lottery:.4f}")  # 0.0500 or 5%
+
+# P(Lottery and Spam) - joint probability
+p_lottery_and_spam = spam_and_lottery / total_emails
+print(f"P(Lottery and Spam) = {p_lottery_and_spam:.4f}")  # 0.0450
+
+# P(Spam | Lottery) - conditional probability using formula
+p_spam_given_lottery = p_lottery_and_spam / p_lottery
+print(f"\nP(Spam | Lottery) = {p_spam_given_lottery:.4f}")  # 0.9000 or 90%
+
+# Interpretation: If email contains "lottery", there's 90% chance it's spam!</code></pre>
+
+                    <h3>Real-World Application: Medical Diagnosis</h3>
+                    <pre><code class="language-python"># Medical test accuracy scenario
+# Disease affects 1% of population
+# Test has 95% sensitivity (detects disease when present)
+# Test has 90% specificity (negative when disease absent)
+
+# Given a positive test, what's the probability of actually having the disease?
+
+p_disease = 0.01              # P(D) - 1% prevalence
+p_no_disease = 0.99           # P(not D)
+sensitivity = 0.95            # P(Positive Test | Disease)
+specificity = 0.90            # P(Negative Test | No Disease)
+p_false_positive = 1 - specificity  # 0.10
+
+# P(Positive Test) using law of total probability
+p_positive = (sensitivity * p_disease) + (p_false_positive * p_no_disease)
+print(f"P(Positive Test) = {p_positive:.4f}")  # 0.1085
+
+# P(Disease | Positive Test) - conditional probability
+p_disease_given_positive = (sensitivity * p_disease) / p_positive
+print(f"P(Disease | Positive Test) = {p_disease_given_positive:.4f}")  # 0.0876
+
+print("\nInterpretation: Only 8.76% chance of having disease despite positive test!")
+print("This happens because the disease is rare (1% prevalence)")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Common Mistake: Confusing P(A|B) with P(B|A)</strong>
+                        <p>P(Spam|Lottery) ≠ P(Lottery|Spam). The order matters! P(Rain|Clouds) is high, but P(Clouds|Rain) is 100%. Always be clear about what is given vs what you're predicting.</p>
+                    </div>
+                </section>
+
+                <!-- Independence -->
+                <section class="content-section">
+                    <h2>🎯 Independence</h2>
+                    <p>
+                        Two events A and B are independent if knowing one occurred doesn't change the probability of the other. Mathematically: <strong>P(A|B) = P(A)</strong> or equivalently <strong>P(A and B) = P(A) × P(B)</strong>.
+                    </p>
+                    
+                    <h3>Examples of Independence</h3>
+                    <ul>
+                        <li><strong>Independent:</strong> Flipping a coin twice - first flip doesn't affect second</li>
+                        <li><strong>Independent:</strong> Rolling two dice - one die doesn't know what the other rolled</li>
+                        <li><strong>Not Independent:</strong> Drawing cards without replacement - first card affects what's left</li>
+                        <li><strong>Not Independent:</strong> Weather tomorrow and weather today - correlated</li>
+                    </ul>
+                    
+                    <pre><code class="language-python"># Testing independence: Coin flips
+import random
+
+def flip_coin():
+    return random.choice(['H', 'T'])
+
+# Flip two coins 10,000 times
+trials = 10000
+both_heads = 0
+first_heads = 0
+second_heads = 0
+
+for _ in range(trials):
+    flip1 = flip_coin()
+    flip2 = flip_coin()
+    
+    if flip1 == 'H':
+        first_heads += 1
+    if flip2 == 'H':
+        second_heads += 1
+    if flip1 == 'H' and flip2 == 'H':
+        both_heads += 1
+
+# Calculate probabilities
+p_first = first_heads / trials
+p_second = second_heads / trials
+p_both = both_heads / trials
+p_independent = p_first * p_second  # If independent: P(A and B) = P(A) × P(B)
+
+print(f"P(First = Heads) = {p_first:.4f}")     # ~0.5000
+print(f"P(Second = Heads) = {p_second:.4f}")   # ~0.5000
+print(f"P(Both Heads) = {p_both:.4f}")         # ~0.2500
+print(f"P(First) × P(Second) = {p_independent:.4f}")  # ~0.2500
+print(f"\nAre they independent? {abs(p_both - p_independent) < 0.01}")</code></pre>
+
+                    <h3>Independence in Machine Learning</h3>
+                    <pre><code class="language-python"># Naive Bayes assumes feature independence (hence "naive")
+# Example: Email spam classification with multiple words
+
+# P(Spam | "lottery" and "click" and "winner")
+# Naive Bayes assumption: words are independent given spam/ham
+
+p_spam = 0.20
+p_lottery_given_spam = 0.70
+p_click_given_spam = 0.60
+p_winner_given_spam = 0.65
+
+p_lottery_given_ham = 0.05
+p_click_given_ham = 0.20
+p_winner_given_ham = 0.10
+
+# Using independence assumption: P(A and B | C) = P(A|C) × P(B|C)
+# Calculate likelihood for spam class
+likelihood_spam = (p_lottery_given_spam * 
+                   p_click_given_spam * 
+                   p_winner_given_spam * 
+                   p_spam)
+
+# Calculate likelihood for ham (not spam) class
+p_ham = 1 - p_spam
+likelihood_ham = (p_lottery_given_ham * 
+                  p_click_given_ham * 
+                  p_winner_given_ham * 
+                  p_ham)
+
+# Normalize to get probabilities
+p_spam_given_words = likelihood_spam / (likelihood_spam + likelihood_ham)
+p_ham_given_words = likelihood_ham / (likelihood_spam + likelihood_ham)
+
+print(f"P(Spam | words) = {p_spam_given_words:.4f}")  # ~0.9812
+print(f"P(Ham | words) = {p_ham_given_words:.4f}")    # ~0.0188
+print(f"Classification: {'SPAM' if p_spam_given_words > 0.5 else 'HAM'}")</code></pre>
+                </section>
+
+                <!-- Bayes' Theorem -->
+                <section class="content-section">
+                    <h2>🧮 Bayes' Theorem</h2>
+                    <p>
+                        Bayes' Theorem is one of the most important formulas in AI and statistics. It lets us flip conditional probabilities: if we know P(B|A), we can calculate P(A|B). This is the foundation of Bayesian inference and many ML algorithms.
+                    </p>
+                    
+                    <h3>The Formula</h3>
+                    <p style="background: #eff6ff; padding: 1.5rem; border-radius: 8px; font-size: 1.2rem; text-align: center;">
+                        <strong>P(A|B) = [P(B|A) × P(A)] / P(B)</strong>
+                    </p>
+                    
+                    <p><strong>Components:</strong></p>
+                    <ul>
+                        <li><strong>P(A|B)</strong> - Posterior: What we want to know (probability of A given evidence B)</li>
+                        <li><strong>P(B|A)</strong> - Likelihood: Probability of observing B if A is true</li>
+                        <li><strong>P(A)</strong> - Prior: Our initial belief about A before seeing evidence</li>
+                        <li><strong>P(B)</strong> - Evidence: Probability of observing B (often calculated using law of total probability)</li>
+                    </ul>
+                    
+                    <div class="success-box">
+                        <strong>✅ Intuition: Updating Beliefs with Evidence</strong>
+                        <p>Bayes' Theorem is about updating our beliefs when we get new evidence. Start with prior knowledge P(A), observe evidence B, and update to posterior P(A|B). It's how we learn from data!</p>
+                    </div>
+                    
+                    <pre><code class="language-python"># Classic example: Is it raining given that someone has an umbrella?
+
+# Prior knowledge
+p_rain = 0.20              # P(Rain) - 20% chance of rain today
+p_no_rain = 0.80           # P(No Rain)
+
+# Likelihood - how people behave
+p_umbrella_given_rain = 0.90      # 90% carry umbrella if raining
+p_umbrella_given_no_rain = 0.20   # 20% carry umbrella if not raining
+
+# Calculate P(Umbrella) - evidence (law of total probability)
+p_umbrella = (p_umbrella_given_rain * p_rain + 
+              p_umbrella_given_no_rain * p_no_rain)
+print(f"P(Umbrella) = {p_umbrella:.4f}")  # 0.3400
+
+# Apply Bayes' Theorem: P(Rain | Umbrella)
+p_rain_given_umbrella = (p_umbrella_given_rain * p_rain) / p_umbrella
+print(f"\nP(Rain | Umbrella) = {p_rain_given_umbrella:.4f}")  # 0.5294
+
+print("\nInterpretation:")
+print(f"Prior belief: {p_rain:.1%} chance of rain")
+print(f"After seeing umbrella: {p_rain_given_umbrella:.1%} chance of rain")
+print("Our belief increased from 20% to 53% based on evidence!")</code></pre>
+
+                    <h3>ML Application: Bayesian Spam Filter</h3>
+                    <pre><code class="language-python"># Build a simple Bayesian spam classifier
+import numpy as np
+
+class NaiveBayesSpamFilter:
+    def __init__(self):
+        self.p_spam = 0.20  # 20% of emails are spam
+        self.p_ham = 0.80
+        
+        # Word probabilities (trained from data)
+        self.word_probs_spam = {
+            'free': 0.70, 'winner': 0.65, 'click': 0.60,
+            'meeting': 0.05, 'report': 0.10, 'hello': 0.30
+        }
+        
+        self.word_probs_ham = {
+            'free': 0.05, 'winner': 0.02, 'click': 0.15,
+            'meeting': 0.40, 'report': 0.35, 'hello': 0.60
+        }
+    
+    def classify(self, words):
+        """Classify email using Bayes' Theorem and independence assumption"""
+        
+        # Calculate likelihood for spam
+        likelihood_spam = self.p_spam
+        for word in words:
+            if word in self.word_probs_spam:
+                likelihood_spam *= self.word_probs_spam[word]
+        
+        # Calculate likelihood for ham
+        likelihood_ham = self.p_ham
+        for word in words:
+            if word in self.word_probs_ham:
+                likelihood_ham *= self.word_probs_ham[word]
+        
+        # Normalize to get posterior probabilities
+        total = likelihood_spam + likelihood_ham
+        p_spam_given_words = likelihood_spam / total
+        p_ham_given_words = likelihood_ham / total
+        
+        return {
+            'classification': 'SPAM' if p_spam_given_words > 0.5 else 'HAM',
+            'spam_probability': p_spam_given_words,
+            'ham_probability': p_ham_given_words
+        }
+
+# Test the classifier
+classifier = NaiveBayesSpamFilter()
+
+# Test email 1: Spam-like words
+email1 = ['free', 'winner', 'click']
+result1 = classifier.classify(email1)
+print("Email 1: 'free winner click'")
+print(f"Classification: {result1['classification']}")
+print(f"P(Spam) = {result1['spam_probability']:.4f}")
+print()
+
+# Test email 2: Professional words
+email2 = ['meeting', 'report', 'hello']
+result2 = classifier.classify(email2)
+print("Email 2: 'meeting report hello'")
+print(f"Classification: {result2['classification']}")
+print(f"P(Spam) = {result2['spam_probability']:.4f}")</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 Why "Naive" Bayes?</strong>
+                        <p>It's called "naive" because it assumes all features (words) are independent given the class. In reality, words aren't independent ("free" and "winner" often appear together in spam), but the algorithm works surprisingly well anyway!</p>
+                    </div>
+                </section>
+
+                <!-- Addition and Multiplication Rules -->
+                <section class="content-section">
+                    <h2>➕✖️ Addition & Multiplication Rules</h2>
+                    
+                    <h3>Addition Rule (OR)</h3>
+                    <p>For probability of A OR B happening:</p>
+                    <ul>
+                        <li><strong>If mutually exclusive:</strong> P(A or B) = P(A) + P(B)</li>
+                        <li><strong>If not mutually exclusive:</strong> P(A or B) = P(A) + P(B) - P(A and B)</li>
+                    </ul>
+                    
+                    <pre><code class="language-python"># Addition rule example: Drawing cards
+
+# Mutually exclusive events (can't both happen)
+# P(Drawing Ace OR King) - card can't be both
+p_ace = 4/52
+p_king = 4/52
+p_ace_or_king = p_ace + p_king  # Mutually exclusive: just add
+print(f"P(Ace or King) = {p_ace_or_king:.4f}")  # 0.1538
+
+# Non-mutually exclusive events (can overlap)
+# P(Drawing Heart OR Face card) - card can be both (e.g., King of Hearts)
+p_heart = 13/52
+p_face = 12/52  # Jack, Queen, King in 4 suits
+p_heart_and_face = 3/52  # Jack, Queen, King of Hearts
+
+# Must subtract overlap to avoid double-counting
+p_heart_or_face = p_heart + p_face - p_heart_and_face
+print(f"P(Heart or Face) = {p_heart_or_face:.4f}")  # 0.4231
+
+# Verify by counting directly
+hearts = 13
+face_cards = 12
+overlap = 3  # J♥, Q♥, K♥
+unique_cards = hearts + face_cards - overlap  # 22 unique cards
+print(f"Direct counting: {unique_cards}/52 = {unique_cards/52:.4f}")</code></pre>
+
+                    <h3>Multiplication Rule (AND)</h3>
+                    <p>For probability of A AND B both happening:</p>
+                    <ul>
+                        <li><strong>If independent:</strong> P(A and B) = P(A) × P(B)</li>
+                        <li><strong>If not independent:</strong> P(A and B) = P(A) × P(B|A)</li>
+                    </ul>
+                    
+                    <pre><code class="language-python"># Multiplication rule example: User conversion funnel
+
+# E-commerce website conversion probabilities
+p_visit = 1.00           # User visits site (given)
+p_view_product = 0.60    # P(Views product | Visits)
+p_add_cart = 0.40        # P(Adds to cart | Views product)
+p_checkout = 0.70        # P(Checks out | Adds to cart)
+p_complete = 0.90        # P(Completes purchase | Checks out)
+
+# Probability of full conversion: Visit → View → Cart → Checkout → Purchase
+# These are dependent events (each depends on previous step)
+p_conversion = (p_visit * p_view_product * p_add_cart * 
+                p_checkout * p_complete)
+
+print(f"P(Full Conversion) = {p_conversion:.4f}")  # 0.1512 or 15.12%
+
+# This means out of 1000 visitors, expect 151 purchases
+visitors = 1000
+expected_purchases = visitors * p_conversion
+print(f"\nOut of {visitors} visitors:")
+print(f"Expected purchases: {expected_purchases:.0f}")
+
+# Calculate where users drop off
+print(f"\nFunnel breakdown:")
+print(f"Visitors: {visitors}")
+print(f"View product: {visitors * p_view_product:.0f}")
+print(f"Add to cart: {visitors * p_view_product * p_add_cart:.0f}")
+print(f"Checkout: {visitors * p_view_product * p_add_cart * p_checkout:.0f}")
+print(f"Purchase: {expected_purchases:.0f}")</code></pre>
+                </section>
+
+                <!-- Real-World Applications -->
+                <section class="content-section">
+                    <h2>🌍 Real-World ML Applications</h2>
+                    
+                    <h3>1. Recommendation Systems</h3>
+                    <pre><code class="language-python"># Netflix-style recommendation using conditional probability
+
+# User watch history probabilities
+p_likes_action = 0.60
+p_likes_comedy = 0.45
+p_likes_both = 0.30
+
+# P(Likes comedy | Likes action) - for recommendation
+p_comedy_given_action = p_likes_both / p_likes_action
+print(f"P(Likes Comedy | Likes Action) = {p_comedy_given_action:.4f}")
+
+# If user watched 5 action movies, recommend comedy with this probability
+recommendation_confidence = p_comedy_given_action * 100
+print(f"Recommend comedy with {recommendation_confidence:.1f}% confidence")</code></pre>
+
+                    <h3>2. A/B Test Decision Making</h3>
+                    <pre><code class="language-python"># A/B test: Which button color gets more clicks?
+
+# Version A (blue button)
+visitors_a = 1000
+clicks_a = 120
+p_click_a = clicks_a / visitors_a
+
+# Version B (green button)  
+visitors_b = 1000
+clicks_b = 145
+p_click_b = clicks_b / visitors_b
+
+print(f"Version A (Blue): {p_click_a:.1%} click rate")
+print(f"Version B (Green): {p_click_b:.1%} click rate")
+print(f"Improvement: {(p_click_b - p_click_a)/p_click_a * 100:.1f}%")
+
+# Simple significance check (detailed hypothesis testing in Tutorial 5)
+difference = abs(p_click_b - p_click_a)
+print(f"\nDifference: {difference:.3f} or {difference*100:.1f} percentage points")
+if difference > 0.02:  # Rule of thumb: >2pp difference is meaningful
+    print("Result: Statistically meaningful! Choose green button.")</code></pre>
+
+                    <h3>3. Fraud Detection</h3>
+                    <pre><code class="language-python"># Credit card fraud detection using probability
+
+# Prior probability based on historical data
+p_fraud = 0.001  # 0.1% of transactions are fraudulent
+
+# Risk factors (likelihoods)
+p_high_amount_given_fraud = 0.80      # Fraudsters often try large amounts
+p_high_amount_given_legit = 0.10      # Legit users occasionally spend big
+
+p_foreign_given_fraud = 0.70          # Fraud often involves foreign transactions
+p_foreign_given_legit = 0.15          # Legit users sometimes travel
+
+# Transaction to evaluate: High amount + Foreign location
+# Assuming independence of features given fraud/legit
+
+def fraud_probability(high_amount, foreign):
+    """Calculate P(Fraud | Features) using Bayes' Theorem"""
+    
+    # Likelihood of fraud given features
+    if high_amount and foreign:
+        likelihood_fraud = (p_fraud * 
+                           p_high_amount_given_fraud * 
+                           p_foreign_given_fraud)
+    else:
+        likelihood_fraud = p_fraud
+    
+    # Likelihood of legitimate given features
+    p_legit = 1 - p_fraud
+    if high_amount and foreign:
+        likelihood_legit = (p_legit * 
+                           p_high_amount_given_legit * 
+                           p_foreign_given_legit)
+    else:
+        likelihood_legit = p_legit
+    
+    # Posterior probability
+    total = likelihood_fraud + likelihood_legit
+    return likelihood_fraud / total
+
+# Test different scenarios
+scenarios = [
+    (False, False, "Normal transaction"),
+    (True, False, "High amount only"),
+    (False, True, "Foreign only"),
+    (True, True, "High amount + Foreign")
+]
+
+print("Fraud Detection Results:")
+print("-" * 60)
+for high_amt, foreign, description in scenarios:
+    prob = fraud_probability(high_amt, foreign)
+    risk_level = "HIGH" if prob > 0.01 else "MEDIUM" if prob > 0.001 else "LOW"
+    print(f"{description:30} P(Fraud)={prob:.4f} [{risk_level}]")</code></pre>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <div class="warning-box">
+                        <strong>⚠️ Try these exercises before looking at solutions!</strong>
+                        <p>The best way to learn probability is by solving problems. Work through each exercise, then check your understanding.</p>
+                    </div>
+                    
+                    <h3>Exercise 1: Customer Behavior Analysis</h3>
+                    <p><strong>Scenario:</strong> An online store has the following data:</p>
+                    <ul>
+                        <li>60% of visitors are mobile users, 40% desktop</li>
+                        <li>Mobile users make purchases 8% of the time</li>
+                        <li>Desktop users make purchases 15% of the time</li>
+                    </ul>
+                    <p><strong>Questions:</strong></p>
+                    <ol>
+                        <li>What's the overall purchase rate P(Purchase)?</li>
+                        <li>If someone made a purchase, what's the probability they're on mobile P(Mobile|Purchase)?</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Medical Screening</h3>
+                    <p><strong>Scenario:</strong> A disease affects 2% of the population. A test has:</p>
+                    <ul>
+                        <li>98% sensitivity (detects disease when present)</li>
+                        <li>95% specificity (negative when disease absent)</li>
+                    </ul>
+                    <p><strong>Question:</strong> If someone tests positive, what's the probability they actually have the disease?</p>
+                    
+                    <h3>Exercise 3: Recommendation System</h3>
+                    <p><strong>Scenario:</strong> Build a simple movie recommender:</p>
+                    <ul>
+                        <li>P(User watches Sci-Fi) = 0.35</li>
+                        <li>P(User watches Action) = 0.50</li>
+                        <li>P(User watches both) = 0.20</li>
+                    </ul>
+                    <p><strong>Questions:</strong></p>
+                    <ol>
+                        <li>Are Sci-Fi and Action preferences independent?</li>
+                        <li>If a user likes Sci-Fi, what's P(likes Action | likes Sci-Fi)?</li>
+                        <li>What's P(likes at least one genre)?</li>
+                    </ol>
+                    
+                    <h3>Exercise 4: Build a Simple Classifier</h3>
+                    <p><strong>Challenge:</strong> Implement a Naive Bayes classifier to predict if a student will pass based on:</p>
+                    <ul>
+                        <li>Study hours (>5 hours or ≤5 hours)</li>
+                        <li>Attendance (>80% or ≤80%)</li>
+                    </ul>
+                    <p>Use the training data to calculate probabilities, then classify new students.</p>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>In this tutorial, you've mastered the probability foundations essential for AI and machine learning:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎲 Basic Probability</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Understand probability rules, complement rule, and law of large numbers. Calculate probabilities for simple and compound events.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🔗 Conditional Probability</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Master P(A|B), learn to update probabilities with new evidence, and avoid confusing P(A|B) with P(B|A).</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎯 Independence</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Recognize independent vs dependent events, use multiplication rule P(A and B) = P(A) × P(B), understand Naive Bayes assumption.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🧮 Bayes' Theorem</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Apply Bayes' Theorem to flip conditional probabilities, build Bayesian classifiers, and update beliefs with evidence.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">➕✖️ Probability Rules</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Use addition rule for OR events, multiplication rule for AND events, and combine rules for complex scenarios.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🌍 Real-World ML</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Apply probability to spam filters, recommendation systems, fraud detection, A/B testing, and medical diagnosis.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Takeaway</strong>
+                        <p>Probability is the mathematical foundation of AI. Every time an ML model makes a prediction, it's calculating probabilities. Every time it learns from data, it's updating probabilities. Master probability, and you'll understand how AI thinks!</p>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 1:</strong> A disease affects 1% of the population. A test is 99% accurate (both sensitivity and specificity). If you test positive, what's the approximate probability you have the disease?</p>
+                            <div class="quiz-option" data-value="a">a) 99%</div>
+                            <div class="quiz-option" data-value="b">b) 50%</div>
+                            <div class="quiz-option" data-value="c">c) 1%</div>
+                            <div class="quiz-option" data-value="d">d) 90%</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 2:</strong> Events A and B are independent if:</p>
+                            <div class="quiz-option" data-value="a">a) P(A and B) = 0</div>
+                            <div class="quiz-option" data-value="b">b) P(A or B) = P(A) + P(B)</div>
+                            <div class="quiz-option" data-value="c">c) P(A|B) = P(A)</div>
+                            <div class="quiz-option" data-value="d">d) P(A) = P(B)</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 3:</strong> In Bayes' Theorem P(A|B) = P(B|A) × P(A) / P(B), what is P(A) called?</p>
+                            <div class="quiz-option" data-value="a">a) Prior probability</div>
+                            <div class="quiz-option" data-value="b">b) Likelihood</div>
+                            <div class="quiz-option" data-value="c">c) Posterior probability</div>
+                            <div class="quiz-option" data-value="d">d) Evidence</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 4:</strong> You flip a fair coin 3 times. What's P(getting exactly 2 heads)?</p>
+                            <div class="quiz-option" data-value="a">a) 1/8</div>
+                            <div class="quiz-option" data-value="b">b) 1/4</div>
+                            <div class="quiz-option" data-value="c">c) 1/2</div>
+                            <div class="quiz-option" data-value="d">d) 3/8</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 5:</strong> Which ML algorithm is directly based on Bayes' Theorem?</p>
+                            <div class="quiz-option" data-value="a">a) Linear Regression</div>
+                            <div class="quiz-option" data-value="b">b) Naive Bayes Classifier</div>
+                            <div class="quiz-option" data-value="c">c) K-Means Clustering</div>
+                            <div class="quiz-option" data-value="d">d) Decision Trees</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 6:</strong> P(A or B) = P(A) + P(B) is only correct when:</p>
+                            <div class="quiz-option" data-value="a">a) A and B are independent</div>
+                            <div class="quiz-option" data-value="b">b) A and B are equally likely</div>
+                            <div class="quiz-option" data-value="c">c) A and B are mutually exclusive</div>
+                            <div class="quiz-option" data-value="d">d) P(A) = P(B)</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 7:</strong> In spam filtering, why is the "Naive" Bayes assumption important?</p>
+                            <div class="quiz-option" data-value="a">a) It assumes words are independent, simplifying calculations</div>
+                            <div class="quiz-option" data-value="b">b) It assumes all emails are equally likely to be spam</div>
+                            <div class="quiz-option" data-value="c">c) It requires naive users to label training data</div>
+                            <div class="quiz-option" data-value="d">d) It only works with simple email features</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 8:</strong> If P(A) = 0.6, P(B) = 0.4, and P(A and B) = 0.3, what is P(A or B)?</p>
+                            <div class="quiz-option" data-value="a">a) 1.0</div>
+                            <div class="quiz-option" data-value="b">b) 0.7</div>
+                            <div class="quiz-option" data-value="c">c) 0.5</div>
+                            <div class="quiz-option" data-value="d">d) 0.3</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="descriptive-statistics.html" class="nav-button">← Previous: Descriptive Statistics</a>
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button">Back to Course</a>
+                    <span class="nav-button disabled">Next: Coming Soon →</span>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

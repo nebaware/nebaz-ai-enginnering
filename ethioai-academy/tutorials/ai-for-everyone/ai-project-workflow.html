@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn the complete AI project lifecycle from problem definition to deployment. Understand the step-by-step process of building AI systems.">
+    <title>Tutorial 9: AI Project Workflow - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .workflow-pipeline {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .pipeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #078930;
+            transition: transform 0.3s;
+        }
+        
+        .pipeline-step:hover {
+            transform: translateX(5px);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-details {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .pipeline-arrow {
+            text-align: center;
+            color: #078930;
+            font-size: 1.5rem;
+            padding: 0.5rem 0;
+        }
+        
+        .architecture-analogy {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border: 2px solid #078930;
+        }
+        
+        .analogy-comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .analogy-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .real-project-case {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid #10b981;
+        }
+        
+        .case-title {
+            color: #10b981;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .case-steps {
+            margin-top: 1.5rem;
+        }
+        
+        .case-step {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .case-step-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .time-distribution {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .time-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .time-percentage {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .time-label {
+            color: #64748b;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .checklist-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        
+        .checklist li {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+        
+        .checklist li::before {
+            content: "□";
+            font-size: 1.5rem;
+            color: #078930;
+            flex-shrink: 0;
+        }
+        
+        .pitfalls-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .pitfall-card {
+            background: #fef2f2;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .pitfall-title {
+            color: #ef4444;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .analogy-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 9</span>
+            </div>
+            <h1>Tutorial 9: AI Project Workflow</h1>
+            <p class="tutorial-intro">Master the complete AI project lifecycle from problem definition to deployment</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You understand data and training. But <strong>how do you actually build an AI project from start to finish?</strong> What's the process professionals follow?</p>
+                
+                <p>Building AI isn't just writing code — it's like <strong>constructing a building</strong>. Skip the blueprint phase, and your structure collapses. AI projects are <strong>80% planning and data work, 20% model training</strong>.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Reality Check:</strong> Most AI projects fail not because of bad algorithms, but because of poorly defined problems, insufficient data, or lack of deployment planning. Success requires systematic workflow.</p>
+                </div>
+            </section>
+
+            <!-- Architecture Analogy -->
+            <section class="content-section">
+                <h2>🏗️ The Architecture Analogy</h2>
+                
+                <div class="architecture-analogy">
+                    <h3>Building AI is Like Building a House</h3>
+                    
+                    <div class="analogy-comparison">
+                        <div class="analogy-card">
+                            <h4>🏠 Building Construction</h4>
+                            <ol>
+                                <li><strong>Blueprint:</strong> Define requirements, design</li>
+                                <li><strong>Foundation:</strong> Gather materials (wood, concrete)</li>
+                                <li><strong>Framework:</strong> Build structure</li>
+                                <li><strong>Inspection:</strong> Check quality, safety</li>
+                                <li><strong>Finishing:</strong> Paint, furnish, make livable</li>
+                                <li><strong>Maintenance:</strong> Regular upkeep, repairs</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="analogy-card">
+                            <h4>🤖 AI Construction</h4>
+                            <ol>
+                                <li><strong>Problem Definition:</strong> What are we solving?</li>
+                                <li><strong>Data Collection:</strong> Gather training data</li>
+                                <li><strong>Model Training:</strong> Build AI system</li>
+                                <li><strong>Evaluation:</strong> Test accuracy, fairness</li>
+                                <li><strong>Deployment:</strong> Make it available to users</li>
+                                <li><strong>Monitoring:</strong> Track performance, retrain</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <p><strong>Key insight:</strong> Just as you wouldn't start building without blueprints, you shouldn't start training models without a clear problem definition and data strategy.</p>
+            </section>
+
+            <!-- The 6-Step Workflow -->
+            <section class="content-section">
+                <h2>🔄 The 6-Step AI Project Lifecycle</h2>
+                
+                <div class="workflow-pipeline">
+                    <h3>Complete AI Development Process</h3>
+                    
+                    <div class="pipeline-steps">
+                        <div class="pipeline-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Define the Problem</h3>
+                                <p>Identify a clear, measurable business or research problem that AI can solve</p>
+                                <p class="step-details"><strong>Key questions:</strong> What exactly are we predicting? What's success? What's the baseline?</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pipeline-arrow">↓</div>
+                        
+                        <div class="pipeline-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Collect Data</h3>
+                                <p>Gather relevant, high-quality data from appropriate sources</p>
+                                <p class="step-details"><strong>Considerations:</strong> How much data? What sources? Ethical collection? Privacy compliance?</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pipeline-arrow">↓</div>
+                        
+                        <div class="pipeline-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Prepare & Clean Data</h3>
+                                <p>Clean, label, transform, and split data for training</p>
+                                <p class="step-details"><strong>Tasks:</strong> Remove errors, handle missing values, label data, normalize, split train/val/test</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pipeline-arrow">↓</div>
+                        
+                        <div class="pipeline-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>Train Model</h3>
+                                <p>Select algorithm, train on data, tune hyperparameters</p>
+                                <p class="step-details"><strong>Choices:</strong> Which learning type? Which algorithm? How long to train? Prevent overfitting?</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pipeline-arrow">↓</div>
+                        
+                        <div class="pipeline-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>Evaluate Performance</h3>
+                                <p>Test on unseen data, measure accuracy, check for bias</p>
+                                <p class="step-details"><strong>Metrics:</strong> Accuracy, precision, recall, F1-score, fairness across demographics</p>
+                            </div>
+                        </div>
+                        
+                        <div class="pipeline-arrow">↓</div>
+                        
+                        <div class="pipeline-step">
+                            <div class="step-number">6</div>
+                            <div class="step-content">
+                                <h3>Deploy & Monitor</h3>
+                                <p>Make model available to users, track real-world performance, retrain periodically</p>
+                                <p class="step-details"><strong>Ongoing:</strong> API deployment, performance monitoring, model updates, user feedback</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Critical Truth:</strong> This is an <strong>iterative process</strong>, not linear. You'll cycle back to earlier steps based on evaluation results. If accuracy is low → improve data or try different models.</p>
+                </div>
+            </section>
+
+            <!-- Time Distribution -->
+            <section class="content-section">
+                <h2>⏱️ Time Reality: Where Effort Goes</h2>
+                
+                <p>Many beginners assume "training the model" is 80% of the work. <strong>It's actually the smallest part.</strong></p>
+                
+                <div class="time-distribution">
+                    <div class="time-box">
+                        <div class="time-percentage">10%</div>
+                        <div class="time-label">Problem Definition</div>
+                        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem;">Understanding requirements, defining success metrics</p>
+                    </div>
+                    
+                    <div class="time-box">
+                        <div class="time-percentage">60%</div>
+                        <div class="time-label">Data Work</div>
+                        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem;">Collection, cleaning, labeling, preparation</p>
+                    </div>
+                    
+                    <div class="time-box">
+                        <div class="time-percentage">10%</div>
+                        <div class="time-label">Model Training</div>
+                        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem;">Selecting algorithm, training, tuning</p>
+                    </div>
+                    
+                    <div class="time-box">
+                        <div class="time-percentage">20%</div>
+                        <div class="time-label">Deployment & Monitoring</div>
+                        <p style="margin-top: 0.5rem; color: #64748b; font-size: 0.875rem;">Making it production-ready, ongoing maintenance</p>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>⚠️ The 60% Data Reality:</strong> Data scientists report spending 60-80% of their time on data tasks — finding it, cleaning it, labeling it, fixing errors. This is normal and unavoidable. Great data = great AI.</p>
+                </div>
+            </section>
+
+            <!-- Real Project Case Study -->
+            <section class="content-section">
+                <h2>🎯 Real Project Walkthrough: Netflix Recommendation System</h2>
+                
+                <div class="real-project-case">
+                    <div class="case-title">📺 Case Study: How Ethiopian tech teams Built Their AI</div>
+                    
+                    <p><strong>Challenge:</strong> Users overwhelmed by 10,000+ titles. Need personalized recommendations to increase viewing.</p>
+                    
+                    <div class="case-steps">
+                        <div class="case-step">
+                            <div class="case-step-title">Step 1: Problem Definition</div>
+                            <p><strong>Goal:</strong> Predict which movies/shows a user will enjoy and watch to completion</p>
+                            <p><strong>Success metric:</strong> Increase viewing hours by 20%, reduce churn by 15%</p>
+                            <p><strong>Baseline:</strong> Random recommendations = 5% click-through rate</p>
+                        </div>
+                        
+                        <div class="case-step">
+                            <div class="case-step-title">Step 2: Data Collection</div>
+                            <p><strong>Sources:</strong></p>
+                            <ul>
+                                <li>100+ million users' viewing history</li>
+                                <li>Ratings (thumbs up/down)</li>
+                                <li>Watch time (did they finish it?)</li>
+                                <li>Time of day viewing patterns</li>
+                                <li>Device used (TV, mobile, tablet)</li>
+                                <li>Content metadata (genre, actors, director)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="case-step">
+                            <div class="case-step-title">Step 3: Data Preparation</div>
+                            <p><strong>Challenges faced:</strong></p>
+                            <ul>
+                                <li>Removed incomplete viewing sessions (power outages, crashes)</li>
+                                <li>Handled "cold start" problem (new users with no history)</li>
+                                <li>Normalized ratings across different users (some rate everything high)</li>
+                                <li>Created user-item matrix: 100M users × 10K titles = 1 trillion data points</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="case-step">
+                            <div class="case-step-title">Step 4: Model Training</div>
+                            <p><strong>Approach:</strong> Collaborative filtering + content-based filtering hybrid</p>
+                            <ul>
+                                <li>Collaborative: "Users similar to you watched X"</li>
+                                <li>Content-based: "You liked Y, so you'll like Z (same genre)"</li>
+                                <li>Trained on 80% of historical data</li>
+                                <li>Used matrix factorization algorithms</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="case-step">
+                            <div class="case-step-title">Step 5: Evaluation</div>
+                            <p><strong>Testing:</strong></p>
+                            <ul>
+                                <li>Accuracy: 75% of recommended titles were watched</li>
+                                <li>A/B testing: Showed new recommendations to 10% of users first</li>
+                                <li>Compared to baseline: 15x better than random recommendations</li>
+                                <li>Checked for bias: Ensured diverse content (not just blockbusters)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="case-step">
+                            <div class="case-step-title">Step 6: Deployment & Monitoring</div>
+                            <p><strong>Ongoing operations:</strong></p>
+                            <ul>
+                                <li>Deployed via API serving 200M+ users globally</li>
+                                <li>Real-time updates: Recommendations change based on latest views</li>
+                                <li>A/B testing new algorithms continuously</li>
+                                <li>Retraining weekly with fresh data</li>
+                                <li>Monitoring for "filter bubbles" (users stuck in same genre)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box" style="margin-top: 1.5rem;">
+                        <p><strong>📊 Results:</strong> 75% of viewing comes from recommendations. Netflix estimates this AI saves $1 billion/year in reduced churn.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step-by-Step Checklist -->
+            <section class="content-section">
+                <h2>✅ Your AI Project Checklist</h2>
+                
+                <div class="checklist-section">
+                    <h3>Before Starting Any AI Project</h3>
+                    
+                    <ul class="checklist">
+                        <li><strong>Problem Clarity:</strong> Can you explain the problem in one sentence?</li>
+                        <li><strong>Success Metric:</strong> How will you measure if AI succeeded?</li>
+                        <li><strong>Data Availability:</strong> Do you have (or can you get) enough quality data?</li>
+                        <li><strong>Baseline Performance:</strong> What's current performance without AI?</li>
+                        <li><strong>AI is Right Tool:</strong> Could this be solved with simple rules instead?</li>
+                        <li><strong>Ethical Considerations:</strong> Could this AI cause harm or perpetuate bias?</li>
+                        <li><strong>Resource Planning:</strong> Do you have time, compute, and expertise?</li>
+                        <li><strong>Deployment Strategy:</strong> How will users actually access this AI?</li>
+                        <li><strong>Maintenance Plan:</strong> Who will monitor and update the model?</li>
+                        <li><strong>Fallback Plan:</strong> What happens if AI fails? Is there a human backup?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Common Pitfalls -->
+            <section class="content-section">
+                <h2>⚠️ Common AI Project Pitfalls</h2>
+                
+                <div class="pitfalls-grid">
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 1: Solution Looking for a Problem</div>
+                        <p><strong>Mistake:</strong> "Let's use AI!" without a clear problem to solve</p>
+                        <p><strong>Fix:</strong> Start with the business need, then decide if AI is appropriate</p>
+                        <p><strong>Example:</strong> Don't build a chatbot just because chatbots are trendy — only if customer support is actually overwhelmed</p>
+                    </div>
+                    
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 2: Insufficient or Biased Data</div>
+                        <p><strong>Mistake:</strong> Starting training with 100 examples when you need 10,000+</p>
+                        <p><strong>Fix:</strong> Invest in data collection upfront. Delay training until you have quality data</p>
+                        <p><strong>Example:</strong> Facial recognition trained only on light-skinned faces → fails on diverse users</p>
+                    </div>
+                    
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 3: Ignoring the "Last Mile" Problem</div>
+                        <p><strong>Mistake:</strong> Model works in lab but isn't production-ready</p>
+                        <p><strong>Fix:</strong> Plan deployment from day 1. Consider latency, scale, integration</p>
+                        <p><strong>Example:</strong> Model takes 5 minutes to predict, but app needs <1 second response</p>
+                    </div>
+                    
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 4: Overfitting to Training Data</div>
+                        <p><strong>Mistake:</strong> 99% accuracy on training set, 60% on real-world data</p>
+                        <p><strong>Fix:</strong> Always validate on separate test set. Use cross-validation</p>
+                        <p><strong>Example:</strong> Spam filter that memorizes training emails but misses new spam patterns</p>
+                    </div>
+                    
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 5: No Monitoring After Deployment</div>
+                        <p><strong>Mistake:</strong> Deploy once and forget → performance degrades over time</p>
+                        <p><strong>Fix:</strong> Continuous monitoring, periodic retraining with fresh data</p>
+                        <p><strong>Example:</strong> Fashion recommendation AI becomes outdated as trends change</p>
+                    </div>
+                    
+                    <div class="pitfall-card">
+                        <div class="pitfall-title">❌ Pitfall 6: Unrealistic Expectations</div>
+                        <p><strong>Mistake:</strong> Expecting 100% accuracy or human-level intelligence immediately</p>
+                        <p><strong>Fix:</strong> Set realistic goals. 85% accuracy might be great if baseline is 60%</p>
+                        <p><strong>Example:</strong> Self-driving cars need 99.99%+ reliability, not just "better than human"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Design Your First AI Project</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Activity: Plan an AI Project End-to-End</h3>
+                    
+                    <p><strong>Choose one problem from your life:</strong></p>
+                    <ul>
+                        <li>Predict your monthly expenses based on spending patterns</li>
+                        <li>Recommend study materials based on your learning history</li>
+                        <li>Classify news articles by topic (sports, tech, politics)</li>
+                        <li>Predict traffic congestion on your commute route</li>
+                        <li>Or create your own!</li>
+                    </ul>
+                    
+                    <p><strong>Work through all 6 steps:</strong></p>
+                    
+                    <ol>
+                        <li>
+                            <strong>Define Problem:</strong>
+                            <ul>
+                                <li>What exactly are you predicting?</li>
+                                <li>What's your success metric?</li>
+                                <li>What's the baseline (current performance)?</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Data Collection:</strong>
+                            <ul>
+                                <li>What data do you need?</li>
+                                <li>Where will you get it?</li>
+                                <li>How much data is realistic to collect?</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Data Preparation:</strong>
+                            <ul>
+                                <li>What cleaning steps are needed?</li>
+                                <li>How will you label the data?</li>
+                                <li>Train/validation/test split ratio?</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Model Training:</strong>
+                            <ul>
+                                <li>Supervised, unsupervised, or reinforcement learning?</li>
+                                <li>What algorithm type would you use?</li>
+                                <li>How will you prevent overfitting?</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Evaluation:</strong>
+                            <ul>
+                                <li>What accuracy is "good enough"?</li>
+                                <li>How will you test on unseen data?</li>
+                                <li>What biases might you check for?</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Deployment:</strong>
+                            <ul>
+                                <li>How would users access predictions? (App, web, API?)</li>
+                                <li>How often would you retrain?</li>
+                                <li>What's your fallback if AI fails?</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Pro Tip:</strong> Start small. Your first AI project should take days/weeks, not months. Learn the workflow on a simple problem before tackling complex ones.</p>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Critique an AI Project Plan</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Scenario: Evaluate This AI Project Proposal</h3>
+                    
+                    <p><strong>Proposed Project:</strong> "Build AI to predict student exam scores"</p>
+                    
+                    <p><strong>Current Plan:</strong></p>
+                    <ul>
+                        <li><strong>Data:</strong> 50 students' past exam scores from last semester</li>
+                        <li><strong>Model:</strong> Use deep learning neural network</li>
+                        <li><strong>Training:</strong> Train for 1,000 epochs to maximize accuracy</li>
+                        <li><strong>Deployment:</strong> Share model file with teachers</li>
+                        <li><strong>Success:</strong> Achieve 100% accuracy</li>
+                    </ul>
+                    
+                    <p><strong>Your task:</strong> Identify problems with this plan and suggest fixes</p>
+                    
+                    <p><strong>Questions to answer:</strong></p>
+                    <ol>
+                        <li>Is 50 students enough data? Why/why not?</li>
+                        <li>Is deep learning appropriate for this problem?</li>
+                        <li>What's wrong with training for maximum accuracy?</li>
+                        <li>Is "share model file" a good deployment strategy?</li>
+                        <li>Is 100% accuracy realistic or even desirable?</li>
+                        <li>What other data would improve predictions?</li>
+                        <li>What ethical concerns should be considered?</li>
+                    </ol>
+                    
+                    <p><strong>Suggested fixes:</strong></p>
+                    <ul>
+                        <li>✅ Collect 1,000+ students across multiple semesters</li>
+                        <li>✅ Start with simple linear regression, not deep learning</li>
+                        <li>✅ Use validation set to prevent overfitting</li>
+                        <li>✅ Build web app or API for easy access</li>
+                        <li>✅ Aim for 85-90% accuracy (100% suggests overfitting)</li>
+                        <li>✅ Add features: study hours, attendance, previous grades</li>
+                        <li>✅ Ensure privacy, prevent gaming the system</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: The AI Blueprint</h2>
+                
+                <ul>
+                    <li>✅ <strong>6-step workflow</strong> — Problem → Data → Prepare → Train → Evaluate → Deploy</li>
+                    <li>✅ <strong>80% planning, 20% coding</strong> — Most time spent on problem definition and data</li>
+                    <li>✅ <strong>Iterative process</strong> — Loop back to earlier steps based on results</li>
+                    <li>✅ <strong>60% is data work</strong> — Collection, cleaning, labeling dominates timeline</li>
+                    <li>✅ <strong>Deployment isn't the end</strong> — Monitoring and retraining are ongoing</li>
+                    <li>✅ <strong>Avoid common pitfalls</strong> — No problem definition, insufficient data, no monitoring</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> Successful AI projects follow a disciplined workflow. Like architecture, you need a solid blueprint before building. Start with crystal-clear problem definition, invest heavily in quality data, validate thoroughly, and plan for production from day one.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What percentage of AI project time is typically spent on data work?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">20%</div>
+                            <div class="quiz-option" data-value="b">60%</div>
+                            <div class="quiz-option" data-value="c">10%</div>
+                            <div class="quiz-option" data-value="d">80%</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 2: What's the most important first step in any AI project?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Clearly define the problem and success metrics</div>
+                            <div class="quiz-option" data-value="b">Start collecting data immediately</div>
+                            <div class="quiz-option" data-value="c">Choose the latest deep learning algorithm</div>
+                            <div class="quiz-option" data-value="d">Build a prototype as fast as possible</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 3: What percentage of Netflix viewing comes from AI recommendations?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">25%</div>
+                            <div class="quiz-option" data-value="b">50%</div>
+                            <div class="quiz-option" data-value="c">75%</div>
+                            <div class="quiz-option" data-value="d">100%</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What's the "last mile" problem in AI projects?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Not having enough training data</div>
+                            <div class="quiz-option" data-value="b">Model works in lab but isn't production-ready</div>
+                            <div class="quiz-option" data-value="c">Overfitting to training data</div>
+                            <div class="quiz-option" data-value="d">Choosing the wrong algorithm</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: Why is monitoring crucial after deployment?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It's not important once deployed</div>
+                            <div class="quiz-option" data-value="b">To impress stakeholders</div>
+                            <div class="quiz-option" data-value="c">Performance degrades over time; need retraining with fresh data</div>
+                            <div class="quiz-option" data-value="d">To collect more revenue</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🎉 Congratulations! Week 3 Complete</h2>
+                
+                <p>You've now mastered the technical foundations: data, training, and project workflow. You understand <strong>how AI systems are built</strong> from start to finish.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Week 4:</strong> We shift from "How?" to "Should we?" — exploring AI ethics, career opportunities, and the future of intelligent systems. Let's discuss the human side of AI.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="training-ai-models.html" class="prev">← Module 8: Training AI Models</a>
+                    <a href="ai-ethics.html" class="next">Next: Module 10 - AI Ethics & Responsibility →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

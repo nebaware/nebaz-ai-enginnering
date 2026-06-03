@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Python loops with for and while statements. Learn iteration, ranges, break/continue, and build a guessing game.">
+    <title>Loops in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Loops in Python</h1>
+            <p class="page-subtitle">Master for and while loops to automate repetitive tasks</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Imagine you need to send 100 personalized emails to your customers. Would you write the same code 100 times, changing only the recipient's name each time? Of course not! This is exactly where loops come to the rescue. Loops are one of programming's most powerful features—they let you repeat actions efficiently without drowning in copy-paste madness. Whether you're processing data, building games, or automating tasks, loops are your best friend.</p>
+        
+        <h2>What Are Loops?</h2>
+        
+        <p>A <strong>loop</strong> is a programming structure that repeats a block of code multiple times. Python gives you two main types of loops:</p>
+        
+        <h3>What is a for loop?</h3>
+        <p>A <code>for</code> loop iterates over a sequence (like a list, string, or range of numbers) and executes code for each item. Think of it as going through items on a conveyor belt—you process each one until you've handled them all.</p>
+        
+        <pre><code class="language-python"># Basic for loop syntax
+for item in collection:
+    # Code to execute for each item
+    print(item)</code></pre>
+        
+        <h3>What is a while loop?</h3>
+        <p>A <code>while</code> loop repeats code as long as a condition remains true. It's like saying, "Keep doing this until something changes." This is perfect when you don't know in advance how many times you need to repeat something.</p>
+        
+        <pre><code class="language-python"># Basic while loop syntax
+while condition:
+    # Code to execute while condition is True
+    print("Still going...")</code></pre>
+        
+        <h3>How do they work?</h3>
+        <p>Unlike conditional statements (<code>if</code>) that run once, loops create a cycle. The <code>for</code> loop automatically moves to the next item after each iteration. The <code>while</code> loop checks its condition before each cycle—if the condition becomes false, the loop stops.</p>
+        
+        <div class="info-box">
+            <p>💡 <strong>Key Difference:</strong> Use <code>for</code> loops when you know what you're iterating over (a collection or range). Use <code>while</code> loops when you're waiting for a condition to change (like user input or a calculation reaching a threshold).</p>
+        </div>
+        
+        <h2>The Perfect Analogy</h2>
+        
+        <p>Think of loops like a <strong>conveyor belt in a factory</strong>. Each item on the belt represents one iteration of your loop:</p>
+        
+        <ul>
+            <li>A <code>for</code> loop is like a belt with a fixed number of items. You process each item (apple, orange, banana) in order until the belt is empty.</li>
+            <li>A <code>while</code> loop is like a belt that keeps running until you press the stop button. The belt continues as long as the "keep running" condition is true.</li>
+        </ul>
+        
+        <p>In both cases, you're performing the same action (processing items) repeatedly, but the stopping mechanism differs.</p>
+        
+        <h2>Visual Understanding</h2>
+        
+        <p>Here's how loops flow through your code:</p>
+        
+        <pre><code class="language-python"># FOR LOOP FLOW
+Start → Check if items remain in collection
+    ↓ Yes
+Process current item → Move to next item → Repeat
+    ↓ No
+Exit loop → Continue with rest of program
+
+# WHILE LOOP FLOW  
+Start → Check condition
+    ↓ True
+Execute code block → Check condition again → Repeat
+    ↓ False
+Exit loop → Continue with rest of program</code></pre>
+        
+        <div class="warning-box">
+            <p>⚠️ <strong>Important:</strong> Every loop needs a way to end! A <code>for</code> loop ends when it runs out of items. A <code>while</code> loop ends when its condition becomes false. Without an exit strategy, you create an infinite loop that crashes your program.</p>
+        </div>
+        
+        <h2>Real Examples: From Simple to Complex</h2>
+        
+        <h3>Example 1: Basic for Loop with range()</h3>
+        <p>The <code>range()</code> function generates a sequence of numbers, perfect for counting:</p>
+        
+        <pre><code class="language-python"># Count from 1 to 5
+for i in range(1, 6):
+    print("Count:", i)
+
+# Output:
+# Count: 1
+# Count: 2
+# Count: 3
+# Count: 4
+# Count: 5</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Range Syntax:</strong> <code>range(start, stop, step)</code> generates numbers from start up to (but not including) stop. <code>range(1, 6)</code> gives you [1, 2, 3, 4, 5].</p>
+        </div>
+        
+        <h3>Example 2: Basic while Loop</h3>
+        <p>A countdown using a while loop that checks a condition:</p>
+        
+        <pre><code class="language-python"># Countdown from 3
+n = 3
+while n > 0:
+    print("n =", n)
+    n -= 1  # Decrease n by 1 each time
+print("Blastoff!")
+
+# Output:
+# n = 3
+# n = 2
+# n = 1
+# Blastoff!</code></pre>
+        
+        <h3>Example 3: Looping Through a List</h3>
+        <p>Process each item in a collection with descriptive variable names:</p>
+        
+        <pre><code class="language-python"># Iterate over a list of fruits
+fruits = ["apple", "banana", "cherry", "date"]
+
+for fruit in fruits:
+    print(f"I love {fruit}s!")
+    
+# Output:
+# I love apples!
+# I love bananas!
+# I love cherrys!
+# I love dates!</code></pre>
+        
+        <h3>Example 4: Practical Sum Calculator</h3>
+        <p>Combine loops with accumulation—a common programming pattern:</p>
+        
+        <pre><code class="language-python"># Calculate the sum of numbers 1 through 10
+total = 0  # Initialize accumulator
+
+for number in range(1, 11):
+    total += number  # Add current number to total
+    print(f"Added {number}, total is now {total}")
+
+print(f"\nFinal sum: {total}")
+
+# Output shows progressive addition:
+# Added 1, total is now 1
+# Added 2, total is now 3
+# ...
+# Final sum: 55</code></pre>
+        
+        <h3>Example 5: Using break and continue</h3>
+        <p>Control loop flow with special keywords:</p>
+        
+        <pre><code class="language-python"># Find the first even number divisible by 7
+for num in range(1, 50):
+    if num % 2 != 0:
+        continue  # Skip odd numbers
+    if num % 7 == 0:
+        print(f"Found it: {num}")
+        break  # Stop searching once found
+        
+# Output: Found it: 14</code></pre>
+        
+        <h2>Hands-On Exercise: Sum Numbers 1 to 100</h2>
+        
+        <p>Let's build your loop skills by calculating the sum of all numbers from 1 to 100. Follow these steps:</p>
+        
+        <h3>Step 1: Create Your Python File</h3>
+        <p>Create a new file called <code>sum_calculator.py</code> in your working directory.</p>
+        
+        <h3>Step 2: Write the Starter Code</h3>
+        <p>Begin with a basic structure and a variable to store your sum:</p>
+        
+        <pre><code class="language-python"># sum_calculator.py
+# Calculate sum of numbers 1 to 100
+
+total = 0  # This will store our running sum
+
+# Your loop will go here
+
+print(f"The sum of numbers 1 to 100 is: {total}")</code></pre>
+        
+        <h3>Step 3: Add the for Loop</h3>
+        <p>Insert a for loop that adds each number to your total:</p>
+        
+        <pre><code class="language-python"># sum_calculator.py
+total = 0
+
+for number in range(1, 101):  # Remember: range(1, 101) gives 1-100
+    total += number  # Same as: total = total + number
+
+print(f"The sum of numbers 1 to 100 is: {total}")</code></pre>
+        
+        <h3>Step 4: Test Your Code</h3>
+        <p>Run your script from the terminal:</p>
+        
+        <pre><code class="language-python">python sum_calculator.py</code></pre>
+        
+        <h3>Step 5: Expected Output</h3>
+        <p>You should see:</p>
+        
+        <pre><code>The sum of numbers 1 to 100 is: 5050</code></pre>
+        
+        <div class="info-box">
+            <p>💡 <strong>Bonus Challenge:</strong> Modify your code to also count how many even numbers appear in the range 1-100. Use an <code>if</code> statement inside your loop!</p>
+        </div>
+        
+        <h3>Troubleshooting Tips</h3>
+        <ul>
+            <li><strong>Wrong total?</strong> Check your range—<code>range(1, 101)</code> not <code>range(1, 100)</code></li>
+            <li><strong>IndentationError?</strong> Make sure the code inside your loop is indented consistently (4 spaces or 1 tab)</li>
+            <li><strong>NameError?</strong> Did you initialize <code>total = 0</code> before the loop?</li>
+        </ul>
+        
+        <h2>Common Mistakes to Avoid</h2>
+        
+        <h3>1. Infinite Loops (The Never-Ending Story)</h3>
+        <p><strong>Problem:</strong> Your program hangs and never finishes.</p>
+        <p><strong>Why it happens:</strong> A while loop condition never becomes false.</p>
+        
+        <pre><code class="language-python"># WRONG - Infinite loop!
+while True:
+    print("This will never stop...")
+    # No way to exit!
+    
+# CORRECT - Proper exit condition
+count = 0
+while count < 5:
+    print("This will stop")
+    count += 1  # Ensures condition eventually becomes False</code></pre>
+        
+        <p><strong>Solution:</strong> Always ensure your while loop condition will eventually become false, or use <code>break</code> to exit.</p>
+        
+        <h3>2. Off-By-One Errors with range()</h3>
+        <p><strong>Problem:</strong> Your loop runs one time too many or too few.</p>
+        <p><strong>Why it happens:</strong> Forgetting that <code>range(5)</code> generates [0, 1, 2, 3, 4], not [1, 2, 3, 4, 5].</p>
+        
+        <pre><code class="language-python"># WRONG - Prints 0-4, not 1-5
+for i in range(5):
+    print(i)  # Outputs: 0, 1, 2, 3, 4
+
+# CORRECT - Prints 1-5
+for i in range(1, 6):
+    print(i)  # Outputs: 1, 2, 3, 4, 5</code></pre>
+        
+        <p><strong>Prevention:</strong> Remember: <code>range(start, stop)</code> stops BEFORE reaching the stop value.</p>
+        
+        <h3>3. Modifying a List While Iterating</h3>
+        <p><strong>Problem:</strong> Unexpected behavior or errors when changing a list during iteration.</p>
+        
+        <pre><code class="language-python"># WRONG - Removing items while looping
+numbers = [1, 2, 3, 4, 5]
+for num in numbers:
+    if num % 2 == 0:
+        numbers.remove(num)  # Causes skipping!
+
+# CORRECT - Loop over a copy
+numbers = [1, 2, 3, 4, 5]
+for num in numbers[:]:  # [:] creates a copy
+    if num % 2 == 0:
+        numbers.remove(num)</code></pre>
+        
+        <h3>4. Forgetting to Update the Loop Variable</h3>
+        <p><strong>Problem:</strong> While loop never progresses.</p>
+        
+        <pre><code class="language-python"># WRONG - i never changes
+i = 0
+while i < 5:
+    print(i)
+    # Missing: i += 1  (This would cause infinite loop!)
+
+# CORRECT - Update the variable
+i = 0
+while i < 5:
+    print(i)
+    i += 1  # Don't forget this!</code></pre>
+        
+        <h3>5. Incorrect Indentation</h3>
+        <p><strong>Problem:</strong> Code runs when it shouldn't, or doesn't run when it should.</p>
+        
+        <pre><code class="language-python"># WRONG - print is outside the loop
+for i in range(3):
+    total = i * 2
+print(total)  # Only prints once after loop ends
+
+# CORRECT - print inside the loop
+for i in range(3):
+    total = i * 2
+    print(total)  # Prints three times during loop</code></pre>
+        
+        <h3>6. Using = Instead of == in While Conditions</h3>
+        <p><strong>Problem:</strong> Assignment instead of comparison causes syntax errors.</p>
+        
+        <pre><code class="language-python"># WRONG - Assignment, not comparison
+x = 10
+while x = 10:  # SyntaxError!
+    print(x)
+
+# CORRECT - Use comparison operator
+x = 10
+while x == 10:
+    print(x)
+    x -= 1</code></pre>
+        
+        <h2>Mini-Project: Number Guessing Game</h2>
+        
+        <p><strong>Goal:</strong> Build an interactive game where the player guesses a secret number between 1 and 10, with hints for each wrong guess.</p>
+        
+        <h3>Requirements</h3>
+        <ul>
+            <li>Store a secret number (hard-coded as 7 for testing)</li>
+            <li>Allow unlimited guesses until correct</li>
+            <li>Provide "Too low" or "Too high" feedback</li>
+            <li>Congratulate the player when they win</li>
+        </ul>
+        
+        <h3>Step-by-Step Implementation</h3>
+        
+        <p><strong>Step 1:</strong> Create <code>guessing_game.py</code> and set up the secret number:</p>
+        
+        <pre><code class="language-python"># guessing_game.py
+print("Welcome to the Number Guessing Game!")
+print("I'm thinking of a number between 1 and 10...")
+
+secret = 7
+guess = None  # Will store player's guess</code></pre>
+        
+        <p><strong>Step 2:</strong> Add the main game loop using while:</p>
+        
+        <pre><code class="language-python">while guess != secret:
+    guess = int(input("Enter your guess (1-10): "))
+    
+    # We'll add feedback here in the next step</code></pre>
+        
+        <p><strong>Step 3:</strong> Implement the feedback logic with conditionals:</p>
+        
+        <pre><code class="language-python">while guess != secret:
+    guess = int(input("Enter your guess (1-10): "))
+    
+    if guess < secret:
+        print("Too low! Try again.")
+    elif guess > secret:
+        print("Too high! Try again.")
+    else:
+        print("🎉 Correct! You guessed it!")
+        print(f"The secret number was {secret}.")</code></pre>
+        
+        <p><strong>Step 4:</strong> Complete the game with a welcome message:</p>
+        
+        <pre><code class="language-python"># Complete guessing_game.py
+print("Welcome to the Number Guessing Game!")
+print("I'm thinking of a number between 1 and 10...\n")
+
+secret = 7
+guess = None
+
+while guess != secret:
+    guess = int(input("Enter your guess (1-10): "))
+    
+    if guess < secret:
+        print("Too low! Try again.\n")
+    elif guess > secret:
+        print("Too high! Try again.\n")
+    else:
+        print("\n🎉 Correct! You guessed it!")
+        print(f"The secret number was {secret}.")
+
+print("\nThanks for playing!")</code></pre>
+        
+        <h3>Expected Output</h3>
+        <p>When you run the game, it should look like this:</p>
+        
+        <pre><code>Welcome to the Number Guessing Game!
+I'm thinking of a number between 1 and 10...
+
+Enter your guess (1-10): 5
+Too low! Try again.
+
+Enter your guess (1-10): 8
+Too high! Try again.
+
+Enter your guess (1-10): 7
+
+🎉 Correct! You guessed it!
+The secret number was 7.
+
+Thanks for playing!</code></pre>
+        
+        <h3>Bonus Challenges</h3>
+        <ol>
+            <li><strong>Add guess counting:</strong> Track how many guesses the player needed</li>
+            <li><strong>Input validation:</strong> Check if the guess is between 1-10, handle invalid input</li>
+            <li><strong>Random secret number:</strong> Use <code>import random</code> and <code>random.randint(1, 10)</code> for variety</li>
+            <li><strong>Play again option:</strong> Wrap everything in another loop that asks "Play again? (yes/no)"</li>
+            <li><strong>Difficulty levels:</strong> Let players choose ranges (1-10 easy, 1-50 medium, 1-100 hard)</li>
+        </ol>
+        
+        <div class="info-box">
+            <p>💡 <strong>Learning Tip:</strong> Try implementing one bonus challenge at a time. Test after each change to ensure everything still works!</p>
+        </div>
+        
+        <h2>Summary</h2>
+        
+        <h3>Key Takeaways</h3>
+        <ul>
+            <li><strong>For loops</strong> iterate over sequences (lists, ranges, strings)—use when you know what you're looping through</li>
+            <li><strong>While loops</strong> repeat based on conditions—use when you don't know how many iterations you need</li>
+            <li>Use <code>range(start, stop, step)</code> to generate number sequences for counting</li>
+            <li><code>break</code> exits a loop immediately, <code>continue</code> skips to the next iteration</li>
+            <li>Always ensure loops have a proper exit condition to avoid infinite loops</li>
+        </ul>
+        
+        <h3>What Makes Loops Special</h3>
+        <ul>
+            <li><strong>Automation:</strong> Write once, execute hundreds or thousands of times</li>
+            <li><strong>Efficiency:</strong> Clean, maintainable code without repetition</li>
+            <li><strong>Flexibility:</strong> Adapt to different data sizes without code changes</li>
+        </ul>
+        
+        <h3>Your Next Steps</h3>
+        <ul>
+            <li>✅ Practice the sum calculator exercise until you can write it from memory</li>
+            <li>✅ Complete the guessing game mini-project with at least one bonus challenge</li>
+            <li>✅ Try looping through your own lists (favorite movies, todo items, etc.)</li>
+            <li>✅ Experiment with nested loops (a loop inside another loop)</li>
+            <li>✅ Move on to Python's built-in data structures (lists, dictionaries) to unlock loops' full power</li>
+        </ul>
+        
+        <p>Congratulations! You've mastered one of programming's most essential concepts. Loops are everywhere in code—from processing files to building games to analyzing data. With this foundation, you're ready to automate tasks and write more powerful programs. Keep practicing, and remember: the best way to learn loops is to loop through practice exercises! 🚀</p>
+        
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Python Loops</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What will <code>range(2, 7)</code> generate?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">[2, 3, 4, 5, 6, 7]</div>
+                    <div class="quiz-option" data-correct="true">[2, 3, 4, 5, 6]</div>
+                    <div class="quiz-option" data-correct="false">[1, 2, 3, 4, 5, 6]</div>
+                    <div class="quiz-option" data-correct="false">[3, 4, 5, 6, 7]</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. Which loop is best when you don't know how many iterations you need?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">for loop</div>
+                    <div class="quiz-option" data-correct="true">while loop</div>
+                    <div class="quiz-option" data-correct="false">if statement</div>
+                    <div class="quiz-option" data-correct="false">range loop</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. What does the <code>break</code> statement do?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Pauses the loop temporarily</div>
+                    <div class="quiz-option" data-correct="false">Skips to the next iteration</div>
+                    <div class="quiz-option" data-correct="true">Exits the loop immediately</div>
+                    <div class="quiz-option" data-correct="false">Restarts the loop from the beginning</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What causes an infinite loop?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Using range() incorrectly</div>
+                    <div class="quiz-option" data-correct="true">A while loop condition that never becomes false</div>
+                    <div class="quiz-option" data-correct="false">Forgetting to use break</div>
+                    <div class="quiz-option" data-correct="false">Using a for loop on a large list</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="conditional-statements-tutorial.html" class="btn btn-secondary">← Previous: Conditional Statements</a>
+                <a href="python-data-structures-tutorial.html" class="btn btn-primary">Next: Data Structures →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

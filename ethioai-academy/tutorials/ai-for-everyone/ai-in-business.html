@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore how businesses leverage AI for competitive advantage. Learn about fraud detection, recommendation engines, predictive analytics, and industry transformation.">
+    <title>Tutorial 5: AI in Business & Industry - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .business-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .business-case {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .business-case:hover {
+            transform: translateY(-5px);
+        }
+        
+        .business-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .business-case h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        .roi-metric {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        .checkmark {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .xmark {
+            color: #ef4444;
+            font-weight: 600;
+        }
+        
+        .industry-section {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .industry-section h3 {
+            color: #078930;
+            margin-bottom: 1rem;
+        }
+        
+        .use-case-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .use-case-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .use-case-number {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-nav {
+                flex-direction: column;
+            }
+            
+            .business-cases-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-everyone.html">AI for Everyone</a> → 
+                <span>Module 5</span>
+            </div>
+            <h1>Tutorial 5: AI in Business & Industry</h1>
+            <p class="tutorial-intro">Understand how businesses gain competitive advantage through AI — from fraud detection to predictive analytics</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>While you interact with AI as a consumer, <strong>businesses are waging an invisible AI arms race</strong>. Companies investing in AI are seeing 30-40% efficiency gains, while those ignoring it are losing market share at unprecedented rates.</p>
+                
+                <p>AI isn't just a tool for businesses — <strong>it's becoming the difference between thriving and surviving</strong>. From detecting fraud in milliseconds to predicting what customers want before they know it themselves, AI is reshaping every industry.</p>
+                
+                <div class="info-box">
+                    <p><strong>💡 The Business Reality:</strong> According to McKinsey, companies using AI have seen average revenue increases of 5-10% and cost reductions of 10-20%. By 2030, AI is projected to contribute $13 trillion to global GDP.</p>
+                </div>
+            </section>
+
+            <!-- The Factory Analogy -->
+            <section class="content-section">
+                <h2>🏭 The Modern Factory Analogy</h2>
+                
+                <p>Think of a business like a <strong>19th-century factory</strong>:</p>
+                
+                <p><strong>Before Electricity (1880s):</strong></p>
+                <ul>
+                    <li>Human workers + manual tools</li>
+                    <li>Production limited by human speed</li>
+                    <li>Quality inconsistent</li>
+                    <li>Can't operate at night</li>
+                </ul>
+                
+                <p><strong>After Electricity (1920s):</strong></p>
+                <ul>
+                    <li>Machines powered by electric motors</li>
+                    <li>10x faster production</li>
+                    <li>Consistent quality</li>
+                    <li>24/7 operations</li>
+                </ul>
+                
+                <p><strong>Today with AI:</strong></p>
+                <ul>
+                    <li>Decisions powered by data patterns</li>
+                    <li>Instant analysis of millions of transactions</li>
+                    <li>Personalization at scale</li>
+                    <li>Predictive instead of reactive</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 The Parallel:</strong> Just as electricity transformed physical production, AI is transforming <strong>decision-making production</strong>. Businesses can now make millions of smart decisions per second — impossible for human teams.</p>
+                </div>
+            </section>
+
+            <!-- Top Business Use Cases -->
+            <section class="content-section">
+                <h2>💼 Top 5 Business AI Applications</h2>
+                
+                <div class="business-cases-grid">
+                    <div class="business-case">
+                        <div class="business-icon">🛡️</div>
+                        <h3>1. Fraud Detection</h3>
+                        <p><strong>How it works:</strong> AI analyzes transaction patterns in real-time, flagging suspicious activity instantly.</p>
+                        <p><strong>Example:</strong> PayPal processes 20+ million transactions daily. AI catches 99.5% of fraud attempts, saving billions.</p>
+                        <div class="roi-metric">ROI: $4 saved per $1 spent</div>
+                    </div>
+                    
+                    <div class="business-case">
+                        <div class="business-icon">🎯</div>
+                        <h3>2. Recommendation Engines</h3>
+                        <p><strong>How it works:</strong> AI predicts what customers will buy based on behavior patterns of similar users.</p>
+                        <p><strong>Example:</strong> Amazon's recommendations drive 35% of total revenue — $197 billion annually.</p>
+                        <div class="roi-metric">35% of sales from AI recommendations</div>
+                    </div>
+                    
+                    <div class="business-case">
+                        <div class="business-icon">📊</div>
+                        <h3>3. Demand Forecasting</h3>
+                        <p><strong>How it works:</strong> AI predicts future demand by analyzing historical sales, seasonality, trends, and external factors.</p>
+                        <p><strong>Example:</strong> Walmart reduced inventory costs by 15% using AI to optimize stock levels across 11,000 stores.</p>
+                        <div class="roi-metric">15-30% reduction in inventory costs</div>
+                    </div>
+                    
+                    <div class="business-case">
+                        <div class="business-icon">🤖</div>
+                        <h3>4. Customer Service Chatbots</h3>
+                        <p><strong>How it works:</strong> AI understands customer queries and provides instant answers, escalating complex issues to humans.</p>
+                        <p><strong>Example:</strong> Bank of America's Erica handles 1 billion client requests/year, with 90% resolved without human intervention.</p>
+                        <div class="roi-metric">60-80% cost reduction</div>
+                    </div>
+                    
+                    <div class="business-case">
+                        <div class="business-icon">🎨</div>
+                        <h3>5. Personalized Marketing</h3>
+                        <p><strong>How it works:</strong> AI segments customers into micro-audiences and tailors messages to individual preferences.</p>
+                        <p><strong>Example:</strong> Netflix saves $1 billion/year by using AI to personalize thumbnails, titles, and recommendations.</p>
+                        <div class="roi-metric">10-30% increase in conversion rates</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Before vs After AI -->
+            <section class="content-section">
+                <h2>📈 Business Operations: Before vs After AI</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Task</th>
+                            <th>Before AI</th>
+                            <th>After AI</th>
+                            <th>Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Customer Support</strong></td>
+                            <td>Human agents only<br>9-5 availability<br>5 min avg response</td>
+                            <td>AI chatbots first<br>24/7 availability<br>Instant response</td>
+                            <td><span class="checkmark">✓</span> 70% cost reduction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inventory Planning</strong></td>
+                            <td>Manual forecasts<br>Overstocking common<br>15% waste</td>
+                            <td>AI demand prediction<br>Just-in-time stocking<br>3% waste</td>
+                            <td><span class="checkmark">✓</span> 80% less waste</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Marketing Campaigns</strong></td>
+                            <td>Broad demographics<br>3% conversion rate<br>Guesswork messaging</td>
+                            <td>Micro-segmentation<br>15% conversion rate<br>Personalized messages</td>
+                            <td><span class="checkmark">✓</span> 5x better results</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fraud Detection</strong></td>
+                            <td>Manual review<br>Days to detect<br>60% accuracy</td>
+                            <td>Real-time AI analysis<br>Instant detection<br>99.5% accuracy</td>
+                            <td><span class="checkmark">✓</span> 98% faster, 66% more accurate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hiring</strong></td>
+                            <td>Resume screening: 40 hours<br>Interview all candidates</td>
+                            <td>AI screening: 5 minutes<br>Interview top matches only</td>
+                            <td><span class="checkmark">✓</span> 480x faster screening</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="info-box">
+                    <p><strong>💡 Pattern Recognition:</strong> Notice the trend? AI excels at tasks requiring pattern recognition across large datasets — exactly what humans find tedious and error-prone.</p>
+                </div>
+            </section>
+
+            <!-- Industry Breakdown -->
+            <section class="content-section">
+                <h2>🏢 AI Across Industries</h2>
+                
+                <div class="industry-section">
+                    <h3>🏦 Banking & Finance</h3>
+                    <div class="use-case-list">
+                        <div class="use-case-item">
+                            <div class="use-case-number">1</div>
+                            <div>
+                                <strong>Credit Scoring:</strong> AI evaluates creditworthiness using 10,000+ variables vs. traditional 30 variables. JPMorgan's AI reviews 12,000 commercial credit agreements in seconds (used to take 360,000 hours).
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">2</div>
+                            <div>
+                                <strong>Algorithmic Trading:</strong> 60-73% of stock trades are now executed by AI, analyzing market patterns faster than human traders.
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">3</div>
+                            <div>
+                                <strong>Risk Management:</strong> AI predicts loan defaults with 85% accuracy vs. 60% for traditional methods.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="industry-section">
+                    <h3>🛒 Retail & E-Commerce</h3>
+                    <div class="use-case-list">
+                        <div class="use-case-item">
+                            <div class="use-case-number">1</div>
+                            <div>
+                                <strong>Dynamic Pricing:</strong> Uber, Amazon, and airlines adjust prices in real-time based on demand, competition, and customer behavior.
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">2</div>
+                            <div>
+                                <strong>Visual Search:</strong> Pinterest's Lens lets customers find products by taking photos. 600 million visual searches/month.
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">3</div>
+                            <div>
+                                <strong>Supply Chain Optimization:</strong> Zara uses AI to predict fashion trends and optimize production, reducing inventory by 35%.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="industry-section">
+                    <h3>🚗 Manufacturing & Logistics</h3>
+                    <div class="use-case-list">
+                        <div class="use-case-item">
+                            <div class="use-case-number">1</div>
+                            <div>
+                                <strong>Predictive Maintenance:</strong> AI predicts equipment failures before they happen. GE saved $50 million by preventing downtime.
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">2</div>
+                            <div>
+                                <strong>Route Optimization:</strong> UPS uses AI to optimize delivery routes, saving 10 million gallons of fuel annually.
+                            </div>
+                        </div>
+                        <div class="use-case-item">
+                            <div class="use-case-number">3</div>
+                            <div>
+                                <strong>Quality Control:</strong> BMW uses computer vision to detect defects on production lines with 99.7% accuracy.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Mistake -->
+            <section class="content-section">
+                <h2>⚠️ Common Mistake: "AI Will Replace All Jobs"</h2>
+                
+                <div class="warning-box">
+                    <h3>The Misconception</h3>
+                    <p>"AI is coming for everyone's job. Soon there will be mass unemployment."</p>
+                    
+                    <h3>The Reality</h3>
+                    <p>AI typically <strong>augments human work</strong> rather than replacing it entirely. The pattern we see:</p>
+                    <ul>
+                        <li>✅ <strong>AI handles:</strong> Repetitive tasks, data analysis, pattern matching</li>
+                        <li>✅ <strong>Humans handle:</strong> Strategy, creativity, empathy, complex decisions</li>
+                        <li>✅ <strong>Together:</strong> 5-10x productivity improvement</li>
+                    </ul>
+                    
+                    <p><strong>Example:</strong> Radiologists feared AI would replace them. Instead, AI flags potential issues, and radiologists focus on complex cases and patient care. Result: 30% faster diagnoses, better patient outcomes, <em>increased</em> demand for radiologists.</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Map AI in Your Industry</h2>
+                
+                <div class="success-box">
+                    <h3>📊 Goal: Identify 5 AI Use Cases in Your Field</h3>
+                    
+                    <p><strong>Instructions:</strong></p>
+                    <ol>
+                        <li>Pick an industry you're familiar with (or want to work in)</li>
+                        <li>Research 5 companies using AI in that industry</li>
+                        <li>Document: Company name, AI application, business impact</li>
+                        <li>Identify patterns: What problems does AI solve repeatedly?</li>
+                    </ol>
+                    
+                    <p><strong>Research sources:</strong></p>
+                    <ul>
+                        <li>Company blogs and press releases</li>
+                        <li>Tech news sites (TechCrunch, VentureBeat)</li>
+                        <li>LinkedIn posts from industry leaders</li>
+                        <li>AI case study databases</li>
+                    </ul>
+                </div>
+                
+                <p><strong>Reflection questions:</strong></p>
+                <ul>
+                    <li>Which AI application had the highest ROI?</li>
+                    <li>What tasks are humans still doing that AI could automate?</li>
+                    <li>What new job roles were created by AI adoption?</li>
+                </ul>
+            </section>
+
+            <!-- Mini-Project -->
+            <section class="content-section">
+                <h2>📝 Mini-Project: Build a Business Case for AI</h2>
+                
+                <div class="success-box">
+                    <h3>🎯 Pitch AI to Leadership</h3>
+                    
+                    <p><strong>Scenario:</strong> You work at a mid-size retail company. Leadership is skeptical about AI investment. Create a 1-page business case.</p>
+                    
+                    <p><strong>Your business case must include:</strong></p>
+                    <ol>
+                        <li><strong>Problem Statement:</strong> What business problem will AI solve?</li>
+                        <li><strong>Proposed Solution:</strong> Specific AI application (e.g., recommendation engine)</li>
+                        <li><strong>Expected ROI:</strong> Cost savings or revenue increase (use industry benchmarks)</li>
+                        <li><strong>Risk Assessment:</strong> What could go wrong? Mitigation strategies?</li>
+                        <li><strong>Implementation Timeline:</strong> Pilot (3 months) → Full rollout (6 months)</li>
+                    </ol>
+                </div>
+                
+                <p><strong>Example structure:</strong></p>
+                <ul>
+                    <li><strong>Problem:</strong> "Our email marketing has 2% conversion vs. industry average of 8%"</li>
+                    <li><strong>Solution:</strong> "AI-powered personalization engine (like Netflix recommendations but for products)"</li>
+                    <li><strong>ROI:</strong> "Increase conversion to 8% = $2M additional revenue. Cost: $200K. 10x return."</li>
+                    <li><strong>Risk:</strong> "Customer privacy concerns → Use anonymized data + transparent opt-in"</li>
+                </ul>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: AI Is Business Infrastructure</h2>
+                
+                <ul>
+                    <li>✅ <strong>Competitive necessity</strong> — AI adoption separates leaders from laggards</li>
+                    <li>✅ <strong>Massive ROI</strong> — 5-10% revenue gains, 10-20% cost reductions typical</li>
+                    <li>✅ <strong>Five core applications</strong> — fraud detection, recommendations, forecasting, chatbots, personalization</li>
+                    <li>✅ <strong>Augmentation over replacement</strong> — AI handles repetitive tasks, humans focus on strategy</li>
+                    <li>✅ <strong>Industry-agnostic</strong> — every sector from banking to manufacturing seeing transformation</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> AI isn't optional for businesses anymore — it's infrastructure. Companies that master AI-driven decision-making will dominate their industries, while those that delay adoption risk obsolescence.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 1: What ROI do companies typically see from AI fraud detection?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">$1 saved per $1 spent</div>
+                            <div class="quiz-option" data-value="b">$4 saved per $1 spent</div>
+                            <div class="quiz-option" data-value="c">$10 saved per $1 spent</div>
+                            <div class="quiz-option" data-value="d">Break-even at best</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 2: What percentage of Amazon's revenue comes from AI recommendations?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">35%</div>
+                            <div class="quiz-option" data-value="b">10%</div>
+                            <div class="quiz-option" data-value="c">60%</div>
+                            <div class="quiz-option" data-value="d">5%</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 3: How does AI typically affect jobs in most industries?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Completely replaces humans</div>
+                            <div class="quiz-option" data-value="b">Has no impact on human work</div>
+                            <div class="quiz-option" data-value="c">Augments human work by handling repetitive tasks</div>
+                            <div class="quiz-option" data-value="d">Only affects low-skill jobs</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 4: What's the main advantage of AI in customer service?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Replaces all human agents</div>
+                            <div class="quiz-option" data-value="b">24/7 instant responses with 60-80% cost reduction</div>
+                            <div class="quiz-option" data-value="c">Better empathy than humans</div>
+                            <div class="quiz-option" data-value="d">Handles only simple questions</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: Which analogy best describes AI's role in modern business?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A luxury tool for big companies</div>
+                            <div class="quiz-option" data-value="b">A temporary trend</div>
+                            <div class="quiz-option" data-value="c">Infrastructure like electricity — essential for operations</div>
+                            <div class="quiz-option" data-value="d">A replacement for human workers</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini-Project Section -->
+            
+<section class="nebaz-practice-box">
+    <h2>🇪🇹 Practice — Ethiopian context</h2>
+    <p>Apply what you learned with a local scenario: use Amharic+English content, Telebirr or agriculture data, or a civic/NGO use case in Addis Ababa. Document assumptions, evaluate outputs, and note ETB cost if you use cloud APIs.</p>
+    <ul>
+        <li><strong>Data:</strong> Prefer open Ethiopian datasets or synthetic data you create and own.</li>
+        <li><strong>Tools:</strong> Official docs and free tiers only — no affiliate links on Nebaz AI Academy.</li>
+        <li><strong>Deploy:</strong> Consider low-bandwidth users; test on modest hardware when possible.</li>
+    </ul>
+</section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: AI in Healthcare</h2>
+                
+                <p>You've seen how AI transforms consumer experiences and business operations. Now let's explore its most impactful application: <strong>healthcare and scientific research</strong> — where AI is literally saving lives.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Module 6:</strong> Discover how AI is revolutionizing medical diagnosis, drug discovery, and scientific breakthroughs — from detecting cancer earlier to accelerating vaccine development.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="ai-in-daily-life.html" class="prev">← Module 4: AI in Daily Life</a>
+                    <a href="ai-in-healthcare.html" class="next">Module 6: AI in Healthcare →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

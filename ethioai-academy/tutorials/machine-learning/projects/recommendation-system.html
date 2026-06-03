@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a hybrid recommendation system using collaborative filtering and content-based methods. Learn user-based CF, item-based CF, matrix factorization, and evaluation metrics.">
+    <meta name="keywords" content="recommendation system, collaborative filtering, matrix factorization, machine learning project, content-based filtering">
+    <title>Project: Recommendation System | Nebaz AI Academy</title>
+    <link rel="canonical" href="recommendation-system.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #8b5cf6 0%, #078930 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #8b5cf6 0%, #078930 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Recommendation System Project</span>
+            </div>
+            <h1>🎬 Build a Recommendation System</h1>
+            <p class="tutorial-intro">Create a hybrid recommendation engine combining collaborative filtering and content-based methods</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🚀 Advanced</span>
+                <span class="meta-item">⏱️ 7 hours</span>
+                <span class="meta-item">💻 Python + Surprise</span>
+                <span class="meta-item">🎯 Personalization Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Recommendation systems power 35% of Amazon purchases, 75% of Netflix views, and drive billions in revenue across e-commerce, streaming, and social media platforms. In this project, you'll build a sophisticated recommendation engine using real movie ratings data.
+                </p>
+
+                <h3>Why Recommendation Systems Matter</h3>
+                <ul>
+                    <li><strong>Revenue Impact:</strong> Amazon attributes 35% of sales to recommendations</li>
+                    <li><strong>User Engagement:</strong> Netflix saves $1B annually through reduced churn via personalization</li>
+                    <li><strong>Content Discovery:</strong> YouTube's recommender drives 70% of watch time</li>
+                    <li><strong>Competitive Advantage:</strong> Personalization is a key differentiator in crowded markets</li>
+                </ul>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>User-Based Collaborative Filtering:</strong> "Users like you also liked..."</li>
+                    <li><strong>Item-Based Collaborative Filtering:</strong> "People who liked this also liked..."</li>
+                    <li><strong>Matrix Factorization (SVD):</strong> Discover latent factors and patterns</li>
+                    <li><strong>Content-Based Filtering:</strong> Recommend based on item features</li>
+                    <li><strong>Hybrid System:</strong> Combine multiple approaches for better results</li>
+                    <li><strong>Cold Start Solutions:</strong> Handle new users/items with no ratings</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🚀 <strong>High-Demand Skill:</strong> Recommendation systems are core to companies like Ethiopian tech teams, Spotify, Amazon, YouTube, and thousands of startups. This project showcases your ability to build personalization engines!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Dataset & Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Dependencies</h3>
+                    <pre><code class="language-bash">pip install pandas numpy scikit-learn scikit-surprise matplotlib seaborn</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Load MovieLens Dataset</h3>
+                    <pre><code class="language-python">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from surprise import Dataset, Reader, SVD, KNNBasic, accuracy
+from surprise.model_selection import train_test_split, cross_validate
+from sklearn.metrics.pairwise import cosine_similarity
+import warnings
+warnings.filterwarnings('ignore')
+
+# Load MovieLens 100K dataset
+# Download from: https://grouplens.org/datasets/movielens/100k/
+# Or use Surprise's built-in loader
+
+data = Dataset.load_builtin('ml-100k')
+
+# Convert to pandas for analysis
+ratings_df = pd.DataFrame(data.raw_ratings, columns=['user', 'item', 'rating', 'timestamp'])
+print(f"Dataset Shape: {ratings_df.shape}")
+print(f"Number of users: {ratings_df['user'].nunique()}")
+print(f"Number of movies: {ratings_df['item'].nunique()}")
+print(f"Number of ratings: {len(ratings_df)}")
+print(f"Rating range: {ratings_df['rating'].min()} - {ratings_df['rating'].max()}")
+print(f"Average rating: {ratings_df['rating'].mean():.2f}")
+
+# Sparsity analysis
+num_users = ratings_df['user'].nunique()
+num_items = ratings_df['item'].nunique()
+sparsity = 1 - (len(ratings_df) / (num_users * num_items))
+print(f"\nMatrix Sparsity: {sparsity:.2%}")
+print(f"({sparsity:.2%} of user-item combinations have no rating)")</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Dataset Info:</strong> MovieLens 100K contains 100,000 ratings from 943 users on 1,682 movies. Ratings range from 1-5 stars. The user-item matrix is 93.7% sparse - a typical challenge in recommendation systems!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 1: Exploratory Data Analysis</h2>
+                
+                <h3>Rating Distribution Analysis</h3>
+                <pre><code class="language-python"># Rating distribution
+fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+# Overall rating distribution
+rating_counts = ratings_df['rating'].value_counts().sort_index()
+axes[0].bar(rating_counts.index, rating_counts.values, color='#078930')
+axes[0].set_xlabel('Rating')
+axes[0].set_ylabel('Count')
+axes[0].set_title('Rating Distribution')
+axes[0].grid(axis='y', alpha=0.3)
+
+# User activity distribution
+user_activity = ratings_df.groupby('user').size()
+axes[1].hist(user_activity, bins=50, color='#8b5cf6', edgecolor='black')
+axes[1].set_xlabel('Number of Ratings per User')
+axes[1].set_ylabel('Number of Users')
+axes[1].set_title('User Activity Distribution')
+axes[1].axvline(user_activity.mean(), color='red', linestyle='--', label=f'Mean: {user_activity.mean():.0f}')
+axes[1].legend()
+
+# Movie popularity distribution
+item_popularity = ratings_df.groupby('item').size()
+axes[2].hist(item_popularity, bins=50, color='#10b981', edgecolor='black')
+axes[2].set_xlabel('Number of Ratings per Movie')
+axes[2].set_ylabel('Number of Movies')
+axes[2].set_title('Movie Popularity Distribution')
+axes[2].axvline(item_popularity.mean(), color='red', linestyle='--', label=f'Mean: {item_popularity.mean():.0f}')
+axes[2].legend()
+
+plt.tight_layout()
+plt.show()
+
+print("\n📊 Summary Statistics:")
+print(f"Average ratings per user: {user_activity.mean():.1f}")
+print(f"Average ratings per movie: {item_popularity.mean():.1f}")
+print(f"Most active user rated: {user_activity.max()} movies")
+print(f"Most popular movie has: {item_popularity.max()} ratings")
+print(f"Cold start challenge: {(item_popularity < 5).sum()} movies have < 5 ratings")</code></pre>
+
+                <h3>Create User-Item Matrix</h3>
+                <pre><code class="language-python"># Create user-item matrix (pivot table)
+user_item_matrix = ratings_df.pivot_table(
+    index='user',
+    columns='item',
+    values='rating'
+)
+
+print(f"\nUser-Item Matrix Shape: {user_item_matrix.shape}")
+print(f"Memory size: {user_item_matrix.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
+
+# Visualize a sample of the matrix
+plt.figure(figsize=(12, 8))
+sample_matrix = user_item_matrix.iloc[:50, :50]
+sns.heatmap(sample_matrix, cmap='YlGnBu', cbar_kws={'label': 'Rating'})
+plt.title('User-Item Rating Matrix (First 50 users × 50 movies)')
+plt.xlabel('Movie ID')
+plt.ylabel('User ID')
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: Data Understanding</h3>
+                    <p>Key insights discovered:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>100,000 ratings from 943 users on 1,682 movies</li>
+                        <li>93.7% sparsity - most user-movie pairs unrated</li>
+                        <li>Rating bias: Users tend to rate 3-4 stars (positive skew)</li>
+                        <li>Power law: Few movies have many ratings, most have few</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🤝 Part 2: Collaborative Filtering</h2>
+                
+                <h3>Method 1: User-Based Collaborative Filtering</h3>
+                <pre><code class="language-python"># Train-test split
+trainset, testset = train_test_split(data, test_size=0.2, random_state=42)
+
+# User-based KNN with cosine similarity
+user_based_cf = KNNBasic(
+    k=40,  # Number of neighbors
+    sim_options={
+        'name': 'cosine',
+        'user_based': True
+    }
+)
+
+# Train
+user_based_cf.fit(trainset)
+
+# Predictions
+predictions_user = user_based_cf.test(testset)
+
+# Evaluate
+rmse_user = accuracy.rmse(predictions_user, verbose=True)
+mae_user = accuracy.mae(predictions_user, verbose=True)
+
+print(f"\n👥 USER-BASED COLLABORATIVE FILTERING")
+print(f"RMSE: {rmse_user:.4f}")
+print(f"MAE: {mae_user:.4f}")</code></pre>
+
+                <h3>Method 2: Item-Based Collaborative Filtering</h3>
+                <pre><code class="language-python"># Item-based KNN with cosine similarity
+item_based_cf = KNNBasic(
+    k=40,
+    sim_options={
+        'name': 'cosine',
+        'user_based': False  # Item-based
+    }
+)
+
+# Train
+item_based_cf.fit(trainset)
+
+# Predictions
+predictions_item = item_based_cf.test(testset)
+
+# Evaluate
+rmse_item = accuracy.rmse(predictions_item, verbose=True)
+mae_item = accuracy.mae(predictions_item, verbose=True)
+
+print(f"\n🎬 ITEM-BASED COLLABORATIVE FILTERING")
+print(f"RMSE: {rmse_item:.4f}")
+print(f"MAE: {mae_item:.4f}")</code></pre>
+
+                <h3>Method 3: Matrix Factorization (SVD)</h3>
+                <pre><code class="language-python"># SVD (Singular Value Decomposition)
+svd_model = SVD(
+    n_factors=100,  # Number of latent factors
+    n_epochs=20,
+    lr_all=0.005,
+    reg_all=0.02,
+    random_state=42
+)
+
+# Train
+svd_model.fit(trainset)
+
+# Predictions
+predictions_svd = svd_model.test(testset)
+
+# Evaluate
+rmse_svd = accuracy.rmse(predictions_svd, verbose=True)
+mae_svd = accuracy.mae(predictions_svd, verbose=True)
+
+print(f"\n🧮 MATRIX FACTORIZATION (SVD)")
+print(f"RMSE: {rmse_svd:.4f}")
+print(f"MAE: {mae_svd:.4f}")</code></pre>
+
+                <h3>Model Comparison</h3>
+                <pre><code class="language-python"># Compare all models
+comparison_df = pd.DataFrame({
+    'Model': ['User-Based CF', 'Item-Based CF', 'SVD'],
+    'RMSE': [rmse_user, rmse_item, rmse_svd],
+    'MAE': [mae_user, mae_item, mae_svd]
+})
+
+print("\n" + "="*60)
+print("MODEL COMPARISON")
+print("="*60)
+print(comparison_df.to_string(index=False))
+
+# Visualize
+fig, ax = plt.subplots(figsize=(10, 6))
+x = np.arange(len(comparison_df))
+width = 0.35
+
+bars1 = ax.bar(x - width/2, comparison_df['RMSE'], width, label='RMSE', color='#078930')
+bars2 = ax.bar(x + width/2, comparison_df['MAE'], width, label='MAE', color='#8b5cf6')
+
+ax.set_xlabel('Models')
+ax.set_ylabel('Error')
+ax.set_title('Recommendation Model Performance Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(comparison_df['Model'])
+ax.legend()
+ax.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Best model
+best_model_idx = comparison_df['RMSE'].idxmin()
+print(f"\n🏆 Best Model: {comparison_df.loc[best_model_idx, 'Model']}")
+print(f"Typically SVD achieves lowest error (~0.93 RMSE)")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: Collaborative Filtering Complete</h3>
+                    <p>You've implemented:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>User-based CF: Finds similar users</li>
+                        <li>Item-based CF: Finds similar items (often better for sparse data)</li>
+                        <li>SVD: Discovers latent factors (typically best performance)</li>
+                        <li>Expected RMSE: 0.93-0.98 on MovieLens 100K</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Part 3: Generate Recommendations</h2>
+                
+                <h3>Top-N Recommendations for Users</h3>
+                <pre><code class="language-python">def get_top_n_recommendations(model, user_id, n=10, trainset=trainset):
+    """
+    Get top N movie recommendations for a user
+    """
+    # Get all items
+    all_items = set(trainset.all_items())
+    
+    # Get items user has already rated
+    user_items = set([j for (j, _) in trainset.ur[trainset.to_inner_uid(user_id)]])
+    
+    # Items to predict (not yet rated)
+    items_to_predict = all_items - user_items
+    
+    # Predict ratings
+    predictions = []
+    for item_id in items_to_predict:
+        pred = model.predict(user_id, item_id)
+        predictions.append((item_id, pred.est))
+    
+    # Sort by predicted rating
+    predictions.sort(key=lambda x: x[1], reverse=True)
+    
+    # Return top N
+    return predictions[:n]
+
+# Example: Recommendations for user 196
+user_id = '196'
+recommendations = get_top_n_recommendations(svd_model, user_id, n=10)
+
+print(f"\n🎬 TOP 10 RECOMMENDATIONS FOR USER {user_id}")
+print("="*60)
+for i, (item_id, predicted_rating) in enumerate(recommendations, 1):
+    print(f"{i}. Movie {item_id} - Predicted Rating: {predicted_rating:.2f}")</code></pre>
+
+                <h3>Similar Items (Content Discovery)</h3>
+                <pre><code class="language-python">def get_similar_items(model, item_id, n=10, trainset=trainset):
+    """
+    Find movies similar to given movie
+    """
+    # Get inner item id
+    inner_item_id = trainset.to_inner_iid(item_id)
+    
+    # Get item's latent factors (for SVD)
+    if hasattr(model, 'qi'):
+        item_factors = model.qi[inner_item_id]
+        
+        # Compute similarity with all items
+        similarities = []
+        for other_inner_id in range(trainset.n_items):
+            if other_inner_id != inner_item_id:
+                other_factors = model.qi[other_inner_id]
+                sim = np.dot(item_factors, other_factors)
+                other_raw_id = trainset.to_raw_iid(other_inner_id)
+                similarities.append((other_raw_id, sim))
+        
+        # Sort by similarity
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        return similarities[:n]
+    else:
+        return []
+
+# Example: Movies similar to movie 50
+movie_id = '50'
+similar_movies = get_similar_items(svd_model, movie_id, n=10)
+
+print(f"\n🎬 MOVIES SIMILAR TO MOVIE {movie_id}")
+print("="*60)
+for i, (item_id, similarity) in enumerate(similar_movies, 1):
+    print(f"{i}. Movie {item_id} - Similarity: {similarity:.4f}")</code></pre>
+
+                <h3>Precision@K and Recall@K</h3>
+                <pre><code class="language-python">def precision_recall_at_k(predictions, k=10, threshold=3.5):
+    """
+    Compute precision and recall at k
+    
+    predictions: list of Prediction objects
+    k: number of recommendations
+    threshold: rating threshold for relevance
+    """
+    # Group predictions by user
+    user_est_true = {}
+    for pred in predictions:
+        user_id = pred.uid
+        if user_id not in user_est_true:
+            user_est_true[user_id] = []
+        user_est_true[user_id].append((pred.est, pred.r_ui))
+    
+    precisions = []
+    recalls = []
+    
+    for user_id, user_ratings in user_est_true.items():
+        # Sort by estimated rating
+        user_ratings.sort(key=lambda x: x[0], reverse=True)
+        
+        # Top k predictions
+        top_k = user_ratings[:k]
+        
+        # Number of relevant items in top k
+        n_rel_and_rec_k = sum((true_r >= threshold) for (_, true_r) in top_k)
+        
+        # Total number of relevant items
+        n_rel = sum((true_r >= threshold) for (_, true_r) in user_ratings)
+        
+        # Precision@K
+        precision = n_rel_and_rec_k / k if k != 0 else 0
+        precisions.append(precision)
+        
+        # Recall@K
+        recall = n_rel_and_rec_k / n_rel if n_rel != 0 else 0
+        recalls.append(recall)
+    
+    return np.mean(precisions), np.mean(recalls)
+
+# Calculate for SVD model
+precision, recall = precision_recall_at_k(predictions_svd, k=10, threshold=3.5)
+
+print(f"\n📊 RECOMMENDATION QUALITY METRICS")
+print("="*60)
+print(f"Precision@10: {precision:.4f}")
+print(f"Recall@10: {recall:.4f}")
+print(f"F1-Score@10: {2 * (precision * recall) / (precision + recall):.4f}")
+
+print("\n💡 Interpretation:")
+print(f"  - {precision:.1%} of top-10 recommendations are relevant (rated ≥ 3.5)")
+print(f"  - We capture {recall:.1%} of all relevant items in top-10")</code></pre>
+
+                <h3>Coverage and Diversity Analysis</h3>
+                <pre><code class="language-python"># Calculate catalog coverage
+def calculate_coverage(model, n_users=100, n_recommendations=10):
+    """
+    What percentage of catalog gets recommended?
+    """
+    recommended_items = set()
+    
+    for user_id in range(1, n_users + 1):
+        user_id_str = str(user_id)
+        try:
+            recs = get_top_n_recommendations(model, user_id_str, n=n_recommendations)
+            for item_id, _ in recs:
+                recommended_items.add(item_id)
+        except:
+            continue
+    
+    coverage = len(recommended_items) / trainset.n_items
+    return coverage, len(recommended_items)
+
+coverage, n_unique_items = calculate_coverage(svd_model, n_users=100, n_recommendations=10)
+
+print(f"\n📊 CATALOG COVERAGE")
+print("="*60)
+print(f"Unique items recommended: {n_unique_items}")
+print(f"Total items in catalog: {trainset.n_items}")
+print(f"Coverage: {coverage:.1%}")
+
+# Diversity: Average pairwise distance in recommendations
+print("\n💡 High coverage (>30%) means diverse recommendations")
+print("   Low coverage means 'filter bubble' - recommending same popular items")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Recommendations Generated</h3>
+                    <p>You've created:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Top-N personalized recommendations for any user</li>
+                        <li>Similar items finder for content discovery</li>
+                        <li>Precision@K and Recall@K metrics</li>
+                        <li>Catalog coverage analysis</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔀 Part 4: Hybrid Recommendation System</h2>
+                
+                <h3>Combine Collaborative and Content-Based</h3>
+                <pre><code class="language-python">def hybrid_recommendation(user_id, item_id, cf_model, content_weight=0.3):
+    """
+    Hybrid: Combine collaborative filtering with content features
+    
+    cf_model: trained SVD model
+    content_weight: weight for content-based score (0-1)
+    """
+    # Collaborative filtering score
+    cf_pred = cf_model.predict(user_id, item_id)
+    cf_score = cf_pred.est
+    
+    # Content-based score (simplified - using item popularity as proxy)
+    item_ratings = ratings_df[ratings_df['item'] == item_id]
+    if len(item_ratings) > 0:
+        content_score = item_ratings['rating'].mean()
+    else:
+        content_score = 3.0  # Default for cold start
+    
+    # Weighted combination
+    hybrid_score = (1 - content_weight) * cf_score + content_weight * content_score
+    
+    return hybrid_score, cf_score, content_score
+
+# Example hybrid predictions
+test_user = '196'
+test_items = ['50', '100', '150', '200', '250']
+
+print("\n🔀 HYBRID RECOMMENDATIONS")
+print("="*80)
+print(f"{'Movie ID':<12} {'CF Score':<12} {'Content Score':<15} {'Hybrid Score':<15}")
+print("-"*80)
+
+for item in test_items:
+    hybrid, cf, content = hybrid_recommendation(test_user, item, svd_model, content_weight=0.3)
+    print(f"{item:<12} {cf:<12.2f} {content:<15.2f} {hybrid:<15.2f}")
+
+print("\n💡 Hybrid systems combine strengths:")
+print("   - CF: Captures user preferences and taste patterns")
+print("   - Content: Handles cold start and provides diversity")</code></pre>
+
+                <h3>Cold Start: New User Strategy</h3>
+                <pre><code class="language-python">def recommend_for_new_user(n=10):
+    """
+    Recommend to new user with no rating history
+    Strategy: Popular items + diverse genres
+    """
+    # Calculate item popularity and average rating
+    item_stats = ratings_df.groupby('item').agg({
+        'rating': ['count', 'mean']
+    }).reset_index()
+    item_stats.columns = ['item', 'num_ratings', 'avg_rating']
+    
+    # Filter: At least 50 ratings (quality) and avg rating > 3.5
+    popular_items = item_stats[
+        (item_stats['num_ratings'] >= 50) & 
+        (item_stats['avg_rating'] >= 3.5)
+    ].sort_values('avg_rating', ascending=False)
+    
+    return popular_items.head(n)
+
+new_user_recs = recommend_for_new_user(n=10)
+
+print("\n👶 COLD START: NEW USER RECOMMENDATIONS")
+print("="*60)
+print("Strategy: Popular + High-Quality Movies")
+print(new_user_recs.to_string(index=False))
+
+print("\n💡 After user rates 5-10 items, switch to personalized CF!")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 4: Hybrid System Built</h3>
+                    <p>Advanced features implemented:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Hybrid scoring combining CF + content features</li>
+                        <li>Cold start solution for new users</li>
+                        <li>Flexible weighting for different scenarios</li>
+                        <li>Production-ready recommendation pipeline</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 5: Model Deployment</h2>
+                
+                <pre><code class="language-python">import pickle
+from datetime import datetime
+
+# Save trained model and metadata
+recommendation_package = {
+    'model': svd_model,
+    'model_type': 'SVD',
+    'training_date': datetime.now(),
+    'performance_metrics': {
+        'rmse': rmse_svd,
+        'mae': mae_svd,
+        'precision_at_10': precision,
+        'recall_at_10': recall,
+        'coverage': coverage
+    },
+    'trainset': trainset,
+    'hyperparameters': {
+        'n_factors': 100,
+        'n_epochs': 20,
+        'lr_all': 0.005,
+        'reg_all': 0.02
+    }
+}
+
+# Save
+model_filename = f'recommendation_model_{datetime.now().strftime("%Y%m%d")}.pkl'
+with open(model_filename, 'wb') as f:
+    pickle.dump(recommendation_package, f)
+
+print(f"✅ Model saved as: {model_filename}")
+
+# Recommendation API function
+def recommend_api(user_id, n=10, model_path=model_filename):
+    """
+    Production API for recommendations
+    
+    Parameters:
+    -----------
+    user_id : str
+        User identifier
+    n : int
+        Number of recommendations
+    model_path : str
+        Path to saved model
+    
+    Returns:
+    --------
+    list of dicts with item_id, predicted_rating, confidence
+    """
+    # Load model
+    with open(model_path, 'rb') as f:
+        package = pickle.load(f)
+    
+    model = package['model']
+    trainset = package['trainset']
+    
+    # Generate recommendations
+    recommendations = get_top_n_recommendations(model, user_id, n=n, trainset=trainset)
+    
+    # Format output
+    result = []
+    for item_id, predicted_rating in recommendations:
+        result.append({
+            'item_id': item_id,
+            'predicted_rating': round(predicted_rating, 2),
+            'confidence': 'high' if predicted_rating >= 4.0 else 'medium'
+        })
+    
+    return result
+
+# Example API call
+user_recs = recommend_api('196', n=5)
+
+print("\n" + "="*60)
+print("RECOMMENDATION API RESPONSE")
+print("="*60)
+for i, rec in enumerate(user_recs, 1):
+    print(f"{i}. Item {rec['item_id']}: Rating {rec['predicted_rating']} ({rec['confidence']} confidence)")</code></pre>
+
+                <h3>Flask API (Bonus)</h3>
+                <pre><code class="language-python"># Save this as app.py and run: python app.py
+
+from flask import Flask, jsonify, request
+import pickle
+
+app = Flask(__name__)
+
+# Load model at startup
+with open(model_filename, 'rb') as f:
+    model_package = pickle.load(f)
+
+@app.route('/recommend/<user_id>', methods=['GET'])
+def get_recommendations(user_id):
+    """
+    GET /recommend/196?n=10
+    """
+    n = request.args.get('n', default=10, type=int)
+    
+    try:
+        recommendations = recommend_api(user_id, n=n)
+        return jsonify({
+            'user_id': user_id,
+            'recommendations': recommendations,
+            'count': len(recommendations)
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/similar/<item_id>', methods=['GET'])
+def get_similar(item_id):
+    """
+    GET /similar/50?n=10
+    """
+    n = request.args.get('n', default=10, type=int)
+    
+    try:
+        model = model_package['model']
+        trainset = model_package['trainset']
+        similar = get_similar_items(model, item_id, n=n, trainset=trainset)
+        
+        return jsonify({
+            'item_id': item_id,
+            'similar_items': [
+                {'item_id': iid, 'similarity': float(sim)} 
+                for iid, sim in similar
+            ]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
+
+# Test API:
+# curl http://localhost:5000/recommend/196?n=5
+# curl http://localhost:5000/similar/50?n=5</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #8b5cf6 0%, #078930 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Exceptional Achievement!</h3>
+                    <p style="font-size: 1.1rem;">You've built a production-grade recommendation system used by top tech companies!</p>
+                </div>
+
+                <h3>🏆 Key Accomplishments</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Implemented 3 CF algorithms:</strong> User-based, item-based, and SVD matrix factorization</li>
+                    <li>✅ <strong>Achieved ~0.93 RMSE:</strong> Industry-standard performance on MovieLens</li>
+                    <li>✅ <strong>Built hybrid system:</strong> Combined collaborative and content-based filtering</li>
+                    <li>✅ <strong>Solved cold start:</strong> Strategies for new users and items</li>
+                    <li>✅ <strong>Evaluated with Precision@K, Recall@K:</strong> Beyond simple accuracy metrics</li>
+                    <li>✅ <strong>Deployed as REST API:</strong> Production-ready Flask service</li>
+                </ul>
+
+                <h3>🚀 Next Level Enhancements</h3>
+                <ul>
+                    <li><strong>Deep Learning:</strong> Implement neural collaborative filtering with TensorFlow</li>
+                    <li><strong>Context-Aware:</strong> Add time, location, device as contextual features</li>
+                    <li><strong>Real-Time:</strong> Use Apache Kafka for streaming recommendations</li>
+                    <li><strong>A/B Testing:</strong> Deploy shadow mode and measure click-through rate</li>
+                    <li><strong>Explainability:</strong> "Recommended because you watched X, Y, Z"</li>
+                    <li><strong>Multi-Armed Bandits:</strong> Balance exploration vs exploitation</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💼 Interview Talking Points:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>"Built hybrid recommendation system achieving 0.93 RMSE using SVD matrix factorization"</li>
+                        <li>"Handled 93.7% data sparsity through collaborative filtering on MovieLens 100K"</li>
+                        <li>"Evaluated with Precision@10 and catalog coverage for business-relevant metrics"</li>
+                        <li>"Deployed as REST API with cold start handling for new users"</li>
+                        <li>"System architecture mirrors Netflix and Amazon recommendation engines"</li>
+                    </ul>
+                </div>
+
+                <h3>📚 Further Learning</h3>
+                <ul>
+                    <li><strong>Papers:</strong> "Matrix Factorization Techniques for Recommender Systems" (Koren et al.)</li>
+                    <li><strong>Books:</strong> "Recommender Systems Handbook" by Ricci et al.</li>
+                    <li><strong>Courses:</strong> Coursera "Recommender Systems" by University of Minnesota</li>
+                    <li><strong>Datasets:</strong> MovieLens 25M, Amazon Product Data, Yelp Dataset</li>
+                </ul>
+            </section>
+
+            <div class="tutorial-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <a href="customer-churn-prediction.html" style="padding: 0.75rem 1.5rem; background-color: #f1f5f9; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">← Previous: Customer Churn</a>
+                <a href="../../../courses/machine-learning.html" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #8b5cf6 0%, #078930 100%); color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">Back to ML Course →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

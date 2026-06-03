@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete AI Executive Toolkit - AI for Business Leaders</title>
+    <meta name="description" content="Curated AI tools for executives. Save 8+ hours/week with proven solutions for strategy, marketing, operations, finance, and HR. Trusted by 10,000+ leaders.">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        .toolkit-hero {
+            background: linear-gradient(135deg, #065f46 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .toolkit-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toolkit-hero .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item * {
+            color: #ffffff !important;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #000000 !important;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            color: #000000 !important;
+            opacity: 1;
+        }
+
+        .function-category {
+            margin-bottom: 4rem;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #065f46 0%, #0d9488 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-header h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+            color: white;
+        }
+
+        .category-description {
+            margin: 0;
+            color: white !important;
+            font-size: 1.05rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            border-color: #078930;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-icon {
+            font-size: 3rem;
+            min-width: 60px;
+        }
+
+        .tool-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1a202c;
+            font-size: 1.5rem;
+        }
+
+        .tool-tagline {
+            color: #64748b;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .tool-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .meta-value {
+            color: #1a202c;
+        }
+
+        .tool-description {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: #334155;
+        }
+
+        .use-cases {
+            margin-bottom: 1.5rem;
+        }
+
+        .use-cases h4 {
+            margin: 0 0 1rem 0;
+            color: #1a202c;
+            font-size: 1.1rem;
+        }
+
+        .use-cases ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .use-cases li {
+            margin-bottom: 0.5rem;
+            color: #475569;
+        }
+
+        .tool-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .trusted-by {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .company-logos {
+            display: flex;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .tool-cta {
+            display: inline-block;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tool-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .comparison-section {
+            background: #f8fafc;
+            padding: 3rem 2rem;
+            margin: 4rem 0;
+            border-radius: 1rem;
+        }
+
+        .comparison-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .roi-calculator {
+            background: linear-gradient(135deg, #065f46 0%, #0d9488 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .roi-calculator h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.75rem;
+            color: white !important;
+        }
+
+        .roi-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .roi-stat {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .roi-stat strong {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .toolkit-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .toolkit-hero .subtitle {
+                font-size: 1rem;
+            }
+
+            .stats-banner {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .tool-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .tool-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .tool-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tool-cta {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="roi-stat">
+                    <strong>8-12x</strong>
+                    <span>Return on investment within 6 months</span>
+                </div>
+                <div class="roi-stat">
+                    <strong>12 hrs/wk</strong>
+                    <span>Time reclaimed for strategic work</span>
+                </div>
+                <div class="roi-stat">
+                    <strong>3 months</strong>
+                    <span>Average payback period</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="nebaz-practice-box">
+            <h2>🇪🇹 Executive toolkit — Ethiopian context</h2>
+            <p>Use AI to support decisions for <strong>SMEs, NGOs, and public-sector digital projects</strong> in Ethiopia — not generic Silicon Valley playbooks.</p>
+            <table style="width:100%;border-collapse:collapse;margin-top:1rem;">
+                <thead>
+                    <tr style="background:#ecfdf5;"><th style="text-align:left;padding:0.5rem;">Need</th><th style="text-align:left;padding:0.5rem;">Approach</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">Bilingual board memos</td><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">LLM draft → human review in Amharic + English</td></tr>
+                    <tr><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">Agriculture / fintech pilots</td><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">Small tabular models + clear ETB unit economics</td></tr>
+                    <tr><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">Low connectivity</td><td style="padding:0.5rem;border-top:1px solid #d6d3d1;">Offline docs, scheduled sync, edge inference where possible</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top:1rem;font-size:0.9rem;">We link only to <strong>official documentation</strong> for tools you already license — no affiliate funnels on Nebaz AI Academy.</p>
+        </section>
+
+        <div class="info-box" style="margin-top: 2rem;">
+            <h3>📋 90-day roadmap (Addis-based teams)</h3>
+            <ul>
+                <li><strong>Month 1:</strong> Policy for data privacy, Amharic content review, and approved tools</li>
+                <li><strong>Month 2:</strong> One pilot (customer support RAG or internal knowledge base)</li>
+                <li><strong>Month 3:</strong> Measure time saved, ETB cost per request, and quality checks</li>
+            </ul>
+        </div>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of the AI Executive Toolkit!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="B">
+                    <h4>1. What is the primary benefit of using AI tools for executives?</h4>
+                    <div class="quiz-option" data-value="A">A) Replacing all staff members</div>
+                    <div class="quiz-option" data-value="B">B) Saving time and improving decision quality</div>
+                    <div class="quiz-option" data-value="C">C) Making work more complex</div>
+                    <div class="quiz-option" data-value="D">D) Increasing workload</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="C">
+                    <h4>2. Which category of AI tools helps with strategic planning?</h4>
+                    <div class="quiz-option" data-value="A">A) Only spreadsheet tools</div>
+                    <div class="quiz-option" data-value="B">B) Basic email clients</div>
+                    <div class="quiz-option" data-value="C">C) AI-powered analytics and forecasting tools</div>
+                    <div class="quiz-option" data-value="D">D) Traditional calendar apps</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. What should executives prioritize when selecting AI tools?</h4>
+                    <div class="quiz-option" data-value="A">A) Specific business needs and ease of integration</div>
+                    <div class="quiz-option" data-value="B">B) The most expensive options</div>
+                    <div class="quiz-option" data-value="C">C) Tools with the most features</div>
+                    <div class="quiz-option" data-value="D">D) Random selection</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. How should executives approach AI tool adoption?</h4>
+                    <div class="quiz-option" data-value="A">A) Adopt everything at once</div>
+                    <div class="quiz-option" data-value="B">B) Never try new tools</div>
+                    <div class="quiz-option" data-value="C">C) Avoid learning new systems</div>
+                    <div class="quiz-option" data-value="D">D) Start with one tool, measure impact, then expand</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. What is crucial for maximizing ROI from AI tools?</h4>
+                    <div class="quiz-option" data-value="A">A) Buying the most tools</div>
+                    <div class="quiz-option" data-value="B">B) Proper training and consistent usage</div>
+                    <div class="quiz-option" data-value="C">C) Ignoring best practices</div>
+                    <div class="quiz-option" data-value="D">D) Random implementation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Next Steps -->
+        <div style="background: linear-gradient(135deg, #065f46 0%, #0d9488 100%); color: white; padding: 3rem 2rem; border-radius: 1rem; margin-top: 4rem; text-align: center;">
+            <h2 style="margin: 0 0 1rem 0; font-size: 2rem; color: white; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">Ready to Transform Your Executive Workflow?</h2>
+            <p style="color: white; margin-bottom: 2rem; font-size: 1.1rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">Start with one tool this week and measure the impact. Most executives see ROI within 2 weeks.</p>
+            <a href="../../courses/ai-for-business-leaders.html" style="display: inline-block; padding: 1rem 2rem; background: white; color: #065f46; text-decoration: none; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s ease;">← Back to Course</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../js/script.js"></script>
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+
+</html>

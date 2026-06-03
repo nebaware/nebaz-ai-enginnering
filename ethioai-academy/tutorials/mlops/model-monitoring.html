@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master ML model monitoring with Evidently AI, WhyLabs, Prometheus, and Grafana. Detect data drift, track performance metrics, implement alerting, and maintain production model health.">
+    <meta name="keywords" content="model monitoring, data drift, Evidently AI, WhyLabs, Prometheus, Grafana, MLOps, observability, alerting, production ML">
+    <title>Model Monitoring - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="model-monitoring.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Model Monitoring</span>
+            </div>
+            <h1>Model Monitoring & Observability</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>LLM drift signals</li><li>low_bandwidth deploy</li></ul>
+  
+</div>
+            <p class="tutorial-intro">Track model performance, detect data drift with Evidently AI and WhyLabs, implement alerting with Prometheus and Grafana, and keep production models healthy</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 11</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>📊 Why Monitor ML Models?</h2>
+                <p>
+                    Your model deployed successfully! Accuracy was 95% in testing. Three months later:
+                </p>
+                <ul>
+                    <li>Accuracy dropped to 70% but nobody noticed</li>
+                    <li>Input data distribution changed (customers from new regions)</li>
+                    <li>Model predictions became biased</li>
+                    <li>Business metrics (revenue, conversions) declined</li>
+                    <li>Response times increased from 50ms to 500ms</li>
+                </ul>
+
+                <p>
+                    <strong>Model monitoring</strong> tracks model health in production, detecting issues before they impact business. Unlike traditional software, ML models silently degrade over time as data changes.
+                </p>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ Silent Model Failures:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li><strong>Data Drift:</strong> Input features change distribution</li>
+                        <li><strong>Concept Drift:</strong> Relationship between features and target changes</li>
+                        <li><strong>Model Degradation:</strong> Performance slowly declines over time</li>
+                        <li><strong>Infrastructure Issues:</strong> Latency spikes, memory leaks</li>
+                        <li><strong>Data Quality:</strong> Missing values, outliers, corrupted data</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 What to Monitor:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li><strong>Model Performance:</strong> Accuracy, precision, recall, F1</li>
+                        <li><strong>Data Quality:</strong> Missing values, out-of-range features</li>
+                        <li><strong>Data Drift:</strong> Feature distribution changes</li>
+                        <li><strong>Prediction Drift:</strong> Output distribution changes</li>
+                        <li><strong>System Metrics:</strong> Latency, throughput, error rates</li>
+                        <li><strong>Business Metrics:</strong> Conversion rate, revenue impact</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Evidently AI -->
+            <section class="content-section" id="evidently">
+                <h2>🔍 Drift Detection with Evidently AI</h2>
+                
+                <h3>What is Evidently?</h3>
+                <p>
+                    Evidently is an open-source Python library for ML model monitoring. It detects data drift, model degradation, and data quality issues with interactive HTML reports and JSON outputs.
+                </p>
+
+                <h3>Installation</h3>
+                <pre><code class="language-bash">pip install evidently</code></pre>
+
+                <h3>Basic Drift Detection</h3>
+                <pre><code class="language-python">"""
+Detect data drift with Evidently
+"""
+import pandas as pd
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset
+
+# Load reference data (training data)
+reference_data = pd.read_csv('training_data.csv')
+
+# Load current production data
+current_data = pd.read_csv('production_data.csv')
+
+# Create drift report
+report = Report(metrics=[
+    DataDriftPreset()
+])
+
+report.run(reference_data=reference_data, current_data=current_data)
+
+# Save HTML report
+report.save_html('drift_report.html')
+
+# Get JSON results
+results = report.as_dict()
+print(f"Dataset drift detected: {results['metrics'][0]['result']['dataset_drift']}")
+print(f"Number of drifted features: {results['metrics'][0]['result']['number_of_drifted_columns']}")</code></pre>
+
+                <h3>Comprehensive Monitoring Report</h3>
+                <pre><code class="language-python">"""
+Full monitoring report with multiple metrics
+"""
+from evidently.report import Report
+from evidently.metric_preset import (
+    DataDriftPreset,
+    DataQualityPreset,
+    TargetDriftPreset,
+    RegressionPreset
+)
+
+# Create comprehensive report
+report = Report(metrics=[
+    DataDriftPreset(),           # Feature drift
+    DataQualityPreset(),         # Data quality issues
+    TargetDriftPreset(),         # Target/prediction drift
+    RegressionPreset()           # Model performance (if labels available)
+])
+
+report.run(
+    reference_data=reference_data,
+    current_data=current_data,
+    column_mapping={
+        'target': 'price',
+        'prediction': 'predicted_price',
+        'numerical_features': ['sqft', 'bedrooms', 'age'],
+        'categorical_features': ['neighborhood', 'property_type']
+    }
+)
+
+report.save_html('monitoring_report.html')</code></pre>
+
+                <h3>Automated Monitoring Pipeline</h3>
+                <pre><code class="language-python">"""
+Automated drift monitoring with alerting
+"""
+from evidently.report import Report
+from evidently.metrics import DatasetDriftMetric
+import smtplib
+from email.message import EmailMessage
+
+def check_drift(reference_data, current_data, threshold=0.5):
+    """Check for data drift and send alerts"""
+    
+    # Create report
+    report = Report(metrics=[DatasetDriftMetric()])
+    report.run(reference_data=reference_data, current_data=current_data)
+    
+    # Extract results
+    results = report.as_dict()
+    drift_detected = results['metrics'][0]['result']['dataset_drift']
+    drift_share = results['metrics'][0]['result']['share_of_drifted_columns']
+    
+    print(f"Drift detected: {drift_detected}")
+    print(f"Drifted columns: {drift_share:.1%}")
+    
+    # Alert if significant drift
+    if drift_share > threshold:
+        send_alert(
+            subject="⚠️ Model Drift Alert",
+            message=f"Significant data drift detected: {drift_share:.1%} of features drifted"
+        )
+        
+        # Trigger retraining
+        trigger_retraining()
+    
+    return drift_detected, drift_share
+
+def send_alert(subject, message):
+    """Send email alert"""
+    msg = EmailMessage()
+    msg.set_content(message)
+    msg['Subject'] = subject
+    msg['From'] = 'alerts@mlops.com'
+    msg['To'] = 'team@mlops.com'
+    
+    # Send email
+    with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        server.starttls()
+        server.login('alerts@mlops.com', 'password')
+        server.send_message(msg)
+
+def trigger_retraining():
+    """Trigger model retraining pipeline"""
+    import requests
+    
+    # Trigger Airflow DAG
+    response = requests.post(
+        'http://airflow:8080/api/v1/dags/ml_training/dagRuns',
+        auth=('admin', 'password'),
+        json={"conf": {"reason": "drift_detected"}}
+    )
+    print(f"Retraining triggered: {response.status_code}")
+
+# Run monitoring daily
+if __name__ == '__main__':
+    reference = pd.read_csv('reference_data.csv')
+    current = pd.read_csv('recent_predictions.csv')
+    
+    check_drift(reference, current, threshold=0.3)</code></pre>
+
+                <h3>Real-Time Monitoring Dashboard</h3>
+                <pre><code class="language-python">"""
+Create monitoring dashboard with Evidently
+"""
+from evidently.ui.workspace import Workspace
+from evidently.ui.dashboards import DashboardPanelCounter, DashboardPanelPlot
+from evidently.renderers.html_widgets import WidgetSize
+
+# Create workspace
+workspace = Workspace.create("ml_monitoring_workspace")
+
+# Add project
+project = workspace.create_project("Production Model Monitoring")
+
+# Generate reports over time
+for date in date_range:
+    current_data = load_data_for_date(date)
+    
+    report = Report(metrics=[DataDriftPreset()])
+    report.run(reference_data=reference_data, current_data=current_data)
+    
+    # Add to project
+    workspace.add_report(project.id, report)
+
+# View dashboard
+# Open http://localhost:8000 in browser</code></pre>
+            </section>
+
+            <!-- WhyLabs -->
+            <section class="content-section" id="whylabs">
+                <h2>📈 Production Monitoring with WhyLabs</h2>
+                
+                <h3>What is WhyLabs?</h3>
+                <p>
+                    WhyLabs is a production ML monitoring platform with data profiling, drift detection, and observability. It provides real-time monitoring, alerting, and integrations with MLOps tools.
+                </p>
+
+                <h3>Setup</h3>
+                <pre><code class="language-bash">pip install whylogs</code></pre>
+
+                <pre><code class="language-python">"""
+WhyLabs monitoring integration
+"""
+import whylogs as why
+from whylogs.api.writer.whylabs import WhyLabsWriter
+import pandas as pd
+
+# Configure WhyLabs
+import os
+os.environ["WHYLABS_DEFAULT_ORG_ID"] = "your-org-id"
+os.environ["WHYLABS_API_KEY"] = "your-api-key"
+os.environ["WHYLABS_DEFAULT_DATASET_ID"] = "model-1"
+
+# Log predictions
+def log_predictions(features, predictions):
+    """Log model inputs and outputs to WhyLabs"""
+    
+    # Create DataFrame
+    df = pd.DataFrame(features)
+    df['prediction'] = predictions
+    
+    # Profile data
+    results = why.log(df)
+    
+    # Write to WhyLabs
+    results.writer("whylabs").write()
+
+# Use in prediction endpoint
+@app.post("/predict")
+async def predict(request: PredictRequest):
+    features = request.features
+    prediction = model.predict(features)
+    
+    # Log to WhyLabs
+    log_predictions(features, prediction)
+    
+    return {"prediction": prediction}</code></pre>
+
+                <h3>Reference Profile and Drift Detection</h3>
+                <pre><code class="language-python">"""
+Create reference profile and detect drift
+"""
+import whylogs as why
+
+# Create reference profile from training data
+training_data = pd.read_csv('training_data.csv')
+reference_profile = why.log(training_data).profile()
+
+# Upload reference profile
+reference_profile.writer("whylabs").write()
+
+# Production: Log and compare
+production_data = pd.read_csv('production_batch.csv')
+production_profile = why.log(production_data).profile()
+
+# Compare profiles
+from whylogs.core.constraints import ConstraintsBuilder
+from whylogs.core.constraints.factories import no_missing_values, column_is_in_range
+
+# Define constraints
+constraints = ConstraintsBuilder(dataset_profile=reference_profile) \
+    .add_constraint(no_missing_values()) \
+    .add_constraint(column_is_in_range("age", min_value=0, max_value=120)) \
+    .build()
+
+# Validate production data
+report = production_profile.validate(constraints)
+print(f"Validation passed: {report.passed}")</code></pre>
+            </section>
+
+            <!-- Prometheus & Grafana -->
+            <section class="content-section" id="prometheus-grafana">
+                <h2>🎯 Metrics with Prometheus & Grafana</h2>
+                
+                <h3>Prometheus Metrics</h3>
+                <pre><code class="language-python">"""
+Expose ML metrics for Prometheus
+"""
+from prometheus_client import Counter, Histogram, Gauge, start_http_server
+import time
+
+# Define metrics
+prediction_requests = Counter(
+    'ml_prediction_requests_total',
+    'Total prediction requests',
+    ['model_version', 'status']
+)
+
+prediction_latency = Histogram(
+    'ml_prediction_latency_seconds',
+    'Prediction latency',
+    ['model_version'],
+    buckets=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0]
+)
+
+prediction_score = Histogram(
+    'ml_prediction_score',
+    'Prediction confidence scores',
+    ['model_version'],
+    buckets=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+)
+
+model_accuracy = Gauge(
+    'ml_model_accuracy',
+    'Current model accuracy',
+    ['model_version']
+)
+
+data_drift_score = Gauge(
+    'ml_data_drift_score',
+    'Data drift score',
+    ['feature']
+)
+
+# Instrument prediction endpoint
+@app.post("/predict")
+async def predict(request: PredictRequest):
+    start_time = time.time()
+    model_version = "v2.1.0"
+    
+    try:
+        # Make prediction
+        prediction = model.predict(request.features)
+        confidence = model.predict_proba(request.features).max()
+        
+        # Record metrics
+        prediction_requests.labels(
+            model_version=model_version,
+            status='success'
+        ).inc()
+        
+        duration = time.time() - start_time
+        prediction_latency.labels(model_version=model_version).observe(duration)
+        prediction_score.labels(model_version=model_version).observe(confidence)
+        
+        return {"prediction": prediction, "confidence": confidence}
+    
+    except Exception as e:
+        prediction_requests.labels(
+            model_version=model_version,
+            status='error'
+        ).inc()
+        raise
+
+# Start metrics server
+start_http_server(9090)  # Metrics at :9090/metrics</code></pre>
+
+                <h3>Update Metrics Periodically</h3>
+                <pre><code class="language-python">"""
+Background task to update model metrics
+"""
+import threading
+import time
+
+def update_model_metrics():
+    """Update model accuracy and drift metrics periodically"""
+    while True:
+        try:
+            # Calculate recent accuracy (if ground truth available)
+            recent_predictions = get_recent_predictions()
+            recent_labels = get_recent_labels()
+            
+            if len(recent_labels) > 0:
+                accuracy = calculate_accuracy(recent_predictions, recent_labels)
+                model_accuracy.labels(model_version='v2.1.0').set(accuracy)
+            
+            # Calculate drift scores
+            reference_data = load_reference_data()
+            current_data = get_recent_data()
+            
+            for feature in reference_data.columns:
+                drift = calculate_drift(reference_data[feature], current_data[feature])
+                data_drift_score.labels(feature=feature).set(drift)
+            
+        except Exception as e:
+            print(f"Error updating metrics: {e}")
+        
+        # Update every hour
+        time.sleep(3600)
+
+# Start background thread
+metrics_thread = threading.Thread(target=update_model_metrics, daemon=True)
+metrics_thread.start()</code></pre>
+
+                <h3>Prometheus Configuration</h3>
+                <pre><code class="language-yaml"># prometheus.yml
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'ml-model'
+    static_configs:
+      - targets: ['ml-model-service:9090']
+    
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true</code></pre>
+
+                <h3>Grafana Dashboard</h3>
+                <pre><code class="language-json">{
+  "dashboard": {
+    "title": "ML Model Monitoring",
+    "panels": [
+      {
+        "title": "Prediction Rate",
+        "targets": [
+          {
+            "expr": "rate(ml_prediction_requests_total[5m])"
+          }
+        ]
+      },
+      {
+        "title": "Prediction Latency (p95)",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, ml_prediction_latency_seconds)"
+          }
+        ]
+      },
+      {
+        "title": "Model Accuracy",
+        "targets": [
+          {
+            "expr": "ml_model_accuracy"
+          }
+        ]
+      },
+      {
+        "title": "Data Drift Score",
+        "targets": [
+          {
+            "expr": "ml_data_drift_score"
+          }
+        ]
+      },
+      {
+        "title": "Error Rate",
+        "targets": [
+          {
+            "expr": "rate(ml_prediction_requests_total{status='error'}[5m])"
+          }
+        ]
+      }
+    ]
+  }
+}</code></pre>
+            </section>
+
+            <!-- Alerting -->
+            <section class="content-section" id="alerting">
+                <h2>🚨 Alerting Strategies</h2>
+                
+                <h3>Prometheus Alerting Rules</h3>
+                <pre><code class="language-yaml"># alerts.yml
+groups:
+  - name: ml_model_alerts
+    interval: 1m
+    rules:
+      # High error rate
+      - alert: HighPredictionErrorRate
+        expr: rate(ml_prediction_requests_total{status="error"}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High prediction error rate"
+          description: "Error rate is {{ $value }} per second"
+      
+      # High latency
+      - alert: HighPredictionLatency
+        expr: histogram_quantile(0.95, ml_prediction_latency_seconds) > 1.0
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High prediction latency"
+          description: "P95 latency is {{ $value }}s"
+      
+      # Low accuracy
+      - alert: ModelAccuracyDegraded
+        expr: ml_model_accuracy < 0.85
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "Model accuracy degraded"
+          description: "Current accuracy: {{ $value }}"
+      
+      # Data drift detected
+      - alert: DataDriftDetected
+        expr: ml_data_drift_score > 0.5
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Data drift detected in {{ $labels.feature }}"
+          description: "Drift score: {{ $value }}"
+      
+      # No predictions
+      - alert: NoPredictions
+        expr: rate(ml_prediction_requests_total[10m]) == 0
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No predictions received"
+          description: "Model has not received requests for 15 minutes"</code></pre>
+
+                <h3>Alertmanager Configuration</h3>
+                <pre><code class="language-yaml"># alertmanager.yml
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'team-slack'
+  
+  routes:
+    - match:
+        severity: critical
+      receiver: 'pagerduty-critical'
+      continue: true
+    
+    - match:
+        severity: warning
+      receiver: 'team-slack'
+
+receivers:
+  - name: 'team-slack'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+        channel: '#ml-alerts'
+        title: '{{ .GroupLabels.alertname }}'
+        text: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+  
+  - name: 'pagerduty-critical'
+    pagerduty_configs:
+      - service_key: 'your-pagerduty-key'
+        description: '{{ .GroupLabels.alertname }}'</code></pre>
+            </section>
+
+            <!-- Structured Logging -->
+            <section class="content-section" id="logging">
+                <h2>📝 Structured Logging</h2>
+                
+                <h3>JSON Logging for ML</h3>
+                <pre><code class="language-python">"""
+Structured logging for ML predictions
+"""
+import logging
+import json
+from datetime import datetime
+
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        log_data = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'level': record.levelname,
+            'message': record.getMessage(),
+            'module': record.module,
+            'function': record.funcName,
+        }
+        
+        # Add extra fields
+        if hasattr(record, 'prediction_id'):
+            log_data['prediction_id'] = record.prediction_id
+        if hasattr(record, 'model_version'):
+            log_data['model_version'] = record.model_version
+        if hasattr(record, 'latency'):
+            log_data['latency_ms'] = record.latency
+        if hasattr(record, 'features'):
+            log_data['features'] = record.features
+        if hasattr(record, 'prediction'):
+            log_data['prediction'] = record.prediction
+        
+        return json.dumps(log_data)
+
+# Configure logging
+logger = logging.getLogger('ml_model')
+handler = logging.StreamHandler()
+handler.setFormatter(JSONFormatter())
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+
+# Log predictions
+@app.post("/predict")
+async def predict(request: PredictRequest):
+    prediction_id = str(uuid.uuid4())
+    start_time = time.time()
+    
+    try:
+        prediction = model.predict(request.features)
+        latency = (time.time() - start_time) * 1000
+        
+        # Structured logging
+        logger.info(
+            "Prediction successful",
+            extra={
+                'prediction_id': prediction_id,
+                'model_version': 'v2.1.0',
+                'latency': latency,
+                'features': request.features,
+                'prediction': prediction
+            }
+        )
+        
+        return {"prediction": prediction, "id": prediction_id}
+    
+    except Exception as e:
+        logger.error(
+            f"Prediction failed: {str(e)}",
+            extra={
+                'prediction_id': prediction_id,
+                'model_version': 'v2.1.0',
+                'features': request.features
+            }
+        )
+        raise</code></pre>
+
+                <h3>Log Analysis with ELK Stack</h3>
+                <pre><code class="language-yaml"># filebeat.yml - Ship logs to Elasticsearch
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/ml-model/*.log
+    json.keys_under_root: true
+    json.add_error_key: true
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "ml-model-logs-%{+yyyy.MM.dd}"
+
+# Kibana dashboard for log analysis</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered ML model monitoring:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Evidently AI</h3>
+                        <p>Open-source drift detection and data quality monitoring</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>WhyLabs</h3>
+                        <p>Production monitoring platform with real-time observability</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Prometheus</h3>
+                        <p>Time-series metrics collection and alerting</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Grafana</h3>
+                        <p>Visual dashboards for ML metrics and KPIs</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚨</div>
+                        <h3>Alerting</h3>
+                        <p>Proactive notifications for model issues</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📝</div>
+                        <h3>Logging</h3>
+                        <p>Structured logs for debugging and analysis</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Monitor both model performance and data quality in production</li>
+                    <li>Detect data drift early before it impacts business metrics</li>
+                    <li>Use Evidently AI for comprehensive drift analysis</li>
+                    <li>Expose custom Prometheus metrics for model-specific monitoring</li>
+                    <li>Create Grafana dashboards for visual monitoring</li>
+                    <li>Implement alerting to catch issues proactively</li>
+                    <li>Use structured logging for better debugging and analysis</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your models are monitored! Next, you'll learn model retraining and continuous learning - automating retraining when drift is detected and implementing online learning strategies.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is data drift?</strong></p>
+                    <div class="quiz-option" data-value="a">When code changes</div>
+                    <div class="quiz-option" data-value="b">When models retrain</div>
+                    <div class="quiz-option" data-value="c">When input feature distributions change over time, potentially degrading model performance</div>
+                    <div class="quiz-option" data-value="d">When servers crash</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does Evidently AI help detect?</strong></p>
+                    <div class="quiz-option" data-value="a">Code bugs</div>
+                    <div class="quiz-option" data-value="b">Data drift, model degradation, and data quality issues</div>
+                    <div class="quiz-option" data-value="c">Security vulnerabilities</div>
+                    <div class="quiz-option" data-value="d">Network latency</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: Why use Prometheus for ML monitoring?</strong></p>
+                    <div class="quiz-option" data-value="a">To collect time-series metrics like prediction latency, accuracy, and custom ML metrics</div>
+                    <div class="quiz-option" data-value="b">To train models</div>
+                    <div class="quiz-option" data-value="c">To store data</div>
+                    <div class="quiz-option" data-value="d">To deploy models</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What should trigger an alert in production ML monitoring?</strong></p>
+                    <div class="quiz-option" data-value="a">Every prediction</div>
+                    <div class="quiz-option" data-value="b">Successful deployments</div>
+                    <div class="quiz-option" data-value="c">Daily reports</div>
+                    <div class="quiz-option" data-value="d">High error rates, accuracy degradation, significant data drift, or high latency</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is structured logging?</strong></p>
+                    <div class="quiz-option" data-value="a">Writing logs in paragraphs</div>
+                    <div class="quiz-option" data-value="b">Logging only errors</div>
+                    <div class="quiz-option" data-value="c">Logging in machine-readable format like JSON with consistent fields for easier analysis</div>
+                    <div class="quiz-option" data-value="d">Logging to multiple files</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="infrastructure-as-code.html">← Previous: Infrastructure as Code</a>
+                <a href="model-retraining-continuous-learning.html">Next: Model Retraining →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress — Nebaz AI Academy</title>
+    <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/nebaz-theme.css">
+    <link rel="stylesheet" href="css/mobile-enhancements.css">
+    <script src="js/config.js"></script>
+    <script src="js/navigation.js"></script>
+    <style>
+        .progress-grid { display: grid; gap: 1rem; max-width: 900px; margin: 0 auto; }
+        .course-progress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; }
+        .bar { height: 10px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin-top: 0.5rem; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #078930, #0d9488); transition: width 0.4s; }
+    </style>
+</head>
+<body>
+    <main class="container" style="padding: 2rem 1rem 4rem;">
+        <h1>📊 Learning Progress</h1>
+        <p id="progress-summary" style="color:#64748b;"></p>
+        <div id="course-progress-list" class="progress-grid"></div>
+        <p style="margin-top:2rem;"><a href="index.html">← Continue learning</a></p>
+        <div id="changelog-widget" style="margin-top:3rem;"></div>
+    </main>
+    <script src="js/script.js"></script>
+    <script src="js/changelog.js"></script>
+    <script>
+    (function () {
+        const COURSES = {
+            'ai-for-everyone': { name: 'AI for Everyone', lessons: 12 },
+            'python': { name: 'Python', lessons: 14 },
+            'machine-learning': { name: 'Machine Learning', lessons: 9 },
+            'deep-learning': { name: 'Deep Learning', lessons: 7 },
+            'llms': { name: 'LLMs', lessons: 10 },
+            'ai-agents': { name: 'AI Agents', lessons: 7 },
+            'mlops': { name: 'MLOps', lessons: 17 },
+            'chatgpt': { name: 'ChatGPT & Prompting', lessons: 9 }
+        };
+        const data = JSON.parse(localStorage.getItem('nebaz_learningProgress') || '{}');
+        const completed = data.completedTutorials || [];
+        const points = data.points || 0;
+        document.getElementById('progress-summary').textContent =
+            `${completed.length} lessons completed · ${points} points · Streak: ${data.streakDays || 0} days`;
+        const list = document.getElementById('course-progress-list');
+        Object.entries(COURSES).forEach(([slug, c]) => {
+            const done = completed.filter(t => t.includes('/' + slug + '/') || t.includes(slug)).length;
+            const pct = Math.min(100, Math.round((done / c.lessons) * 100));
+            const card = document.createElement('div');
+            card.className = 'course-progress-card';
+            card.innerHTML = `<strong>${c.name}</strong><span style="float:right">${pct}%</span>
+                <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+                <small style="color:#64748b">${done} / ${c.lessons} lessons</small>`;
+            list.appendChild(card);
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Kubernetes for ML workloads. Learn K8s fundamentals, deploy ML models, implement Horizontal Pod Autoscaling, GPU scheduling, and use Helm charts for production ML applications.">
+    <meta name="keywords" content="Kubernetes, K8s, ML deployment, GPU scheduling, Horizontal Pod Autoscaling, HPA, Helm charts, container orchestration, MLOps, kubectl">
+    <title>Kubernetes for ML - MLOps Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="kubernetes-for-ml.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .k8s-architecture { background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 1.5rem 0; }
+        .k8s-component { background: white; border: 2px solid #078930; border-radius: 8px; padding: 1rem; margin: 0.5rem 0; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/mlops-engineer.html">MLOps Engineer</a> → 
+                <span>Kubernetes for ML</span>
+            </div>
+            <h1>Kubernetes for ML</h1>
+            <p class="tutorial-intro">Master Kubernetes for ML workloads. Deploy models, implement autoscaling, optimize GPU scheduling, and use Helm charts for production ML infrastructure</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 9</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free MLOps Engineer Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section" id="introduction">
+                <h2>☸️ Why Kubernetes for ML?</h2>
+                <p>
+                    You've containerized your ML application with Docker. It runs great on your laptop! But production requires:
+                </p>
+                <ul>
+                    <li>Running 10 replicas for high availability</li>
+                    <li>Automatically scaling based on traffic</li>
+                    <li>Zero-downtime deployments</li>
+                    <li>Efficient GPU sharing across models</li>
+                    <li>Self-healing when containers crash</li>
+                    <li>Load balancing incoming requests</li>
+                </ul>
+
+                <p>
+                    <strong>Kubernetes (K8s)</strong> is the industry-standard container orchestration platform. It manages containerized applications at scale with features ML workloads need: resource scheduling, autoscaling, GPU support, and high availability.
+                </p>
+
+                <div class="k8s-architecture">
+                    <h3 style="text-align: center; color: #065f46;">Kubernetes Architecture</h3>
+                    <div class="k8s-component">
+                        <strong>Control Plane:</strong> API Server, Scheduler, Controller Manager, etcd (manages cluster state)
+                    </div>
+                    <div class="k8s-component">
+                        <strong>Worker Nodes:</strong> Run containerized applications (Pods)
+                    </div>
+                    <div class="k8s-component">
+                        <strong>Pods:</strong> Smallest deployable units (one or more containers)
+                    </div>
+                    <div class="k8s-component">
+                        <strong>Services:</strong> Expose Pods to network traffic with load balancing
+                    </div>
+                    <div class="k8s-component">
+                        <strong>Deployments:</strong> Manage desired state and rolling updates
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 Kubernetes Benefits for ML:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Declarative configuration (define desired state, K8s maintains it)</li>
+                        <li>Automatic scaling based on CPU, memory, or custom metrics</li>
+                        <li>GPU scheduling and sharing across workloads</li>
+                        <li>Rolling updates with zero downtime</li>
+                        <li>Self-healing (automatic restarts of failed containers)</li>
+                        <li>Resource quotas and limits for cost control</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- K8s Setup -->
+            <section class="content-section" id="setup">
+                <h2>🚀 Kubernetes Setup</h2>
+                
+                <h3>Local Development: Minikube</h3>
+                <pre><code class="language-bash"># Install Minikube (macOS)
+brew install minikube
+
+# Start cluster
+minikube start --cpus=4 --memory=8192 --driver=docker
+
+# Enable GPU support (if available)
+minikube start --driver=kvm2 --gpus all
+
+# Verify cluster
+kubectl cluster-info
+kubectl get nodes
+
+# Install kubectl (if not installed)
+brew install kubectl</code></pre>
+
+                <h3>Production: Cloud Kubernetes Services</h3>
+                <pre><code class="language-bash"># AWS EKS
+eksctl create cluster \
+  --name ml-cluster \
+  --region us-west-2 \
+  --nodegroup-name ml-nodes \
+  --node-type p3.2xlarge \  # GPU instance
+  --nodes 3
+
+# Google GKE
+gcloud container clusters create ml-cluster \
+  --machine-type n1-standard-4 \
+  --accelerator type=nvidia-tesla-t4,count=1 \
+  --num-nodes 3 \
+  --zone us-central1-a
+
+# Azure AKS
+az aks create \
+  --resource-group ml-rg \
+  --name ml-cluster \
+  --node-vm-size Standard_NC6 \
+  --node-count 3</code></pre>
+
+                <h3>Essential kubectl Commands</h3>
+                <pre><code class="language-bash"># View resources
+kubectl get pods
+kubectl get services
+kubectl get deployments
+kubectl get nodes
+
+# Detailed info
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+kubectl logs -f <pod-name>  # Follow logs
+
+# Execute commands in pod
+kubectl exec -it <pod-name> -- bash
+
+# Port forwarding for local testing
+kubectl port-forward pod/<pod-name> 8080:8080
+
+# Apply configuration
+kubectl apply -f deployment.yaml
+
+# Delete resources
+kubectl delete -f deployment.yaml
+kubectl delete pod <pod-name></code></pre>
+            </section>
+
+            <!-- Deploying ML Models -->
+            <section class="content-section" id="deploying-models">
+                <h2>🚢 Deploying ML Models on Kubernetes</h2>
+                
+                <h3>Step 1: Create Docker Image</h3>
+                <pre><code class="language-dockerfile"># Dockerfile for ML model
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy model and code
+COPY model.pkl .
+COPY app.py .
+
+# Expose port
+EXPOSE 8080
+
+# Run server
+CMD ["python", "app.py"]</code></pre>
+
+                <pre><code class="language-bash"># Build and push image
+docker build -t myregistry/ml-model:v1 .
+docker push myregistry/ml-model:v1</code></pre>
+
+                <h3>Step 2: Create Deployment</h3>
+                <pre><code class="language-yaml"># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-model
+  labels:
+    app: ml-model
+spec:
+  replicas: 3  # Run 3 pods for high availability
+  selector:
+    matchLabels:
+      app: ml-model
+  template:
+    metadata:
+      labels:
+        app: ml-model
+        version: v1
+    spec:
+      containers:
+      - name: model
+        image: myregistry/ml-model:v1
+        ports:
+        - containerPort: 8080
+        
+        # Resource requests and limits
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"      # 0.5 CPU
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"     # 1 CPU
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        
+        # Environment variables
+        env:
+        - name: MODEL_VERSION
+          value: "v1"
+        - name: LOG_LEVEL
+          value: "INFO"</code></pre>
+
+                <h3>Step 3: Create Service</h3>
+                <pre><code class="language-yaml"># service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-model-service
+spec:
+  selector:
+    app: ml-model
+  type: LoadBalancer  # External access
+  ports:
+  - protocol: TCP
+    port: 80          # External port
+    targetPort: 8080  # Container port
+  
+  sessionAffinity: ClientIP  # Sticky sessions</code></pre>
+
+                <h3>Deploy to Kubernetes</h3>
+                <pre><code class="language-bash"># Apply configurations
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+# Check deployment status
+kubectl get deployments
+kubectl get pods
+kubectl get services
+
+# Get external IP
+kubectl get service ml-model-service
+
+# Test endpoint
+curl http://<EXTERNAL-IP>/predict -X POST -d '{"features": [1,2,3,4]}'
+
+# View logs
+kubectl logs -l app=ml-model --tail=100
+
+# Scale deployment
+kubectl scale deployment ml-model --replicas=5</code></pre>
+
+                <div class="success-box">
+                    <p><strong>✅ Deployment Best Practices:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #065f46;">
+                        <li>Always set resource requests and limits</li>
+                        <li>Implement health checks (liveness and readiness probes)</li>
+                        <li>Use multiple replicas for high availability</li>
+                        <li>Tag images with versions, not 'latest'</li>
+                        <li>Store sensitive data in Secrets, not in image</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Horizontal Pod Autoscaling -->
+            <section class="content-section" id="autoscaling">
+                <h2>📈 Horizontal Pod Autoscaling (HPA)</h2>
+                
+                <h3>What is HPA?</h3>
+                <p>
+                    HPA automatically scales the number of pods based on observed metrics (CPU, memory, custom metrics like request rate or queue length).
+                </p>
+
+                <h3>CPU-Based Autoscaling</h3>
+                <pre><code class="language-yaml"># hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-model-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70  # Scale when avg CPU > 70%
+  
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # Wait 5min before scaling down
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60  # Max 50% reduction per minute
+    
+    scaleUp:
+      stabilizationWindowSeconds: 0  # Scale up immediately
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15  # Max 100% increase per 15s</code></pre>
+
+                <pre><code class="language-bash"># Apply HPA
+kubectl apply -f hpa.yaml
+
+# Check HPA status
+kubectl get hpa
+kubectl describe hpa ml-model-hpa
+
+# Generate load to test autoscaling
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh
+while true; do wget -q -O- http://ml-model-service/predict; done
+
+# Watch pods scale up
+kubectl get pods -w</code></pre>
+
+                <h3>Custom Metrics Autoscaling</h3>
+                <pre><code class="language-yaml"># hpa-custom.yaml - Scale based on request rate
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ml-model-hpa-custom
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+  # CPU metric
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  
+  # Memory metric
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  
+  # Custom metric: requests per second
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "1000"  # Scale when > 1000 req/s per pod
+  
+  # Custom metric: inference queue length
+  - type: Pods
+    pods:
+      metric:
+        name: inference_queue_length
+      target:
+        type: AverageValue
+        averageValue: "10"  # Scale when queue > 10</code></pre>
+
+                <h3>Vertical Pod Autoscaling (VPA)</h3>
+                <pre><code class="language-yaml"># vpa.yaml - Automatically adjust resource requests
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: ml-model-vpa
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ml-model
+  updatePolicy:
+    updateMode: "Auto"  # Auto-update pod resources
+  resourcePolicy:
+    containerPolicies:
+    - containerName: model
+      minAllowed:
+        cpu: 100m
+        memory: 256Mi
+      maxAllowed:
+        cpu: 2000m
+        memory: 4Gi</code></pre>
+            </section>
+
+            <!-- GPU Scheduling -->
+            <section class="content-section" id="gpu-scheduling">
+                <h2>🎮 GPU Scheduling</h2>
+                
+                <h3>Enable GPU Support</h3>
+                <pre><code class="language-bash"># Install NVIDIA device plugin
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.14.0/nvidia-device-plugin.yml
+
+# Verify GPU nodes
+kubectl get nodes "-o=custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu"</code></pre>
+
+                <h3>Deploy GPU Workload</h3>
+                <pre><code class="language-yaml"># gpu-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pytorch-gpu-model
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pytorch-gpu
+  template:
+    metadata:
+      labels:
+        app: pytorch-gpu
+    spec:
+      containers:
+      - name: model
+        image: pytorch/pytorch:2.0.0-cuda11.7-cudnn8-runtime
+        command: ["python", "serve.py"]
+        
+        resources:
+          limits:
+            nvidia.com/gpu: 1  # Request 1 GPU
+          requests:
+            nvidia.com/gpu: 1
+            memory: "8Gi"
+            cpu: "4"
+        
+        env:
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        
+        volumeMounts:
+        - name: model-storage
+          mountPath: /models
+      
+      # Node selector for GPU nodes
+      nodeSelector:
+        accelerator: nvidia-tesla-t4
+      
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: model-pvc</code></pre>
+
+                <h3>GPU Sharing with Time-Slicing</h3>
+                <pre><code class="language-yaml"># gpu-time-slicing-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gpu-sharing-config
+  namespace: gpu-operator
+data:
+  time-slicing-config: |
+    version: v1
+    sharing:
+      timeSlicing:
+        resources:
+        - name: nvidia.com/gpu
+          replicas: 4  # Share 1 GPU among 4 pods</code></pre>
+
+                <h3>Multi-GPU Training Job</h3>
+                <pre><code class="language-yaml"># training-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: distributed-training
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: trainer
+        image: myregistry/pytorch-trainer:latest
+        command: ["python", "-m", "torch.distributed.launch"]
+        args:
+        - "--nproc_per_node=4"  # 4 GPUs
+        - "train.py"
+        
+        resources:
+          limits:
+            nvidia.com/gpu: 4  # Request 4 GPUs
+          requests:
+            memory: "32Gi"
+            cpu: "16"
+        
+        env:
+        - name: MASTER_ADDR
+          value: "localhost"
+        - name: MASTER_PORT
+          value: "29500"</code></pre>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ GPU Best Practices:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem; color: #92400e;">
+                        <li>Use GPU time-slicing for inference workloads to maximize utilization</li>
+                        <li>Reserve full GPUs for training jobs</li>
+                        <li>Set appropriate node selectors to target GPU nodes</li>
+                        <li>Monitor GPU utilization with Prometheus + NVIDIA DCGM</li>
+                        <li>Use node pools for different GPU types (training vs inference)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ConfigMaps and Secrets -->
+            <section class="content-section" id="config-secrets">
+                <h2>🔐 Configuration Management</h2>
+                
+                <h3>ConfigMaps for Configuration</h3>
+                <pre><code class="language-yaml"># configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ml-model-config
+data:
+  # Simple key-value pairs
+  model_version: "v2.1.0"
+  batch_size: "32"
+  max_sequence_length: "512"
+  
+  # Configuration file
+  config.json: |
+    {
+      "model_path": "/models/model.pkl",
+      "preprocessing": {
+        "normalize": true,
+        "scale_features": true
+      },
+      "inference": {
+        "batch_size": 32,
+        "timeout": 30
+      }
+    }</code></pre>
+
+                <pre><code class="language-yaml"># Use ConfigMap in Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-model
+spec:
+  template:
+    spec:
+      containers:
+      - name: model
+        image: myregistry/ml-model:v1
+        
+        # Environment variables from ConfigMap
+        envFrom:
+        - configMapRef:
+            name: ml-model-config
+        
+        # Mount config file
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      
+      volumes:
+      - name: config-volume
+        configMap:
+          name: ml-model-config
+          items:
+          - key: config.json
+            path: config.json</code></pre>
+
+                <h3>Secrets for Sensitive Data</h3>
+                <pre><code class="language-bash"># Create secret from literal
+kubectl create secret generic ml-api-keys \
+  --from-literal=api-key=your-api-key \
+  --from-literal=db-password=your-password
+
+# Create secret from file
+kubectl create secret generic ml-model-weights \
+  --from-file=model.pkl
+
+# Create TLS secret
+kubectl create secret tls ml-tls-secret \
+  --cert=tls.crt \
+  --key=tls.key</code></pre>
+
+                <pre><code class="language-yaml"># Use Secrets in Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-model
+spec:
+  template:
+    spec:
+      containers:
+      - name: model
+        image: myregistry/ml-model:v1
+        
+        # Environment variables from Secret
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ml-api-keys
+              key: api-key
+        
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ml-api-keys
+              key: db-password
+        
+        # Mount secret as volume
+        volumeMounts:
+        - name: model-secret
+          mountPath: /secrets
+          readOnly: true
+      
+      volumes:
+      - name: model-secret
+        secret:
+          secretName: ml-model-weights</code></pre>
+            </section>
+
+            <!-- Helm Charts -->
+            <section class="content-section" id="helm">
+                <h2>⎈ Helm Charts for ML Applications</h2>
+                
+                <h3>What is Helm?</h3>
+                <p>
+                    Helm is a package manager for Kubernetes. It uses "charts" to define, install, and manage complex K8s applications with a single command.
+                </p>
+
+                <h3>Install Helm</h3>
+                <pre><code class="language-bash"># Install Helm
+brew install helm
+
+# Add popular charts repository
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update</code></pre>
+
+                <h3>Create Helm Chart for ML Model</h3>
+                <pre><code class="language-bash"># Create chart structure
+helm create ml-model
+
+# Chart structure:
+# ml-model/
+#   Chart.yaml          # Chart metadata
+#   values.yaml         # Default configuration values
+#   templates/          # K8s manifests with templating
+#     deployment.yaml
+#     service.yaml
+#     hpa.yaml
+#     ingress.yaml</code></pre>
+
+                <h3>Chart.yaml</h3>
+                <pre><code class="language-yaml"># Chart.yaml
+apiVersion: v2
+name: ml-model
+description: Production ML model deployment
+type: application
+version: 1.0.0
+appVersion: "2.1.0"</code></pre>
+
+                <h3>values.yaml</h3>
+                <pre><code class="language-yaml"># values.yaml - Default values
+replicaCount: 3
+
+image:
+  repository: myregistry/ml-model
+  tag: "v1.0.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+gpu:
+  enabled: false
+  count: 0
+
+model:
+  version: "v2.1.0"
+  batchSize: 32
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: ml-model.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: ml-tls-secret
+      hosts:
+        - ml-model.example.com</code></pre>
+
+                <h3>templates/deployment.yaml</h3>
+                <pre><code class="language-yaml"># templates/deployment.yaml with templating
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ml-model.fullname" . }}
+  labels:
+    {{- include "ml-model.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ml-model.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ml-model.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+        
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        
+        {{- if .Values.gpu.enabled }}
+        resources:
+          limits:
+            nvidia.com/gpu: {{ .Values.gpu.count }}
+        {{- end }}
+        
+        env:
+        - name: MODEL_VERSION
+          value: {{ .Values.model.version | quote }}
+        - name: BATCH_SIZE
+          value: {{ .Values.model.batchSize | quote }}</code></pre>
+
+                <h3>Deploy with Helm</h3>
+                <pre><code class="language-bash"># Install chart
+helm install my-ml-model ./ml-model
+
+# Install with custom values
+helm install my-ml-model ./ml-model \
+  --set replicaCount=5 \
+  --set image.tag=v2.0.0 \
+  --set gpu.enabled=true \
+  --set gpu.count=1
+
+# Install with values file
+helm install my-ml-model ./ml-model -f production-values.yaml
+
+# Upgrade deployment
+helm upgrade my-ml-model ./ml-model --set image.tag=v2.1.0
+
+# Rollback
+helm rollback my-ml-model 1
+
+# Uninstall
+helm uninstall my-ml-model
+
+# List releases
+helm list
+
+# View release history
+helm history my-ml-model</code></pre>
+
+                <h3>Production Values Override</h3>
+                <pre><code class="language-yaml"># production-values.yaml
+replicaCount: 10
+
+image:
+  tag: "v2.1.0"
+
+resources:
+  requests:
+    memory: "2Gi"
+    cpu: "2000m"
+  limits:
+    memory: "4Gi"
+    cpu: "4000m"
+
+autoscaling:
+  enabled: true
+  minReplicas: 5
+  maxReplicas: 50
+  targetCPUUtilizationPercentage: 60
+
+gpu:
+  enabled: true
+  count: 1
+
+ingress:
+  enabled: true
+  hosts:
+    - host: ml-api.production.com</code></pre>
+
+                <pre><code class="language-bash"># Deploy to production
+helm install prod-ml-model ./ml-model \
+  -f production-values.yaml \
+  --namespace production \
+  --create-namespace</code></pre>
+            </section>
+
+            <!-- Monitoring -->
+            <section class="content-section" id="monitoring">
+                <h2>📊 Monitoring ML Workloads</h2>
+                
+                <h3>Prometheus & Grafana Stack</h3>
+                <pre><code class="language-bash"># Install Prometheus using Helm
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+
+# Access Grafana dashboard
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+
+# Default credentials: admin / prom-operator</code></pre>
+
+                <h3>Custom Metrics for ML Models</h3>
+                <pre><code class="language-python">"""
+Expose custom metrics from ML service
+"""
+from prometheus_client import Counter, Histogram, Gauge, start_http_server
+
+# Define metrics
+predictions_total = Counter(
+    'ml_predictions_total',
+    'Total number of predictions',
+    ['model_version', 'status']
+)
+
+prediction_latency = Histogram(
+    'ml_prediction_latency_seconds',
+    'Prediction latency in seconds',
+    ['model_version']
+)
+
+model_accuracy = Gauge(
+    'ml_model_accuracy',
+    'Current model accuracy',
+    ['model_version']
+)
+
+active_connections = Gauge(
+    'ml_active_connections',
+    'Number of active connections'
+)
+
+# Instrument code
+@app.post("/predict")
+async def predict(request: PredictRequest):
+    start_time = time.time()
+    
+    try:
+        # Make prediction
+        result = model.predict(request.features)
+        
+        # Record metrics
+        predictions_total.labels(
+            model_version='v2.1.0',
+            status='success'
+        ).inc()
+        
+        duration = time.time() - start_time
+        prediction_latency.labels(model_version='v2.1.0').observe(duration)
+        
+        return result
+    
+    except Exception as e:
+        predictions_total.labels(
+            model_version='v2.1.0',
+            status='error'
+        ).inc()
+        raise
+
+# Start metrics server
+start_http_server(9090)  # Metrics at :9090/metrics</code></pre>
+
+                <h3>ServiceMonitor for Prometheus</h3>
+                <pre><code class="language-yaml"># servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ml-model-metrics
+  labels:
+    app: ml-model
+spec:
+  selector:
+    matchLabels:
+      app: ml-model
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics</code></pre>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section" id="summary">
+                <h2>🎯 Summary</h2>
+                
+                <p>You've mastered Kubernetes for ML workloads:</p>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">☸️</div>
+                        <h3>K8s Fundamentals</h3>
+                        <p>Pods, Services, Deployments, and cluster architecture</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🚢</div>
+                        <h3>Model Deployment</h3>
+                        <p>Production-ready ML model deployments with health checks</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📈</div>
+                        <h3>Autoscaling</h3>
+                        <p>HPA and VPA for automatic resource scaling</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">🎮</div>
+                        <h3>GPU Scheduling</h3>
+                        <p>Efficient GPU sharing and multi-GPU training</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">⎈</div>
+                        <h3>Helm Charts</h3>
+                        <p>Package and deploy complex ML applications</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Monitoring</h3>
+                        <p>Prometheus and custom metrics for ML workloads</p>
+                    </div>
+                </div>
+
+                <h3>Key Takeaways</h3>
+                <ol>
+                    <li>Kubernetes provides container orchestration at scale for ML workloads</li>
+                    <li>Use Deployments for stateless ML serving, StatefulSets for training</li>
+                    <li>Implement HPA for automatic scaling based on traffic and metrics</li>
+                    <li>Leverage GPU time-slicing for inference, full GPUs for training</li>
+                    <li>Use Helm charts to manage complex ML application deployments</li>
+                    <li>Monitor with Prometheus and expose custom ML metrics</li>
+                    <li>Set resource requests/limits for cost control and stability</li>
+                </ol>
+
+                <div class="success-box">
+                    <p><strong>🚀 Next Steps:</strong></p>
+                    <p style="margin: 0.5rem 0 0 0; color: #065f46;">
+                        Your ML infrastructure is production-ready on Kubernetes! Next tutorials will cover model monitoring, data pipelines, feature stores, and CI/CD - completing your MLOps toolkit for end-to-end production ML systems.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is a Pod in Kubernetes?</strong></p>
+                    <div class="quiz-option" data-value="a">A type of container</div>
+                    <div class="quiz-option" data-value="b">A deployment strategy</div>
+                    <div class="quiz-option" data-value="c">The smallest deployable unit that can contain one or more containers</div>
+                    <div class="quiz-option" data-value="d">A load balancer</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does Horizontal Pod Autoscaler (HPA) do?</strong></p>
+                    <div class="quiz-option" data-value="a">Increases container memory</div>
+                    <div class="quiz-option" data-value="b">Automatically scales the number of pods based on metrics like CPU usage or custom metrics</div>
+                    <div class="quiz-option" data-value="c">Distributes pods across nodes</div>
+                    <div class="quiz-option" data-value="d">Monitors pod health</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: How do you request a GPU in a Kubernetes pod?</strong></p>
+                    <div class="quiz-option" data-value="a">Set resources.limits.nvidia.com/gpu in the container spec</div>
+                    <div class="quiz-option" data-value="b">Use a special GPU image</div>
+                    <div class="quiz-option" data-value="c">Add --gpu flag to kubectl</div>
+                    <div class="quiz-option" data-value="d">GPUs are automatically assigned</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: What is the benefit of using Helm charts?</strong></p>
+                    <div class="quiz-option" data-value="a">Faster pod startup</div>
+                    <div class="quiz-option" data-value="b">Better GPU performance</div>
+                    <div class="quiz-option" data-value="c">Automatic scaling</div>
+                    <div class="quiz-option" data-value="d">Package and manage complex K8s applications with reusable templates and configuration</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What should you use to store sensitive information like API keys in Kubernetes?</strong></p>
+                    <div class="quiz-option" data-value="a">ConfigMaps</div>
+                    <div class="quiz-option" data-value="b">Environment variables in Dockerfile</div>
+                    <div class="quiz-option" data-value="c">Secrets</div>
+                    <div class="quiz-option" data-value="d">Regular files in the image</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="orchestration-ml-pipelines.html">← Previous: Orchestration & ML Pipelines</a>
+                <a href="infrastructure-as-code.html">Next: Infrastructure as Code →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-dockerfile.min.html"></script>
+    <script src="../../js/common.js"></script>
+</body>
+
+</html>

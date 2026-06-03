@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete hands-on project: Build a RAG chatbot with vector search, document ingestion, and conversational memory. Production-ready code with LangChain and ChromaDB.">
+    <meta name="keywords" content="RAG chatbot, vector search, LangChain, ChromaDB, document Q&A, retrieval augmented generation">
+    <title>Project 2: Build a RAG Chatbot | Nebaz AI Academy</title>
+    <link rel="canonical" href="project-2-rag-chatbot.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #0d9488 0%, #078930 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content h4 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3, .info-box h4 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #0d9488; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .project-badge { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; margin-bottom: 1rem; }
+        .architecture-diagram { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/llms-and-transformers.html">LLMs & Transformers</a> → 
+                <span>Project 2: RAG Chatbot</span>
+            </div>
+            <div class="project-badge">🚀 HANDS-ON PROJECT</div>
+            <h1>Project 2: Build a RAG Chatbot with Vector Search</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Build a bilingual Amharic+English RAG assistant for an NGO policy PDF corpus — chunking, embedding choice, and citation grounding matter more than model size.</em></p>
+</div>
+            <p class="tutorial-intro">Create an intelligent chatbot that answers questions from your documents using retrieval-augmented generation</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">⏱️ 90-120 minutes</span>
+                <span class="meta-item">🔧 Hands-on Project</span>
+                <span class="meta-item">💻 Python, LangChain, ChromaDB, OpenAI</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                
+                <p>
+                    Build a <strong>production-ready RAG chatbot</strong> that answers questions based on your documents. You'll implement document ingestion, vector search, conversational memory, and a web interface.
+                </p>
+
+                <h3>What You'll Build</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">📄</div>
+                        <h3>Document Ingestion</h3>
+                        <p>Load PDFs, text files, and web pages. Chunk intelligently and create embeddings.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔍</div>
+                        <h3>Vector Search</h3>
+                        <p>Store embeddings in ChromaDB. Retrieve relevant context with semantic similarity.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">💬</div>
+                        <h3>Conversational Bot</h3>
+                        <p>Generate answers with GPT-4. Remember conversation history. Cite sources.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>Web Interface</h3>
+                        <p>Build Gradio UI for chatting. Upload documents, ask questions, see sources.</p>
+                    </div>
+                </div>
+
+                <h3>🏗️ System Architecture</h3>
+                <div class="architecture-diagram">
+                    <pre style="background: white; color: #1e293b; margin: 0; padding: 1rem; font-size: 0.85rem;">
+┌─────────────────────────────────────────────────────────────┐
+│                        USER INTERFACE                        │
+│         (Gradio: Upload docs, Ask questions, View chat)     │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    DOCUMENT INGESTION                        │
+│  1. Load documents (PDF, TXT, URL)                          │
+│  2. Split into chunks (RecursiveCharacterTextSplitter)      │
+│  3. Generate embeddings (OpenAI ada-002)                    │
+│  4. Store in vector DB (ChromaDB)                           │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    RETRIEVAL PIPELINE                        │
+│  1. User asks question                                       │
+│  2. Convert question to embedding                            │
+│  3. Search ChromaDB for similar chunks (top k=4)            │
+│  4. Return relevant context                                  │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   GENERATION PIPELINE                        │
+│  1. Combine: question + retrieved context + chat history    │
+│  2. Send to GPT-4 with system prompt                        │
+│  3. Generate answer with source citations                   │
+│  4. Save conversation to memory                             │
+└─────────────────────────────────────────────────────────────┘
+                    </pre>
+                </div>
+
+                <h3>📚 Prerequisites</h3>
+                <ul>
+                    <li>Python 3.8+ installed</li>
+                    <li>OpenAI API key (GPT-4 access recommended)</li>
+                    <li>Basic understanding of embeddings and vector search</li>
+                    <li>Completed Tutorial 4: In-Context Learning & RAG</li>
+                </ul>
+
+                <h3>⏱️ Time Breakdown</h3>
+                <ul>
+                    <li><strong>Setup:</strong> 15 minutes (install libraries, API keys)</li>
+                    <li><strong>Document Ingestion:</strong> 20 minutes (load, chunk, embed)</li>
+                    <li><strong>Vector Search:</strong> 15 minutes (ChromaDB setup)</li>
+                    <li><strong>Chat Pipeline:</strong> 25 minutes (LangChain chains, memory)</li>
+                    <li><strong>Web Interface:</strong> 15 minutes (Gradio UI)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Step 1: Environment Setup</h2>
+                
+                <h3>Install Dependencies</h3>
+                <pre><code class="language-bash"># Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install core packages
+pip install langchain langchain-community langchain-openai
+pip install chromadb tiktoken
+pip install pypdf unstructured  # Document loaders
+pip install gradio  # Web interface
+pip install openai python-dotenv
+
+# Verify installation
+python -c "import langchain; print(f'LangChain: {langchain.__version__}')"
+python -c "import chromadb; print(f'ChromaDB: {chromadb.__version__}')"</code></pre>
+
+                <h3>Set Up API Keys</h3>
+                <pre><code class="language-bash"># Create .env file
+cat > .env << EOF
+OPENAI_API_KEY=sk-your-openai-api-key-here
+EOF
+
+# Or export directly
+export OPENAI_API_KEY="sk-your-key-here"</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>API Costs:</strong> OpenAI embeddings cost ~$0.10 per 1M tokens. For this project, expect ~$0.50-2 total depending on document size.</p>
+                </div>
+
+                <h3>Project Structure</h3>
+                <pre><code class="language-bash">rag-chatbot/
+├── data/
+│   ├── documents/           # PDFs, TXT files
+│   └── chroma_db/          # Vector database storage
+├── src/
+│   ├── ingest.py           # Document ingestion
+│   ├── retriever.py        # Vector search
+│   ├── chatbot.py          # Main chat logic
+│   └── app.py              # Gradio interface
+├── .env                     # API keys
+├── requirements.txt
+└── README.md</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>📄 Step 2: Document Ingestion</h2>
+                
+                <h3>Load Documents</h3>
+                <pre><code class="language-python"># ingest.py - Document loading and processing
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    TextLoader,
+    DirectoryLoader,
+    WebBaseLoader
+)
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+def load_documents(data_dir="./data/documents"):
+    """Load documents from various sources"""
+    documents = []
+    
+    # Load PDFs
+    pdf_loader = DirectoryLoader(
+        data_dir,
+        glob="**/*.pdf",
+        loader_cls=PyPDFLoader
+    )
+    documents.extend(pdf_loader.load())
+    print(f"Loaded {len(documents)} pages from PDFs")
+    
+    # Load text files
+    txt_loader = DirectoryLoader(
+        data_dir,
+        glob="**/*.txt",
+        loader_cls=TextLoader
+    )
+    text_docs = txt_loader.load()
+    documents.extend(text_docs)
+    print(f"Loaded {len(text_docs)} text files")
+    
+    # Load from URLs (optional)
+    urls = [
+        "https://en.wikipedia.org/wiki/Artificial_intelligence",
+        # Add more URLs as needed
+    ]
+    
+    if urls:
+        web_loader = WebBaseLoader(urls)
+        web_docs = web_loader.load()
+        documents.extend(web_docs)
+        print(f"Loaded {len(web_docs)} web pages")
+    
+    print(f"\nTotal documents loaded: {len(documents)}")
+    return documents
+
+# Test document loading
+if __name__ == "__main__":
+    docs = load_documents()
+    
+    # Examine first document
+    if docs:
+        print(f"\nFirst document:")
+        print(f"Source: {docs[0].metadata.get('source', 'Unknown')}")
+        print(f"Content preview: {docs[0].page_content[:200]}...")
+</code></pre>
+
+                <h3>Chunk Documents Intelligently</h3>
+                <pre><code class="language-python">def chunk_documents(documents, chunk_size=1000, chunk_overlap=200):
+    """Split documents into chunks for embedding"""
+    
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        length_function=len,
+        separators=["\n\n", "\n", " ", ""]  # Try these in order
+    )
+    
+    chunks = text_splitter.split_documents(documents)
+    
+    print(f"Split {len(documents)} documents into {len(chunks)} chunks")
+    print(f"Average chunk size: {sum(len(c.page_content) for c in chunks) / len(chunks):.0f} chars")
+    
+    return chunks
+
+# Test chunking
+if __name__ == "__main__":
+    docs = load_documents()
+    chunks = chunk_documents(docs)
+    
+    # Examine a chunk
+    print(f"\nSample chunk:")
+    print(f"Content: {chunks[0].page_content[:300]}...")
+    print(f"Metadata: {chunks[0].metadata}")
+</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Chunking Strategy</h4>
+                    <p><strong>Chunk Size Guidelines:</strong></p>
+                    <ul style="margin: 0;">
+                        <li><strong>Small chunks (200-500):</strong> More precise retrieval, but may lack context</li>
+                        <li><strong>Medium chunks (500-1000):</strong> Balanced (recommended)</li>
+                        <li><strong>Large chunks (1000-2000):</strong> More context, but less precise</li>
+                        <li><strong>Overlap (100-200):</strong> Prevents information loss at boundaries</li>
+                    </ul>
+                </div>
+
+                <h3>Create Embeddings & Store in Vector DB</h3>
+                <pre><code class="language-python">def create_vector_store(chunks, persist_directory="./data/chroma_db"):
+    """Create ChromaDB vector store from document chunks"""
+    
+    # Initialize OpenAI embeddings
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-ada-002",
+        openai_api_key=os.getenv("OPENAI_API_KEY")
+    )
+    
+    # Create and persist vector store
+    print("Creating embeddings and storing in ChromaDB...")
+    print("This may take a few minutes depending on document size...")
+    
+    vectorstore = Chroma.from_documents(
+        documents=chunks,
+        embedding=embeddings,
+        persist_directory=persist_directory,
+        collection_name="rag_documents"
+    )
+    
+    print(f"Vector store created with {vectorstore._collection.count()} vectors")
+    print(f"Persisted to: {persist_directory}")
+    
+    return vectorstore
+
+# Complete ingestion pipeline
+def ingest_documents(data_dir="./data/documents", persist_dir="./data/chroma_db"):
+    """Complete document ingestion pipeline"""
+    
+    # Load documents
+    documents = load_documents(data_dir)
+    
+    if not documents:
+        print("No documents found!")
+        return None
+    
+    # Chunk documents
+    chunks = chunk_documents(documents)
+    
+    # Create vector store
+    vectorstore = create_vector_store(chunks, persist_dir)
+    
+    print("\n✅ Document ingestion complete!")
+    return vectorstore
+
+if __name__ == "__main__":
+    vectorstore = ingest_documents()
+</code></pre>
+
+                <h3>📊 Expected Output</h3>
+                <div class="example-box">
+                    <pre style="background: white; color: #1e293b; padding: 1rem; margin: 0;">Loaded 15 pages from PDFs
+Loaded 3 text files
+Loaded 1 web pages
+
+Total documents loaded: 19
+
+Split 19 documents into 87 chunks
+Average chunk size: 892 chars
+
+Creating embeddings and storing in ChromaDB...
+This may take a few minutes depending on document size...
+
+Vector store created with 87 vectors
+Persisted to: ./data/chroma_db
+
+✅ Document ingestion complete!</pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔍 Step 3: Vector Search & Retrieval</h2>
+                
+                <h3>Initialize Retriever</h3>
+                <pre><code class="language-python"># retriever.py - Semantic search functionality
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
+import os
+
+def load_vector_store(persist_directory="./data/chroma_db"):
+    """Load existing ChromaDB vector store"""
+    
+    embeddings = OpenAIEmbeddings(
+        model="text-embedding-ada-002",
+        openai_api_key=os.getenv("OPENAI_API_KEY")
+    )
+    
+    vectorstore = Chroma(
+        persist_directory=persist_directory,
+        embedding_function=embeddings,
+        collection_name="rag_documents"
+    )
+    
+    print(f"Loaded vector store with {vectorstore._collection.count()} documents")
+    return vectorstore
+
+def create_retriever(vectorstore, k=4, search_type="similarity"):
+    """Create retriever with configurable search parameters"""
+    
+    retriever = vectorstore.as_retriever(
+        search_type=search_type,  # "similarity" or "mmr" (max marginal relevance)
+        search_kwargs={
+            "k": k,  # Number of documents to retrieve
+            "fetch_k": 20  # For MMR: fetch more, then rerank
+        }
+    )
+    
+    return retriever
+
+# Test retrieval
+if __name__ == "__main__":
+    vectorstore = load_vector_store()
+    retriever = create_retriever(vectorstore, k=4)
+    
+    # Test query
+    query = "What is artificial intelligence?"
+    docs = retriever.get_relevant_documents(query)
+    
+    print(f"\nQuery: {query}")
+    print(f"Retrieved {len(docs)} documents:\n")
+    
+    for i, doc in enumerate(docs, 1):
+        print(f"{i}. Source: {doc.metadata.get('source', 'Unknown')}")
+        print(f"   Content: {doc.page_content[:200]}...")
+        print()
+</code></pre>
+
+                <h3>Advanced Retrieval Strategies</h3>
+                <pre><code class="language-python">def hybrid_search(vectorstore, query, k=4):
+    """Combine similarity search with keyword matching"""
+    
+    # 1. Semantic search (vector similarity)
+    semantic_docs = vectorstore.similarity_search(query, k=k)
+    
+    # 2. Add metadata filtering (optional)
+    # Example: only retrieve from specific source
+    filtered_docs = vectorstore.similarity_search(
+        query,
+        k=k,
+        filter={"source": "important_document.pdf"}
+    )
+    
+    return semantic_docs
+
+def mmr_search(vectorstore, query, k=4, diversity=0.3):
+    """Maximum Marginal Relevance - balance relevance and diversity"""
+    
+    # MMR retrieves diverse results (avoids redundant chunks)
+    docs = vectorstore.max_marginal_relevance_search(
+        query,
+        k=k,
+        fetch_k=20,  # Fetch 20, return top k diverse ones
+        lambda_mult=diversity  # 0=max diversity, 1=max relevance
+    )
+    
+    return docs
+
+def retrieval_with_scores(vectorstore, query, k=4):
+    """Get documents with similarity scores"""
+    
+    docs_with_scores = vectorstore.similarity_search_with_score(query, k=k)
+    
+    print(f"Query: {query}\n")
+    for i, (doc, score) in enumerate(docs_with_scores, 1):
+        print(f"{i}. Score: {score:.4f}")
+        print(f"   Source: {doc.metadata.get('source', 'Unknown')}")
+        print(f"   Content: {doc.page_content[:150]}...")
+        print()
+    
+    return docs_with_scores
+
+# Test different retrieval strategies
+if __name__ == "__main__":
+    vectorstore = load_vector_store()
+    query = "Explain machine learning algorithms"
+    
+    print("=== Similarity Search ===")
+    docs1 = hybrid_search(vectorstore, query)
+    
+    print("\n=== MMR Search (Diverse Results) ===")
+    docs2 = mmr_search(vectorstore, query)
+    
+    print("\n=== With Similarity Scores ===")
+    docs3 = retrieval_with_scores(vectorstore, query)
+</code></pre>
+
+                <div class="info-box">
+                    <h4>🎯 Retrieval Strategies Comparison</h4>
+                    <ul style="margin: 0;">
+                        <li><strong>Similarity Search:</strong> Most relevant chunks (may have duplicates)</li>
+                        <li><strong>MMR:</strong> Balances relevance + diversity (best for broad questions)</li>
+                        <li><strong>Metadata Filtering:</strong> Restrict to specific sources/dates</li>
+                        <li><strong>Hybrid:</strong> Combine vector + keyword search (most robust)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💬 Step 4: Conversational RAG Pipeline</h2>
+                
+                <h3>Build Chat Chain with Memory</h3>
+                <pre><code class="language-python"># chatbot.py - Main RAG chatbot logic
+from langchain_openai import ChatOpenAI
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+import os
+
+def create_chatbot(vectorstore):
+    """Create RAG chatbot with conversational memory"""
+    
+    # Initialize LLM
+    llm = ChatOpenAI(
+        model="gpt-4-turbo-preview",
+        temperature=0.7,
+        openai_api_key=os.getenv("OPENAI_API_KEY")
+    )
+    
+    # Create retriever
+    retriever = vectorstore.as_retriever(
+        search_type="mmr",
+        search_kwargs={"k": 4, "fetch_k": 20}
+    )
+    
+    # Initialize conversation memory
+    memory = ConversationBufferMemory(
+        memory_key="chat_history",
+        return_messages=True,
+        output_key="answer"
+    )
+    
+    # Custom system prompt
+    system_prompt = """You are a helpful AI assistant that answers questions based on the provided context.
+
+Instructions:
+1. Answer questions using ONLY the information from the context
+2. If the answer is not in the context, say "I don't have enough information to answer that"
+3. Always cite your sources by mentioning the document name
+4. Be concise but complete
+5. If asked about previous messages, use the chat history
+
+Context:
+{context}
+
+Question: {question}
+
+Answer:"""
+    
+    # Create conversational retrieval chain
+    qa_chain = ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=retriever,
+        memory=memory,
+        return_source_documents=True,
+        verbose=True,
+        combine_docs_chain_kwargs={
+            "prompt": PromptTemplate(
+                template=system_prompt,
+                input_variables=["context", "question"]
+            )
+        }
+    )
+    
+    return qa_chain
+
+# Chat function
+def chat(qa_chain, question):
+    """Send a question to the chatbot"""
+    
+    result = qa_chain({"question": question})
+    
+    answer = result["answer"]
+    sources = result["source_documents"]
+    
+    return {
+        "answer": answer,
+        "sources": sources,
+        "chat_history": result.get("chat_history", [])
+    }
+
+# Test the chatbot
+if __name__ == "__main__":
+    from retriever import load_vector_store
+    
+    # Load vector store
+    vectorstore = load_vector_store()
+    
+    # Create chatbot
+    qa_chain = create_chatbot(vectorstore)
+    
+    # Test conversation
+    print("RAG Chatbot initialized. Type 'quit' to exit.\n")
+    
+    while True:
+        question = input("You: ")
+        if question.lower() in ['quit', 'exit', 'q']:
+            break
+        
+        result = chat(qa_chain, question)
+        
+        print(f"\nBot: {result['answer']}\n")
+        print(f"Sources ({len(result['sources'])}):")
+        for i, doc in enumerate(result['sources'], 1):
+            source = doc.metadata.get('source', 'Unknown')
+            print(f"  {i}. {source}")
+        print()
+</code></pre>
+
+                <h3>Add Source Citations</h3>
+                <pre><code class="language-python">def format_answer_with_sources(answer, sources):
+    """Format answer with inline source citations"""
+    
+    # Extract unique sources
+    unique_sources = {}
+    for i, doc in enumerate(sources, 1):
+        source = doc.metadata.get('source', 'Unknown')
+        if source not in unique_sources:
+            unique_sources[source] = i
+    
+    # Add source list
+    formatted_answer = f"{answer}\n\n**Sources:**\n"
+    for source, num in unique_sources.items():
+        formatted_answer += f"{num}. {source}\n"
+    
+    return formatted_answer
+
+def chat_with_citations(qa_chain, question):
+    """Chat with formatted citations"""
+    
+    result = chat(qa_chain, question)
+    formatted = format_answer_with_sources(result['answer'], result['sources'])
+    
+    return {
+        "answer": formatted,
+        "sources": result['sources']
+    }
+</code></pre>
+
+                <h3>Handle Follow-up Questions</h3>
+                <pre><code class="language-python"># Test conversation flow
+if __name__ == "__main__":
+    from retriever import load_vector_store
+    
+    vectorstore = load_vector_store()
+    qa_chain = create_chatbot(vectorstore)
+    
+    # Multi-turn conversation
+    questions = [
+        "What is machine learning?",
+        "What are some applications of it?",  # "it" refers to ML
+        "How does it differ from traditional programming?"  # Still talking about ML
+    ]
+    
+    print("=== Multi-turn Conversation ===\n")
+    for q in questions:
+        result = chat(qa_chain, q)
+        print(f"Q: {q}")
+        print(f"A: {result['answer']}\n")
+</code></pre>
+
+                <div class="info-box">
+                    <h4>💡 Memory Management</h4>
+                    <p><strong>Memory Types:</strong></p>
+                    <ul style="margin: 0;">
+                        <li><strong>ConversationBufferMemory:</strong> Store all messages (simple, unlimited growth)</li>
+                        <li><strong>ConversationBufferWindowMemory:</strong> Keep last N messages (prevents overflow)</li>
+                        <li><strong>ConversationSummaryMemory:</strong> Summarize old messages (best for long conversations)</li>
+                        <li><strong>ConversationSummaryBufferMemory:</strong> Hybrid approach (most balanced)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🌐 Step 5: Web Interface with Gradio</h2>
+                
+                <h3>Create Interactive UI</h3>
+                <pre><code class="language-python"># app.py - Gradio web interface
+import gradio as gr
+from chatbot import create_chatbot, chat_with_citations
+from retriever import load_vector_store
+from ingest import ingest_documents
+import os
+
+# Global chatbot instance
+qa_chain = None
+
+def initialize_chatbot():
+    """Initialize or reinitialize the chatbot"""
+    global qa_chain
+    
+    # Check if vector store exists
+    if not os.path.exists("./data/chroma_db"):
+        return "⚠️ No documents found. Please upload documents first."
+    
+    try:
+        vectorstore = load_vector_store()
+        qa_chain = create_chatbot(vectorstore)
+        return "✅ Chatbot initialized successfully!"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+def upload_documents(files):
+    """Handle document uploads"""
+    if not files:
+        return "No files uploaded"
+    
+    # Create documents directory
+    os.makedirs("./data/documents", exist_ok=True)
+    
+    # Save uploaded files
+    for file in files:
+        filename = os.path.basename(file.name)
+        destination = f"./data/documents/{filename}"
+        
+        # Copy file
+        with open(file.name, 'rb') as src:
+            with open(destination, 'wb') as dst:
+                dst.write(src.read())
+    
+    # Ingest documents
+    try:
+        ingest_documents()
+        initialize_chatbot()
+        return f"✅ Successfully uploaded and processed {len(files)} document(s)"
+    except Exception as e:
+        return f"❌ Error processing documents: {str(e)}"
+
+def chat_interface(message, history):
+    """Handle chat messages"""
+    global qa_chain
+    
+    if qa_chain is None:
+        return "Please initialize the chatbot first by uploading documents."
+    
+    try:
+        result = chat_with_citations(qa_chain, message)
+        return result['answer']
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+# Create Gradio interface
+def create_ui():
+    """Create Gradio web interface"""
+    
+    with gr.Blocks(title="RAG Chatbot", theme=gr.themes.Soft()) as demo:
+        gr.Markdown("# 🤖 RAG Chatbot with Document Q&A")
+        gr.Markdown("Upload documents, then ask questions about them!")
+        
+        with gr.Tab("💬 Chat"):
+            chatbot = gr.Chatbot(height=500)
+            msg = gr.Textbox(
+                placeholder="Ask a question about your documents...",
+                label="Your Question"
+            )
+            clear = gr.Button("Clear Chat")
+            
+            msg.submit(chat_interface, [msg, chatbot], [chatbot])
+            clear.click(lambda: None, None, chatbot, queue=False)
+        
+        with gr.Tab("📄 Upload Documents"):
+            gr.Markdown("### Upload your documents (PDF, TXT)")
+            
+            file_upload = gr.File(
+                file_count="multiple",
+                label="Upload Documents",
+                file_types=[".pdf", ".txt"]
+            )
+            
+            upload_btn = gr.Button("Process Documents", variant="primary")
+            upload_status = gr.Textbox(label="Status", interactive=False)
+            
+            upload_btn.click(
+                upload_documents,
+                inputs=file_upload,
+                outputs=upload_status
+            )
+        
+        with gr.Tab("ℹ️ About"):
+            gr.Markdown("""
+            ### How it works
+            
+            1. **Upload Documents**: Add PDFs or text files
+            2. **Processing**: Documents are chunked and embedded
+            3. **Ask Questions**: Chat about your documents
+            4. **Get Answers**: Responses include source citations
+            
+            ### Features
+            - Semantic search with vector embeddings
+            - Conversational memory (remembers context)
+            - Source citations for transparency
+            - Supports PDF and text files
+            
+            ### Technologies
+            - **LangChain**: RAG pipeline
+            - **ChromaDB**: Vector database
+            - **OpenAI**: Embeddings and GPT-4
+            - **Gradio**: Web interface
+            """)
+    
+    return demo
+
+# Launch the app
+if __name__ == "__main__":
+    # Try to initialize chatbot if data exists
+    if os.path.exists("./data/chroma_db"):
+        initialize_chatbot()
+        print("✅ Chatbot initialized with existing data")
+    else:
+        print("⚠️ No existing data. Please upload documents first.")
+    
+    # Create and launch UI
+    demo = create_ui()
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=7860,
+        share=False  # Set to True to create public link
+    )
+</code></pre>
+
+                <h3>🚀 Launch the Application</h3>
+                <pre><code class="language-bash"># Run the Gradio app
+python app.py
+
+# Open browser to: http://localhost:7860
+
+# To create public link (accessible from anywhere):
+# demo.launch(share=True)</code></pre>
+
+                <div class="success-box">
+                    <p>✅ <strong>Your RAG chatbot is now running!</strong></p>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Go to http://localhost:7860 in your browser</li>
+                        <li>Upload documents (PDFs, TXT files)</li>
+                        <li>Wait for processing (~30 seconds for 10 pages)</li>
+                        <li>Start asking questions!</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Step 6: Testing & Evaluation</h2>
+                
+                <h3>Test Different Question Types</h3>
+                <pre><code class="language-python"># test_chatbot.py - Comprehensive testing
+from chatbot import create_chatbot, chat
+from retriever import load_vector_store
+
+def test_question_types():
+    """Test different types of questions"""
+    
+    vectorstore = load_vector_store()
+    qa_chain = create_chatbot(vectorstore)
+    
+    test_cases = [
+        # Factual questions
+        ("What is the definition of machine learning?", "factual"),
+        
+        # Comparison questions
+        ("What's the difference between supervised and unsupervised learning?", "comparison"),
+        
+        # List questions
+        ("What are the main applications of AI?", "list"),
+        
+        # Out-of-scope questions
+        ("What's the weather today?", "out-of-scope"),
+        
+        # Follow-up questions
+        ("Tell me more about neural networks", "follow-up"),
+        ("What are the advantages?", "follow-up-pronoun"),
+    ]
+    
+    print("=== Testing Different Question Types ===\n")
+    
+    for question, q_type in test_cases:
+        result = chat(qa_chain, question)
+        
+        print(f"Type: {q_type}")
+        print(f"Q: {question}")
+        print(f"A: {result['answer'][:200]}...")
+        print(f"Sources: {len(result['sources'])}")
+        print("-" * 80)
+        print()
+
+if __name__ == "__main__":
+    test_question_types()
+</code></pre>
+
+                <h3>Measure Retrieval Quality</h3>
+                <pre><code class="language-python">def evaluate_retrieval(vectorstore, test_queries):
+    """Evaluate retrieval quality"""
+    
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+    
+    print("=== Retrieval Quality Analysis ===\n")
+    
+    for query in test_queries:
+        docs = retriever.get_relevant_documents(query)
+        
+        print(f"Query: {query}")
+        print(f"Retrieved: {len(docs)} documents")
+        
+        # Check diversity (unique sources)
+        sources = [doc.metadata.get('source') for doc in docs]
+        unique_sources = len(set(sources))
+        print(f"Unique sources: {unique_sources}/{len(docs)}")
+        
+        # Check relevance (manual inspection needed)
+        print("Top result preview:")
+        print(f"  {docs[0].page_content[:150]}...")
+        print()
+
+test_queries = [
+    "What is deep learning?",
+    "Explain natural language processing",
+    "What are neural networks?"
+]
+
+vectorstore = load_vector_store()
+evaluate_retrieval(vectorstore, test_queries)
+</code></pre>
+
+                <h3>📈 Expected Performance</h3>
+                <div class="example-box">
+                    <h4>Typical Metrics:</h4>
+                    <ul>
+                        <li><strong>Response Time:</strong> 2-4 seconds (including retrieval + generation)</li>
+                        <li><strong>Retrieval Accuracy:</strong> 80-90% (relevant docs in top 4)</li>
+                        <li><strong>Answer Quality:</strong> High when docs contain answer</li>
+                        <li><strong>Source Coverage:</strong> 2-4 unique sources per answer</li>
+                        <li><strong>Hallucination Rate:</strong> <5% (with good prompting)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Step 7: Production Enhancements</h2>
+                
+                <h3>Add Caching for Faster Responses</h3>
+                <pre><code class="language-python">from functools import lru_cache
+import hashlib
+
+@lru_cache(maxsize=100)
+def cached_retrieval(query_hash):
+    """Cache retrieval results"""
+    # Implement cached retrieval logic
+    pass
+
+def get_cached_answer(question):
+    """Check cache before querying"""
+    question_hash = hashlib.md5(question.encode()).hexdigest()
+    
+    # Check if answer is cached
+    cached = redis_client.get(f"answer:{question_hash}")
+    if cached:
+        return cached
+    
+    # Generate new answer
+    result = chat(qa_chain, question)
+    
+    # Cache for 1 hour
+    redis_client.setex(
+        f"answer:{question_hash}",
+        3600,
+        result['answer']
+    )
+    
+    return result['answer']
+</code></pre>
+
+                <h3>Add User Feedback</h3>
+                <pre><code class="language-python"># In Gradio interface
+def rate_answer(rating):
+    """Collect user feedback"""
+    # Save to database
+    save_feedback(rating, question, answer)
+    return f"Thanks for your feedback! (Rating: {rating}/5)"
+
+with gr.Row():
+    rating = gr.Slider(1, 5, step=1, label="Rate this answer")
+    submit_rating = gr.Button("Submit Rating")
+    
+submit_rating.click(rate_answer, inputs=rating, outputs=feedback_text)
+</code></pre>
+
+                <h3>Monitoring & Logging</h3>
+                <pre><code class="language-python">import logging
+from datetime import datetime
+
+# Setup logging
+logging.basicConfig(
+    filename='chatbot.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+def chat_with_logging(qa_chain, question):
+    """Chat with comprehensive logging"""
+    
+    start_time = datetime.now()
+    
+    try:
+        result = chat(qa_chain, question)
+        
+        latency = (datetime.now() - start_time).total_seconds()
+        
+        logging.info(f"Question: {question}")
+        logging.info(f"Answer length: {len(result['answer'])}")
+        logging.info(f"Sources: {len(result['sources'])}")
+        logging.info(f"Latency: {latency:.2f}s")
+        
+        return result
+        
+    except Exception as e:
+        logging.error(f"Error: {e}")
+        raise
+</code></pre>
+
+                <h3>🎯 Production Checklist</h3>
+                <ul>
+                    <li>✅ Document processing pipeline (PDF, TXT, URLs)</li>
+                    <li>✅ Vector database with efficient retrieval</li>
+                    <li>✅ Conversational memory for context</li>
+                    <li>✅ Source citations for transparency</li>
+                    <li>✅ Web interface (Gradio)</li>
+                    <li>✅ Error handling and validation</li>
+                    <li>✅ Caching for performance</li>
+                    <li>✅ User feedback collection</li>
+                    <li>✅ Logging and monitoring</li>
+                    <li>✅ API key security (.env)</li>
+                </ul>
+            </section>
+
+            <section class="content-section">
+                <h2>🏆 Extensions & Improvements</h2>
+                
+                <h3>Advanced Features</h3>
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">🎭</div>
+                        <h3>Multi-modal RAG</h3>
+                        <p>Add support for images, tables, charts. Use GPT-4 Vision for visual Q&A.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🌍</div>
+                        <h3>Multi-lingual</h3>
+                        <p>Support documents in multiple languages. Use multilingual embeddings.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">🔄</div>
+                        <h3>Real-time Updates</h3>
+                        <p>Auto-sync documents from Google Drive, Notion, or Confluence.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">👥</div>
+                        <h3>Multi-user</h3>
+                        <p>Add authentication, per-user document collections, shared workspaces.</p>
+                    </div>
+                </div>
+
+                <h3>Deployment Options</h3>
+                <pre><code class="language-bash"># Docker deployment
+docker build -t rag-chatbot .
+docker run -p 7860:7860 -v $(pwd)/data:/app/data rag-chatbot
+
+# Cloud deployment (AWS, GCP, Azure)
+# Use managed vector DB: Pinecone, Weaviate, or pgvector
+
+# Serverless deployment
+# Use Lambda + API Gateway + DynamoDB</code></pre>
+
+                <h3>🎓 Challenge Extensions</h3>
+                <ol>
+                    <li><strong>Hybrid Search:</strong> Combine vector search with BM25 keyword search</li>
+                    <li><strong>Query Rewriting:</strong> Use LLM to reformulate ambiguous questions</li>
+                    <li><strong>Answer Confidence:</strong> Add confidence scores to answers</li>
+                    <li><strong>Streaming Responses:</strong> Stream answers token-by-token for better UX</li>
+                    <li><strong>Voice Interface:</strong> Add speech-to-text and text-to-speech</li>
+                </ol>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Complete Code Summary</h2>
+                
+                <h3>Project Structure</h3>
+                <pre><code class="language-plaintext">rag-chatbot/
+├── data/
+│   ├── documents/           # Your PDFs, TXT files
+│   │   ├── ai_overview.pdf
+│   │   ├── ml_guide.txt
+│   │   └── ...
+│   └── chroma_db/          # Vector database storage
+│       └── ...
+├── src/
+│   ├── ingest.py           # Document loading, chunking, embedding
+│   ├── retriever.py        # Vector search and retrieval
+│   ├── chatbot.py          # RAG pipeline with memory
+│   └── app.py              # Gradio web interface
+├── .env                     # OPENAI_API_KEY=sk-...
+├── requirements.txt         # Dependencies
+└── README.md               # Documentation</code></pre>
+
+                <h3>What You Learned</h3>
+                <ul>
+                    <li>✅ Load and process documents (PDF, TXT, web pages)</li>
+                    <li>✅ Chunk documents intelligently with overlap</li>
+                    <li>✅ Create embeddings with OpenAI ada-002</li>
+                    <li>✅ Store and query vector database (ChromaDB)</li>
+                    <li>✅ Build RAG pipeline with LangChain</li>
+                    <li>✅ Add conversational memory for context</li>
+                    <li>✅ Implement semantic search (similarity, MMR)</li>
+                    <li>✅ Generate answers with source citations</li>
+                    <li>✅ Create web interface with Gradio</li>
+                    <li>✅ Deploy production-ready chatbot</li>
+                </ul>
+
+                <h3>📊 Cost Estimate</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                    <thead style="background: #f1f5f9;">
+                        <tr>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Component</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Usage</th>
+                            <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Embeddings</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100k tokens (one-time)</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">$0.10</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>GPT-4 Queries</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">100 questions</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">$3.00</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>ChromaDB</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Local storage</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Free</td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Total (dev)</strong></td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Testing + 100 queries</td>
+                            <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>~$3.50</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You've built a production-ready RAG chatbot. You can now:</p>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Build document Q&A systems for any domain</li>
+                        <li>Implement semantic search over large document collections</li>
+                        <li>Create conversational AI with grounded responses</li>
+                        <li>Deploy LangChain applications to production</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🔗 Resources & Next Steps</h2>
+                
+                <h3>Code Repository</h3>
+                <p>Full project code: <a href="https://github.com/nebaz-ai-academy/rag-chatbot" target="_blank">github.com/nebaz-ai-academy/rag-chatbot</a></p>
+
+                <h3>Further Reading</h3>
+                <ul>
+                    <li><a href="https://python.langchain.com/docs/get_started" target="_blank">LangChain Documentation</a></li>
+                    <li><a href="https://www.trychroma.com/" target="_blank">ChromaDB Documentation</a></li>
+                    <li><a href="https://arxiv.org/abs/2005.11401" target="_blank">RAG Paper (Lewis et al., 2020)</a></li>
+                    <li><a href="https://www.gradio.app/docs" target="_blank">Gradio Documentation</a></li>
+                </ul>
+
+                <h3>Next Project</h3>
+                <ul>
+                    <li><strong>Project 3:</strong> Deploy a Fine-tuned LLM at scale with vLLM</li>
+                </ul>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What does RAG stand for?</strong></p>
+                    <div class="quiz-option" data-value="a">Random Access Generation</div>
+                    <div class="quiz-option" data-value="b">Rapid Application Gateway</div>
+                    <div class="quiz-option" data-value="c">Retrieval-Augmented Generation</div>
+                    <div class="quiz-option" data-value="d">Recursive Adaptive Grounding</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What is the purpose of vector embeddings in RAG systems?</strong></p>
+                    <div class="quiz-option" data-value="a">To make the model larger</div>
+                    <div class="quiz-option" data-value="b">To enable semantic similarity search for relevant document retrieval</div>
+                    <div class="quiz-option" data-value="c">To compress text</div>
+                    <div class="quiz-option" data-value="d">To translate languages</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: Which database is commonly used for vector storage in RAG applications?</strong></p>
+                    <div class="quiz-option" data-value="a">MySQL</div>
+                    <div class="quiz-option" data-value="b">SQLite</div>
+                    <div class="quiz-option" data-value="c">MongoDB</div>
+                    <div class="quiz-option" data-value="d">ChromaDB, Pinecone, or FAISS</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What are the main steps in a RAG pipeline?</strong></p>
+                    <div class="quiz-option" data-value="a">Retrieve relevant documents, augment prompt with context, generate response</div>
+                    <div class="quiz-option" data-value="b">Only generate responses</div>
+                    <div class="quiz-option" data-value="c">Only store embeddings</div>
+                    <div class="quiz-option" data-value="d">Only tokenize text</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: What is the key benefit of RAG over vanilla LLMs?</strong></p>
+                    <div class="quiz-option" data-value="a">RAG makes models smaller</div>
+                    <div class="quiz-option" data-value="b">RAG reduces latency</div>
+                    <div class="quiz-option" data-value="c">RAG grounds responses in external knowledge, reducing hallucinations and enabling domain-specific answers</div>
+                    <div class="quiz-option" data-value="d">RAG eliminates the need for GPUs</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="project-1-fine-tune-bert.html">← Project 1: Fine-tune BERT</a>
+                <a href="../../courses/llms-and-transformers.html">Back to Course</a>
+                <a href="project-3-deploy-llm.html">Next: Project 3 →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+    </body>
+
+</html>

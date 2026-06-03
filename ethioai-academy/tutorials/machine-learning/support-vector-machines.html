@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Support Vector Machines - powerful algorithms for classification using kernel methods and optimal decision boundaries.">
+    <meta name="keywords" content="support vector machines tutorial, SVM, kernel methods, machine learning, classification">
+    <title>Support Vector Machines - SVM ML Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="support-vector-machines.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #078930 0%, #0d9488 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .info-box h3 { margin-top: 0; color: #065f46; }
+        .info-box p { margin: 0; color: #065f46; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box p { margin: 0; color: #92400e; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box p { margin: 0; color: #065f46; }
+        .example-box { background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; margin: 1.5rem 0; }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .info-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; }
+        .info-card:hover { border-color: #078930; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
+        .card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .info-card h3 { margin-top: 0; font-size: 1.1rem; }
+        .info-card p { margin: 0; font-size: 0.9rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+        .comparison-table th, .comparison-table td { padding: 1rem; text-align: left; border: 1px solid var(--border-color); }
+        .comparison-table th { background-color: var(--bg-light); font-weight: 600; }
+        .comparison-table tr:hover { background-color: #f9fafb; }
+        .formula-box { background: white; border: 2px solid #e2e8f0; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; text-align: center; font-family: serif; }
+        .formula-box code { color: #1e293b; background: transparent; }
+        .tutorial-navigation { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--border-color); flex-wrap: wrap; gap: 1rem; }
+        .tutorial-navigation a { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background-color: var(--bg-light); border-radius: 0.5rem; font-weight: 600; text-decoration: none; transition: all 0.2s; }
+        .tutorial-navigation a:hover { background-color: var(--primary-color); color: white; }
+        @media (max-width: 768px) { .tutorial-meta-info { justify-content: center; } .tutorial-navigation { flex-direction: column; } .tutorial-navigation a { justify-content: center; } .comparison-table { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Support Vector Machines</span>
+            </div>
+            <h1>Support Vector Machines</h1>
+            <p class="tutorial-intro">Learn the elegant algorithm that finds optimal decision boundaries in any dimensional space</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 6</span>
+                <span class="meta-item">📊 Advanced</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Welcome to Support Vector Machines</h2>
+                <p>
+                    Support Vector Machines (SVMs) represent a fundamentally different philosophy from tree-based algorithms. While Decision Trees ask "what splits the data best?", SVMs ask "what line separates the classes with maximum confidence?"
+                </p>
+                <p>
+                    This elegant approach often outperforms other algorithms, especially on smaller datasets or when data has clear decision boundaries.
+                </p>
+            </section>
+
+            <section class="content-section">
+                <h2>🔍 The Core Concept: Maximum Margin</h2>
+                
+                <div class="info-box">
+                    <h3>📐 Support Vector Machine Definition</h3>
+                    <p>
+                        An SVM finds the decision boundary (hyperplane) that <strong>maximizes the distance (margin)</strong> between the closest points of each class. These closest points are called <strong>"support vectors"</strong> because they literally support (define) the boundary.
+                    </p>
+                </div>
+
+                <h3>🎯 Intuitive Example: Separating Red and Blue Points</h3>
+                <p>
+                    Imagine separating red and blue points on a 2D plot. There are infinite lines that could separate them perfectly.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Three possible separating lines:</strong><br><br>
+                    
+                    <strong>Line A:</strong> Very close to red points (margin = 0.5)<br>
+                    • Prediction: Works on training data<br>
+                    • Problem: New red points near boundary might be misclassified<br>
+                    • Fragile to noise ❌<br><br>
+
+                    <strong>Line B:</strong> Very close to blue points (margin = 0.3)<br>
+                    • Prediction: Works on training data<br>
+                    • Problem: New blue points near boundary might be misclassified<br>
+                    • Fragile to noise ❌<br><br>
+
+                    <strong>Line C (SVM choice):</strong> Maximum distance from both classes (margin = 2.0)<br>
+                    • Prediction: Works on training data AND new data<br>
+                    • Benefit: Large margin = robust to noise and variations<br>
+                    • Best generalization ✅
+                </div>
+
+                <div class="example-box">
+                    <strong>🤔 Why maximize margin?</strong>
+                    <p style="margin-top: 0.75rem;">
+                        <strong>Geometric Intuition:</strong> A line squeezed between classes is fragile. A small shift in data (noise, measurement error, sampling variation) could flip predictions.<br><br>
+                        
+                        <strong>Statistical Intuition:</strong> Larger margin = better generalization. The SVM is saying "I'm so confident about this boundary that even if data shifts by this much, I'm still correct."<br><br>
+
+                        <strong>Mathematical Intuition:</strong> Maximum margin minimizes model complexity (via ||w||²), which is equivalent to regularization. This prevents overfitting.
+                    </p>
+                </div>
+
+                <h3>📊 Support Vectors: The Key Players</h3>
+                <div style="background: #ecfdf5; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;">
+                    <strong>What are Support Vectors?</strong><br><br>
+                    
+                    <strong>Definition:</strong> The data points closest to the decision boundary<br><br>
+
+                    <strong>Key Properties:</strong><br>
+                    • These points "support" (define) the margin<br>
+                    • Removing any support vector changes the boundary<br>
+                    • Removing non-support vectors has NO effect<br>
+                    • Typically only 10-30% of training data are support vectors<br><br>
+
+                    <strong>Example:</strong> Training set with 1000 points<br>
+                    • 950 points are far from boundary → ignored after training<br>
+                    • 50 points are support vectors → determine the boundary<br>
+                    • Result: 95% of training data is redundant!<br><br>
+
+                    <strong>Implication:</strong> SVM predictions are fast because they only depend on support vectors, not all training data.
+                </div>
+
+                <h3>📐 Mathematical Formulation</h3>
+                <div class="formula-box">
+                    <strong>Decision Boundary (Hyperplane):</strong><br>
+                    <code>w · x + b = 0</code><br><br>
+                    
+                    where:<br>
+                    • <strong>w</strong> = weight vector (perpendicular to hyperplane)<br>
+                    • <strong>x</strong> = feature vector (data point)<br>
+                    • <strong>b</strong> = bias term (intercept)<br>
+                    • <strong>·</strong> = dot product<br><br>
+
+                    <strong>Margin Width:</strong> <code>2 / ||w||</code><br>
+                    (To maximize margin, minimize ||w||)
+                </div>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Step-by-Step: How SVM Finds the Boundary</strong><br><br>
+                    
+                    <strong>Given:</strong> Training data (x₁, y₁), (x₂, y₂), ..., (xₙ, yₙ)<br>
+                    where y ∈ {-1, +1} (two classes)<br><br>
+
+                    <strong>Goal:</strong> Find w and b that maximize margin<br><br>
+
+                    <strong>Constraints:</strong> All points must be on correct side of margin:<br>
+                    • For class +1: w · xᵢ + b ≥ +1<br>
+                    • For class -1: w · xᵢ + b ≤ -1<br>
+                    • Combined: yᵢ(w · xᵢ + b) ≥ 1 for all i<br><br>
+
+                    <strong>Optimization Problem:</strong><br>
+                    Minimize: ||w||² / 2 (maximize margin)<br>
+                    Subject to: yᵢ(w · xᵢ + b) ≥ 1 for all i<br><br>
+
+                    <strong>Solution Method:</strong> Quadratic programming (convex optimization)<br>
+                    • Guaranteed global optimum (no local minima)<br>
+                    • Computationally expensive for large datasets
+                </div>
+
+                <h3>🔴🔵 Hard Margin vs Soft Margin</h3>
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>Hard Margin SVM</h3>
+                        <p><strong>Assumption:</strong> Data is perfectly linearly separable</p>
+                        <p><strong>Constraint:</strong> No points inside margin (strict)</p>
+                        <p><strong>Problem:</strong> Fails if data has ANY overlap</p>
+                        <p><strong>Use:</strong> Rarely in practice (real data is noisy)</p>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>Soft Margin SVM (C parameter)</h3>
+                        <p><strong>Reality:</strong> Real data has noise, outliers, overlap</p>
+                        <p><strong>Solution:</strong> Allow some violations of margin</p>
+                        <p><strong>Trade-off:</strong> Balance margin width vs misclassifications</p>
+                        <p><strong>Use:</strong> Always in practice (default approach)</p>
+                    </div>
+                </div>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+                    <strong>⚖️ The C Parameter: Regularization Trade-off</strong><br><br>
+                    
+                    <strong>Low C (e.g., C=0.01):</strong><br>
+                    • Wide margin, many violations allowed<br>
+                    • More regularization → simpler model<br>
+                    • Good generalization, may underfit<br>
+                    • Use when: Data is noisy, prefer smooth boundary<br><br>
+
+                    <strong>High C (e.g., C=100):</strong><br>
+                    • Narrow margin, few violations allowed<br>
+                    • Less regularization → complex model<br>
+                    • Fits training data tightly, may overfit<br>
+                    • Use when: Data is clean, need precision<br><br>
+
+                    <strong>Default C=1.0:</strong> Good starting point for most problems
+                </div>
+
+                <div class="success-box">
+                    <p>✅ <strong>Key Insight:</strong> Only support vectors matter! After training, you can delete 90% of your training data (non-support vectors) and predictions remain identical. This makes SVM predictions very fast.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>⚡ Linear vs Non-linear SVMs</h2>
+                
+                <h3>📏 Linear SVMs: When Data is Separable</h3>
+                <p>
+                    When data is linearly separable, a straight line (or hyperplane in higher dimensions) can perfectly separate classes. Linear SVMs find the maximum margin line.
+                </p>
+
+                <div class=\"formula-box\">
+                    <strong>Decision Boundary:</strong> <code>w · x + b = 0</code><br><br>
+                    where:<br>
+                    • <strong>w</strong> = weight vector (determines slope)<br>
+                    • <strong>x</strong> = feature vector<br>
+                    • <strong>b</strong> = bias term (intercept)<br><br>
+
+                    <strong>Prediction:</strong><br>
+                    • If w · x + b > 0 → Class +1<br>
+                    • If w · x + b < 0 → Class -1
+                </div>
+
+                <div class=\"example-box\">\n                    <p><strong>📊 Linear SVM Example:</strong></p>\n                    <p style=\"margin-top: 1rem;\">\n                        <strong>Dataset:</strong> Email classification<br>\n                        • Feature 1: Number of exclamation marks<br>\n                        • Feature 2: Percentage of CAPITAL LETTERS<br><br>\n\n                        <strong>Observation:</strong><br>\n                        Spam emails cluster in high-exclamation, high-caps region<br>\n                        Legitimate emails cluster in low-exclamation, low-caps region<br><br>\n\n                        <strong>Linear SVM draws a straight line:</strong><br>\n                        Above line = Spam | Below line = Legitimate<br>\n                        Works perfectly! \u2705\n                    </p>\n                </div>\n\n                <h3>\ud83c\udf00 The Kernel Trick: Handling Non-Linearity</h3>\n                <p>\n                    Many real-world problems aren't linearly separable in their original feature space. The <strong>kernel trick</strong> is one of SVM's most brilliant innovations.\n                </p>\n\n                <div style=\"background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;\">\n                    <strong>\ud83e\udd14 Problem: Non-Linear Data</strong><br><br>\n                    \n                    <strong>Example:</strong> XOR problem<br>\n                    • Points: (0,0)→Class 0, (0,1)→Class 1, (1,0)→Class 1, (1,1)→Class 0<br>\n                    • No straight line can separate these classes!<br>\n                    • Linear SVM fails \u274c<br><br>\n\n                    <strong>\ud83d\udca1 Solution: Transform to Higher Dimensions</strong><br><br>\n                    \n                    <strong>Original 2D space:</strong> (x₁, x₂)<br>\n                    \u2022 Not linearly separable<br><br>\n\n                    <strong>Transform to 3D space:</strong> (x₁, x₂, x₁×x₂)<br>\n                    \u2022 Add interaction term as new dimension<br>\n                    \u2022 Now linearly separable in 3D!<br>\n                    \u2022 Linear SVM works in higher dimension \u2705<br><br>\n\n                    <strong>The Trick:</strong> Don't actually compute high-dimensional transformation<br>\n                    \u2022 Use kernel function: K(x₁, x₂) = φ(x₁) · φ(x₂)<br>\n                    \u2022 Compute dot products in original space<br>\n                    \u2022 Equivalent to working in infinite dimensions!<br>\n                    \u2022 Computationally efficient \ud83d\ude80\n                </div>\n\n                <h3>\ud83d\udee0\ufe0f Kernel Functions Explained</h3>\n                <table class=\"comparison-table\">\n                    <thead>\n                        <tr>\n                            <th style=\"width: 20%;\">Kernel Type</th>\n                            <th style=\"width: 35%;\">Formula</th>\n                            <th style=\"width: 25%;\">Use Case</th>\n                            <th style=\"width: 20%;\">Parameters</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td><strong>Linear</strong></td>\n                            <td><code>K(x, x') = x · x'</code></td>\n                            <td>Text, sparse data, linearly separable</td>\n                            <td>None</td>\n                        </tr>\n                        <tr>\n                            <td><strong>RBF (Gaussian)</strong></td>\n                            <td><code>K(x, x') = exp(-γ||x-x'||²)</code></td>\n                            <td>Default choice, complex patterns</td>\n                            <td>γ (gamma)</td>\n                        </tr>\n                        <tr>\n                            <td><strong>Polynomial</strong></td>\n                            <td><code>K(x, x') = (γx·x' + r)^d</code></td>\n                            <td>Image processing, polynomial features</td>\n                            <td>degree (d), γ, r</td>\n                        </tr>\n                        <tr>\n                            <td><strong>Sigmoid</strong></td>\n                            <td><code>K(x, x') = tanh(γx·x' + r)</code></td>\n                            <td>Neural network-like (rarely used)</td>\n                            <td>γ, r</td>\n                        </tr>\n                    </tbody>\n                </table>\n\n                <h3>\ud83c\udfaf RBF Kernel: The Default Choice</h3>\n                <div style=\"background: #ecfdf5; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;\">\n                    <strong>RBF (Radial Basis Function) Kernel</strong><br><br>\n                    \n                    <strong>Formula:</strong> K(x, x') = exp(-γ||x - x'||²)<br><br>\n\n                    <strong>Intuition:</strong> Similarity measure between points<br>\n                    \u2022 If x and x' are close: K ≈ 1 (very similar)<br>\n                    \u2022 If x and x' are far: K ≈ 0 (not similar)<br>\n                    \u2022 γ controls \"influence radius\"<br><br>\n\n                    <strong>Gamma (γ) Parameter:</strong><br><br>\n\n                    <strong>Low γ (e.g., 0.001):</strong><br>\n                    \u2022 Wide influence radius<br>\n                    \u2022 Smooth, simple decision boundary<br>\n                    \u2022 High bias, low variance<br>\n                    \u2022 May underfit<br><br>\n\n                    <strong>High γ (e.g., 10):</strong><br>\n                    \u2022 Narrow influence radius<br>\n                    \u2022 Complex, wiggly decision boundary<br>\n                    \u2022 Low bias, high variance<br>\n                    \u2022 May overfit<br><br>\n\n                    <strong>Default γ='scale':</strong> 1 / (n_features × variance(X))<br>\n                    \u2022 Automatically adjusts to your data<br>\n                    \u2022 Good starting point\n                </div>\n\n                <h3>\ud83d\udccf Kernel Selection Guide</h3>\n                <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0;\">\n                    <div style=\"background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;\">\n                        <strong>Use Linear Kernel When:</strong>\n                        <ul style=\"margin-top: 0.5rem;\">\n                            <li>\u2022 High-dimensional data (features > samples)</li>\n                            <li>\u2022 Text classification (TF-IDF features)</li>\n                            <li>\u2022 Data already linearly separable</li>\n                            <li>\u2022 Need fast training & prediction</li>\n                            <li>\u2022 Want interpretable feature weights</li>\n                        </ul>\n                    </div>\n                    \n                    <div style=\"background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #0d9488;\">\n                        <strong>Use RBF Kernel When:</strong>\n                        <ul style=\"margin-top: 0.5rem;\">\n                            <li>\u2022 Don't know data structure (default)</li>\n                            <li>\u2022 Non-linear relationships expected</li>\n                            <li>\u2022 Medium-sized datasets (<10k samples)</li>\n                            <li>\u2022 Features are numeric & scaled</li>\n                            <li>\u2022 Need flexibility & accuracy</li>\n                        </ul>\n                    </div>\n\n                    <div style=\"background: #f8fafc; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;\">\n                        <strong>Use Polynomial Kernel When:</strong>\n                        <ul style=\"margin-top: 0.5rem;\">\n                            <li>\u2022 Know data has polynomial relationships</li>\n                            <li>\u2022 Image processing tasks</li>\n                            <li>\u2022 Feature interactions matter</li>\n                            <li>\u2022 Computer vision problems</li>\n                            <li>\u2022 Degree 2-3 usually sufficient</li>\n                        </ul>\n                    </div>\n                </div>\n\n                <div class=\"info-box\">\n                    <p>\ud83d\udca1 <strong>Pro Tip:</strong> For 95% of problems, start with <strong>RBF kernel</strong> (default). Only switch to linear if you have high-dimensional sparse data (like text) or polynomial if you have domain knowledge about feature interactions.</p>\n                </div>\n\n                <div class=\"warning-box\">\n                    <p>\u26a0\ufe0f <strong>Critical:</strong> The kernel trick only works if you've <strong>standardized your features</strong>! Distance-based kernels (RBF, polynomial) are extremely sensitive to feature scales.</p>\n                </div>\n            </section>"}
+
+            <section class="content-section">
+                <h2>💻 SVM in Python</h2>
+                
+                <h3>🎯 Complete Classification Example with Iris Dataset</h3>
+                <pre><code class="language-python"># Complete SVM Classification: Iris Flowers
+from sklearn.datasets import load_iris
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import numpy as np
+
+# Load dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# CRITICAL: Standardize features (SVMs require this!)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+print("✅ Features scaled: mean=0, std=1")
+
+# Train SVM with RBF kernel
+svm = SVC(
+    kernel='rbf',
+    C=1.0,
+    gamma='scale',
+    random_state=42
+)
+svm.fit(X_train_scaled, y_train)
+
+# Evaluate
+train_acc = svm.score(X_train_scaled, y_train)
+test_acc = svm.score(X_test_scaled, y_test)
+
+print(f"\nTraining Accuracy: {train_acc:.2%}")
+print(f"Test Accuracy: {test_acc:.2%}")
+
+# Cross-validation
+cv_scores = cross_val_score(svm, X_train_scaled, y_train, cv=5)
+print(f"5-Fold CV: {cv_scores.mean():.2%} (+/- {cv_scores.std()*2:.2%})")
+
+# Support vectors analysis
+print(f"\n📊 Support Vectors:")
+print(f"  Total: {len(svm.support_vectors_)} / {len(X_train_scaled)}")
+print(f"  Percentage: {len(svm.support_vectors_)/len(X_train_scaled):.1%}")
+print(f"  Per class: {svm.n_support_}")
+
+# Detailed classification report
+y_pred = svm.predict(X_test_scaled)
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred, target_names=iris.target_names))</code></pre>
+
+                <h3>📧 Text Classification with Linear SVM</h3>
+                <pre><code class="language-python"># Text Classification: Email Spam Detection
+from sklearn.svm import LinearSVC
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+# Larger email dataset
+emails = [
+    "Win free money now!!!", "Click here for amazing offers",
+    "Hi John, can we schedule a meeting?", "Let's sync up on the Q3 roadmap",
+    "CONGRATULATIONS YOU ARE A WINNER", "Meeting notes from yesterday",
+    "FREE GIFT CARDS CLICK NOW", "Budget review for next quarter",
+    "URGENT: Claim your prize today", "Can you review the proposal?",
+    "Get rich quick scheme", "Project timeline update",
+    "BUY NOW LIMITED TIME OFFER", "Thanks for your feedback"
+]
+labels = [1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    emails, labels, test_size=0.3, random_state=42
+)
+
+# Pipeline: TF-IDF → Linear SVM
+# Linear SVM is FAST for text (high-dimensional sparse features)
+pipeline = Pipeline([
+    ('tfidf', TfidfVectorizer(
+        max_features=500,
+        stop_words='english',
+        ngram_range=(1, 2)  # Unigrams + bigrams
+    )),
+    ('svm', LinearSVC(C=1.0, max_iter=1000, random_state=42))
+])
+
+pipeline.fit(X_train, y_train)
+
+# Evaluate
+print(f"Training Accuracy: {pipeline.score(X_train, y_train):.2%}")
+print(f"Test Accuracy: {pipeline.score(X_test, y_test):.2%}")
+
+# Test new emails
+new_emails = [
+    "Hello, following up on our discussion",
+    "CLICK NOW FOR EXCLUSIVE DEALS!!!",
+    "Project update and next steps"
+]
+
+for email in new_emails:
+    pred = pipeline.predict([email])[0]
+    label = "🚨 SPAM" if pred == 1 else "✅ LEGITIMATE"
+    print(f"\n'{email[:40]}...'")
+    print(f"  → {label}")
+
+# Feature importance: Top spam words
+svm_model = pipeline.named_steps['svm']
+vectorizer = pipeline.named_steps['tfidf']
+feature_names = vectorizer.get_feature_names_out()
+coefficients = svm_model.coef_[0]
+
+top_spam_idx = np.argsort(coefficients)[-5:]
+print(f"\n🚨 Top Spam Indicators:")
+for idx in reversed(top_spam_idx):
+    print(f"  '{feature_names[idx]}': {coefficients[idx]:.2f}")</code></pre>
+
+                <h3>📊 Visualizing Decision Boundaries</h3>
+                <pre><code class="language-python"># Visualize SVM Decision Boundary (2D)
+from sklearn.datasets import make_classification
+from matplotlib.colors import ListedColormap
+import matplotlib.pyplot as plt
+
+# Generate 2D dataset for visualization
+X, y = make_classification(
+    n_samples=100, n_features=2, n_redundant=0,
+    n_informative=2, n_clusters_per_class=1, random_state=42
+)
+
+# Standardize
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Train SVM
+svm = SVC(kernel='rbf', C=1.0, gamma=2, random_state=42)
+svm.fit(X_scaled, y)
+
+# Create mesh for contour plot
+x_min, x_max = X_scaled[:, 0].min() - 1, X_scaled[:, 0].max() + 1
+y_min, y_max = X_scaled[:, 1].min() - 1, X_scaled[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                     np.arange(y_min, y_max, 0.02))
+
+# Predict on mesh
+Z = svm.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundary
+plt.figure(figsize=(10, 6))
+plt.contourf(xx, yy, Z, alpha=0.3, cmap=ListedColormap(['#FFAAAA', '#AAAAFF']))
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=y, 
+            cmap=ListedColormap(['#FF0000', '#0000FF']),
+            edgecolor='black', s=50)
+
+# Highlight support vectors
+support_vectors = svm.support_vectors_
+plt.scatter(support_vectors[:, 0], support_vectors[:, 1],
+            s=200, linewidth=2, facecolors='none', edgecolors='green',
+            label=f'Support Vectors ({len(support_vectors)})')
+
+plt.xlabel('Feature 1 (scaled)')
+plt.ylabel('Feature 2 (scaled)')
+plt.title('SVM Decision Boundary with Support Vectors')
+plt.legend()
+plt.show()</code></pre>
+
+                <h3>🔄 Comparing Linear vs RBF Kernels</h3>
+                <pre><code class="language-python"># Compare kernels on XOR-like problem
+from sklearn.datasets import make_circles
+import matplotlib.pyplot as plt
+
+# Generate non-linear dataset (circles)
+X, y = make_circles(n_samples=200, noise=0.1, factor=0.5, random_state=42)
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Train both kernels
+svm_linear = SVC(kernel='linear', random_state=42)
+svm_rbf = SVC(kernel='rbf', gamma=1, random_state=42)
+
+svm_linear.fit(X_scaled, y)
+svm_rbf.fit(X_scaled, y)
+
+print(f"Linear SVM Accuracy: {svm_linear.score(X_scaled, y):.2%}")
+print(f"RBF SVM Accuracy: {svm_rbf.score(X_scaled, y):.2%}")
+
+# Visualize both
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+for ax, svm, title in zip(axes, [svm_linear, svm_rbf], ['Linear Kernel', 'RBF Kernel']):
+    # Create mesh
+    x_min, x_max = X_scaled[:, 0].min() - 0.5, X_scaled[:, 0].max() + 0.5
+    y_min, y_max = X_scaled[:, 1].min() - 0.5, X_scaled[:, 1].max() + 0.5
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                         np.arange(y_min, y_max, 0.02))
+    
+    Z = svm.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    
+    ax.contourf(xx, yy, Z, alpha=0.3, cmap=ListedColormap(['#FFAAAA', '#AAAAFF']))
+    ax.scatter(X_scaled[:, 0], X_scaled[:, 1], c=y,
+               cmap=ListedColormap(['#FF0000', '#0000FF']),
+               edgecolor='black', s=30)
+    ax.set_title(f'{title} (Acc: {svm.score(X_scaled, y):.1%})')
+    ax.set_xlabel('Feature 1')
+    ax.set_ylabel('Feature 2')
+
+plt.tight_layout()
+plt.show()
+
+# Result: RBF handles non-linear patterns, Linear fails!</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>⚙️ Hyperparameter Tuning Guide</h2>
+                
+                <h3>📊 Key Hyperparameters Explained</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Parameter</th>
+                            <th style="width: 35%;">What It Does</th>
+                            <th style="width: 20%;">Default</th>
+                            <th style="width: 25%;">Typical Range</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>kernel</strong></td>
+                            <td>Type of decision boundary</td>
+                            <td>'rbf'</td>
+                            <td>'linear', 'rbf', 'poly'</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C</strong></td>
+                            <td>Regularization strength (soft margin)</td>
+                            <td>1.0</td>
+                            <td>0.01 to 1000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>gamma</strong></td>
+                            <td>RBF/poly kernel coefficient</td>
+                            <td>'scale'</td>
+                            <td>0.0001 to 10 or 'scale'/'auto'</td>
+                        </tr>
+                        <tr>
+                            <td><strong>degree</strong></td>
+                            <td>Polynomial kernel degree</td>
+                            <td>3</td>
+                            <td>2 to 5</td>
+                        </tr>
+                        <tr>
+                            <td><strong>class_weight</strong></td>
+                            <td>Handle imbalanced classes</td>
+                            <td>None</td>
+                            <td>None or 'balanced'</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🎯 Hyperparameter Tuning Strategy</h3>
+                <pre><code class="language-python"># Method 1: Grid Search (Exhaustive)
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+
+# Always scale first!
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Define parameter grid
+param_grid = {
+    'kernel': ['linear', 'rbf'],
+    'C': [0.1, 1, 10, 100],
+    'gamma': ['scale', 0.001, 0.01, 0.1, 1]
+}
+
+grid_search = GridSearchCV(
+    SVC(random_state=42),
+    param_grid,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    verbose=1
+)
+
+grid_search.fit(X_train_scaled, y_train)
+
+print(f"Best parameters: {grid_search.best_params_}")
+print(f"Best CV score: {grid_search.best_score_:.2%}")
+print(f"Test score: {grid_search.score(X_test_scaled, y_test):.2%}")
+
+# Method 2: Random Search (Faster for large grids)
+from sklearn.model_selection import RandomizedSearchCV
+from scipy.stats import loguniform
+
+param_dist = {
+    'C': loguniform(0.01, 100),
+    'gamma': loguniform(0.0001, 1),
+    'kernel': ['rbf', 'linear']
+}
+
+random_search = RandomizedSearchCV(
+    SVC(random_state=42),
+    param_distributions=param_dist,
+    n_iter=20,
+    cv=5,
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search.fit(X_train_scaled, y_train)
+print(f"\nBest parameters: {random_search.best_params_}")</code></pre>
+
+                <h3>💡 Tuning Guidelines</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: #ecfdf5; padding: 1rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        <strong>C Parameter (Regularization)</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Controls margin width vs violations trade-off</li>
+                            <li>• Small C (0.01): Wide margin, simple model</li>
+                            <li>• Large C (100): Narrow margin, complex model</li>
+                            <li>• <strong>Advice:</strong> Start with C=1, tune if needed</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                        <strong>Gamma (RBF Kernel)</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Controls influence radius of support vectors</li>
+                            <li>• Low gamma: Wide influence, smooth boundary</li>
+                            <li>• High gamma: Narrow influence, wiggly boundary</li>
+                            <li>• <strong>Advice:</strong> Use 'scale' (default)</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <strong>Kernel Selection</strong>
+                        <ul style="margin-top: 0.5rem;">
+                            <li>• Linear: Fast, high dimensions, text</li>
+                            <li>• RBF: Default, general purpose</li>
+                            <li>• Poly: Domain-specific polynomial relationships</li>
+                            <li>• <strong>Advice:</strong> Start with RBF</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>CRITICAL: Feature Scaling is Mandatory!</strong> SVMs are extremely sensitive to feature scales. Distance-based kernels (RBF, polynomial) will fail without standardization. Always use StandardScaler or MinMaxScaler before training!</p>
+                </div>
+
+                <pre><code class="language-python"># ❌ WRONG: Training without scaling
+svm = SVC(kernel='rbf')
+svm.fit(X_train, y_train)  # Will perform poorly!
+
+# ✅ RIGHT: Always scale features
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+svm = SVC(kernel='rbf')
+svm.fit(X_train_scaled, y_train)
+predictions = svm.predict(X_test_scaled)  # Much better!</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🔧 Troubleshooting Guide</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Problem</th>
+                            <th style="width: 30%;">Symptoms</th>
+                            <th style="width: 45%;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Slow Training</strong></td>
+                            <td>Training takes hours on 10k+ samples</td>
+                            <td>• Use LinearSVC instead of SVC(kernel='linear')<br>• Sample training data for tuning<br>• Switch to Random Forest for large datasets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Poor Performance</strong></td>
+                            <td>Accuracy below baseline (~50%)</td>
+                            <td>• <strong>Check feature scaling!</strong> (most common)<br>• Try different kernels<br>• Tune C and gamma<br>• Check for data leakage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overfitting</strong></td>
+                            <td>Training 99%, Test 70%</td>
+                            <td>• Decrease C (more regularization)<br>• Decrease gamma (simpler RBF)<br>• Use cross-validation<br>• Collect more data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Underfitting</strong></td>
+                            <td>Both training and test accuracy low</td>
+                            <td>• Increase C (less regularization)<br>• Increase gamma (more complex)<br>• Try non-linear kernel (RBF instead of linear)<br>• Feature engineering</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Imbalanced Classes</strong></td>
+                            <td>Predicts majority class always</td>
+                            <td>• Use class_weight='balanced'<br>• Manually set class_weight={0:1, 1:10}<br>• Oversample minority class (SMOTE)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Memory Error</strong></td>
+                            <td>Out of memory during training</td>
+                            <td>• Use LinearSVC (less memory)<br>• Reduce training data size<br>• Use SGDClassifier (online learning)<br>• Switch to ensemble methods</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>🐛 Common Code Mistakes</h3>
+                <pre><code class="language-python"># ❌ MISTAKE 1: Forgetting to scale
+svm = SVC(kernel='rbf')
+svm.fit(X_train, y_train)  # RBF kernel will fail!
+
+# ✅ CORRECT: Always scale
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+svm.fit(X_train_scaled, y_train)
+
+# ❌ MISTAKE 2: Scaling train and test separately
+X_train_scaled = StandardScaler().fit_transform(X_train)
+X_test_scaled = StandardScaler().fit_transform(X_test)  # Wrong!
+
+# ✅ CORRECT: Fit on train, transform both
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # Use same scaler
+
+# ❌ MISTAKE 3: Using SVC for large datasets
+svm = SVC(kernel='linear')  # Slow O(n²) to O(n³)
+svm.fit(X_large, y_large)
+
+# ✅ CORRECT: Use LinearSVC for linear kernel
+from sklearn.svm import LinearSVC
+svm = LinearSVC()  # Fast O(n)
+svm.fit(X_large, y_large)
+
+# ❌ MISTAKE 4: Not handling imbalanced classes
+# 95% class 0, 5% class 1 → predicts all class 0
+
+# ✅ CORRECT: Balance classes
+svm = SVC(class_weight='balanced')
+
+# ❌ MISTAKE 5: Tuning on full dataset
+svm = SVC(C=10, gamma=1)
+svm.fit(X, y)
+accuracy = svm.score(X, y)  # Misleading!
+
+# ✅ CORRECT: Use train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+svm.fit(X_train_scaled, y_train)
+accuracy = svm.score(X_test_scaled, y_test)</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Practice Projects</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card" style="border-left: 4px solid #078930;">
+                        <h3>🌸 Project 1: Iris Classification</h3>
+                        <p><strong>Difficulty:</strong> Beginner</p>
+                        <p><strong>Dataset:</strong> sklearn.datasets.load_iris()</p>
+                        <p><strong>Goal:</strong> Compare linear vs RBF kernels</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Standardize features with StandardScaler</li>
+                            <li>• Train SVM with both linear and RBF</li>
+                            <li>• Compare accuracies</li>
+                            <li>• Count support vectors for each</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #0d9488;">
+                        <h3>✍️ Project 2: Handwriting Recognition</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> MNIST digits (sklearn.datasets.load_digits)</p>
+                        <p><strong>Goal:</strong> Multi-class digit classification</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Train SVM on 64-dimensional image data</li>
+                            <li>• Tune C and gamma with GridSearchCV</li>
+                            <li>• Visualize misclassified digits</li>
+                            <li>• Compare with Decision Tree baseline</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #f59e0b;">
+                        <h3>📧 Project 3: Spam Detection</h3>
+                        <p><strong>Difficulty:</strong> Intermediate</p>
+                        <p><strong>Dataset:</strong> SMS Spam Collection</p>
+                        <p><strong>Goal:</strong> Text classification with Linear SVM</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Use TfidfVectorizer for text features</li>
+                            <li>• Train LinearSVC (fast for text)</li>
+                            <li>• Extract top spam word indicators</li>
+                            <li>• Calculate precision, recall, F1-score</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card" style="border-left: 4px solid #8b5cf6;">
+                        <h3>🩺 Project 4: Cancer Detection</h3>
+                        <p><strong>Difficulty:</strong> Advanced</p>
+                        <p><strong>Dataset:</strong> Breast Cancer Wisconsin</p>
+                        <p><strong>Goal:</strong> Binary medical diagnosis</p>
+                        <p><strong>Tasks:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>• Handle 30 features with StandardScaler</li>
+                            <li>• Optimize C and gamma via RandomizedSearch</li>
+                            <li>• Minimize false negatives (critical for medical)</li>
+                            <li>• Compare SVM with Logistic Regression</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📝 Project Starter Template</h3>
+                <pre><code class="language-python"># SVM Project Template
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import accuracy_score, classification_report
+import numpy as np
+
+# 1. Load data
+# X, y = load_your_dataset()
+
+# 2. Train/test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# 3. CRITICAL: Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# 4. Train SVM (start with defaults)
+svm = SVC(kernel='rbf', C=1.0, gamma='scale', random_state=42)
+svm.fit(X_train_scaled, y_train)
+
+# 5. Evaluate
+print(f"Training: {svm.score(X_train_scaled, y_train):.2%}")
+print(f"Test: {svm.score(X_test_scaled, y_test):.2%}")
+
+# 6. Support vectors analysis
+print(f"\nSupport Vectors: {len(svm.support_vectors_)} / {len(X_train_scaled)}")
+print(f"Percentage: {len(svm.support_vectors_)/len(X_train_scaled):.1%}")
+
+# 7. (Optional) Hyperparameter tuning
+param_grid = {
+    'C': [0.1, 1, 10, 100],
+    'gamma': ['scale', 0.001, 0.01, 0.1]
+}
+grid = GridSearchCV(SVC(kernel='rbf'), param_grid, cv=5)
+grid.fit(X_train_scaled, y_train)
+print(f"\nBest params: {grid.best_params_}")
+print(f"Best score: {grid.best_score_:.2%}")
+
+# 8. Final evaluation
+y_pred = svm.predict(X_test_scaled)
+print(f"\nClassification Report:")
+print(classification_report(y_test, y_pred))</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Excellent for Small Data</h3>
+                        <p>Outperforms other algorithms with limited training samples</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Non-linear Capability</h3>
+                        <p>Kernels handle complex decision boundaries</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>High Dimensions</h3>
+                        <p>Works well when features exceed samples</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Slow on Large Data</h3>
+                        <p>Training scales poorly with 100k+ samples</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Hyperparameter Tuning</h3>
+                        <p>C and gamma require careful adjustment</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Requires Scaling</h3>
+                        <p>Feature standardization is mandatory</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 SVM vs Other Algorithms</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Dataset Size</th>
+                            <th>Interpretability</th>
+                            <th>Speed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Decision Trees</strong></td>
+                            <td>Large, medium</td>
+                            <td>Excellent (visual)</td>
+                            <td>Fast</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Random Forest</strong></td>
+                            <td>Large, medium</td>
+                            <td>Good (feature importance)</td>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SVM</strong></td>
+                            <td>Small, medium</td>
+                            <td>Poor (black box)</td>
+                            <td>Slow on large data</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Logistic Regression</strong></td>
+                            <td>Any size</td>
+                            <td>Excellent (coefficients)</td>
+                            <td>Very fast</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">🎯 Core Concepts</h3>
+                        <ul style="margin: 0;">
+                            <li>• Maximize margin between classes</li>
+                            <li>• Support vectors define boundary</li>
+                            <li>• Soft margin allows violations (C parameter)</li>
+                            <li>• Only SVs matter for predictions</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">🔮 Kernel Magic</h3>
+                        <ul style="margin: 0;">
+                            <li>• Transform data to higher dimensions</li>
+                            <li>• RBF: Most versatile (default)</li>
+                            <li>• Linear: Fast for text/high-dim</li>
+                            <li>• Gamma controls influence radius</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">⚙️ Tuning Strategy</h3>
+                        <ul style="margin: 0;">
+                            <li>• Start with C=1, gamma='scale'</li>
+                            <li>• Use GridSearchCV for tuning</li>
+                            <li>• Cross-validate (5-10 folds)</li>
+                            <li>• Monitor train vs test gap</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 1.5rem; border-radius: 10px; color: white;">
+                        <h3 style="color: white; margin-top: 0;">⚠️ Critical Rules</h3>
+                        <ul style="margin: 0;">
+                            <li>• <strong>ALWAYS scale features first!</strong></li>
+                            <li>• Use LinearSVC for linear kernel</li>
+                            <li>• Balance classes if imbalanced</li>
+                            <li>• Not ideal for large datasets (&gt;100k)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>🔑 Key Takeaways</h3>
+                <table class="comparison-table" style="margin: 1rem 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Concept</th>
+                            <th style="width: 75%;">Key Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Margin Maximization</strong></td>
+                            <td>SVM finds the hyperplane w·x + b = 0 that maximizes margin 2/||w||. This is a quadratic optimization problem solved by finding support vectors.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Support Vectors</strong></td>
+                            <td>Training points on the margin boundaries (where y(w·x + b) = 1). Typically 10-50% of training data. Removing other points doesn't change the model!</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kernel Trick</strong></td>
+                            <td>Implicitly maps data to higher dimensions without computing transformations. K(x, x') = ⟨φ(x), φ(x')⟩ enables non-linear boundaries efficiently.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>C Parameter</strong></td>
+                            <td>Regularization strength. C=0.1 → wide margin, simple model. C=100 → narrow margin, complex model. Controls bias-variance trade-off.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gamma Parameter</strong></td>
+                            <td>RBF kernel coefficient: exp(-γ||x-x'||²). Low gamma → smooth boundary. High gamma → wiggly boundary. Default 'scale' = 1/(n_features × X.var()).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Feature Scaling</strong></td>
+                            <td>Absolutely mandatory! Use StandardScaler. Distance-based kernels fail with unscaled features. Always fit on train, transform on test.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 12px; color: white; margin: 2rem 0;">
+                    <h3 style="color: white; margin-top: 0;">📚 Quick Reference Card</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                        <div>
+                            <h4 style="color: white;">When to Use SVM</h4>
+                            <ul style="margin: 0.5rem 0;">
+                                <li>✅ Small to medium datasets (&lt;10k samples)</li>
+                                <li>✅ High-dimensional data (text, images)</li>
+                                <li>✅ Clear margin of separation exists</li>
+                                <li>✅ Need strong generalization</li>
+                                <li>✅ Binary or multi-class classification</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: white;">When NOT to Use SVM</h4>
+                            <ul style="margin: 0.5rem 0;">
+                                <li>❌ Large datasets (&gt;100k samples)</li>
+                                <li>❌ Need model interpretability</li>
+                                <li>❌ Real-time predictions required</li>
+                                <li>❌ High noise and overlapping classes</li>
+                                <li>❌ Can't scale features (categorical data)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.3);">
+                        <h4 style="color: white;">Typical Workflow</h4>
+                        <code style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 6px; display: block; color: white; font-size: 0.9rem;">
+1. StandardScaler() → fit_transform(X_train)<br>
+2. SVC(kernel='rbf', C=1.0, gamma='scale')<br>
+3. Cross-validate → cv=5<br>
+4. GridSearchCV → tune C and gamma<br>
+5. Evaluate on scaled test set<br>
+6. Analyze support vectors percentage
+                        </code>
+                    </div>
+                </div>
+
+                <h3>🏆 What You've Mastered</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Maximum Margin Classifiers:</strong> Understanding how SVMs find optimal hyperplanes by maximizing the geometric margin between classes</li>
+                    <li>✅ <strong>Hard vs Soft Margin:</strong> Balancing perfect separation with flexibility through the C regularization parameter</li>
+                    <li>✅ <strong>Support Vector Analysis:</strong> Identifying and understanding the critical training points that define the decision boundary</li>
+                    <li>✅ <strong>Kernel Methods:</strong> Using linear, RBF, polynomial, and sigmoid kernels to handle non-linear patterns</li>
+                    <li>✅ <strong>Kernel Trick:</strong> Implicitly mapping data to high-dimensional spaces without computing transformations</li>
+                    <li>✅ <strong>Hyperparameter Tuning:</strong> Optimizing C and gamma using grid search and random search strategies</li>
+                    <li>✅ <strong>Feature Scaling:</strong> Applying StandardScaler correctly for distance-based algorithms</li>
+                    <li>✅ <strong>Multi-Class Classification:</strong> Extending binary SVM to multiple classes with OvR and OvO strategies</li>
+                    <li>✅ <strong>Text Classification:</strong> Using LinearSVC with TF-IDF for high-dimensional sparse data</li>
+                </ul>
+
+                <h3>🔮 What's Next?</h3>
+                <p style="font-size: 1.1rem; line-height: 1.7;">
+                    Congratulations! You've now mastered both <strong>tree-based algorithms</strong> (Decision Trees, Random Forests) and <strong>margin-based algorithms</strong> (Support Vector Machines). 
+                    In our final module, <strong>Gradient Boosting</strong>, you'll learn one of the most powerful machine learning algorithms that consistently wins Kaggle competitions. 
+                    Gradient Boosting combines hundreds of weak learners through sequential optimization, building each tree to correct the errors of previous ones. 
+                    It's the secret weapon behind winning solutions in data science competitions! 🚀
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Nearly Complete!</strong> You've built a strong foundation in classical machine learning algorithms. Just one more advanced ensemble technique to master before you're ready for real-world ML projects!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Support Vector Machines!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is the main goal of Support Vector Machines?</h4>
+                        <div class="quiz-option" data-value="A">A) Find the average of data points</div>
+                        <div class="quiz-option" data-value="B">B) Find the hyperplane that maximally separates classes</div>
+                        <div class="quiz-option" data-value="C">C) Cluster similar data points</div>
+                        <div class="quiz-option" data-value="D">D) Reduce dimensionality</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What are support vectors?</h4>
+                        <div class="quiz-option" data-value="A">A) All data points in the dataset</div>
+                        <div class="quiz-option" data-value="B">B) The center points of each class</div>
+                        <div class="quiz-option" data-value="C">C) Data points closest to the decision boundary (margin)</div>
+                        <div class="quiz-option" data-value="D">D) Outlier data points</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What is the kernel trick in SVM?</h4>
+                        <div class="quiz-option" data-value="A">A) Transforming data to higher dimensions to make it linearly separable</div>
+                        <div class="quiz-option" data-value="B">B) Removing outliers</div>
+                        <div class="quiz-option" data-value="C">C) Normalizing feature values</div>
+                        <div class="quiz-option" data-value="D">D) Splitting data into batches</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What does the C parameter control in SVM?</h4>
+                        <div class="quiz-option" data-value="A">A) Number of support vectors</div>
+                        <div class="quiz-option" data-value="B">B) Kernel type</div>
+                        <div class="quiz-option" data-value="C">C) Learning rate</div>
+                        <div class="quiz-option" data-value="D">D) Trade-off between margin size and misclassifications</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. Which kernel is best for non-linear data?</h4>
+                        <div class="quiz-option" data-value="A">A) Linear kernel</div>
+                        <div class="quiz-option" data-value="B">B) RBF (Radial Basis Function) kernel</div>
+                        <div class="quiz-option" data-value="C">C) No kernel</div>
+                        <div class="quiz-option" data-value="D">D) Identity kernel</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation">
+                <a href="random-forests.html" class="btn btn-secondary">← Previous: Random Forests</a>
+                <a href="gradient-boosting.html" class="btn btn-primary">Next: Gradient Boosting →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

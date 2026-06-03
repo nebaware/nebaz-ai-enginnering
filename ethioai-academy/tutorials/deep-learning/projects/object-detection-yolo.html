@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build an object detection system using YOLOv8. Learn real-time detection, custom dataset training, and model deployment.">
+    <meta name="keywords" content="object detection, YOLO, YOLOv8, deep learning project, computer vision, real-time detection">
+    <title>Project: Object Detection with YOLOv8 | Nebaz AI Academy</title>
+    <link rel="canonical" href="object-detection-yolo.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Object Detection YOLO Project</span>
+            </div>
+            <h1>🎯 Object Detection with YOLOv8</h1>
+            <p class="tutorial-intro">Build a real-time object detection system using state-of-the-art YOLOv8 architecture</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🚀 Advanced</span>
+                <span class="meta-item">⏱️ 8 hours</span>
+                <span class="meta-item">💻 Python + Ultralytics</span>
+                <span class="meta-item">📷 Computer Vision Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Object detection is the cornerstone of autonomous vehicles, surveillance systems, robotics, and augmented reality. YOLO (You Only Look Once) is the industry standard for real-time detection. In this project, you'll train YOLOv8 to detect objects in images and videos with bounding boxes and confidence scores.
+                </p>
+
+                <h3>Real-World Applications</h3>
+                <ul>
+                    <li><strong>Autonomous Vehicles:</strong> Detect pedestrians, cars, traffic signs, obstacles</li>
+                    <li><strong>Security & Surveillance:</strong> Real-time threat detection, crowd monitoring</li>
+                    <li><strong>Retail Analytics:</strong> Customer behavior tracking, inventory monitoring</li>
+                    <li><strong>Manufacturing:</strong> Quality control, defect detection on production lines</li>
+                    <li><strong>Healthcare:</strong> Medical imaging, tumor detection, surgical assistance</li>
+                    <li><strong>Agriculture:</strong> Crop health monitoring, pest detection, yield estimation</li>
+                </ul>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>Pre-trained Model Inference:</strong> Detect 80 COCO classes (person, car, dog, etc.)</li>
+                    <li><strong>Custom Dataset Training:</strong> Train on your own annotated images</li>
+                    <li><strong>Real-Time Detection:</strong> Process webcam feed at 30+ FPS</li>
+                    <li><strong>Performance Evaluation:</strong> mAP@50, mAP@50-95, precision/recall curves</li>
+                    <li><strong>Model Optimization:</strong> Export to ONNX/TensorRT for faster inference</li>
+                    <li><strong>Deployment Pipeline:</strong> Production-ready detection API</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🚀 <strong>Industry-Leading Skill:</strong> YOLO powers Tesla's Autopilot, security cameras worldwide, and countless AI products. This project demonstrates cutting-edge computer vision expertise!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Setup & Installation</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Ultralytics YOLOv8</h3>
+                    <pre><code class="language-bash">pip install ultralytics opencv-python matplotlib numpy pillow</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Verify Installation</h3>
+                    <pre><code class="language-python">from ultralytics import YOLO
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+
+# Check versions
+print("Ultralytics YOLO installed successfully!")
+print("OpenCV version:", cv2.__version__)
+
+# Download pre-trained model (automatic on first run)
+model = YOLO('yolov8n.pt')  # nano model (fastest)
+print("\n✅ YOLOv8 model loaded successfully!")
+print(f"Model: {model.model_name}")
+print(f"Task: {model.task}")</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 YOLO Model Variants:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li><strong>YOLOv8n</strong> (Nano): Fastest, 3.2M params, 80+ FPS</li>
+                        <li><strong>YOLOv8s</strong> (Small): Balanced, 11.2M params, 60+ FPS</li>
+                        <li><strong>YOLOv8m</strong> (Medium): Accurate, 25.9M params, 40+ FPS</li>
+                        <li><strong>YOLOv8l</strong> (Large): Very accurate, 43.7M params, 30+ FPS</li>
+                        <li><strong>YOLOv8x</strong> (Extra Large): Best accuracy, 68.2M params, 20+ FPS</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">Start with YOLOv8n for faster training, upgrade for accuracy!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🖼️ Part 1: Pre-trained Model Inference</h2>
+                
+                <h3>Detect Objects in Images</h3>
+                <pre><code class="language-python"># Load pre-trained model (COCO dataset: 80 classes)
+model = YOLO('yolov8n.pt')
+
+# Download sample image (or use your own)
+import urllib.request
+urllib.request.urlretrieve(
+    'https://ultralytics.com/images/bus.jpg',
+    'sample_image.jpg'
+)
+
+# Run inference
+results = model('sample_image.jpg')
+
+# Display results
+result = results[0]
+print(f"\n📊 Detection Results:")
+print(f"Number of objects detected: {len(result.boxes)}")
+
+# Access detection details
+boxes = result.boxes
+for box in boxes:
+    class_id = int(box.cls[0])
+    confidence = float(box.conf[0])
+    bbox = box.xyxy[0].cpu().numpy()
+    class_name = result.names[class_id]
+    
+    print(f"  - {class_name}: {confidence:.2f} at [{bbox[0]:.0f}, {bbox[1]:.0f}, {bbox[2]:.0f}, {bbox[3]:.0f}]")
+
+# Visualize with bounding boxes
+annotated_image = result.plot()
+plt.figure(figsize=(12, 8))
+plt.imshow(cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB))
+plt.title('YOLOv8 Object Detection')
+plt.axis('off')
+plt.show()</code></pre>
+
+                <h3>Batch Processing</h3>
+                <pre><code class="language-python"># Process multiple images
+image_paths = ['sample_image.jpg']  # Add more paths
+
+results = model(image_paths, stream=True)
+
+for i, result in enumerate(results):
+    print(f"\nImage {i+1}: {len(result.boxes)} objects detected")
+    
+    # Get class distribution
+    class_counts = {}
+    for box in result.boxes:
+        class_name = result.names[int(box.cls[0])]
+        class_counts[class_name] = class_counts.get(class_name, 0) + 1
+    
+    for class_name, count in class_counts.items():
+        print(f"  - {class_name}: {count}")</code></pre>
+
+                <h3>Video Detection (Real-Time)</h3>
+                <pre><code class="language-python"># Detect in video
+def detect_video(video_path, output_path='output_video.mp4'):
+    """
+    Run detection on video file or webcam
+    
+    Parameters:
+    -----------
+    video_path : str or int
+        Path to video file, or 0 for webcam
+    output_path : str
+        Path to save output video
+    """
+    model = YOLO('yolov8n.pt')
+    
+    # Open video
+    cap = cv2.VideoCapture(video_path)
+    
+    # Get video properties
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    
+    # Video writer
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+    
+    frame_count = 0
+    
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        
+        # Run detection
+        results = model(frame)
+        annotated_frame = results[0].plot()
+        
+        # Write frame
+        out.write(annotated_frame)
+        
+        frame_count += 1
+        if frame_count % 30 == 0:
+            print(f"Processed {frame_count} frames...")
+    
+    cap.release()
+    out.release()
+    print(f"\n✅ Video saved to: {output_path}")
+
+# Example: Detect in webcam (use 0) or video file
+# detect_video(0)  # Webcam
+# detect_video('your_video.mp4')  # Video file</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: Pre-trained Inference Working</h3>
+                    <p>Successfully running detection:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>YOLOv8n loaded and detecting 80 COCO classes</li>
+                        <li>Image detection with bounding boxes</li>
+                        <li>Real-time video processing capability</li>
+                        <li>30+ FPS on modern hardware</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ Part 2: Train on Custom Dataset</h2>
+                
+                <h3>Dataset Preparation</h3>
+                <pre><code class="language-python"># YOLO dataset structure:
+# dataset/
+#   ├── images/
+#   │   ├── train/
+#   │   │   ├── img1.jpg
+#   │   │   └── img2.jpg
+#   │   └── val/
+#   │       ├── img3.jpg
+#   │       └── img4.jpg
+#   └── labels/
+#       ├── train/
+#       │   ├── img1.txt
+#       │   └── img2.txt
+#       └── val/
+#           ├── img3.txt
+#           └── img4.txt
+
+# Label format (one line per object):
+# class_id center_x center_y width height
+# Example: 0 0.5 0.5 0.3 0.4
+
+# Create data.yaml configuration file
+data_yaml = """
+# Dataset configuration
+path: /path/to/dataset  # dataset root
+train: images/train  # train images (relative to 'path')
+val: images/val  # val images (relative to 'path')
+
+# Classes
+names:
+  0: person
+  1: car
+  2: bicycle
+  3: motorcycle
+"""
+
+with open('data.yaml', 'w') as f:
+    f.write(data_yaml)
+
+print("✅ Dataset configuration created!")
+print("\n💡 Use LabelImg or Roboflow to annotate your images:")</code></pre>
+
+                <h3>Training YOLOv8</h3>
+                <pre><code class="language-python"># Train on custom dataset
+model = YOLO('yolov8n.pt')  # Start from pre-trained weights
+
+# Training parameters
+results = model.train(
+    data='data.yaml',
+    epochs=100,
+    imgsz=640,
+    batch=16,
+    name='custom_yolo_run',
+    patience=20,  # Early stopping
+    save=True,
+    device=0,  # GPU 0 (use 'cpu' for CPU training)
+    workers=8,
+    lr0=0.01,
+    augment=True
+)
+
+print("\n✅ Training complete!")
+print(f"Best model saved at: runs/detect/custom_yolo_run/weights/best.pt")</code></pre>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Training Tips:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>Minimum 100 images per class recommended</li>
+                        <li>Balanced dataset crucial (similar samples per class)</li>
+                        <li>Data augmentation helps: flip, rotate, scale, color jitter</li>
+                        <li>Training takes 2-6 hours on GPU (depends on dataset size)</li>
+                        <li>Monitor validation metrics to avoid overfitting</li>
+                    </ul>
+                </div>
+
+                <h3>Training on COCO Dataset (Example)</h3>
+                <pre><code class="language-python"># Train on COCO128 (small COCO subset for quick testing)
+model = YOLO('yolov8n.pt')
+
+# COCO128 automatically downloads
+results = model.train(
+    data='coco128.yaml',
+    epochs=30,
+    imgsz=640,
+    batch=16,
+    name='coco128_test'
+)
+
+print("✅ COCO128 training complete!")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: Custom Training Setup</h3>
+                    <p>Training pipeline ready:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Dataset structure configured (images + labels)</li>
+                        <li>data.yaml configuration file created</li>
+                        <li>Training command ready to run</li>
+                        <li>Understand training parameters</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 3: Evaluation & Metrics</h2>
+                
+                <h3>Model Validation</h3>
+                <pre><code class="language-python"># Load trained model
+model = YOLO('runs/detect/custom_yolo_run/weights/best.pt')
+
+# Validate on test set
+metrics = model.val()
+
+# Print metrics
+print("\n📊 VALIDATION METRICS")
+print("="*60)
+print(f"mAP@50: {metrics.box.map50:.4f}")        # Mean Average Precision at IoU=0.50
+print(f"mAP@50-95: {metrics.box.map:.4f}")      # mAP at IoU=0.50:0.95
+print(f"Precision: {metrics.box.mp:.4f}")       # Precision
+print(f"Recall: {metrics.box.mr:.4f}")          # Recall
+print(f"F1 Score: {2 * (metrics.box.mp * metrics.box.mr) / (metrics.box.mp + metrics.box.mr):.4f}")
+
+# Per-class metrics
+print("\n📊 PER-CLASS METRICS")
+print("="*60)
+for i, class_name in enumerate(model.names.values()):
+    if i < len(metrics.box.ap50):
+        print(f"{class_name:.<20} AP@50: {metrics.box.ap50[i]:.3f}")</code></pre>
+
+                <h3>Visualize Training Curves</h3>
+                <pre><code class="language-python"># Training results are saved as results.csv and plots
+import pandas as pd
+
+# Load training results
+results_df = pd.read_csv('runs/detect/custom_yolo_run/results.csv')
+results_df.columns = results_df.columns.str.strip()  # Remove whitespace
+
+# Plot training curves
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Loss curves
+axes[0, 0].plot(results_df['epoch'], results_df['train/box_loss'], label='Box Loss')
+axes[0, 0].plot(results_df['epoch'], results_df['train/cls_loss'], label='Class Loss')
+axes[0, 0].set_xlabel('Epoch')
+axes[0, 0].set_ylabel('Loss')
+axes[0, 0].set_title('Training Loss')
+axes[0, 0].legend()
+axes[0, 0].grid(alpha=0.3)
+
+# mAP
+axes[0, 1].plot(results_df['epoch'], results_df['metrics/mAP50(B)'], label='mAP@50', linewidth=2)
+axes[0, 1].plot(results_df['epoch'], results_df['metrics/mAP50-95(B)'], label='mAP@50-95', linewidth=2)
+axes[0, 1].set_xlabel('Epoch')
+axes[0, 1].set_ylabel('mAP')
+axes[0, 1].set_title('Mean Average Precision')
+axes[0, 1].legend()
+axes[0, 1].grid(alpha=0.3)
+
+# Precision & Recall
+axes[1, 0].plot(results_df['epoch'], results_df['metrics/precision(B)'], label='Precision', linewidth=2)
+axes[1, 0].plot(results_df['epoch'], results_df['metrics/recall(B)'], label='Recall', linewidth=2)
+axes[1, 0].set_xlabel('Epoch')
+axes[1, 0].set_ylabel('Score')
+axes[1, 0].set_title('Precision & Recall')
+axes[1, 0].legend()
+axes[1, 0].grid(alpha=0.3)
+
+# Learning rate
+axes[1, 1].plot(results_df['epoch'], results_df['lr/pg0'], linewidth=2)
+axes[1, 1].set_xlabel('Epoch')
+axes[1, 1].set_ylabel('Learning Rate')
+axes[1, 1].set_title('Learning Rate Schedule')
+axes[1, 1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# Best epoch
+best_epoch = results_df['metrics/mAP50(B)'].idxmax()
+print(f"\n🏆 Best mAP@50 at epoch {best_epoch + 1}: {results_df['metrics/mAP50(B)'][best_epoch]:.4f}")</code></pre>
+
+                <h3>Confusion Matrix</h3>
+                <pre><code class="language-python"># Confusion matrix is automatically generated
+from PIL import Image
+
+# Load confusion matrix image
+conf_matrix = Image.open('runs/detect/custom_yolo_run/confusion_matrix.png')
+plt.figure(figsize=(10, 10))
+plt.imshow(conf_matrix)
+plt.title('Confusion Matrix')
+plt.axis('off')
+plt.show()</code></pre>
+
+                <h3>Inference Speed Benchmark</h3>
+                <pre><code class="language-python">import time
+
+# Benchmark inference speed
+model = YOLO('yolov8n.pt')
+image = 'sample_image.jpg'
+
+# Warmup
+for _ in range(10):
+    model(image, verbose=False)
+
+# Benchmark
+num_runs = 100
+start_time = time.time()
+
+for _ in range(num_runs):
+    results = model(image, verbose=False)
+
+end_time = time.time()
+
+avg_time = (end_time - start_time) / num_runs
+fps = 1 / avg_time
+
+print(f"\n⚡ INFERENCE SPEED")
+print("="*60)
+print(f"Average inference time: {avg_time*1000:.2f} ms")
+print(f"FPS: {fps:.1f}")
+print(f"Model: YOLOv8n")
+print(f"Image size: 640x640")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Evaluation Complete</h3>
+                    <p>Model performance analyzed:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>mAP@50 typically 40-70% (depends on dataset)</li>
+                        <li>Training curves show convergence</li>
+                        <li>Confusion matrix reveals class confusions</li>
+                        <li>Inference speed: 30-80 FPS on modern GPU</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🚀 Part 4: Model Optimization & Export</h2>
+                
+                <h3>Export to ONNX (Cross-Platform)</h3>
+                <pre><code class="language-python"># Export to ONNX format
+model = YOLO('yolov8n.pt')
+model.export(format='onnx', dynamic=True, simplify=True)
+
+print("✅ Model exported to ONNX format!")
+print("Use with ONNX Runtime for cross-platform deployment")</code></pre>
+
+                <h3>Export to TensorRT (NVIDIA GPUs)</h3>
+                <pre><code class="language-python"># Export to TensorRT for maximum speed on NVIDIA GPUs
+model.export(format='engine', half=True)  # FP16 precision
+
+print("✅ Model exported to TensorRT format!")
+print("Expect 2-3x speedup on NVIDIA GPUs")</code></pre>
+
+                <h3>Model Pruning (Reduce Size)</h3>
+                <pre><code class="language-python"># Use smaller model variant
+models = {
+    'yolov8n.pt': '6.3 MB - 80 FPS',
+    'yolov8s.pt': '22 MB - 60 FPS',
+    'yolov8m.pt': '52 MB - 40 FPS'
+}
+
+for model_name, specs in models.items():
+    print(f"{model_name}: {specs}")</code></pre>
+
+                <div class="info-box">
+                    <p><strong>💡 Deployment Options:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li><strong>PyTorch (.pt):</strong> Native format, full features</li>
+                        <li><strong>ONNX (.onnx):</strong> Cross-platform, CPU/GPU, 1.2x slower</li>
+                        <li><strong>TensorRT (.engine):</strong> NVIDIA GPUs only, 2-3x faster</li>
+                        <li><strong>CoreML (.mlmodel):</strong> Apple devices (iOS/macOS)</li>
+                        <li><strong>TFLite (.tflite):</strong> Mobile/edge devices, 3-5x smaller</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 5: Production Deployment</h2>
+                
+                <h3>Detection API Function</h3>
+                <pre><code class="language-python">def detect_objects(image_source, model_path='yolov8n.pt', conf_threshold=0.5):
+    """
+    Production-ready object detection API
+    
+    Parameters:
+    -----------
+    image_source : str, np.array, PIL.Image
+        Image file path, numpy array, or PIL image
+    model_path : str
+        Path to trained YOLO model
+    conf_threshold : float
+        Confidence threshold (0-1)
+    
+    Returns:
+    --------
+    dict with detections, annotated image, and metadata
+    """
+    # Load model
+    model = YOLO(model_path)
+    
+    # Run detection
+    results = model(image_source, conf=conf_threshold)
+    result = results[0]
+    
+    # Extract detections
+    detections = []
+    for box in result.boxes:
+        detection = {
+            'class': result.names[int(box.cls[0])],
+            'confidence': float(box.conf[0]),
+            'bbox': box.xyxy[0].cpu().numpy().tolist(),
+            'bbox_normalized': box.xywhn[0].cpu().numpy().tolist()  # [x_center, y_center, width, height]
+        }
+        detections.append(detection)
+    
+    # Get annotated image
+    annotated_image = result.plot()
+    
+    return {
+        'detections': detections,
+        'count': len(detections),
+        'annotated_image': annotated_image,
+        'image_shape': result.orig_shape,
+        'inference_time': result.speed['inference']  # ms
+    }
+
+# Example usage
+result = detect_objects('sample_image.jpg', conf_threshold=0.5)
+
+print(f"\n📊 DETECTION RESULTS")
+print("="*60)
+print(f"Objects detected: {result['count']}")
+print(f"Inference time: {result['inference_time']:.2f} ms")
+print(f"\nDetections:")
+for i, det in enumerate(result['detections'], 1):
+    print(f"{i}. {det['class']}: {det['confidence']:.2f}")</code></pre>
+
+                <h3>Flask REST API (Production)</h3>
+                <pre><code class="language-python"># Save as app.py and run: python app.py
+
+from flask import Flask, request, jsonify, send_file
+from ultralytics import YOLO
+import cv2
+import numpy as np
+from PIL import Image
+import io
+import base64
+
+app = Flask(__name__)
+model = YOLO('yolov8n.pt')
+
+@app.route('/detect', methods=['POST'])
+def detect():
+    """
+    POST /detect
+    Body: multipart/form-data with 'image' file
+    """
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image provided'}), 400
+    
+    # Read image
+    file = request.files['image']
+    image_bytes = file.read()
+    image = Image.open(io.BytesIO(image_bytes))
+    
+    # Convert to numpy
+    image_np = np.array(image)
+    
+    # Detect
+    results = model(image_np)
+    result = results[0]
+    
+    # Extract detections
+    detections = []
+    for box in result.boxes:
+        detections.append({
+            'class': result.names[int(box.cls[0])],
+            'confidence': float(box.conf[0]),
+            'bbox': box.xyxy[0].cpu().numpy().tolist()
+        })
+    
+    # Annotate image
+    annotated = result.plot()
+    
+    # Encode image to base64
+    _, buffer = cv2.imencode('.jpg', annotated)
+    img_base64 = base64.b64encode(buffer).decode('utf-8')
+    
+    return jsonify({
+        'detections': detections,
+        'count': len(detections),
+        'annotated_image': img_base64,
+        'inference_time_ms': result.speed['inference']
+    })
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({'status': 'healthy', 'model': 'yolov8n'})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+# Test API:
+# curl -X POST -F "image=@sample_image.jpg" http://localhost:5000/detect</code></pre>
+
+                <h3>Streamlit Web App (Interactive)</h3>
+                <pre><code class="language-python"># Save as streamlit_app.py and run: streamlit run streamlit_app.py
+
+import streamlit as st
+from ultralytics import YOLO
+from PIL import Image
+import cv2
+import numpy as np
+
+st.title("🎯 YOLOv8 Object Detection")
+st.write("Upload an image to detect objects")
+
+# Model selection
+model_choice = st.selectbox(
+    "Select Model",
+    ['yolov8n.pt', 'yolov8s.pt', 'yolov8m.pt']
+)
+
+# Confidence threshold
+conf_threshold = st.slider("Confidence Threshold", 0.0, 1.0, 0.5, 0.05)
+
+# Upload image
+uploaded_file = st.file_uploader("Choose an image", type=['jpg', 'jpeg', 'png'])
+
+if uploaded_file:
+    # Load image
+    image = Image.open(uploaded_file)
+    st.image(image, caption='Uploaded Image', use_column_width=True)
+    
+    # Detect button
+    if st.button('Detect Objects'):
+        with st.spinner('Detecting...'):
+            # Load model
+            model = YOLO(model_choice)
+            
+            # Run detection
+            results = model(np.array(image), conf=conf_threshold)
+            result = results[0]
+            
+            # Display results
+            annotated = result.plot()
+            st.image(cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB),
+                    caption='Detection Results',
+                    use_column_width=True)
+            
+            # Show detections
+            st.subheader(f"Detected {len(result.boxes)} objects")
+            
+            for i, box in enumerate(result.boxes, 1):
+                class_name = result.names[int(box.cls[0])]
+                confidence = float(box.conf[0])
+                st.write(f"{i}. **{class_name}**: {confidence:.2%}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Phenomenal Achievement!</h3>
+                    <p style="font-size: 1.1rem;">You've mastered YOLOv8 object detection - the industry standard for real-time computer vision!</p>
+                </div>
+
+                <h3>🏆 Key Accomplishments</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Deployed pre-trained YOLOv8:</strong> Detecting 80 COCO classes in real-time</li>
+                    <li>✅ <strong>Custom dataset training:</strong> Annotated and trained on your own data</li>
+                    <li>✅ <strong>Achieved 30-80 FPS:</strong> Real-time detection on modern hardware</li>
+                    <li>✅ <strong>Comprehensive evaluation:</strong> mAP@50, precision, recall, confusion matrix</li>
+                    <li>✅ <strong>Model optimization:</strong> Exported to ONNX, TensorRT for deployment</li>
+                    <li>✅ <strong>Production API:</strong> Flask REST API + Streamlit web app</li>
+                </ul>
+
+                <h3>🚀 Next Level Enhancements</h3>
+                <ul>
+                    <li><strong>Instance Segmentation:</strong> Use YOLOv8-seg for pixel-level masks</li>
+                    <li><strong>Pose Estimation:</strong> Detect human keypoints with YOLOv8-pose</li>
+                    <li><strong>Object Tracking:</strong> Add ByteTrack or DeepSORT for multi-object tracking</li>
+                    <li><strong>Edge Deployment:</strong> Deploy on Raspberry Pi, Jetson Nano, or smartphones</li>
+                    <li><strong>Cloud Deployment:</strong> AWS Lambda, Google Cloud Functions, Azure</li>
+                    <li><strong>Active Learning:</strong> Continuously improve with user feedback</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💼 Interview Talking Points:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>"Trained YOLOv8 object detector achieving 60+ mAP@50 on custom dataset"</li>
+                        <li>"Optimized model for real-time inference at 50+ FPS using TensorRT"</li>
+                        <li>"Deployed production REST API handling 100+ requests/sec"</li>
+                        <li>"Built end-to-end pipeline: data annotation → training → deployment"</li>
+                        <li>"System powers real-world applications in security/autonomous vehicles"</li>
+                    </ul>
+                </div>
+
+                <h3>📚 Further Learning</h3>
+                <ul>
+                    <li><strong>Papers:</strong> "YOLOv8: An Incremental Improvement" (Ultralytics), original YOLO paper</li>
+                    <li><strong>Resources:</strong> Ultralytics documentation, Roboflow tutorials</li>
+                    <li><strong>Datasets:</strong> COCO, Open Images, Pascal VOC, custom via Roboflow</li>
+                    <li><strong>Community:</strong> Ultralytics GitHub, YOLO Discord, r/computervision</li>
+                </ul>
+            </section>
+
+            <div class="tutorial-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <a href="sentiment-analysis-rnn.html" style="padding: 0.75rem 1.5rem; background-color: #f1f5f9; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">← Previous: Sentiment Analysis RNN</a>
+                <a href="../../../courses/deep-learning.html" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">Back to DL Course →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

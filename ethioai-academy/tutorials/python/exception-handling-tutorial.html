@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Python exception handling with try-except-finally blocks. Master error handling, debugging techniques, and building robust applications.">
+    <title>Exception Handling in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge intermediate">Intermediate</div><h1 class="page-title">Exception Handling in Python</h1>
+            <p class="page-subtitle">Build robust applications by gracefully handling errors and unexpected situations</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        <div class="container">
+            
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>
+                    Errors are inevitable in programming. Users enter invalid data, files don't exist, network connections fail, and calculations produce unexpected results. The difference between a fragile program and a robust one is how it handles these situations.
+                </p>
+                <p>
+                    Python's exception handling mechanism allows you to anticipate, catch, and handle errors gracefully, ensuring your programs don't crash unexpectedly and provide meaningful feedback to users.
+                </p>
+            </section>
+
+            <!-- What You'll Learn -->
+            <div class="info-box">
+                <h3>📚 What You'll Learn</h3>
+                <ul>
+                    <li>Understanding exceptions and error types</li>
+                    <li>Using try-except blocks to catch errors</li>
+                    <li>Multiple exception handling</li>
+                    <li>The finally clause for cleanup code</li>
+                    <li>Raising exceptions deliberately</li>
+                    <li>Creating custom exceptions</li>
+                    <li>Best practices for error handling</li>
+                </ul>
+            </div>
+
+            <!-- Understanding Exceptions -->
+            <section class="content-section">
+                <h2>1. Understanding Exceptions</h2>
+
+                <p>
+                    An <strong>exception</strong> is an event that disrupts the normal flow of a program. When Python encounters an error, it creates an exception object and stops the program unless you handle it.
+                </p>
+
+                <h3>Common Exception Types</h3>
+
+                <pre><code class="language-python"># ZeroDivisionError
+result = 10 / 0  # Error: division by zero
+
+# TypeError
+number = "100"
+result = number + 50  # Error: can't add string and int
+
+# ValueError
+age = int("twenty")  # Error: invalid literal for int()
+
+# KeyError
+person = {"name": "Alice"}
+age = person["age"]  # Error: key doesn't exist
+
+# IndexError
+numbers = [1, 2, 3]
+item = numbers[10]  # Error: index out of range
+
+# FileNotFoundError
+with open("missing_file.txt") as f:  # Error: file doesn't exist
+    content = f.read()
+
+# AttributeError
+text = "Hello"
+text.append("!")  # Error: str has no append method</code></pre>
+
+                <div class="warning-box">
+                    <strong>⚠️ Without Exception Handling:</strong> Any of these errors would crash your entire program. Users would see cryptic error messages and lose their work!
+                </div>
+            </section>
+
+            <!-- Try-Except Basics -->
+            <section class="content-section">
+                <h2>2. Basic Try-Except Blocks</h2>
+
+                <p>
+                    The try-except block allows you to attempt code that might fail and handle the error gracefully if it does.
+                </p>
+
+                <h3>Basic Syntax</h3>
+
+                <pre><code class="language-python"># Without exception handling (program crashes)
+age = int(input("Enter your age: "))  # Crashes if user enters text
+
+# With exception handling (program continues)
+try:
+    age = int(input("Enter your age: "))
+    print(f"You are {age} years old")
+except ValueError:
+    print("Please enter a valid number!")
+    age = 0  # Default value
+
+print("Program continues running...")</code></pre>
+
+                <h3>Catching Multiple Exceptions</h3>
+
+                <pre><code class="language-python"># Method 1: Separate except blocks
+def divide_numbers(a, b):
+    try:
+        result = a / b
+        return result
+    except ZeroDivisionError:
+        print("Error: Cannot divide by zero!")
+        return None
+    except TypeError:
+        print("Error: Please provide numbers only!")
+        return None
+
+print(divide_numbers(10, 2))    # Output: 5.0
+print(divide_numbers(10, 0))    # Output: Error message
+print(divide_numbers(10, "2"))  # Output: Error message
+
+# Method 2: Single except for multiple types
+try:
+    # Some operation
+    number = int(input("Enter a number: "))
+    result = 100 / number
+except (ValueError, ZeroDivisionError) as error:
+    print(f"Invalid input: {error}")
+
+# Method 3: Catch all exceptions (use sparingly)
+try:
+    # Risky operation
+    result = some_risky_function()
+except Exception as error:
+    print(f"Something went wrong: {error}")</code></pre>
+
+                <div class="success-box">
+                    <strong>💡 Best Practice:</strong> Catch specific exceptions when possible. Catching all exceptions with a bare <code>except:</code> can hide bugs and make debugging harder.
+                </div>
+            </section>
+
+            <!-- Else and Finally -->
+            <section class="content-section">
+                <h2>3. The else and finally Clauses</h2>
+
+                <h3>The else Clause</h3>
+                <p>
+                    The <code>else</code> block runs only if NO exception occurred in the try block. It's useful for code that should only run when everything succeeds.
+                </p>
+
+                <pre><code class="language-python">def read_number():
+    try:
+        number = int(input("Enter a number: "))
+    except ValueError:
+        print("That's not a valid number!")
+    else:
+        # This runs only if no exception occurred
+        print(f"You entered: {number}")
+        print(f"Square: {number ** 2}")
+
+# Example usage
+read_number()
+
+# Another example: File processing
+try:
+    file = open("data.txt", "r")
+except FileNotFoundError:
+    print("File not found!")
+else:
+    # Process file only if it opened successfully
+    content = file.read()
+    print(f"File has {len(content)} characters")
+    file.close()</code></pre>
+
+                <h3>The finally Clause</h3>
+                <p>
+                    The <code>finally</code> block ALWAYS runs, whether an exception occurred or not. It's perfect for cleanup tasks like closing files or releasing resources.
+                </p>
+
+                <pre><code class="language-python"># Example: Always close the file
+def process_file(filename):
+    file = None
+    try:
+        file = open(filename, 'r')
+        content = file.read()
+        result = len(content)
+        return result
+    except FileNotFoundError:
+        print(f"Error: {filename} not found")
+        return 0
+    except PermissionError:
+        print(f"Error: No permission to read {filename}")
+        return 0
+    finally:
+        # This ALWAYS runs - even if there's a return statement above!
+        if file:
+            file.close()
+            print("File closed successfully")
+
+# Example: Database connection
+def query_database(query):
+    connection = None
+    try:
+        connection = connect_to_database()
+        result = connection.execute(query)
+        return result
+    except DatabaseError as e:
+        print(f"Database error: {e}")
+        return None
+    finally:
+        # Ensure connection is closed no matter what
+        if connection:
+            connection.close()
+            print("Database connection closed")</code></pre>
+
+                <h3>Complete Flow</h3>
+
+                <pre><code class="language-python"># All clauses together
+def divide_with_logging(a, b):
+    print("Starting division...")
+    
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print("Error: Division by zero!")
+        return None
+    except TypeError:
+        print("Error: Invalid types!")
+        return None
+    else:
+        # Runs only if no exception
+        print(f"Division successful: {result}")
+        return result
+    finally:
+        # Always runs
+        print("Division attempt completed\n")
+
+# Test cases
+print(divide_with_logging(10, 2))   # Success case
+print(divide_with_logging(10, 0))   # ZeroDivisionError
+print(divide_with_logging(10, "2")) # TypeError</code></pre>
+            </section>
+
+            <!-- Raising Exceptions -->
+            <section class="content-section">
+                <h2>4. Raising Exceptions</h2>
+
+                <p>
+                    Sometimes YOU need to raise exceptions to signal that something is wrong. This is common in functions that validate input or enforce business rules.
+                </p>
+
+                <h3>Basic Raising</h3>
+
+                <pre><code class="language-python"># Raise an exception manually
+def validate_age(age):
+    if age < 0:
+        raise ValueError("Age cannot be negative!")
+    if age > 150:
+        raise ValueError("Age seems unrealistic!")
+    return age
+
+# Test
+try:
+    validate_age(-5)
+except ValueError as error:
+    print(f"Validation failed: {error}")
+
+# Another example: Password validation
+def set_password(password):
+    if len(password) < 8:
+        raise ValueError("Password must be at least 8 characters long")
+    if not any(char.isdigit() for char in password):
+        raise ValueError("Password must contain at least one digit")
+    if not any(char.isupper() for char in password):
+        raise ValueError("Password must contain at least one uppercase letter")
+    
+    print("Password set successfully!")
+
+# Usage
+try:
+    set_password("weak")
+except ValueError as error:
+    print(f"Error: {error}")</code></pre>
+
+                <h3>Re-raising Exceptions</h3>
+
+                <pre><code class="language-python"># Log error but still propagate it
+def process_data(data):
+    try:
+        # Some processing
+        result = complex_operation(data)
+        return result
+    except Exception as error:
+        # Log the error
+        print(f"Error logged: {error}")
+        # Re-raise the same exception
+        raise  # This passes the exception to the caller
+
+# Caller must handle it
+try:
+    process_data(some_data)
+except Exception:
+    print("Could not process data")</code></pre>
+            </section>
+
+            <!-- Custom Exceptions -->
+            <section class="content-section">
+                <h2>5. Custom Exceptions</h2>
+
+                <p>
+                    Create your own exception classes to represent specific error conditions in your application. This makes error handling more semantic and organized.
+                </p>
+
+                <pre><code class="language-python"># Basic custom exception
+class InsufficientFundsError(Exception):
+    """Raised when account has insufficient funds for withdrawal."""
+    pass
+
+class BankAccount:
+    def __init__(self, balance=0):
+        self.balance = balance
+    
+    def withdraw(self, amount):
+        if amount > self.balance:
+            raise InsufficientFundsError(
+                f"Cannot withdraw ${amount}. Balance: ${self.balance}"
+            )
+        self.balance -= amount
+        return self.balance
+
+# Usage
+account = BankAccount(100)
+try:
+    account.withdraw(150)
+except InsufficientFundsError as error:
+    print(f"Transaction failed: {error}")
+
+# More sophisticated custom exception
+class ValidationError(Exception):
+    """Base class for validation errors."""
+    def __init__(self, field, message):
+        self.field = field
+        self.message = message
+        super().__init__(f"{field}: {message}")
+
+class InvalidEmailError(ValidationError):
+    """Raised when email format is invalid."""
+    def __init__(self, email):
+        super().__init__("email", f"'{email}' is not a valid email address")
+
+class InvalidAgeError(ValidationError):
+    """Raised when age is out of valid range."""
+    def __init__(self, age):
+        super().__init__("age", f"{age} is not a valid age")
+
+# Usage in a user registration system
+class UserRegistration:
+    def register(self, email, age):
+        try:
+            self.validate_email(email)
+            self.validate_age(age)
+            print(f"User registered: {email}")
+        except ValidationError as error:
+            print(f"Registration failed - {error}")
+    
+    def validate_email(self, email):
+        if '@' not in email or '.' not in email.split('@')[-1]:
+            raise InvalidEmailError(email)
+    
+    def validate_age(self, age):
+        if not 0 <= age <= 120:
+            raise InvalidAgeError(age)
+
+# Test
+registration = UserRegistration()
+registration.register("user@example.com", 25)  # Success
+registration.register("invalid-email", 25)     # Fails
+registration.register("user@example.com", 150) # Fails</code></pre>
+            </section>
+
+            <!-- Practical Examples -->
+            <section class="content-section">
+                <h2>6. Real-World Examples</h2>
+
+                <h3>Example 1: Safe File Reader</h3>
+
+                <pre><code class="language-python">def read_file_safely(filename):
+    """
+    Read a file with comprehensive error handling.
+    """
+    try:
+        with open(filename, 'r') as file:
+            content = file.read()
+            return content
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' does not exist.")
+        return None
+    except PermissionError:
+        print(f"Error: No permission to read '{filename}'.")
+        return None
+    except IsADirectoryError:
+        print(f"Error: '{filename}' is a directory, not a file.")
+        return None
+    except Exception as error:
+        print(f"Unexpected error: {error}")
+        return None
+
+# Usage
+content = read_file_safely("data.txt")
+if content:
+    print(f"File read successfully: {len(content)} characters")</code></pre>
+
+                <h3>Example 2: API Request Handler</h3>
+
+                <pre><code class="language-python">import requests  # Hypothetical example
+
+class APIError(Exception):
+    """Custom exception for API errors."""
+    pass
+
+def fetch_user_data(user_id):
+    """
+    Fetch user data from API with error handling.
+    """
+    max_retries = 3
+    retry_count = 0
+    
+    while retry_count < max_retries:
+        try:
+            response = requests.get(f"https://api.example.com/users/{user_id}")
+            
+            # Raise exception for bad status codes
+            if response.status_code != 200:
+                raise APIError(f"API returned status code {response.status_code}")
+            
+            return response.json()
+            
+        except requests.ConnectionError:
+            retry_count += 1
+            print(f"Connection failed. Retry {retry_count}/{max_retries}...")
+            if retry_count >= max_retries:
+                raise APIError("Could not connect to API after multiple retries")
+        
+        except requests.Timeout:
+            print("Request timed out")
+            raise APIError("API request timed out")
+        
+        except APIError as error:
+            print(f"API Error: {error}")
+            return None
+
+# Usage
+try:
+    user = fetch_user_data(123)
+    if user:
+        print(f"User: {user['name']}")
+except APIError as error:
+    print(f"Failed to fetch user: {error}")</code></pre>
+
+                <h3>Example 3: Input Validation Loop</h3>
+
+                <pre><code class="language-python">def get_valid_integer(prompt, min_value=None, max_value=None):
+    """
+    Keep asking for input until a valid integer is entered.
+    """
+    while True:
+        try:
+            value = int(input(prompt))
+            
+            # Check range if specified
+            if min_value is not None and value < min_value:
+                raise ValueError(f"Value must be at least {min_value}")
+            if max_value is not None and value > max_value:
+                raise ValueError(f"Value must be at most {max_value}")
+            
+            return value
+            
+        except ValueError as error:
+            print(f"Invalid input: {error}")
+            print("Please try again.\n")
+
+# Usage: Get age between 0 and 120
+age = get_valid_integer("Enter your age: ", min_value=0, max_value=120)
+print(f"You entered: {age}")
+
+# Usage: Get menu choice
+def show_menu():
+    print("\n=== Menu ===")
+    print("1. Option A")
+    print("2. Option B")
+    print("3. Option C")
+    print("4. Exit")
+    
+    choice = get_valid_integer("Select option (1-4): ", min_value=1, max_value=4)
+    return choice
+
+choice = show_menu()
+print(f"You selected option {choice}")</code></pre>
+            </section>
+
+            <!-- Best Practices -->
+            <section class="content-section">
+                <h2>7. Best Practices</h2>
+
+                <div class="info-box">
+                    <h3>✅ Do's</h3>
+                    <ul>
+                        <li><strong>Be Specific:</strong> Catch specific exceptions rather than using bare <code>except:</code></li>
+                        <li><strong>Fail Fast:</strong> Validate input early and raise exceptions for invalid data</li>
+                        <li><strong>Clean Up:</strong> Use <code>finally</code> or context managers to ensure resources are released</li>
+                        <li><strong>Meaningful Messages:</strong> Provide clear error messages that help users understand what went wrong</li>
+                        <li><strong>Log Errors:</strong> In production, log exceptions for debugging later</li>
+                        <li><strong>Document Exceptions:</strong> Use docstrings to document what exceptions a function might raise</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Don'ts</h3>
+                    <ul>
+                        <li><strong>Silent Failures:</strong> Don't catch exceptions without handling them or logging</li>
+                        <li><strong>Overly Broad:</strong> Avoid catching <code>Exception</code> unless necessary</li>
+                        <li><strong>Using Exceptions for Flow Control:</strong> Don't use exceptions for normal program logic</li>
+                        <li><strong>Empty Except Blocks:</strong> Never use <code>except: pass</code> - it hides all errors</li>
+                        <li><strong>Generic Messages:</strong> Avoid vague error messages like "Something went wrong"</li>
+                    </ul>
+                </div>
+
+                <pre><code class="language-python"># ❌ Bad: Silent failure
+try:
+    risky_operation()
+except:
+    pass  # Error is completely hidden!
+
+# ✅ Good: Handle appropriately
+try:
+    risky_operation()
+except SpecificError as error:
+    log_error(error)
+    notify_user("Operation failed")
+
+# ❌ Bad: Too broad
+try:
+    result = process_data()
+except Exception:
+    print("Error!")  # What error? Where?
+
+# ✅ Good: Specific handling
+try:
+    result = process_data()
+except ValueError as error:
+    print(f"Invalid data: {error}")
+except KeyError as error:
+    print(f"Missing key: {error}")
+except Exception as error:
+    print(f"Unexpected error: {error}")
+    raise  # Re-raise unexpected errors</code></pre>
+            </section>
+
+            <!-- Practice Exercises -->
+            <section class="content-section">
+                <h2>8. Practice Exercises</h2>
+
+                <h3>Exercise 1: Safe Calculator</h3>
+                <p>Create a calculator that handles all possible errors gracefully.</p>
+
+                <details>
+                    <summary>Click to see solution</summary>
+                    <pre><code class="language-python">def safe_calculator():
+    """Calculator with comprehensive error handling."""
+    print("=== Safe Calculator ===")
+    
+    try:
+        num1 = float(input("Enter first number: "))
+        operator = input("Enter operator (+, -, *, /): ").strip()
+        num2 = float(input("Enter second number: "))
+        
+        if operator == '+':
+            result = num1 + num2
+        elif operator == '-':
+            result = num1 - num2
+        elif operator == '*':
+            result = num1 * num2
+        elif operator == '/':
+            if num2 == 0:
+                raise ZeroDivisionError("Cannot divide by zero!")
+            result = num1 / num2
+        else:
+            raise ValueError(f"Invalid operator: {operator}")
+        
+        print(f"\nResult: {num1} {operator} {num2} = {result}")
+        
+    except ValueError as error:
+        print(f"Invalid input: {error}")
+    except ZeroDivisionError as error:
+        print(f"Math error: {error}")
+    except KeyboardInterrupt:
+        print("\nCalculation cancelled by user")
+    except Exception as error:
+        print(f"Unexpected error: {error}")
+
+# Run
+safe_calculator()</code></pre>
+                </details>
+
+                <h3>Exercise 2: File Backup System</h3>
+                <p>Create a function that creates a backup of a file with proper error handling.</p>
+
+                <details>
+                    <summary>Click to see solution</summary>
+                    <pre><code class="language-python">import shutil
+from datetime import datetime
+
+def backup_file(source_file):
+    """Create a timestamped backup of a file."""
+    try:
+        # Generate backup filename
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_file = f"{source_file}.backup_{timestamp}"
+        
+        # Copy file
+        shutil.copy2(source_file, backup_file)
+        print(f"✅ Backup created: {backup_file}")
+        return backup_file
+        
+    except FileNotFoundError:
+        print(f"❌ Error: Source file '{source_file}' not found")
+        return None
+    except PermissionError:
+        print(f"❌ Error: No permission to read '{source_file}'")
+        return None
+    except Exception as error:
+        print(f"❌ Backup failed: {error}")
+        return None
+
+# Test
+backup_file("important_data.txt")</code></pre>
+                </details>
+            </section>
+
+            <!-- Key Takeaways -->
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                
+                <div class="success-box">
+                    <h3>✅ What You've Learned</h3>
+                    <ul>
+                        <li><strong>Try-Except:</strong> Catch and handle exceptions to prevent crashes</li>
+                        <li><strong>Exception Types:</strong> Python has many built-in exceptions for different errors</li>
+                        <li><strong>Finally Clause:</strong> Always runs cleanup code, even after return statements</li>
+                        <li><strong>Raising Exceptions:</strong> Signal errors in your code with <code>raise</code></li>
+                        <li><strong>Custom Exceptions:</strong> Create specific exception classes for your application</li>
+                        <li><strong>Best Practices:</strong> Be specific, provide clear messages, and always clean up resources</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- What's Next -->
+            <div class="info-box">
+                <h3>🎯 What's Next?</h3>
+                <p>With exception handling mastered, you're ready for:</p>
+                <ul>
+                    <li><strong>File I/O:</strong> Read and write files with proper error handling</li>
+                    <li><strong>Working with APIs:</strong> Make network requests and handle connection errors</li>
+                    <li><strong>Debugging Techniques:</strong> Use Python's debugging tools effectively</li>
+                </ul>
+            </div>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of exception handling!</p>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 1: What block catches exceptions in Python?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) catch</div>
+                            <div class="quiz-option" data-value="b">B) handle</div>
+                            <div class="quiz-option" data-value="c">C) except</div>
+                            <div class="quiz-option" data-value="d">D) error</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 2: What block always executes, regardless of exceptions?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) else</div>
+                            <div class="quiz-option" data-value="b">B) finally</div>
+                            <div class="quiz-option" data-value="c">C) always</div>
+                            <div class="quiz-option" data-value="d">D) complete</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: Which is better practice?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) Catch specific exceptions</div>
+                            <div class="quiz-option" data-value="b">B) Use bare except: for everything</div>
+                            <div class="quiz-option" data-value="c">C) Never handle exceptions</div>
+                            <div class="quiz-option" data-value="d">D) Ignore all errors</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="d">
+                        <h3>Question 4: How do you raise an exception manually?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) throw</div>
+                            <div class="quiz-option" data-value="b">B) error</div>
+                            <div class="quiz-option" data-value="c">C) exception</div>
+                            <div class="quiz-option" data-value="d">D) raise</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 5: What exception is raised when dividing by zero?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">A) ValueError</div>
+                            <div class="quiz-option" data-value="b">B) TypeError</div>
+                            <div class="quiz-option" data-value="c">C) ZeroDivisionError</div>
+                            <div class="quiz-option" data-value="d">D) MathError</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="string-methods-tutorial.html" class="btn btn-secondary">← Previous: String Methods</a>
+                <a href="file-io-tutorial.html" class="btn btn-primary">Next: File I/O →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+
+    <!-- Prism.js -->
+    <script src="../../../vendor/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

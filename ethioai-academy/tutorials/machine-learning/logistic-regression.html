@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Logistic Regression - the fundamental classification algorithm. Learn how machines predict categories and probabilities.">
+    <meta name="keywords" content="logistic regression tutorial, classification machine learning, binary classification, probability prediction">
+    <title>Logistic Regression - ML Classification Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="logistic-regression.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+        }
+        
+        .tutorial-breadcrumb {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-top: 1rem;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #065f46;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .example-box {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .example-box p {
+            margin: 0;
+        }
+        
+        .formula-box {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            border-color: #078930;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .info-card p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-meta-info {
+                justify-content: center;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+            }
+            
+            .tutorial-navigation a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Logistic Regression</span>
+            </div>
+            <h1>Logistic Regression</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Use Telebirr mobile-money transaction logs (anonymized) to train fraud detection — a classic imbalanced classification problem for Ethiopian fintech.</em></p>
+</div>
+            <p class="tutorial-intro">Learn the essential classification algorithm that predicts probabilities and categories</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 3</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Certificate Motivation Banner -->
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section">
+                <h2>🎯 Welcome to Logistic Regression</h2>
+                <p>
+                    Despite its name, <strong>Logistic Regression is actually a classification algorithm</strong>, not regression! It's one of the most popular algorithms for binary classification (yes/no, spam/not spam, disease/healthy).
+                </p>
+                <p>
+                    In this tutorial, you'll learn how machines predict probabilities and make binary decisions using a brilliant mathematical function called the sigmoid.
+                </p>
+            </section>
+
+            <!-- Classification vs Regression -->
+            <section class="content-section">
+                <h2>📊 Classification vs Regression</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Regression</th>
+                            <th>Classification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Continuous values (any number)</td>
+                            <td>Discrete categories (Class A, B, etc.)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Examples</strong></td>
+                            <td>Predicting prices, temperature, distance</td>
+                            <td>Email (spam/not spam), disease (yes/no)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output Range</strong></td>
+                            <td>-∞ to +∞</td>
+                            <td>Class labels (0 or 1 for binary)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Best Metric</strong></td>
+                            <td>MSE, R² Score</td>
+                            <td>Accuracy, Precision, Recall</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <p>💡 <strong>Why "Regression" in the name?</strong> Because it builds on linear regression by adding a special mathematical function (sigmoid) to convert continuous outputs to probabilities. Historical naming quirk!</p>
+                </div>
+            </section>
+
+            <!-- How Logistic Regression Works -->
+            <section class="content-section">
+                <h2>⚙️ How Logistic Regression Works</h2>
+                
+                <h3>The Sigmoid Function</h3>
+                <p>
+                    The magic of Logistic Regression is the <strong>sigmoid function</strong>. It takes any number and squashes it into a probability (0 to 1):
+                </p>
+                
+                <div class="formula-box">
+                    σ(z) = 1 / (1 + e^(-z))
+                    <p style="font-size: 0.85rem; margin-top: 1rem; color: #64748b;">
+                        Where z = w₁x₁ + w₂x₂ + ... + b (same as linear regression!)
+                    </p>
+                </div>
+
+                <p>
+                    Key properties of sigmoid:
+                </p>
+                <ul>
+                    <li>Input can be any number (negative or positive)</li>
+                    <li>Output is always between 0 and 1</li>
+                    <li>Output = probability of class 1 (positive class)</li>
+                    <li>S-shaped curve makes smooth transitions</li>
+                </ul>
+
+                <div class="example-box">
+                    <p>
+                        <strong>🏥 Example:</strong> Predicting if a patient has a disease:
+                    </p>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>Sigmoid output = 0.2 → 20% probability of disease</li>
+                        <li>Sigmoid output = 0.9 → 90% probability of disease</li>
+                        <li>Decision threshold = 0.5 (if output ≥ 0.5, predict "disease")</li>
+                    </ul>
+                    </p>
+                </div>
+
+                <h3>Decision Boundary</h3>
+                <p>
+                    Logistic Regression creates a decision boundary that separates classes. Points on one side are classified as Class 0, the other as Class 1.
+                </p>
+            </section>
+
+            <!-- Python Implementation -->
+            <section class="content-section">
+                <h2>💻 Logistic Regression in Python</h2>
+                
+                <pre><code class="language-python"># Spam Email Detection using Logistic Regression
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+import numpy as np
+
+# Sample data: Features extracted from emails
+# Features: [word_count, link_count, caps_ratio, exclamation_marks]
+X_train = np.array([
+    [100, 2, 0.05, 0],      # Legitimate
+    [500, 15, 0.3, 5],      # Spam
+    [150, 1, 0.02, 0],      # Legitimate
+    [600, 20, 0.35, 8],     # Spam
+    [200, 3, 0.08, 1],      # Legitimate
+])
+
+# Labels: 0 = Not spam, 1 = Spam
+y_train = np.array([0, 1, 0, 1, 0])
+
+# Create and train the model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+new_email = np.array([[120, 1, 0.03, 0]])
+prediction = model.predict(new_email)
+probability = model.predict_proba(new_email)
+
+print(f"Prediction: {'Spam' if prediction[0] == 1 else 'Not Spam'}")
+print(f"Probability: {probability[0][1]:.2%} chance of being spam")
+
+# Evaluate model
+y_pred = model.predict(X_train)
+accuracy = accuracy_score(y_train, y_pred)
+print(f"\nAccuracy: {accuracy:.2%}")</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>predict_proba():</strong> Returns probabilities for both classes. Use <code>predict()</code> for hard predictions (0 or 1).</p>
+                </div>
+            </section>
+
+            <!-- Multiclass Classification -->
+            <section class="content-section">
+                <h2>🔀 Beyond Binary: Multiclass Classification</h2>
+                
+                <p>
+                    Logistic Regression naturally handles binary (2-class) problems. For problems with 3+ classes, there are two approaches:
+                </p>
+
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">1️⃣</div>
+                        <h3>One-vs-Rest (OvR)</h3>
+                        <p>Train multiple binary classifiers (Class A vs All, Class B vs All, etc.) and take the highest probability</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">2️⃣</div>
+                        <h3>Multinomial</h3>
+                        <p>Train a single classifier that directly learns all classes using softmax (extension of sigmoid)</p>
+                    </div>
+                </div>
+
+                <pre><code class="language-python"># Multiclass example: Iris flower classification
+from sklearn.datasets import load_iris
+from sklearn.linear_model import LogisticRegression
+
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Logistic Regression automatically handles multiclass
+model = LogisticRegression(max_iter=200)
+model.fit(X, y)
+
+# Predict class and probabilities
+prediction = model.predict([[5.1, 3.5, 1.4, 0.2]])
+probabilities = model.predict_proba([[5.1, 3.5, 1.4, 0.2]])
+
+print(f"Predicted class: {iris.target_names[prediction[0]]}")
+for i, prob in enumerate(probabilities[0]):
+    print(f"{iris.target_names[i]}: {prob:.2%}")</code></pre>
+            </section>
+
+            <!-- Evaluation Metrics -->
+            <section class="content-section">
+                <h2>📈 Key Evaluation Metrics</h2>
+                
+                <p>
+                    For classification, we use different metrics than regression:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Formula/Description</th>
+                            <th>When to Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>% of correct predictions</td>
+                            <td>Balanced datasets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precision</strong></td>
+                            <td>Of predicted positives, how many are correct?</td>
+                            <td>When false positives are costly</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recall</strong></td>
+                            <td>Of actual positives, how many did we find?</td>
+                            <td>When false negatives are costly</td>
+                        </tr>
+                        <tr>
+                            <td><strong>F1-Score</strong></td>
+                            <td>Harmonic mean of precision and recall</td>
+                            <td>Imbalanced datasets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AUC-ROC</strong></td>
+                            <td>Area under the ROC curve</td>
+                            <td>Comprehensive performance metric</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <p>
+                        <strong>🏥 Disease Detection Example:</strong>
+                    </p>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li><strong>Precision matters:</strong> If test says you have disease, how sure are we? (avoid false alarms)</li>
+                        <li><strong>Recall matters:</strong> Did we catch all actual disease cases? (avoid missing real cases)</li>
+                    </ul>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Strengths and Limitations -->
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Probabilistic Output</h3>
+                        <p>Returns probabilities, not just class labels</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Fast & Efficient</h3>
+                        <p>Trains quickly even on large datasets</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Interpretable</h3>
+                        <p>Feature weights show importance in predictions</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Linear Boundary Only</h3>
+                        <p>Can't handle complex non-linear decision boundaries</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Requires Feature Scaling</h3>
+                        <p>Performance improves when features are normalized</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Not for Complex Data</h3>
+                        <p>Tree-based methods often outperform on high-dimensional data</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- When to Use -->
+            <section class="content-section">
+                <h2>🎯 When to Use Logistic Regression</h2>
+                
+                <ul>
+                    <li><strong>Binary or multiclass classification</strong> - Predicting categories, not numbers</li>
+                    <li><strong>You need probabilities</strong> - Not just class predictions</li>
+                    <li><strong>Interpretability matters</strong> - You need to explain decisions to others</li>
+                    <li><strong>Fast inference required</strong> - Real-time predictions needed</li>
+                    <li><strong>Classes are linearly separable</strong> - Decision boundary is roughly a line</li>
+                    <li><strong>Baseline classifier</strong> - Before trying complex algorithms</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Common Misconception:</strong> "Logistic Regression doesn't work with non-linear data." You can add polynomial features or interactions to handle non-linearity!</p>
+                </div>
+            </section>
+
+            <!-- Key Concepts -->
+            <section class="content-section">
+                <h2>📚 Key Concepts Summary</h2>
+                
+                <div class="info-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Classification:</strong> Predicting discrete categories, not continuous values</li>
+                        <li><strong>Binary Classification:</strong> Two-class problem (yes/no, spam/not spam)</li>
+                        <li><strong>Sigmoid Function:</strong> Converts linear output to probability (0-1)</li>
+                        <li><strong>Decision Boundary:</strong> The line/plane that separates classes</li>
+                        <li><strong>Threshold:</strong> Usually 0.5 for probability → class conversion</li>
+                        <li><strong>Accuracy/Precision/Recall:</strong> Different metrics for different needs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Logistic Regression is for classification (despite the name!)</li>
+                    <li>Uses sigmoid function to convert outputs to probabilities</li>
+                    <li>Outputs probabilities and class predictions</li>
+                    <li>Works for both binary and multiclass problems</li>
+                    <li>Fast, interpretable, but assumes linear separability</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Decision Trees</strong>, we'll learn how to build tree-based models that can handle non-linear relationships and are much more flexible than Logistic Regression. Get ready for a different approach to classification!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Great Progress!</strong> You now know two fundamental algorithms: Linear Regression for continuous predictions and Logistic Regression for categories. These form the foundation of ML mastery!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Logistic Regression!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What type of problems is logistic regression used for?</h4>
+                        <div class="quiz-option" data-value="A">A) Predicting continuous values</div>
+                        <div class="quiz-option" data-value="B">B) Binary and multi-class classification</div>
+                        <div class="quiz-option" data-value="C">C) Clustering data points</div>
+                        <div class="quiz-option" data-value="D">D) Time series forecasting</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What function does logistic regression use to convert predictions to probabilities?</h4>
+                        <div class="quiz-option" data-value="A">A) ReLU function</div>
+                        <div class="quiz-option" data-value="B">B) Linear function</div>
+                        <div class="quiz-option" data-value="C">C) Sigmoid (logistic) function</div>
+                        <div class="quiz-option" data-value="D">D) Softmax function</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What range do probabilities output by logistic regression fall into?</h4>
+                        <div class="quiz-option" data-value="A">A) 0 to 1</div>
+                        <div class="quiz-option" data-value="B">B) -1 to 1</div>
+                        <div class="quiz-option" data-value="C">C) -∞ to +∞</div>
+                        <div class="quiz-option" data-value="D">D) 0 to 100</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What is the decision boundary in logistic regression typically set at?</h4>
+                        <div class="quiz-option" data-value="A">A) 0.0</div>
+                        <div class="quiz-option" data-value="B">B) 0.25</div>
+                        <div class="quiz-option" data-value="C">C) 0.75</div>
+                        <div class="quiz-option" data-value="D">D) 0.5 (can be adjusted)</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. What does regularization in logistic regression help prevent?</h4>
+                        <div class="quiz-option" data-value="A">A) Underfitting</div>
+                        <div class="quiz-option" data-value="B">B) Overfitting by penalizing large coefficients</div>
+                        <div class="quiz-option" data-value="C">C) Data imbalance</div>
+                        <div class="quiz-option" data-value="D">D) Missing values</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="linear-regression.html" class="btn btn-secondary">← Previous: Linear Regression</a>
+                <a href="decision-trees.html" class="btn btn-primary">Next: Decision Trees →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script></body>
+
+</html>

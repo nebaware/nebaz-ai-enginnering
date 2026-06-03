@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master sampling techniques and the Central Limit Theorem for AI. Learn sampling distributions, confidence intervals, margin of error with Python examples for ML applications.">
+    <meta name="keywords" content="sampling techniques, central limit theorem, CLT, sampling distribution, confidence intervals, margin of error, statistics for AI, machine learning sampling">
+    <title>Sampling & Central Limit Theorem - Statistics for AI | Nebaz AI Academy</title>
+    <link rel="canonical" href="sampling-clt.html">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 3rem 0 2rem 0;
+            margin-bottom: 0;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 3rem;
+        }
+        
+        .content-section h2 {
+            color: #065f46;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #078930;
+        }
+        
+        .content-section h3 {
+            color: #078930;
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section p {
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .content-section li {
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            color: #334155;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #078930;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .info-box strong {
+            color: #065f46;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .warning-box strong {
+            color: #d97706;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+        
+        .success-box strong {
+            color: #059669;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+        
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            background: #078930;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: #065f46;
+        }
+        
+        .nav-button.disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tutorial-intro {
+                font-size: 1rem;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/statistics-for-ai.html">Statistics for AI</a> → 
+                <span>Sampling & Central Limit Theorem</span>
+            </div>
+            <h1>Sampling & Central Limit Theorem</h1>
+            <p class="tutorial-intro">
+                Understand how to make accurate predictions about populations from samples and master the most important theorem in statistics
+            </p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 4</span>
+                <span class="meta-item">📊 Intermediate</span>
+                <span class="meta-item">⏱️ 65 min</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <article class="tutorial-content">
+            <div class="container">
+                
+                <!-- Certificate Banner -->
+                <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                    <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                        🎓 <strong>Complete all 6 tutorials to earn your Free Statistics for AI Certificate</strong><br>
+                        <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup required</span>
+                    </p>
+                </section>
+
+                <!-- Introduction -->
+                <section class="content-section">
+                    <h2>🎯 Why Sampling Matters in AI</h2>
+                    <p>
+                        You can't survey all 8 billion people to predict election results. You can't test every product to measure defect rates. You can't train ML models on infinite data. In the real world, we work with samples—subsets of a larger population. The critical question is: how well does our sample represent the whole?
+                    </p>
+                    <p>
+                        The Central Limit Theorem (CLT) is arguably the most important theorem in statistics. It tells us that no matter what the population distribution looks like, sample means will be normally distributed. This remarkable fact underpins confidence intervals, hypothesis testing, A/B tests, and countless ML algorithms.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>💡 Real-World Impact</strong>
+                        <p>Netflix doesn't need all users to rate a show—a sample of 10,000 gives accurate estimates. Political polls survey 1,000 people to predict millions of votes (±3% accuracy). Medical trials use hundreds of patients to approve drugs for millions. Understanding sampling lets you make confident decisions with limited data.</p>
+                    </div>
+                </section>
+
+                <!-- Population vs Sample -->
+                <section class="content-section">
+                    <h2>👥 Population vs Sample</h2>
+                    <p>
+                        A <strong>population</strong> is the complete set of all items you're interested in. A <strong>sample</strong> is a subset selected from the population. The goal of sampling is to learn about the population without measuring every single member.
+                    </p>
+                    
+                    <h3>Key Terminology</h3>
+                    <ul>
+                        <li><strong>Population parameter:</strong> A numerical characteristic of the population (e.g., μ for mean, σ for standard deviation). These are usually unknown.</li>
+                        <li><strong>Sample statistic:</strong> A numerical characteristic calculated from the sample (e.g., x̄ for sample mean, s for sample standard deviation). We use these to estimate population parameters.</li>
+                        <li><strong>Sampling error:</strong> The difference between a sample statistic and the true population parameter. This is natural and expected!</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Example: Estimating average height of all adults (population)
+# Population: All 7 billion adults on Earth
+np.random.seed(42)
+
+# True population (we pretend we know this for demonstration)
+# In reality, we never know population parameters!
+population_size = 100000
+population_mean = 170  # cm
+population_std = 10    # cm
+population = np.random.normal(population_mean, population_std, population_size)
+
+print("Population Parameters (Usually Unknown):")
+print(f"True population mean (μ): {population.mean():.2f} cm")
+print(f"True population std (σ): {population.std():.2f} cm")
+
+# Take a sample (this is what we do in practice)
+sample_size = 100
+sample = np.random.choice(population, size=sample_size, replace=False)
+
+print(f"\nSample Statistics (What We Calculate):")
+print(f"Sample mean (x̄): {sample.mean():.2f} cm")
+print(f"Sample std (s): {sample.std(ddof=1):.2f} cm")  # ddof=1 for sample std
+print(f"Sampling error: {abs(sample.mean() - population.mean()):.2f} cm")
+
+# Compare multiple samples
+num_samples = 5
+print(f"\nTaking {num_samples} different samples:")
+for i in range(num_samples):
+    sample = np.random.choice(population, size=sample_size, replace=False)
+    error = abs(sample.mean() - population.mean())
+    print(f"Sample {i+1}: mean = {sample.mean():.2f}, error = {error:.2f} cm")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Key Insight</strong>
+                        <p>Every sample will give slightly different results (sampling variability). This is normal! The Central Limit Theorem helps us quantify this uncertainty and make statements like "We're 95% confident the true mean is between 168-172 cm."</p>
+                    </div>
+                </section>
+
+                <!-- Sampling Methods -->
+                <section class="content-section">
+                    <h2>🎲 Sampling Methods</h2>
+                    <p>
+                        How you select your sample dramatically affects the quality of your conclusions. Poor sampling leads to biased results, no matter how large your sample is!
+                    </p>
+                    
+                    <h3>1. Simple Random Sampling</h3>
+                    <p>Every member of the population has an equal chance of being selected. This is the gold standard.</p>
+                    
+                    <pre><code class="language-python">import numpy as np
+
+# Simple random sampling example
+population = np.arange(1, 1001)  # Population of 1000 individuals
+sample_size = 50
+
+# Simple random sample (without replacement)
+simple_random_sample = np.random.choice(population, size=sample_size, replace=False)
+print("Simple Random Sample (first 10):", simple_random_sample[:10])
+print(f"Sample mean: {simple_random_sample.mean():.2f}")
+print(f"Population mean: {population.mean():.2f}")</code></pre>
+
+                    <h3>2. Stratified Sampling</h3>
+                    <p>Divide population into groups (strata) and sample from each group proportionally. Ensures representation of all subgroups.</p>
+                    
+                    <pre><code class="language-python"># Stratified sampling: Ensure representation by age group
+# Population: Users aged 18-70, want to ensure all age groups represented
+
+np.random.seed(42)
+ages = np.random.randint(18, 71, 10000)  # 10,000 users
+
+# Define strata (age groups)
+strata = {
+    'young': (18, 30),
+    'middle': (31, 50),
+    'senior': (51, 70)
+}
+
+# Stratified sample: 10 from each group (total 30)
+stratified_sample = []
+for group_name, (min_age, max_age) in strata.items():
+    group = ages[(ages >= min_age) & (ages <= max_age)]
+    sample = np.random.choice(group, size=10, replace=False)
+    stratified_sample.extend(sample)
+    print(f"{group_name.capitalize()} ({min_age}-{max_age}): sampled {len(sample)}, mean age {sample.mean():.1f}")
+
+print(f"\nStratified sample mean: {np.mean(stratified_sample):.2f}")
+print(f"Population mean: {ages.mean():.2f}")</code></pre>
+
+                    <h3>3. Systematic Sampling</h3>
+                    <p>Select every kth element. Useful for production lines, quality control.</p>
+                    
+                    <pre><code class="language-python"># Systematic sampling: Quality control on production line
+production_line = np.arange(1, 1001)  # 1000 products
+k = 20  # Sample every 20th product
+
+systematic_sample = production_line[::k]  # Every 20th element
+print(f"Systematic sample (k={k}): {len(systematic_sample)} products")
+print(f"Sampled products: {systematic_sample[:10]}")</code></pre>
+
+                    <h3>4. Cluster Sampling</h3>
+                    <p>Divide population into clusters, randomly select clusters, sample all members. Useful when population is geographically dispersed.</p>
+                    
+                    <pre><code class="language-python"># Cluster sampling: Survey schools (clusters) instead of individual students
+np.random.seed(42)
+
+# 100 schools, each with ~100 students
+num_schools = 100
+students_per_school = np.random.randint(80, 120, num_schools)
+
+# Randomly select 10 schools and survey all their students
+selected_schools = np.random.choice(num_schools, size=10, replace=False)
+total_students_sampled = students_per_school[selected_schools].sum()
+
+print(f"Cluster sampling: Selected {len(selected_schools)} schools")
+print(f"Total students surveyed: {total_students_sampled}")
+print(f"Average per selected school: {total_students_sampled/len(selected_schools):.0f}")</code></pre>
+
+                    <div class="info-box">
+                        <strong>💡 Choosing the Right Method</strong>
+                        <p><strong>Simple Random:</strong> When population is homogeneous and accessible. <strong>Stratified:</strong> When distinct subgroups exist. <strong>Systematic:</strong> For ordered lists or continuous processes. <strong>Cluster:</strong> When population is geographically dispersed or accessing individuals is expensive.</p>
+                    </div>
+                </section>
+
+                <!-- Sampling Distribution -->
+                <section class="content-section">
+                    <h2>📊 Sampling Distribution of the Mean</h2>
+                    <p>
+                        If you took 1000 different samples and calculated the mean of each, those 1000 means would form a distribution called the <strong>sampling distribution of the mean</strong>. This is different from the population distribution or a single sample distribution!
+                    </p>
+                    
+                    <h3>Key Properties</h3>
+                    <ul>
+                        <li><strong>Mean of sampling distribution = Population mean:</strong> E(x̄) = μ</li>
+                        <li><strong>Standard error (SE):</strong> σx̄ = σ/√n (standard deviation of sampling distribution)</li>
+                        <li><strong>As n increases, SE decreases:</strong> Larger samples give more accurate estimates</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Demonstrate sampling distribution
+np.random.seed(42)
+
+# Population: Right-skewed (not normal!)
+population = np.random.exponential(scale=10, size=100000)
+pop_mean = population.mean()
+pop_std = population.std()
+
+print(f"Population: Mean = {pop_mean:.2f}, Std = {pop_std:.2f}")
+
+# Take many samples and calculate mean of each
+num_samples = 1000
+sample_size = 30
+sample_means = []
+
+for _ in range(num_samples):
+    sample = np.random.choice(population, size=sample_size, replace=False)
+    sample_means.append(sample.mean())
+
+sample_means = np.array(sample_means)
+
+# Sampling distribution properties
+sampling_mean = sample_means.mean()
+sampling_std = sample_means.std()  # This is the Standard Error
+theoretical_se = pop_std / np.sqrt(sample_size)
+
+print(f"\nSampling Distribution (n={sample_size}, {num_samples} samples):")
+print(f"Mean of sample means: {sampling_mean:.2f} (should equal population mean)")
+print(f"Std of sample means (SE): {sampling_std:.2f}")
+print(f"Theoretical SE (σ/√n): {theoretical_se:.2f}")
+print(f"Difference: {abs(sampling_std - theoretical_se):.4f}")
+
+# Visualize
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 2, 1)
+plt.hist(population[:1000], bins=50, alpha=0.7, color='coral', edgecolor='black')
+plt.axvline(pop_mean, color='red', linestyle='--', linewidth=2, label=f'μ = {pop_mean:.2f}')
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.title('Population Distribution (Right-Skewed)')
+plt.legend()
+
+plt.subplot(1, 2, 2)
+plt.hist(sample_means, bins=50, alpha=0.7, color='steelblue', edgecolor='black')
+plt.axvline(sampling_mean, color='red', linestyle='--', linewidth=2, label=f'Mean = {sampling_mean:.2f}')
+plt.xlabel('Sample Mean')
+plt.ylabel('Frequency')
+plt.title(f'Sampling Distribution (Approximately Normal!)')
+plt.legend()
+
+plt.tight_layout()
+# plt.show()  # Uncomment to display
+
+print("\nNotice: Population is skewed, but sampling distribution is approximately normal!")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ The Magic of Sampling Distribution</strong>
+                        <p>Even though individual samples vary, their means cluster around the true population mean. The spread (standard error) tells us how much variation to expect. This is how we quantify uncertainty in our estimates!</p>
+                    </div>
+                </section>
+
+                <!-- Central Limit Theorem -->
+                <section class="content-section">
+                    <h2>🎊 The Central Limit Theorem</h2>
+                    <p>
+                        The Central Limit Theorem (CLT) is one of the most profound results in statistics. It states that <strong>regardless of the population's distribution, the sampling distribution of the mean approaches a normal distribution as sample size increases</strong>.
+                    </p>
+                    
+                    <h3>Formal Statement</h3>
+                    <p style="background: #eff6ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #078930;">
+                        For a population with mean μ and standard deviation σ, the sampling distribution of the sample mean x̄ from samples of size n will be approximately normal with:<br><br>
+                        <strong>Mean:</strong> μx̄ = μ<br>
+                        <strong>Standard Error:</strong> σx̄ = σ/√n<br><br>
+                        The approximation improves as n increases. Generally, n ≥ 30 is considered sufficient.
+                    </p>
+                    
+                    <h3>Why This is Revolutionary</h3>
+                    <ul>
+                        <li><strong>Works for ANY distribution:</strong> Uniform, exponential, bimodal—doesn't matter!</li>
+                        <li><strong>Enables inference:</strong> We can use normal distribution properties even when population isn't normal</li>
+                        <li><strong>Justifies methods:</strong> Confidence intervals, t-tests, linear regression all rely on CLT</li>
+                        <li><strong>Quantifies uncertainty:</strong> We know how much sample means vary</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Demonstrate CLT with different population distributions
+np.random.seed(42)
+
+def demonstrate_clt(population_dist, dist_name, sample_sizes=[5, 10, 30, 100]):
+    """Show how sampling distribution becomes normal as n increases"""
+    
+    pop_mean = population_dist.mean()
+    pop_std = population_dist.std()
+    
+    fig, axes = plt.subplots(2, len(sample_sizes), figsize=(15, 6))
+    
+    for idx, n in enumerate(sample_sizes):
+        # Take 1000 samples of size n
+        sample_means = []
+        for _ in range(1000):
+            sample = np.random.choice(population_dist, size=n, replace=True)
+            sample_means.append(sample.mean())
+        
+        sample_means = np.array(sample_means)
+        theoretical_se = pop_std / np.sqrt(n)
+        
+        # Plot population
+        if idx == 0:
+            axes[0, idx].hist(population_dist[:1000], bins=30, alpha=0.7, 
+                            color='coral', edgecolor='black')
+            axes[0, idx].set_title(f'{dist_name} Population')
+            axes[0, idx].set_ylabel('Frequency')
+        else:
+            axes[0, idx].axis('off')
+        
+        # Plot sampling distribution
+        axes[1, idx].hist(sample_means, bins=40, alpha=0.7, density=True,
+                         color='steelblue', edgecolor='black')
+        
+        # Overlay theoretical normal curve
+        x = np.linspace(sample_means.min(), sample_means.max(), 100)
+        theoretical_pdf = stats.norm.pdf(x, pop_mean, theoretical_se)
+        axes[1, idx].plot(x, theoretical_pdf, 'r-', linewidth=2, 
+                         label='Theoretical Normal')
+        
+        axes[1, idx].set_title(f'n = {n}\nSE = {theoretical_se:.3f}')
+        axes[1, idx].set_xlabel('Sample Mean')
+        if idx == 0:
+            axes[1, idx].set_ylabel('Density')
+        axes[1, idx].legend()
+    
+    plt.tight_layout()
+    # plt.show()  # Uncomment to display
+
+# Test 1: Uniform distribution (rectangular)
+uniform_pop = np.random.uniform(0, 10, 100000)
+print("CLT Demonstration 1: Uniform Distribution")
+print(f"Population: Mean = {uniform_pop.mean():.2f}, Std = {uniform_pop.std():.2f}")
+# demonstrate_clt(uniform_pop, "Uniform")
+
+# Test 2: Exponential distribution (right-skewed)
+exponential_pop = np.random.exponential(scale=5, size=100000)
+print("\nCLT Demonstration 2: Exponential Distribution (Heavily Skewed)")
+print(f"Population: Mean = {exponential_pop.mean():.2f}, Std = {exponential_pop.std():.2f}")
+# demonstrate_clt(exponential_pop, "Exponential")
+
+# Test 3: Bimodal distribution (two peaks)
+bimodal_pop = np.concatenate([
+    np.random.normal(5, 1, 50000),
+    np.random.normal(15, 1, 50000)
+])
+print("\nCLT Demonstration 3: Bimodal Distribution")
+print(f"Population: Mean = {bimodal_pop.mean():.2f}, Std = {bimodal_pop.std():.2f}")
+# demonstrate_clt(bimodal_pop, "Bimodal")
+
+print("\nKey Observation: As n increases, sampling distribution becomes more normal!")
+print("Even with n=30, the approximation is quite good for most distributions.")</code></pre>
+
+                    <div class="warning-box">
+                        <strong>⚠️ CLT Requirements</strong>
+                        <p>1. <strong>Independence:</strong> Samples must be independent (or population >> sample). 2. <strong>Sample size:</strong> n ≥ 30 is rule of thumb, but depends on population distribution. Highly skewed populations may need n > 50. 3. <strong>Finite variance:</strong> Population must have finite variance (very rare exception).</p>
+                    </div>
+                </section>
+
+                <!-- Standard Error -->
+                <section class="content-section">
+                    <h2>📏 Standard Error (SE)</h2>
+                    <p>
+                        The <strong>standard error</strong> measures the variability of a sample statistic (usually the mean). It tells us how much sample means typically differ from the population mean. Smaller SE means more precise estimates.
+                    </p>
+                    
+                    <h3>Formula and Interpretation</h3>
+                    <p style="background: #eff6ff; padding: 1rem; border-radius: 8px; text-align: center; font-size: 1.2rem;">
+                        <strong>SE = σ/√n</strong>
+                    </p>
+                    
+                    <p>Where σ is population standard deviation and n is sample size. Key insights:</p>
+                    <ul>
+                        <li><strong>SE decreases with larger n:</strong> Double the sample size → SE reduces by √2 (41% reduction)</li>
+                        <li><strong>Not linear:</strong> To halve SE, you need 4× the sample size</li>
+                        <li><strong>Practical limit:</strong> Diminishing returns after certain sample size</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+# Demonstrate how SE changes with sample size
+population_std = 15  # Population standard deviation
+sample_sizes = np.arange(5, 201, 5)
+standard_errors = population_std / np.sqrt(sample_sizes)
+
+plt.figure(figsize=(10, 5))
+plt.plot(sample_sizes, standard_errors, linewidth=2, color='steelblue')
+plt.xlabel('Sample Size (n)')
+plt.ylabel('Standard Error')
+plt.title('Standard Error vs Sample Size')
+plt.grid(True, alpha=0.3)
+plt.axhline(y=1, color='red', linestyle='--', label='SE = 1 (precision target)')
+plt.legend()
+# plt.show()  # Uncomment to display
+
+# Print key values
+print("Standard Error for Different Sample Sizes:")
+print(f"{'n':<8} {'SE':<10} {'Reduction from n=30'}")
+print("-" * 40)
+base_se = population_std / np.sqrt(30)
+for n in [10, 30, 50, 100, 200, 500, 1000]:
+    se = population_std / np.sqrt(n)
+    reduction = (1 - se/base_se) * 100 if n > 30 else None
+    if reduction:
+        print(f"{n:<8} {se:<10.3f} {reduction:+.1f}%")
+    else:
+        print(f"{n:<8} {se:<10.3f} baseline")
+
+print("\nKey Insight: SE ∝ 1/√n")
+print("To halve SE from n=30 to n=120, you need 4× the samples!")
+print("Practical implication: After ~100 samples, gains diminish rapidly.")</code></pre>
+
+                    <h3>Estimated Standard Error</h3>
+                    <p>In practice, we don't know σ, so we use sample standard deviation s:</p>
+                    
+                    <pre><code class="language-python"># Real-world scenario: Estimate SE from sample
+np.random.seed(42)
+
+# We don't know population std, only have a sample
+sample = np.random.normal(100, 15, 50)  # n=50
+sample_mean = sample.mean()
+sample_std = sample.std(ddof=1)  # Use ddof=1 for sample std
+estimated_se = sample_std / np.sqrt(len(sample))
+
+print("Real-World Scenario (only have sample data):")
+print(f"Sample size: {len(sample)}")
+print(f"Sample mean: {sample_mean:.2f}")
+print(f"Sample std: {sample_std:.2f}")
+print(f"Estimated SE: {estimated_se:.2f}")
+print(f"\nInterpretation: We expect sample means to vary by ±{estimated_se:.2f} on average")</code></pre>
+                </section>
+
+                <!-- Confidence Intervals -->
+                <section class="content-section">
+                    <h2>🎯 Confidence Intervals</h2>
+                    <p>
+                        A confidence interval gives a range of plausible values for a population parameter. A 95% confidence interval means: if we repeated this sampling process 100 times, about 95 of those intervals would contain the true population parameter.
+                    </p>
+                    
+                    <h3>Formula for Mean (Large Sample, n ≥ 30)</h3>
+                    <p style="background: #eff6ff; padding: 1rem; border-radius: 8px; text-align: center; font-size: 1.1rem;">
+                        <strong>CI = x̄ ± z* × SE</strong><br>
+                        where z* is the critical value from standard normal
+                    </p>
+                    
+                    <p>Common critical values:</p>
+                    <ul>
+                        <li><strong>90% confidence:</strong> z* = 1.645</li>
+                        <li><strong>95% confidence:</strong> z* = 1.96 (most common)</li>
+                        <li><strong>99% confidence:</strong> z* = 2.576</li>
+                    </ul>
+                    
+                    <pre><code class="language-python">import numpy as np
+from scipy import stats
+
+# Example: Average app rating
+np.random.seed(42)
+
+# Sample data: 100 user ratings (1-5 scale)
+ratings = np.random.normal(4.2, 0.8, 100)
+ratings = np.clip(ratings, 1, 5)  # Keep within 1-5 range
+
+n = len(ratings)
+sample_mean = ratings.mean()
+sample_std = ratings.std(ddof=1)
+se = sample_std / np.sqrt(n)
+
+print("App Rating Analysis:")
+print(f"Sample size: {n}")
+print(f"Sample mean: {sample_mean:.3f}")
+print(f"Sample std: {sample_std:.3f}")
+print(f"Standard error: {se:.3f}")
+
+# Calculate confidence intervals
+confidence_levels = [0.90, 0.95, 0.99]
+print("\nConfidence Intervals:")
+
+for conf_level in confidence_levels:
+    alpha = 1 - conf_level
+    z_critical = stats.norm.ppf(1 - alpha/2)  # Two-tailed
+    margin_of_error = z_critical * se
+    ci_lower = sample_mean - margin_of_error
+    ci_upper = sample_mean + margin_of_error
+    
+    print(f"{conf_level*100:.0f}% CI: [{ci_lower:.3f}, {ci_upper:.3f}]")
+    print(f"   Margin of error: ±{margin_of_error:.3f}")
+
+print("\nInterpretation of 95% CI:")
+print(f"We are 95% confident the true average rating is between")
+print(f"{ci_lower:.3f} and {ci_upper:.3f}")
+print("This does NOT mean 95% probability the true mean is in this interval!")
+print("It means 95% of such intervals (from repeated sampling) contain the true mean.")</code></pre>
+
+                    <h3>ML Application: Model Performance Estimation</h3>
+                    <pre><code class="language-python"># Confidence interval for model accuracy
+np.random.seed(42)
+
+# Model evaluated on test set
+n_test_samples = 500
+true_accuracy = 0.85  # Unknown in practice
+
+# Simulate predictions (binomial process)
+correct_predictions = np.random.binomial(1, true_accuracy, n_test_samples)
+observed_accuracy = correct_predictions.mean()
+
+# For proportions, use different SE formula
+se_proportion = np.sqrt(observed_accuracy * (1 - observed_accuracy) / n_test_samples)
+
+# 95% CI for accuracy
+z_critical = 1.96
+margin_of_error = z_critical * se_proportion
+ci_lower = observed_accuracy - margin_of_error
+ci_upper = observed_accuracy + margin_of_error
+
+print("Machine Learning Model Evaluation:")
+print(f"Test set size: {n_test_samples}")
+print(f"Observed accuracy: {observed_accuracy:.3f} or {observed_accuracy*100:.1f}%")
+print(f"Standard error: {se_proportion:.4f}")
+print(f"\n95% Confidence Interval: [{ci_lower:.3f}, {ci_upper:.3f}]")
+print(f"Or in percentage: [{ci_lower*100:.1f}%, {ci_upper*100:.1f}%]")
+print(f"Margin of error: ±{margin_of_error*100:.1f}%")
+
+print("\nConclusion: We're 95% confident true model accuracy is between")
+print(f"{ci_lower*100:.1f}% and {ci_upper*100:.1f}%")</code></pre>
+
+                    <h3>Sample Size Planning</h3>
+                    <pre><code class="language-python"># How large a sample do we need for desired margin of error?
+
+def required_sample_size(std, margin_of_error, confidence=0.95):
+    """Calculate required sample size for desired precision"""
+    z_critical = stats.norm.ppf(1 - (1-confidence)/2)
+    n = (z_critical * std / margin_of_error) ** 2
+    return int(np.ceil(n))
+
+# Example: Survey with std ≈ 20
+population_std = 20
+
+print("Required Sample Sizes for Different Margins of Error:")
+print(f"(Assuming population std = {population_std}, 95% confidence)\n")
+print(f"{'Margin of Error':<20} {'Required n':<15} {'Cost Analysis'}")
+print("-" * 60)
+
+for me in [5, 3, 2, 1, 0.5]:
+    n = required_sample_size(population_std, me)
+    cost_factor = n / required_sample_size(population_std, 5)
+    print(f"±{me:<19} {n:<15} {cost_factor:.1f}× baseline")
+
+print("\nKey Insight: Halving margin of error requires 4× the sample size!")
+print("Beyond certain precision, cost becomes prohibitive.")</code></pre>
+
+                    <div class="success-box">
+                        <strong>✅ Confidence Interval Best Practices</strong>
+                        <p>1. <strong>Always report CI, not just point estimate:</strong> "Mean = 4.2 (95% CI: 4.0-4.4)" is much more informative. 2. <strong>Wider CI = Less confidence OR smaller sample:</strong> Trade-off between precision and certainty. 3. <strong>Don't misinterpret:</strong> CI is about the method, not probability the parameter is in the range.</p>
+                    </div>
+                </section>
+
+                <!-- Real-World Applications -->
+                <section class="content-section">
+                    <h2>🌍 Real-World ML Applications</h2>
+                    
+                    <h3>1. A/B Test Sample Size Calculation</h3>
+                    <pre><code class="language-python">from scipy import stats
+import numpy as np
+
+def ab_test_sample_size(baseline_rate, min_detectable_effect, alpha=0.05, power=0.80):
+    """Calculate required sample size per group for A/B test"""
+    
+    p1 = baseline_rate
+    p2 = baseline_rate * (1 + min_detectable_effect)
+    
+    # Pooled proportion
+    p_pooled = (p1 + p2) / 2
+    
+    # Critical values
+    z_alpha = stats.norm.ppf(1 - alpha/2)
+    z_beta = stats.norm.ppf(power)
+    
+    # Sample size formula
+    n = (z_alpha * np.sqrt(2 * p_pooled * (1 - p_pooled)) + 
+         z_beta * np.sqrt(p1 * (1-p1) + p2 * (1-p2))) ** 2
+    n = n / (p2 - p1) ** 2
+    
+    return int(np.ceil(n))
+
+# Example: Email campaign A/B test
+baseline_ctr = 0.10  # 10% click-through rate
+min_effect = 0.20    # Want to detect 20% improvement (10% → 12%)
+
+n_required = ab_test_sample_size(baseline_ctr, min_effect)
+
+print("A/B Test Planning:")
+print(f"Baseline CTR: {baseline_ctr*100:.1f}%")
+print(f"Minimum detectable effect: {min_effect*100:.0f}% improvement")
+print(f"Significance level (α): 0.05")
+print(f"Statistical power: 80%")
+print(f"\nRequired sample size per group: {n_required:,}")
+print(f"Total samples needed: {2*n_required:,}")
+print(f"\nIf 1000 visitors/day, test will take {2*n_required/1000:.1f} days")</code></pre>
+
+                    <h3>2. Survey Margin of Error</h3>
+                    <pre><code class="language-python"># Political poll: How accurate is a sample of 1000 voters?
+
+sample_size = 1000
+observed_proportion = 0.52  # 52% support candidate
+
+# Margin of error for proportion (95% confidence)
+se_proportion = np.sqrt(observed_proportion * (1 - observed_proportion) / sample_size)
+margin_of_error = 1.96 * se_proportion
+
+print(f"Political Poll Results:")
+print(f"Sample size: {sample_size:,} voters")
+print(f"Support: {observed_proportion*100:.1f}%")
+print(f"Margin of error: ±{margin_of_error*100:.1f}%")
+print(f"95% CI: [{(observed_proportion-margin_of_error)*100:.1f}%, {(observed_proportion+margin_of_error)*100:.1f}%]")
+
+print(f"\nConclusion: Candidate has between {(observed_proportion-margin_of_error)*100:.1f}% and")
+print(f"{(observed_proportion+margin_of_error)*100:.1f}% support with 95% confidence")
+
+# Is candidate ahead? (>50% needed to win)
+if observed_proportion - margin_of_error > 0.50:
+    print("\nCandidate is statistically ahead (CI entirely above 50%)")
+elif observed_proportion + margin_of_error < 0.50:
+    print("\nCandidate is statistically behind (CI entirely below 50%)")
+else:
+    print("\nRace is too close to call (CI includes 50%)")</code></pre>
+
+                    <h3>3. ML Model Comparison with Bootstrap</h3>
+                    <pre><code class="language-python"># Bootstrap confidence interval for model performance difference
+np.random.seed(42)
+
+# Two models' accuracies on test set
+n_test = 500
+model_a_preds = np.random.binomial(1, 0.82, n_test)
+model_b_preds = np.random.binomial(1, 0.85, n_test)
+
+observed_diff = model_b_preds.mean() - model_a_preds.mean()
+
+# Bootstrap to get CI for the difference
+n_bootstrap = 10000
+bootstrap_diffs = []
+
+for _ in range(n_bootstrap):
+    # Resample with replacement
+    indices = np.random.choice(n_test, size=n_test, replace=True)
+    boot_a = model_a_preds[indices].mean()
+    boot_b = model_b_preds[indices].mean()
+    bootstrap_diffs.append(boot_b - boot_a)
+
+bootstrap_diffs = np.array(bootstrap_diffs)
+
+# 95% CI using percentile method
+ci_lower = np.percentile(bootstrap_diffs, 2.5)
+ci_upper = np.percentile(bootstrap_diffs, 97.5)
+
+print("Model Comparison:")
+print(f"Model A accuracy: {model_a_preds.mean():.3f}")
+print(f"Model B accuracy: {model_b_preds.mean():.3f}")
+print(f"Observed difference: {observed_diff:.3f} ({observed_diff*100:.1f}%)")
+print(f"\n95% Bootstrap CI for difference: [{ci_lower:.3f}, {ci_upper:.3f}]")
+
+if ci_lower > 0:
+    print("\nConclusion: Model B is statistically significantly better!")
+    print("(Entire CI is above zero)")
+else:
+    print("\nConclusion: No significant difference")
+    print("(CI includes zero)")</code></pre>
+                </section>
+
+                <!-- Practice Exercises -->
+                <section class="content-section">
+                    <h2>💻 Practice Exercises</h2>
+                    
+                    <h3>Exercise 1: Standard Error Calculation</h3>
+                    <p><strong>Scenario:</strong> A sample of 64 students has mean test score 75 with standard deviation 16.</p>
+                    <ol>
+                        <li>Calculate the standard error of the mean</li>
+                        <li>If sample size increases to 256, what happens to SE?</li>
+                        <li>What sample size would give SE = 1?</li>
+                    </ol>
+                    
+                    <h3>Exercise 2: Confidence Intervals</h3>
+                    <p><strong>Scenario:</strong> Sample of 100 users, average session time 12.5 minutes, std = 4 minutes.</p>
+                    <ol>
+                        <li>Calculate 95% confidence interval for mean session time</li>
+                        <li>Calculate 99% confidence interval</li>
+                        <li>Why is the 99% CI wider?</li>
+                    </ol>
+                    
+                    <h3>Exercise 3: CLT Verification</h3>
+                    <p><strong>Challenge:</strong> Generate a heavily skewed population (e.g., exponential). Take samples of n=5, 10, 30, 100 and plot sampling distributions. Verify CLT!</p>
+                    
+                    <h3>Exercise 4: Sample Size Planning</h3>
+                    <p><strong>Scenario:</strong> You want to estimate average customer spend within ±$5 with 95% confidence. Historical data shows std = $30.</p>
+                    <ol>
+                        <li>How many customers do you need to sample?</li>
+                        <li>What if you want ±$2 margin of error?</li>
+                        <li>What's the cost trade-off?</li>
+                    </ol>
+                    
+                    <h3>Exercise 5: Model Evaluation</h3>
+                    <p><strong>Scenario:</strong> Your model has 87% accuracy on 200 test samples.</p>
+                    <ol>
+                        <li>Calculate 95% CI for true accuracy</li>
+                        <li>Is this significantly better than a 80% baseline?</li>
+                        <li>How many samples needed for ±1% margin of error?</li>
+                    </ol>
+                </section>
+
+                <!-- Summary -->
+                <section class="content-section">
+                    <h2>📝 Summary</h2>
+                    <p>You've mastered sampling theory and the Central Limit Theorem—essential tools for making inferences from data:</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎲 Sampling Methods</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Simple random, stratified, systematic, cluster sampling. Choose the right method based on population structure and accessibility.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📊 Sampling Distribution</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Distribution of sample statistics. Mean of sampling distribution equals population mean. Standard error measures precision.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">🎊 Central Limit Theorem</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">Sample means are normally distributed regardless of population distribution. Foundation of statistical inference. Requires n ≥ 30.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0; color: white;">📏 Standard Error</h3>
+                            <p style="color: white; opacity: 0.95; font-size: 0.95rem;">SE = σ/√n. Measures precision of sample mean. Decreases with larger samples but with diminishing returns.</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🎯 Confidence Intervals</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">Quantify uncertainty with ranges. 95% CI most common. Balance between precision (narrow CI) and confidence (high %).</p>
+                        </div>
+                        
+                        <div style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #065f46; padding: 1.5rem; border-radius: 12px;">
+                            <h3 style="margin-top: 0;">🌍 ML Applications</h3>
+                            <p style="opacity: 0.95; font-size: 0.95rem;">A/B test planning, model evaluation, survey design, sample size calculation, performance comparison with bootstrap.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="success-box">
+                        <strong>✅ Key Takeaway</strong>
+                        <p>The Central Limit Theorem is why statistics works! It lets us use normal distribution tools even when data isn't normal. Combined with confidence intervals, we can make precise statements about populations from small samples. This underpins A/B testing, hypothesis testing, model evaluation—essentially all of statistical inference and ML validation!</p>
+                    </div>
+                </section>
+
+                <!-- Quiz Section -->
+                <section class="content-section">
+                    <h2>🎯 Test Your Knowledge</h2>
+                    <div class="quiz-container">
+                        <!-- Question 1 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 1:</strong> According to the Central Limit Theorem, as sample size increases, the sampling distribution of the mean:</p>
+                            <div class="quiz-option" data-value="a">a) Becomes more skewed</div>
+                            <div class="quiz-option" data-value="b">b) Approaches the population distribution</div>
+                            <div class="quiz-option" data-value="c">c) Approaches a normal distribution</div>
+                            <div class="quiz-option" data-value="d">d) Becomes uniform</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 2 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 2:</strong> If you double the sample size, the standard error will:</p>
+                            <div class="quiz-option" data-value="a">a) Be cut in half</div>
+                            <div class="quiz-option" data-value="b">b) Decrease by factor of √2 (about 29%)</div>
+                            <div class="quiz-option" data-value="c">c) Stay the same</div>
+                            <div class="quiz-option" data-value="d">d) Double</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 3 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 3:</strong> A 95% confidence interval means:</p>
+                            <div class="quiz-option" data-value="a">a) 95% probability the true parameter is in this interval</div>
+                            <div class="quiz-option" data-value="b">b) 95% of the data falls in this interval</div>
+                            <div class="quiz-option" data-value="c">c) 95% of such intervals (from repeated sampling) contain the true parameter</div>
+                            <div class="quiz-option" data-value="d">d) The sample mean is within 95% of the true mean</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 4 -->
+                        <div class="quiz-question" data-answer="d">
+                            <p><strong>Question 4:</strong> Which sampling method ensures all subgroups are represented proportionally?</p>
+                            <div class="quiz-option" data-value="a">a) Simple random sampling</div>
+                            <div class="quiz-option" data-value="b">b) Systematic sampling</div>
+                            <div class="quiz-option" data-value="c">c) Cluster sampling</div>
+                            <div class="quiz-option" data-value="d">d) Stratified sampling</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 5 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 5:</strong> The standard error formula is SE = σ/√n. What does this tell us?</p>
+                            <div class="quiz-option" data-value="a">a) Larger samples give more precise estimates</div>
+                            <div class="quiz-option" data-value="b">b) Standard error increases with sample size</div>
+                            <div class="quiz-option" data-value="c">c) Sample variance equals population variance</div>
+                            <div class="quiz-option" data-value="d">d) Standard error is always constant</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 6 -->
+                        <div class="quiz-question" data-answer="b">
+                            <p><strong>Question 6:</strong> For CLT to work well, what is the general rule of thumb for minimum sample size?</p>
+                            <div class="quiz-option" data-value="a">a) n ≥ 10</div>
+                            <div class="quiz-option" data-value="b">b) n ≥ 30</div>
+                            <div class="quiz-option" data-value="c">c) n ≥ 100</div>
+                            <div class="quiz-option" data-value="d">d) n ≥ 1000</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 7 -->
+                        <div class="quiz-question" data-answer="c">
+                            <p><strong>Question 7:</strong> To reduce margin of error by half, you need to:</p>
+                            <div class="quiz-option" data-value="a">a) Double the sample size</div>
+                            <div class="quiz-option" data-value="b">b) Triple the sample size</div>
+                            <div class="quiz-option" data-value="c">c) Quadruple the sample size</div>
+                            <div class="quiz-option" data-value="d">d) Increase confidence level</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+
+                        <!-- Question 8 -->
+                        <div class="quiz-question" data-answer="a">
+                            <p><strong>Question 8:</strong> Which statement about the Central Limit Theorem is TRUE?</p>
+                            <div class="quiz-option" data-value="a">a) It works for any population distribution shape</div>
+                            <div class="quiz-option" data-value="b">b) It only works for normally distributed populations</div>
+                            <div class="quiz-option" data-value="c">c) It requires the sample to be normally distributed</div>
+                            <div class="quiz-option" data-value="d">d) It only applies to proportions</div>
+                            <div class="quiz-feedback"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <div class="tutorial-navigation">
+                    <a href="probability-distributions.html" class="nav-button">← Previous: Probability Distributions</a>
+                    <a href="../../courses/statistics-for-ai.html" class="nav-button">Back to Course</a>
+                    <a href="hypothesis-testing.html" class="nav-button">Next: Hypothesis Testing →</a>
+                </div>
+
+            </div> <!-- Close container -->
+        </article>
+    </main>
+    
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

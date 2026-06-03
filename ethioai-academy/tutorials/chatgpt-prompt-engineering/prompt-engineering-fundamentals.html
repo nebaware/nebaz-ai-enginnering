@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn prompt engineering fundamentals - anatomy of good prompts, clarity, specificity, context, and iterative refinement techniques.">
+    <title>Tutorial 2: Prompt Engineering Fundamentals - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .comparison-example {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .bad-example, .good-example {
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .bad-example {
+            background: #fef2f2;
+            border: 2px solid #ef4444;
+        }
+        
+        .good-example {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+        }
+        
+        .example-label {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bad-example .example-label {
+            color: #ef4444;
+        }
+        
+        .good-example .example-label {
+            color: #10b981;
+        }
+        
+        .prompt-anatomy {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+        
+        .anatomy-part {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #078930;
+        }
+        
+        .anatomy-label {
+            color: #078930;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .principle-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-top: 4px solid #078930;
+        }
+        
+        .principle-number {
+            background: #078930;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .iteration-flow {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .iteration-step {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .iteration-step:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-number {
+            background: #078930;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+        }
+        
+        .prompt-template {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        .template-var {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-example {
+                grid-template-columns: 1fr;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 2</span>
+            </div>
+            <h1>Tutorial 2: Prompt Engineering Fundamentals</h1>
+            <p class="tutorial-intro">The anatomy of excellent prompts and how to craft them</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 1</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p><strong>Bad prompt:</strong> "Write something about marketing."</p>
+                <p><strong>ChatGPT's response:</strong> Generic 200-word essay you could find anywhere.</p>
+                
+                <p style="margin-top: 1.5rem;"><strong>Good prompt:</strong> "Write a 3-paragraph LinkedIn post explaining why small businesses should prioritize email marketing over social media ads. Use a conversational tone, include 1 statistic, and end with a question to drive engagement."</p>
+                <p><strong>ChatGPT's response:</strong> Targeted, actionable content ready to post.</p>
+                
+                <p style="margin-top: 1.5rem;"><strong>The difference? Prompt engineering.</strong></p>
+                
+                <div class="success-box">
+                    <p><strong>💡 By the end of this module, you'll:</strong></p>
+                    <ul>
+                        <li>Understand the 4 core elements of effective prompts</li>
+                        <li>Apply 6 principles that transform vague requests into precise instructions</li>
+                        <li>Master iterative refinement to get exactly what you need</li>
+                        <li>Build a prompt template library for common tasks</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- What is Prompt Engineering -->
+            <section class="content-section">
+                <h2>🎯 What is Prompt Engineering?</h2>
+                
+                <p><strong>Definition:</strong> Prompt engineering is the art and science of <em>crafting instructions that guide AI to produce useful, accurate, and relevant outputs</em>.</p>
+                
+                <div class="info-box">
+                    <p><strong>Why it matters:</strong></p>
+                    <ul>
+                        <li>🎭 <strong>ChatGPT has no mind-reading:</strong> It only knows what you tell it</li>
+                        <li>📊 <strong>Garbage in, garbage out:</strong> Vague prompts → generic outputs</li>
+                        <li>⚡ <strong>Precision unlocks power:</strong> Clear prompts → valuable results</li>
+                        <li>💼 <strong>Career advantage:</strong> Prompt engineering is a $100K+ skill in 2024</li>
+                    </ul>
+                </div>
+                
+                <p><strong>The Restaurant Analogy:</strong></p>
+                <p>Imagine ChatGPT is a chef. Saying "make me food" gets you something edible but random. Saying "make me a vegetarian Thai green curry, mild spice, with tofu and extra basil" gets you exactly what you want. <strong>Specificity matters.</strong></p>
+            </section>
+
+            <!-- Anatomy of a Good Prompt -->
+            <section class="content-section">
+                <h2>🔬 Anatomy of an Excellent Prompt</h2>
+                
+                <div class="prompt-anatomy">
+                    <h3 style="margin-bottom: 1.5rem;">The 4 Core Elements (C.R.A.F.)</h3>
+                    
+                    <div class="anatomy-part">
+                        <div class="anatomy-label">1. CONTEXT (Background Information)</div>
+                        <p><strong>What it is:</strong> The situation, audience, or background that frames your request.</p>
+                        <p><strong>Why it matters:</strong> ChatGPT adjusts tone, depth, and approach based on context.</p>
+                        <p><strong>Example:</strong> "I'm a marketing manager at a B2B SaaS startup targeting enterprise clients..."</p>
+                    </div>
+                    
+                    <div class="anatomy-part">
+                        <div class="anatomy-label">2. ROLE (Who Should ChatGPT Be?)</div>
+                        <p><strong>What it is:</strong> The persona, expert, or perspective ChatGPT should adopt.</p>
+                        <p><strong>Why it matters:</strong> Shapes vocabulary, tone, and knowledge depth.</p>
+                        <p><strong>Example:</strong> "Act as a senior data analyst with 10 years of SQL experience..."</p>
+                    </div>
+                    
+                    <div class="anatomy-part">
+                        <div class="anatomy-label">3. ACTION (What You Want Done)</div>
+                        <p><strong>What it is:</strong> The specific task — write, analyze, explain, generate, debug, etc.</p>
+                        <p><strong>Why it matters:</strong> Clarity eliminates ambiguity.</p>
+                        <p><strong>Example:</strong> "Write a 500-word blog post explaining..." or "Debug this Python function..."</p>
+                    </div>
+                    
+                    <div class="anatomy-part">
+                        <div class="anatomy-label">4. FORMAT (How Should Output Look?)</div>
+                        <p><strong>What it is:</strong> Structure, length, style, tone specifications.</p>
+                        <p><strong>Why it matters:</strong> Gets output ready-to-use without heavy editing.</p>
+                        <p><strong>Example:</strong> "Provide answer as a bullet-point list, maximum 5 items, professional tone."</p>
+                    </div>
+                </div>
+                
+                <div class="success-box">
+                    <h3>🎯 C.R.A.F. Template in Action</h3>
+                    
+                    <div class="prompt-template">
+<span class="template-var">[CONTEXT]</span> I'm preparing for a job interview at a fintech startup.
+
+<span class="template-var">[ROLE]</span> Act as an experienced career coach specializing in tech interviews.
+
+<span class="template-var">[ACTION]</span> Generate 10 practice interview questions for a Product Manager role, focusing on payment systems and user experience.
+
+<span class="template-var">[FORMAT]</span> Present as a numbered list. For each question, add a 1-sentence hint about what interviewers are looking for.
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>Result:</strong> Tailored, actionable interview prep instead of generic questions.</p>
+                </div>
+            </section>
+
+            <!-- 6 Principles -->
+            <section class="content-section">
+                <h2>⚡ 6 Principles of Effective Prompts</h2>
+                
+                <div class="principles-grid">
+                    <!-- Principle 1 -->
+                    <div class="principle-card">
+                        <div class="principle-number">1</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Be Specific</h3>
+                        <p><strong>Bad:</strong> "Write about AI."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Good:</strong> "Write a 300-word explanation of how transformer models work, targeting non-technical business leaders."</p>
+                    </div>
+                    
+                    <!-- Principle 2 -->
+                    <div class="principle-card">
+                        <div class="principle-number">2</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Provide Context</h3>
+                        <p><strong>Bad:</strong> "Improve this email."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Good:</strong> "I'm emailing a client who's 2 weeks late paying an invoice. Improve this email to be firm but professional, maintaining the relationship."</p>
+                    </div>
+                    
+                    <!-- Principle 3 -->
+                    <div class="principle-card">
+                        <div class="principle-number">3</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Define the Format</h3>
+                        <p><strong>Bad:</strong> "Explain quantum computing."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Good:</strong> "Explain quantum computing in a table: column 1 = concept, column 2 = analogy, column 3 = real-world application."</p>
+                    </div>
+                    
+                    <!-- Principle 4 -->
+                    <div class="principle-card">
+                        <div class="principle-number">4</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Give Examples</h3>
+                        <p><strong>Bad:</strong> "Write product descriptions."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Good:</strong> "Write product descriptions in this style: [paste example]. Now write one for [your product]."</p>
+                    </div>
+                    
+                    <!-- Principle 5 -->
+                    <div class="principle-card">
+                        <div class="principle-number">5</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Set Constraints</h3>
+                        <p><strong>Bad:</strong> "Brainstorm app ideas."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Good:</strong> "Brainstorm 5 mobile app ideas for busy parents. Budget: under $10K to build. Must solve a daily friction point."</p>
+                    </div>
+                    
+                    <!-- Principle 6 -->
+                    <div class="principle-card">
+                        <div class="principle-number">6</div>
+                        <h3 style="color: #1e293b; margin-bottom: 0.75rem;">Iterate & Refine</h3>
+                        <p><strong>First try:</strong> "Write a tweet about AI."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Refine:</strong> "Too generic. Make it controversial and data-driven."</p>
+                        <p style="margin-top: 0.5rem;"><strong>Refine again:</strong> "Add a question at the end."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Before/After Examples -->
+            <section class="content-section">
+                <h2>📊 Before & After: Real Prompt Transformations</h2>
+                
+                <!-- Example 1 -->
+                <h3 style="margin-top: 2rem;">Example 1: Email Writing</h3>
+                <div class="comparison-example">
+                    <div class="bad-example">
+                        <div class="example-label">❌ Vague Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"Write an email about a meeting."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> Generic template that needs heavy editing.</p>
+                    </div>
+                    
+                    <div class="good-example">
+                        <div class="example-label">✅ Specific Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"Write a 150-word email to my team announcing a quarterly planning meeting next Friday at 2 PM. Casual but professional tone. Include: agenda (reviewing Q3 results, brainstorming Q4 goals), location (Conference Room B), and ask them to prepare 3 ideas each."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> Ready-to-send email with all details.</p>
+                    </div>
+                </div>
+                
+                <!-- Example 2 -->
+                <h3 style="margin-top: 2rem;">Example 2: Code Generation</h3>
+                <div class="comparison-example">
+                    <div class="bad-example">
+                        <div class="example-label">❌ Vague Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"Write a function."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> ChatGPT asks clarifying questions, wasting time.</p>
+                    </div>
+                    
+                    <div class="good-example">
+                        <div class="example-label">✅ Specific Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"Write a Python function called 'validate_email' that takes a string, checks if it's a valid email format using regex, and returns True/False. Include error handling for None inputs and add docstring with examples."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> Production-ready code with documentation.</p>
+                    </div>
+                </div>
+                
+                <!-- Example 3 -->
+                <h3 style="margin-top: 2rem;">Example 3: Learning/Explanation</h3>
+                <div class="comparison-example">
+                    <div class="bad-example">
+                        <div class="example-label">❌ Vague Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"Explain machine learning."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> Overly technical or overly simple, not tailored to you.</p>
+                    </div>
+                    
+                    <div class="good-example">
+                        <div class="example-label">✅ Specific Prompt</div>
+                        <p style="font-style: italic; background: white; padding: 1rem; border-radius: 8px;">"I'm a marketer with no technical background. Explain machine learning in 3 paragraphs using everyday analogies. Focus on why it matters for my field (personalization, ad targeting, customer segmentation)."</p>
+                        <p style="margin-top: 1rem;"><strong>Result:</strong> Accessible explanation directly relevant to your work.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Iterative Refinement -->
+            <section class="content-section">
+                <h2>🔄 The Iterative Refinement Process</h2>
+                
+                <p><strong>Key insight:</strong> Your first prompt rarely gets perfect results. <em>Iteration</em> is where magic happens.</p>
+                
+                <div class="iteration-flow">
+                    <h3 style="margin-bottom: 1.5rem; text-align: center;">The Refinement Loop</h3>
+                    
+                    <div class="iteration-step">
+                        <span class="step-number">Step 1</span>
+                        <h4>Start with Base Prompt</h4>
+                        <p style="font-style: italic; margin-top: 0.5rem;">"Write a blog post about productivity."</p>
+                    </div>
+                    
+                    <div class="iteration-step">
+                        <span class="step-number">Step 2</span>
+                        <h4>Evaluate Output</h4>
+                        <p style="margin-top: 0.5rem;"><strong>What's wrong?</strong> Too generic, no actionable tips, boring tone.</p>
+                    </div>
+                    
+                    <div class="iteration-step">
+                        <span class="step-number">Step 3</span>
+                        <h4>Add Specificity</h4>
+                        <p style="font-style: italic; margin-top: 0.5rem;">"Write a 500-word blog post about productivity for remote workers. Include 3 unconventional tips backed by research. Use a conversational, slightly humorous tone."</p>
+                    </div>
+                    
+                    <div class="iteration-step">
+                        <span class="step-number">Step 4</span>
+                        <h4>Refine Further</h4>
+                        <p style="margin-top: 0.5rem;"><strong>Follow-up:</strong> "Good, but make tip #2 more concrete. Add a real-world example."</p>
+                    </div>
+                    
+                    <div class="iteration-step">
+                        <span class="step-number">Step 5</span>
+                        <h4>Final Polish</h4>
+                        <p style="margin-top: 0.5rem;"><strong>Follow-up:</strong> "Add a catchy title and a call-to-action at the end."</p>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Pro tip:</strong> ChatGPT remembers conversation context. You can say:</p>
+                    <ul>
+                        <li>"Make it more concise"</li>
+                        <li>"Rewrite in a professional tone"</li>
+                        <li>"Add more technical detail"</li>
+                        <li>"Simplify for beginners"</li>
+                        <li>"Give me 3 variations"</li>
+                    </ul>
+                    <p style="margin-top: 1rem;">Each refinement builds on the previous output.</p>
+                </div>
+            </section>
+
+            <!-- Common Mistakes -->
+            <section class="content-section">
+                <h2>⚠️ Common Prompt Mistakes (And How to Fix Them)</h2>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 12px;">
+                    <h3 style="margin-bottom: 1.5rem;">The Top 7 Mistakes</h3>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 1: Too Vague</h4>
+                        <p><strong>Example:</strong> "Help me with my project."</p>
+                        <p><strong>Fix:</strong> "I'm building a mobile app for meal planning. Help me create a user onboarding flow that guides new users through 5 key features in under 2 minutes."</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 2: No Context</h4>
+                        <p><strong>Example:</strong> "Is this a good strategy?"</p>
+                        <p><strong>Fix:</strong> "I'm a small business owner with $5K marketing budget. Is influencer marketing a good strategy for reaching millennials interested in sustainable fashion?"</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 3: Multiple Tasks in One Prompt</h4>
+                        <p><strong>Example:</strong> "Write a blog post, create social media captions, and suggest hashtags."</p>
+                        <p><strong>Fix:</strong> Break into 3 separate prompts. One task at a time = better focus.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 4: Assuming ChatGPT Knows Your Industry Jargon</h4>
+                        <p><strong>Example:</strong> "Optimize our ROAS using LTV/CAC ratio."</p>
+                        <p><strong>Fix:</strong> Define abbreviations first or use plain language: "Improve our ad return by analyzing customer lifetime value versus acquisition costs."</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 5: Not Specifying Output Format</h4>
+                        <p><strong>Example:</strong> "Give me marketing ideas."</p>
+                        <p><strong>Fix:</strong> "Give me 10 marketing ideas in a table: Column 1 = idea, Column 2 = target audience, Column 3 = estimated cost."</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h4 style="color: #ef4444;">❌ Mistake 6: Accepting First Output</h4>
+                        <p><strong>Problem:</strong> First response is rarely perfect.</p>
+                        <p><strong>Fix:</strong> Always ask: "Can you make this more [specific quality]?" or "Give me 3 variations."</p>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #ef4444;">❌ Mistake 7: Not Fact-Checking</h4>
+                        <p><strong>Problem:</strong> ChatGPT hallucinates facts, especially with statistics.</p>
+                        <p><strong>Fix:</strong> Verify all factual claims, especially for published content.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prompt Templates -->
+            <section class="content-section">
+                <h2>📝 Reusable Prompt Templates</h2>
+                
+                <div class="success-box">
+                    <h3>Copy-Paste Templates for Common Tasks</h3>
+                    
+                    <h4 style="margin-top: 1.5rem;">1. Writing Content Template</h4>
+                    <div class="prompt-template">
+Write a <span class="template-var">[length]</span> <span class="template-var">[content type]</span> about <span class="template-var">[topic]</span>.
+
+Target audience: <span class="template-var">[describe audience]</span>
+Tone: <span class="template-var">[professional/casual/humorous/etc.]</span>
+Key points to cover: <span class="template-var">[point 1, point 2, point 3]</span>
+Format: <span class="template-var">[paragraphs/bullets/sections]</span>
+
+Include: <span class="template-var">[statistics/examples/call-to-action/etc.]</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem;">2. Code Generation Template</h4>
+                    <div class="prompt-template">
+Write a <span class="template-var">[language]</span> function called '<span class="template-var">[function_name]</span>' that:
+- Takes <span class="template-var">[parameters]</span> as input
+- <span class="template-var">[describes what it does]</span>
+- Returns <span class="template-var">[output type/format]</span>
+
+Include:
+- Error handling for <span class="template-var">[edge cases]</span>
+- Docstring with examples
+- Type hints (if applicable)
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem;">3. Analysis/Explanation Template</h4>
+                    <div class="prompt-template">
+I'm a <span class="template-var">[your role/background]</span> with <span class="template-var">[your knowledge level]</span>.
+
+Explain <span class="template-var">[complex topic]</span> in <span class="template-var">[format: paragraphs/bullets/table]</span>.
+
+Use:
+- <span class="template-var">[analogies/examples/visuals]</span>
+- <span class="template-var">[simple/technical]</span> language
+- Focus on <span class="template-var">[practical applications/theory/both]</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem;">4. Brainstorming Template</h4>
+                    <div class="prompt-template">
+Generate <span class="template-var">[number]</span> <span class="template-var">[thing to brainstorm]</span> for <span class="template-var">[context/project]</span>.
+
+Constraints:
+- Budget: <span class="template-var">[amount or "unlimited"]</span>
+- Timeline: <span class="template-var">[timeframe]</span>
+- Must solve: <span class="template-var">[specific problem]</span>
+
+Provide in table format: Column 1 = idea, Column 2 = pros, Column 3 = cons
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Prompt Transformation Challenge</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Transform These Vague Prompts</h3>
+                    
+                    <p><strong>Task:</strong> Take each vague prompt and rewrite it using C.R.A.F. (Context, Role, Action, Format) and the 6 principles.</p>
+                    
+                    <ol style="margin-top: 1rem; line-height: 2.5;">
+                        <li><strong>Vague:</strong> "Help me learn Python."<br>
+                        <em>Your improved prompt: _________________</em></li>
+                        
+                        <li><strong>Vague:</strong> "Make this better: [attach resume]"<br>
+                        <em>Your improved prompt: _________________</em></li>
+                        
+                        <li><strong>Vague:</strong> "Give me business ideas."<br>
+                        <em>Your improved prompt: _________________</em></li>
+                        
+                        <li><strong>Vague:</strong> "Explain blockchain."<br>
+                        <em>Your improved prompt: _________________</em></li>
+                        
+                        <li><strong>Vague:</strong> "Write a tweet."<br>
+                        <em>Your improved prompt: _________________</em></li>
+                    </ol>
+                    
+                    <div class="info-box" style="margin-top: 1.5rem;">
+                        <p><strong>💡 Bonus Challenge:</strong> Test your improved prompts in ChatGPT. Compare results. Which refinements made the biggest difference?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Your Prompt Engineering Foundation</h2>
+                
+                <ul>
+                    <li>✅ <strong>C.R.A.F. framework:</strong> Context, Role, Action, Format — the 4 elements of great prompts</li>
+                    <li>✅ <strong>6 principles:</strong> Be specific, provide context, define format, give examples, set constraints, iterate</li>
+                    <li>✅ <strong>Before/after transforms:</strong> Vague → specific = 10x better outputs</li>
+                    <li>✅ <strong>Iterative refinement:</strong> First prompt rarely perfect, conversation unlocks value</li>
+                    <li>✅ <strong>Common mistakes:</strong> Too vague, no context, multiple tasks, accepting first output</li>
+                    <li>✅ <strong>Reusable templates:</strong> Build your prompt library for common tasks</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> The difference between "ChatGPT is useless" and "ChatGPT is magical" is <strong>100% prompt quality</strong>. Master these fundamentals, and you'll get 10x more value from every AI interaction. Next, we'll level up with advanced techniques used by power users.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 1: What does C.R.A.F. stand for in prompt engineering?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Create, Review, Analyze, Finalize</div>
+                            <div class="quiz-option" data-value="b">Code, Run, Adapt, Fix</div>
+                            <div class="quiz-option" data-value="c">Context, Role, Action, Format</div>
+                            <div class="quiz-option" data-value="d">Clear, Relevant, Accurate, Fast</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 2: What's the most common prompt mistake?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Making prompts too long</div>
+                            <div class="quiz-option" data-value="b">Being too vague without context or specificity</div>
+                            <div class="quiz-option" data-value="c">Using technical jargon</div>
+                            <div class="quiz-option" data-value="d">Asking for code</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: Why is iterative refinement important?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">First prompts rarely get perfect results; refinement unlocks better outputs</div>
+                            <div class="quiz-option" data-value="b">ChatGPT requires multiple attempts to understand anything</div>
+                            <div class="quiz-option" data-value="c">It's not important, first prompts should always work</div>
+                            <div class="quiz-option" data-value="d">Only advanced users need to iterate</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 4: Which is better prompt design?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">"Write something about fitness."</div>
+                            <div class="quiz-option" data-value="b">"Help me with health."</div>
+                            <div class="quiz-option" data-value="c">"Write a 300-word blog post about home workouts for beginners with no equipment. Include 5 exercises and motivational tone."</div>
+                            <div class="quiz-option" data-value="d">"Talk about exercise."</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: What should you do if ChatGPT's first response isn't perfect?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Give up and try a different tool</div>
+                            <div class="quiz-option" data-value="b">Refine the prompt or ask for adjustments ("Make it more concise", "Add examples")</div>
+                            <div class="quiz-option" data-value="c">Accept it as-is since AI knows best</div>
+                            <div class="quiz-option" data-value="d">Start a completely new chat</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommended Resources -->
+            <section style="background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 3rem 0; border: 2px solid #078930;">
+                <h2 style="color: #065f46; margin-top: 0;">📚 Master Prompt Engineering</h2>
+                <p style="font-size: 1.1rem; color: #065f46; line-height: 1.7; margin-bottom: 1.5rem;">
+                    You've learned the fundamentals. Dive deeper with these expertly curated resources on prompt engineering and AI communication:
+                </p>
+
+                <!-- Book: Prompt Engineering Guide -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">📖</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">The Art of Prompt Engineering</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Amazon | ₹599-899</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>For serious learners:</strong> Comprehensive books covering prompt patterns, frameworks, and real-world case studies. Learn from experts who've spent thousands of hours mastering AI communication.
+                    </p>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border-left: 3px solid #078930; margin-bottom: 1rem;">
+                        <p style="margin: 0; color: #334155; font-size: 0.95rem;"><strong>💡 Perfect for:</strong> Anyone who wants structured learning with 100+ examples, prompt templates, and industry best practices. Complements this course with deeper theory and advanced patterns.</p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <div style="padding: 0.75rem; background: #f8fafc; border-radius: 6px;">
+                            <p style="margin: 0; font-weight: 600; color: #334155;">📖 "Prompt Engineering for ChatGPT"</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #64748b;">Practical Guide • ₹799</p>
+                        </div>
+                        <div style="padding: 0.75rem; background: #f8fafc; border-radius: 6px;">
+                            <p style="margin: 0; font-weight: 600; color: #334155;">📖 "The Prompt Engineer's Handbook"</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #64748b;">Advanced Patterns • ₹899</p>
+                        </div>
+                    </div>
+                    <a href="https://www.amazon.in/s?k=prompt+engineering+chatgpt" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Browse Prompt Engineering Books →
+                    </a>
+                </div>
+
+                <!-- Udemy Course -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">🎓</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">ChatGPT Complete Course</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Udemy | ₹499 (Often on sale)</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Video learning:</strong> 10-20 hour video courses with hands-on exercises, downloadable resources, and instructor support. Perfect complement to this text-based tutorial.
+                    </p>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>100+ Video Lessons:</strong> Step-by-step walkthroughs</li>
+                        <li><strong>Lifetime Access:</strong> Learn at your own pace</li>
+                        <li><strong>Certificate:</strong> Add to LinkedIn profile</li>
+                        <li><strong>Q&A Support:</strong> Ask instructors questions</li>
+                    </ul>
+                    <a href="https://www.udemy.com/courses/search/?q=chatgpt%20prompt%20engineering" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Find Courses on Udemy →
+                    </a>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Advanced Techniques</h2>
+                
+                <p>You've mastered the fundamentals. Now let's explore <strong>advanced prompting techniques</strong> that separate beginners from power users: zero-shot vs few-shot prompting, chain-of-thought reasoning, role-based prompts, and controlling AI parameters.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Tutorial 3:</strong> Learn techniques used by prompt engineers earning $150K+. Master few-shot learning, chain-of-thought prompting, system messages, and temperature tuning.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="intro-to-chatgpt.html" class="prev">← Tutorial 1: Intro to ChatGPT</a>
+                    <a href="advanced-prompting-techniques.html" class="next">Module 3: Advanced Techniques →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

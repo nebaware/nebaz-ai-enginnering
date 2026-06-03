@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Python's built-in data structures: lists, tuples, sets, and dictionaries. Learn when to use each one with practical examples and hands-on exercises.">
+    <title>Python Data Structures: Lists, Tuples, Sets & Dictionaries - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Python Data Structures</h1>
+            <p class="page-subtitle">Master lists, tuples, dictionaries, and sets</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Imagine you're organizing a party. You need a guest list (that can change), a fixed menu that can't be altered, a collection of unique music genres to play, and a way to map each guest to their food preference. Trying to do all this with simple variables would be a nightmare! This is exactly why Python gives you powerful data structures—each designed for specific tasks. Store many items, remove duplicates, map keys to values—data structures do the heavy lifting so you can focus on solving problems.</p>
+        
+        <h2>What Are Data Structures?</h2>
+        
+        <p>A <strong>data structure</strong> is a way of organizing and storing data so you can access and modify it efficiently. Python provides four essential built-in data structures, each with unique characteristics:</p>
+
+        <h3>What is a List?</h3>
+        <p>A <strong>list</strong> is an ordered, mutable collection of items. "Ordered" means the items maintain their position (first item stays first), and "mutable" means you can change, add, or remove items after creating the list. Lists are perfect when you need a collection that can grow, shrink, or change over time.</p>
+
+        <h3>What is a Tuple?</h3>
+        <p>A <strong>tuple</strong> is an ordered, immutable collection. Like lists, tuples maintain order, but unlike lists, you cannot modify them after creation. Think of tuples as "locked" or "frozen" lists. They're ideal for storing data that should never change, like coordinates or configuration settings.</p>
+
+        <h3>What is a Set?</h3>
+        <p>A <strong>set</strong> is an unordered collection of unique elements. Sets automatically remove duplicates and don't maintain any particular order. They're perfect for membership testing (checking if something exists) and eliminating duplicates from a collection.</p>
+
+        <h3>What is a Dictionary?</h3>
+        <p>A <strong>dictionary</strong> is an unordered collection of key-value pairs. It maps unique keys to their corresponding values, like a real dictionary maps words to definitions. Dictionaries provide lightning-fast lookups and are ideal when you need to associate related pieces of information.</p>
+
+        <h3>What is List Comprehension?</h3>
+        <p>A <strong>list comprehension</strong> is a concise, Pythonic way to create lists. Instead of writing multiple lines with a loop, you write a single elegant line that builds your list. It's not a data structure itself, but a powerful tool for creating lists efficiently.</p>
+
+        <div class="info-box">
+            <p>💡 <strong>Quick Comparison:</strong> Lists and tuples maintain order; sets and dictionaries don't. Lists and dictionaries are mutable; tuples and sets (individual elements) are immutable. Use lists for changing sequences, tuples for fixed data, sets for uniqueness, and dictionaries for key-value relationships.</p>
+        </div>
+
+        <h2>Understanding Through Analogies</h2>
+
+        <p>Let's relate each data structure to something familiar:</p>
+
+        <ul>
+            <li><strong>List = To-Do List:</strong> You can add tasks, cross them off, rearrange them, or modify them. The order matters (do grocery shopping before cooking), and you can make changes anytime.</li>
+            <li><strong>Tuple = Locked Suitcase:</strong> Once you pack and lock it, the contents stay exactly as they are. You can look at what's inside, but you can't add or remove items without "breaking" the suitcase.</li>
+            <li><strong>Set = Unique Sticker Collection:</strong> You can't have two identical stickers. Each one is unique, and you don't care about the order—you just want to know which stickers you have.</li>
+            <li><strong>Dictionary = Phonebook:</strong> Each name (key) maps to exactly one phone number (value). You look up a person's name to get their number quickly, without searching through every entry.</li>
+        </ul>
+
+        <h2>Visual Mental Model</h2>
+
+        <p>Here's how to visualize these structures in memory:</p>
+
+        <pre><code class="language-python"># LIST: Ordered boxes you can open and change
+list: [0] → a    [1] → b    [2] → c    [3] → d
+      ↓          ↓          ↓          ↓
+   Can add, remove, or change any box
+
+# TUPLE: Sealed boxes in a fixed order
+tuple: (0) → a    (1) → b    (2) → c
+       🔒        🔒        🔒
+    Cannot modify after creation
+
+# SET: Unordered unique items in a bag
+set: { a, b, c }  ← No duplicates, no guaranteed order
+     
+# DICTIONARY: Key-value pairs like a filing cabinet
+dict: {"name" → "Alice", "age" → 25, "city" → "Toronto"}
+       ↑           ↑        ↑       ↑      ↑         ↑
+      Key       Value     Key    Value   Key      Value
+</code></pre>
+
+        <h2>Practical Examples: From Simple to Advanced</h2>
+
+        <h3>Example 1: Basic List Operations</h3>
+        <pre><code class="language-python"># Creating and modifying a list
+fruits = ["apple", "banana", "cherry"]
+
+# Adding items
+fruits.append("date")           # Add to end: ["apple", "banana", "cherry", "date"]
+fruits.insert(1, "blueberry")   # Insert at index 1: ["apple", "blueberry", "banana", "cherry", "date"]
+
+# Removing items
+fruits.remove("banana")         # Remove by value: ["apple", "blueberry", "cherry", "date"]
+last_fruit = fruits.pop()       # Remove and return last item: "date"
+
+# Accessing items
+print(fruits[0])                # First item: "apple"
+print(fruits[-1])               # Last item: "cherry"
+
+# Output:
+# apple
+# cherry
+</code></pre>
+
+        <h3>Example 2: List Comprehensions (The Pythonic Way)</h3>
+        <pre><code class="language-python"># Traditional way with loop
+squares_old = []
+for n in range(1, 6):
+    squares_old.append(n * n)
+print(squares_old)  # [1, 4, 9, 16, 25]
+
+# Pythonic way with list comprehension (ONE LINE!)
+squares = [n * n for n in range(1, 6)]
+print(squares)      # [1, 4, 9, 16, 25]
+
+# Comprehension with condition (filter even squares)
+even_squares = [n * n for n in range(1, 11) if (n * n) % 2 == 0]
+print(even_squares) # [4, 16, 36, 64, 100]
+
+# Practical example: Convert temperatures from Celsius to Fahrenheit
+celsius = [0, 10, 20, 30, 40]
+fahrenheit = [(temp * 9/5) + 32 for temp in celsius]
+print(fahrenheit)   # [32.0, 50.0, 68.0, 86.0, 104.0]
+</code></pre>
+
+        <h3>Example 3: Tuples for Immutable Data</h3>
+        <pre><code class="language-python"># Coordinates that shouldn't change
+point = (10, 20)
+print(f"X: {point[0]}, Y: {point[1]}")  # X: 10, Y: 20
+
+# Tuple unpacking (elegant way to extract values)
+x, y = point
+print(f"X: {x}, Y: {y}")  # X: 10, Y: 20
+
+# Returning multiple values from a function
+def get_user_info():
+    return ("Alice", 25, "Toronto")  # Returns a tuple
+
+name, age, city = get_user_info()
+print(f"{name} is {age} years old from {city}")
+# Output: Alice is 25 years old from Toronto
+
+# Why tuples? Try to modify (this will fail)
+# point[0] = 15  # ❌ TypeError: 'tuple' object does not support item assignment
+</code></pre>
+
+        <h3>Example 4: Sets for Uniqueness and Fast Lookups</h3>
+        <pre><code class="language-python"># Sets automatically remove duplicates
+tags = {"ai", "python", "ml", "ai", "python"}
+print(tags)  # {"ai", "python", "ml"} - duplicates removed!
+
+# Adding and removing items
+tags.add("data-science")     # Add new item
+tags.discard("ml")           # Remove item (no error if not found)
+print(tags)  # {"ai", "python", "data-science"}
+
+# Fast membership testing (very efficient for large sets)
+print("ai" in tags)          # True - instant lookup!
+print("java" in tags)        # False
+
+# Set operations (like math!)
+skills_alice = {"python", "sql", "excel"}
+skills_bob = {"python", "java", "excel"}
+
+common_skills = skills_alice & skills_bob        # Intersection: {"python", "excel"}
+all_skills = skills_alice | skills_bob           # Union: {"python", "sql", "excel", "java"}
+alice_only = skills_alice - skills_bob           # Difference: {"sql"}
+
+print(f"Common skills: {common_skills}")
+print(f"Alice's unique skills: {alice_only}")
+</code></pre>
+
+        <h3>Example 5: Dictionaries for Key-Value Mappings</h3>
+        <pre><code class="language-python"># Creating a student profile
+student = {
+    "name": "Aisha",
+    "age": 20,
+    "major": "Computer Science",
+    "gpa": 3.8
+}
+
+# Accessing values
+print(student["name"])        # "Aisha"
+print(student.get("age"))     # 20 (safer way)
+print(student.get("email", "Not provided"))  # "Not provided" (default if key missing)
+
+# Adding and modifying
+student["email"] = "aisha@university.edu"  # Add new key-value pair
+student["gpa"] = 3.9                       # Update existing value
+
+# Looping through dictionary
+for key, value in student.items():
+    print(f"{key}: {value}")
+
+# Practical example: Grade calculator
+grades = {"math": 85, "english": 92, "science": 88, "history": 90}
+total = sum(grades.values())
+average = total / len(grades)
+print(f"Average grade: {average:.1f}")  # Average grade: 88.8
+</code></pre>
+
+        <h2>Data Structure Comparison Table</h2>
+
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>List</th>
+                    <th>Tuple</th>
+                    <th>Set</th>
+                    <th>Dictionary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Syntax</strong></td>
+                    <td><code>[]</code></td>
+                    <td><code>()</code></td>
+                    <td><code>{}</code></td>
+                    <td><code>{key: value}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>Ordered?</strong></td>
+                    <td>✅ Yes</td>
+                    <td>✅ Yes</td>
+                    <td>❌ No</td>
+                    <td>✅ Yes (Python 3.7+)</td>
+                </tr>
+                <tr>
+                    <td><strong>Mutable?</strong></td>
+                    <td>✅ Yes</td>
+                    <td>❌ No</td>
+                    <td>✅ Yes</td>
+                    <td>✅ Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Duplicates?</strong></td>
+                    <td>✅ Allowed</td>
+                    <td>✅ Allowed</td>
+                    <td>❌ No</td>
+                    <td>Keys: No, Values: Yes</td>
+                </tr>
+                <tr>
+                    <td><strong>Best For</strong></td>
+                    <td>Changing sequences</td>
+                    <td>Fixed data</td>
+                    <td>Unique items</td>
+                    <td>Key-value pairs</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Hands-On Practice: Step-by-Step Exercises</h2>
+
+        <h3>Exercise 1: Remove Duplicate Names from a List</h3>
+        
+        <p><strong>Step 1:</strong> Create a new Python file called <code>duplicate_remover.py</code></p>
+
+        <p><strong>Step 2:</strong> Write the starter code</p>
+        <pre><code class="language-python"># duplicate_remover.py
+
+# List of student names with duplicates
+students = ["Alice", "Bob", "Charlie", "Alice", "David", "Bob", "Eve", "Alice"]
+
+print("Original list:", students)
+print(f"Number of names: {len(students)}")
+
+# Your task: Convert to set to remove duplicates, then back to list
+unique_students = list(set(students))
+
+print("\nUnique students:", unique_students)
+print(f"Number of unique names: {len(unique_students)}")
+</code></pre>
+
+        <p><strong>Step 3:</strong> Run the program in your terminal</p>
+        <pre><code class="language-bash">python duplicate_remover.py
+</code></pre>
+
+        <p><strong>Step 4:</strong> Expected output</p>
+        <pre><code>Original list: ['Alice', 'Bob', 'Charlie', 'Alice', 'David', 'Bob', 'Eve', 'Alice']
+Number of names: 8
+
+Unique students: ['Charlie', 'Eve', 'Alice', 'Bob', 'David']
+Number of unique names: 5
+</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Note:</strong> The order of unique students may vary because sets are unordered. If you need to preserve the original order, use a different approach (we'll see this in common mistakes).</p>
+        </div>
+
+        <h3>Exercise 2: Build a Course Grade Dictionary</h3>
+
+        <p><strong>Step 1:</strong> Create a file called <code>grade_book.py</code></p>
+
+        <p><strong>Step 2:</strong> Build the grade mapping system</p>
+        <pre><code class="language-python"># grade_book.py
+
+# Create an empty dictionary for grades
+grades = {}
+
+# Add courses and grades
+grades["Math"] = 85
+grades["English"] = 92
+grades["Science"] = 88
+grades["History"] = 90
+grades["Art"] = 95
+
+# Display all grades
+print("=== Grade Book ===")
+for course, grade in grades.items():
+    print(f"{course}: {grade}%")
+
+# Calculate statistics
+average = sum(grades.values()) / len(grades)
+highest = max(grades.values())
+lowest = min(grades.values())
+
+print(f"\nAverage: {average:.1f}%")
+print(f"Highest: {highest}%")
+print(f"Lowest: {lowest}%")
+
+# Find which course has the highest grade
+best_course = max(grades, key=grades.get)
+print(f"Best performance: {best_course}")
+</code></pre>
+
+        <p><strong>Step 3:</strong> Run and verify</p>
+        <pre><code class="language-bash">python grade_book.py
+</code></pre>
+
+        <p><strong>Step 4:</strong> Expected output</p>
+        <pre><code>=== Grade Book ===
+Math: 85%
+English: 92%
+Science: 88%
+History: 90%
+Art: 95%
+
+Average: 90.0%
+Highest: 95%
+Lowest: 85%
+Best performance: Art
+</code></pre>
+
+        <h2>Common Mistakes and How to Fix Them</h2>
+
+        <h3>Mistake 1: Using Lists When Dictionaries Are Needed</h3>
+        <p><strong>Problem:</strong> Storing related data in parallel lists makes code confusing and error-prone.</p>
+        <pre><code class="language-python"># ❌ BAD: Parallel lists (hard to maintain)
+names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 28]
+cities = ["Toronto", "Vancouver", "Montreal"]
+
+# What if you add a name but forget to add age/city? Data becomes misaligned!
+</code></pre>
+
+        <p><strong>Solution:</strong> Use a dictionary or list of dictionaries</p>
+        <pre><code class="language-python"># ✅ GOOD: Dictionary keeps related data together
+people = {
+    "Alice": {"age": 25, "city": "Toronto"},
+    "Bob": {"age": 30, "city": "Vancouver"},
+    "Charlie": {"age": 28, "city": "Montreal"}
+}
+
+print(people["Alice"]["age"])  # 25
+</code></pre>
+
+        <h3>Mistake 2: Expecting Sets to Maintain Order</h3>
+        <p><strong>Problem:</strong> Assuming set elements will stay in the order you added them.</p>
+        <pre><code class="language-python"># ❌ Don't rely on set order
+numbers = {3, 1, 4, 1, 5, 9, 2, 6}
+print(numbers)  # Order is unpredictable!
+</code></pre>
+
+        <p><strong>Solution:</strong> If order matters, use a list or convert to sorted list</p>
+        <pre><code class="language-python"># ✅ GOOD: Sort when needed
+numbers = {3, 1, 4, 1, 5, 9, 2, 6}
+sorted_numbers = sorted(numbers)
+print(sorted_numbers)  # [1, 2, 3, 4, 5, 6, 9]
+</code></pre>
+
+        <h3>Mistake 3: Trying to Modify Tuples</h3>
+        <p><strong>Problem:</strong> Attempting to change tuple contents after creation.</p>
+        <pre><code class="language-python"># ❌ This will crash!
+coordinates = (10, 20)
+coordinates[0] = 15  # TypeError: 'tuple' object does not support item assignment
+</code></pre>
+
+        <p><strong>Solution:</strong> Create a new tuple instead</p>
+        <pre><code class="language-python"># ✅ GOOD: Create new tuple with updated values
+coordinates = (10, 20)
+coordinates = (15, coordinates[1])  # New tuple: (15, 20)
+
+# Or convert to list, modify, then back to tuple
+temp_list = list(coordinates)
+temp_list[0] = 15
+coordinates = tuple(temp_list)
+</code></pre>
+
+        <h3>Mistake 4: Forgetting Dictionary Keys Are Case-Sensitive</h3>
+        <p><strong>Problem:</strong> Accessing dictionary with wrong case returns KeyError.</p>
+        <pre><code class="language-python"># ❌ Case mismatch causes error
+user = {"Name": "Alice", "Age": 25}
+print(user["name"])  # KeyError: 'name' (should be "Name")
+</code></pre>
+
+        <p><strong>Solution:</strong> Use consistent casing and .get() for safety</p>
+        <pre><code class="language-python"># ✅ GOOD: Use .get() with default value
+user = {"Name": "Alice", "Age": 25}
+print(user.get("name", "Not found"))  # "Not found"
+print(user.get("Name"))                # "Alice"
+
+# Or normalize keys to lowercase
+user = {key.lower(): value for key, value in user.items()}
+print(user["name"])  # Works now!
+</code></pre>
+
+        <h3>Mistake 5: Modifying List While Looping</h3>
+        <p><strong>Problem:</strong> Removing items from a list while iterating causes skipped elements.</p>
+        <pre><code class="language-python"># ❌ BAD: Modifying list during iteration
+numbers = [1, 2, 3, 4, 5]
+for num in numbers:
+    if num % 2 == 0:
+        numbers.remove(num)  # Causes unexpected behavior!
+print(numbers)  # [1, 3, 5] - but may skip elements
+</code></pre>
+
+        <p><strong>Solution:</strong> Use list comprehension or iterate over a copy</p>
+        <pre><code class="language-python"># ✅ GOOD: List comprehension
+numbers = [1, 2, 3, 4, 5]
+numbers = [num for num in numbers if num % 2 != 0]
+print(numbers)  # [1, 3, 5]
+
+# Or iterate over a copy
+numbers = [1, 2, 3, 4, 5]
+for num in numbers[:]:  # [:] creates a copy
+    if num % 2 == 0:
+        numbers.remove(num)
+</code></pre>
+
+        <h3>Mistake 6: Using Mutable Default Arguments in Functions</h3>
+        <p><strong>Problem:</strong> Using a list as a default parameter causes unexpected sharing between function calls.</p>
+        <pre><code class="language-python"># ❌ BAD: Mutable default argument
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+list1 = add_item("apple")
+list2 = add_item("banana")
+print(list2)  # ['apple', 'banana'] - Wait, what?!
+</code></pre>
+
+        <p><strong>Solution:</strong> Use None as default and create new list inside function</p>
+        <pre><code class="language-python"># ✅ GOOD: Use None as default
+def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+list1 = add_item("apple")
+list2 = add_item("banana")
+print(list2)  # ['banana'] - Perfect!
+</code></pre>
+
+        <h2>Mini-Project: Word Frequency Counter</h2>
+
+        <p><strong>Project Goal:</strong> Build a program that analyzes text and counts how many times each word appears.</p>
+
+        <h3>Requirements</h3>
+        <ul>
+            <li>Accept user input (a sentence or paragraph)</li>
+            <li>Convert text to lowercase for accurate counting</li>
+            <li>Split text into individual words</li>
+            <li>Count frequency of each word using a dictionary</li>
+            <li>Display results in a readable format</li>
+        </ul>
+
+        <h3>Step-by-Step Implementation</h3>
+
+        <p><strong>Step 1:</strong> Create <code>word_counter.py</code></p>
+
+        <p><strong>Step 2:</strong> Build the basic counter</p>
+        <pre><code class="language-python"># word_counter.py
+
+print("=== Word Frequency Counter ===")
+print("Enter a sentence or paragraph:")
+
+# Get user input
+text = input("Text: ").lower()
+
+# Split into words
+words = text.split()
+
+# Count frequencies using dictionary
+word_counts = {}
+for word in words:
+    # If word exists, increment count; otherwise, start at 1
+    word_counts[word] = word_counts.get(word, 0) + 1
+
+# Display results
+print("\n=== Word Frequencies ===")
+for word, count in word_counts.items():
+    print(f"{word}: {count}")
+
+# Show statistics
+print(f"\nTotal words: {len(words)}")
+print(f"Unique words: {len(word_counts)}")
+</code></pre>
+
+        <p><strong>Step 3:</strong> Test with sample input</p>
+        <pre><code class="language-bash">python word_counter.py
+</code></pre>
+
+        <p><strong>Sample Input:</strong></p>
+        <pre><code>Python is amazing and Python is powerful. Python makes programming fun and Python is easy to learn.</code></pre>
+
+        <p><strong>Expected Output:</strong></p>
+        <pre><code>=== Word Frequencies ===
+python: 4
+is: 4
+amazing: 1
+and: 2
+powerful.: 1
+makes: 1
+programming: 1
+fun: 1
+easy: 1
+to: 1
+learn.: 1
+
+Total words: 17
+Unique words: 11</code></pre>
+
+        <h3>Bonus Challenges</h3>
+
+        <p><strong>Challenge 1:</strong> Remove punctuation before counting</p>
+        <pre><code class="language-python">import string
+
+# Remove punctuation
+text = text.translate(str.maketrans('', '', string.punctuation))
+</code></pre>
+
+        <p><strong>Challenge 2:</strong> Display words sorted by frequency (most common first)</p>
+        <pre><code class="language-python"># Sort by count (descending)
+sorted_words = sorted(word_counts.items(), key=lambda x: x[1], reverse=True)
+
+print("\n=== Most Common Words ===")
+for word, count in sorted_words[:5]:  # Top 5
+    print(f"{word}: {count}")
+</code></pre>
+
+        <p><strong>Challenge 3:</strong> Create a bar chart visualization using text</p>
+        <pre><code class="language-python"># Display bar chart
+print("\n=== Word Frequency Bar Chart ===")
+for word, count in sorted_words:
+    bar = "█" * count
+    print(f"{word:15} | {bar} ({count})")
+</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Advanced Tip:</strong> Python's <code>collections.Counter</code> class does this automatically! Try: <code>from collections import Counter</code> and <code>Counter(words)</code>. But understanding how to build it yourself with dictionaries is crucial!</p>
+        </div>
+
+        <h2>Summary: Key Takeaways</h2>
+
+        <h3>What You've Learned</h3>
+        <ul>
+            <li><strong>Lists</strong> are your go-to for ordered, changeable collections—perfect for shopping lists, task queues, or any data that grows and shrinks</li>
+            <li><strong>Tuples</strong> protect data from accidental changes—use them for coordinates, RGB colors, database records, or configuration values</li>
+            <li><strong>Sets</strong> eliminate duplicates automatically and provide lightning-fast membership testing—ideal for tags, unique IDs, or mathematical operations</li>
+            <li><strong>Dictionaries</strong> map keys to values efficiently—essential for storing user profiles, configuration settings, or any related data</li>
+            <li><strong>List comprehensions</strong> write elegant one-line loops—they're faster and more Pythonic than traditional for loops</li>
+        </ul>
+
+        <h3>What Makes Each Structure Special?</h3>
+        <ul>
+            <li><strong>Lists:</strong> Flexibility—add, remove, change anything anytime. Order is preserved.</li>
+            <li><strong>Tuples:</strong> Safety—immutability prevents bugs. Slightly faster and use less memory than lists.</li>
+            <li><strong>Sets:</strong> Speed—membership testing is O(1) constant time, even with millions of items. Automatic uniqueness.</li>
+            <li><strong>Dictionaries:</strong> Efficiency—key lookups are instant regardless of size. Perfect for real-world data modeling.</li>
+        </ul>
+
+        <h3>Decision Guide: Which Structure Should You Use?</h3>
+
+        <div class="info-box">
+            <p><strong>Ask yourself:</strong></p>
+            <ul style="margin-bottom: 0;">
+                <li>Do I need order? → List or Tuple</li>
+                <li>Will data change? → List, Set, or Dictionary (not Tuple)</li>
+                <li>Do I need to find something quickly? → Set or Dictionary</li>
+                <li>Do I need to store relationships? → Dictionary</li>
+                <li>Do I need uniqueness? → Set</li>
+                <li>Should data be protected? → Tuple</li>
+            </ul>
+        </div>
+
+        <!-- Recommended Tools Section -->
+        <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 2rem; border-radius: 12px; margin: 2.5rem 0;">
+            <h3 style="margin-top: 0; color: #065f46;">🚀 Practice Makes Perfect - Coding Platforms</h3>
+            <p style="color: #475569; margin-bottom: 1.5rem;">Master data structures through hands-on practice with these interactive platforms</p>
+            
+            <div style="display: grid; gap: 1.5rem;">
+                <!-- LeetCode -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 2rem;">💪</span>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">LeetCode - Problem Solving Practice</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">
+                                <strong>Price:</strong> Free (Basic) | $35/month (Premium) | <strong>Perfect for:</strong> Building problem-solving skills & interview prep
+                            </p>
+                            <p style="margin: 0 0 1rem 0; color: #475569; font-size: 0.9rem;">
+                                Solve thousands of Python problems organized by topic. Focus on data structure challenges to solidify your understanding through real algorithmic problems.
+                            </p>
+                            <div style="margin-bottom: 1rem;">
+                                <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #065f46; font-size: 0.9rem;">Why developers love LeetCode:</p>
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #475569; font-size: 0.875rem;">
+                                    <li>2,500+ problems from easy to expert level</li>
+                                    <li>Detailed solutions and discussion forums</li>
+                                    <li>Run and test your code instantly</li>
+                                    <li>Track progress and compare with other learners</li>
+                                </ul>
+                            </div>
+                            <a href="https://leetcode.com/problemset/all/?topicSlugs=array%2Chash-table&amp;utm_source=nebaz-ai&amp;utm_medium=python&amp;utm_campaign=tutorial7" 
+                               target="_blank" 
+                               style="display: inline-block; background: #078930; color: white; padding: 0.625rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                Start Practicing Free →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HackerRank -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 2rem;">🏆</span>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">HackerRank - Structured Python Path</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">
+                                <strong>Price:</strong> Free | <strong>Perfect for:</strong> Gamified learning with skill certifications
+                            </p>
+                            <p style="margin: 0 0 1rem 0; color: #475569; font-size: 0.9rem;">
+                                Follow guided Python learning paths with badges and certificates. Great for beginners who want structured practice with immediate feedback and achievement tracking.
+                            </p>
+                            <div style="margin-bottom: 1rem;">
+                                <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #065f46; font-size: 0.9rem;">What makes HackerRank great:</p>
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #475569; font-size: 0.875rem;">
+                                    <li>Beginner-friendly Python track (start easy, build up)</li>
+                                    <li>Earn verified certificates to showcase on LinkedIn</li>
+                                    <li>Companies use HackerRank for hiring (build your profile)</li>
+                                    <li>100% free for learners—no premium required</li>
+                                </ul>
+                            </div>
+                            <a href="https://www.hackerrank.com/domains/python&amp;utm_medium=python&amp;utm_campaign=tutorial7" 
+                               target="_blank" 
+                               style="display: inline-block; background: #078930; color: white; padding: 0.625rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                Start Free Practice →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin: 1.5rem 0 0 0; color: #64748b; font-size: 0.8125rem; text-align: center;">
+                💡 <em>Practice platforms help you apply what you've learned. Spend 15-30 min daily solving problems to build muscle memory!</em>
+            </p>
+        </div>
+
+        <h3>Your Next Steps</h3>
+
+        <p>Now that you've mastered Python's data structures, you're ready to organize them into reusable blocks of code. Here's what to practice:</p>
+
+        <ul>
+            <li>✅ <strong>Practice:</strong> Solve 3-5 problems using each data structure on your own</li>
+            <li>✅ <strong>Experiment:</strong> Try combining structures—lists of dictionaries, sets of tuples, dictionaries with list values</li>
+            <li>✅ <strong>Refactor:</strong> Look at old code and see where you can replace complex logic with the right data structure</li>
+            <li>✅ <strong>Benchmark:</strong> Compare the speed of list vs set for membership testing with 10,000 items</li>
+            <li>✅ <strong>Next Topic:</strong> Learn about <strong>functions</strong> to group logic and make your code reusable!</li>
+        </ul>
+
+        <div class="warning-box">
+            <p>🎯 <strong>Pro Tip:</strong> The best programmers don't memorize syntax—they understand <em>when</em> to use each tool. You now have four powerful tools in your toolkit. The real skill is choosing the right one for each job. Keep practicing, and soon it'll become second nature!</p>
+        </div>
+
+        <p><strong>Remember:</strong> Data structures are the foundation of all programs. Master them, and you'll write cleaner, faster, and more elegant code. You're not just learning Python—you're learning to think like a programmer. Keep going! 🚀</p>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Data Structures</h2>
+                <p class="quiz-description">Check your understanding with this quick quiz</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. Which data structure should you use to store unique email addresses from user signups?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">List - because you need to maintain order</div>
+                    <div class="quiz-option" data-correct="true">Set - because it automatically prevents duplicates</div>
+                    <div class="quiz-option" data-correct="false">Tuple - because emails shouldn't change</div>
+                    <div class="quiz-option" data-correct="false">Dictionary - because you need key-value pairs</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What will this code output? <code>nums = [x**2 for x in range(4)]</code></p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">[1, 2, 3, 4]</div>
+                    <div class="quiz-option" data-correct="true">[0, 1, 4, 9]</div>
+                    <div class="quiz-option" data-correct="false">[0, 2, 4, 6]</div>
+                    <div class="quiz-option" data-correct="false">[1, 4, 9, 16]</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. Why would you choose a tuple over a list for storing GPS coordinates?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Tuples are faster to create</div>
+                    <div class="quiz-option" data-correct="true">Coordinates shouldn't change once set, and tuples prevent accidental modification</div>
+                    <div class="quiz-option" data-correct="false">Tuples use less memory than lists</div>
+                    <div class="quiz-option" data-correct="false">You can't use lists for numeric data</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What's the best way to count how many times each word appears in a text?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Use a list and count manually with loops</div>
+                    <div class="quiz-option" data-correct="true">Use a dictionary where keys are words and values are counts</div>
+                    <div class="quiz-option" data-correct="false">Use a set to store unique words</div>
+                    <div class="quiz-option" data-correct="false">Use a tuple to keep words in order</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">5. What happens when you try to add a duplicate value to a set?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Python raises an error</div>
+                    <div class="quiz-option" data-correct="false">The duplicate is added but marked as duplicate</div>
+                    <div class="quiz-option" data-correct="true">The duplicate is silently ignored; the set remains unchanged</div>
+                    <div class="quiz-option" data-correct="false">The set is converted to a list</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="python-loops-tutorial.html" class="btn btn-secondary">← Previous: Loops</a>
+                <a href="python_functions_tutorial.html" class="btn btn-primary">Next: Functions →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

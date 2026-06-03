@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master proven prompt frameworks (RISEN, RTF, CRAFT) and build your personal template library for consistent, professional-grade AI outputs.">
+    <title>Tutorial 4: Prompt Frameworks & Templates - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.125rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            opacity: 0.95;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .content-section {
+            margin: 3rem 0;
+        }
+        
+        .info-box, .warning-box, .success-box {
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            border-left: 4px solid;
+        }
+        
+        .info-box {
+            background: #ecfdf5;
+            border-color: #078930;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+        
+        .framework-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            margin: 3rem 0;
+            border-top: 6px solid #078930;
+        }
+        
+        .framework-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .framework-acronym {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .framework-element {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            border-left: 4px solid #078930;
+        }
+        
+        .element-letter {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 1.25rem;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-right: 1rem;
+        }
+        
+        .element-title {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.125rem;
+            display: inline-block;
+        }
+        
+        .template-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #078930;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-family: system-ui;
+        }
+        
+        .copy-button:hover {
+            background: #065f46;
+        }
+        
+        .template-library {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .template-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #10b981;
+        }
+        
+        .template-card h4 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .use-case-tag {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+            gap: 1rem;
+        }
+        
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .template-library {
+                grid-template-columns: 1fr;
+            }
+            
+            .tutorial-nav {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/chatgpt-prompt-engineering.html">ChatGPT & Prompt Engineering</a> → 
+                <span>Tutorial 4</span>
+            </div>
+            <h1>Tutorial 4: Prompt Frameworks & Templates</h1>
+            <p class="tutorial-intro">Battle-tested frameworks (RISEN, RTF, CRAFT) for consistent, professional-grade results</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Week 2</span>
+                <span class="meta-item">📊 Intermediate</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Introduction -->
+            <section class="content-section">
+                <p>You wake up at 3am with a brilliant business idea. You grab your phone and type into ChatGPT:</p>
+                <p style="font-style: italic; color: #64748b;">"Help me with my business idea"</p>
+                
+                <p>ChatGPT responds with generic advice. You stare at the screen, frustrated. <strong>What if you had a proven framework</strong> — a mental checklist that guarantees high-quality output every single time?</p>
+                
+                <p>That's what this module delivers: <strong>three battle-tested frameworks</strong> used by professional prompt engineers at OpenAI, Google, and Fortune 500 companies.</p>
+                
+                <div class="success-box">
+                    <p><strong>💡 By the end of this module, you'll have:</strong></p>
+                    <ul>
+                        <li>RISEN framework for comprehensive prompts</li>
+                        <li>RTF framework for quick, focused requests</li>
+                        <li>CRAFT framework for creative projects</li>
+                        <li>Personal template library (copy-paste ready)</li>
+                        <li>Framework selection guide (when to use which)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RISEN Framework -->
+            <section class="content-section">
+                <div class="framework-card">
+                    <h2 class="framework-title">🎯 RISEN Framework</h2>
+                    <p class="framework-acronym">Role • Instructions • Steps • End goal • Narrowing</p>
+                    
+                    <p><strong>Best for:</strong> Complex projects, detailed analysis, multi-step tasks</p>
+                    <p><strong>Developed by:</strong> AI research community (2023), widely adopted by enterprises</p>
+                    
+                    <div class="framework-element" style="margin-top: 2rem;">
+                        <span class="element-letter">R</span>
+                        <span class="element-title">ROLE - Who should ChatGPT be?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Assign expertise: "Act as a senior UX designer with 10 years at Google..."</p>
+                        <p style="margin: 0.5rem 0 0 3rem; font-style: italic; color: #64748b;">Why it matters: Activates relevant knowledge patterns from training data</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">I</span>
+                        <span class="element-title">INSTRUCTIONS - What exactly do you need?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Clear, specific task: "Analyze our mobile app onboarding flow and identify 3 friction points..."</p>
+                        <p style="margin: 0.5rem 0 0 3rem; font-style: italic; color: #64748b;">Why it matters: Prevents vague, generic responses</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">S</span>
+                        <span class="element-title">STEPS - How should it approach this?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Break down process: "First, review each screen. Then, identify user pain points. Finally, suggest improvements..."</p>
+                        <p style="margin: 0.5rem 0 0 3rem; font-style: italic; color: #64748b;">Why it matters: Guides reasoning, ensures nothing is missed</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">E</span>
+                        <span class="element-title">END GOAL - What's the desired outcome?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Define success: "The output should be a 1-page report with 3 prioritized recommendations..."</p>
+                        <p style="margin: 0.5rem 0 0 3rem; font-style: italic; color: #64748b;">Why it matters: Ensures output matches your actual needs</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">N</span>
+                        <span class="element-title">NARROWING - What constraints or focus areas?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Set boundaries: "Focus only on first-time users. Ignore advanced features. Keep technical jargon minimal..."</p>
+                        <p style="margin: 0.5rem 0 0 3rem; font-style: italic; color: #64748b;">Why it matters: Prevents scope creep, keeps response focused</p>
+                    </div>
+                </div>
+                
+                <h3>RISEN in Action: Real Example</h3>
+                
+                <div class="template-box">
+                    <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>ROLE:</strong> Act as a senior product marketing manager at Shopify with 8 years of experience launching e-commerce features.
+
+<strong>INSTRUCTIONS:</strong> Create a go-to-market strategy for our new "AI-Powered Product Recommendations" feature targeted at small business owners.
+
+<strong>STEPS:</strong>
+1. Analyze the competitive landscape (what similar features exist?)
+2. Identify our unique value proposition
+3. Define 3 key customer segments
+4. Recommend marketing channels and messaging for each segment
+5. Suggest success metrics
+
+<strong>END GOAL:</strong> A 2-page strategy doc with:
+- Executive summary (3 bullets)
+- Segmentation + messaging table
+- Channel strategy with budget estimates
+- 90-day launch timeline
+
+<strong>NARROWING:</strong>
+- Focus on businesses earning $50K-$500K annually
+- Budget constraint: $25K marketing spend
+- Avoid technical jargon (audience is non-technical)
+- Prioritize quick wins over long-term brand building
+                </div>
+                
+                <div class="success-box">
+                    <p><strong>✅ Result:</strong> ChatGPT delivers a structured, actionable strategy that addresses all requirements. No generic fluff, no wasted output.</p>
+                </div>
+            </section>
+
+            <!-- RTF Framework -->
+            <section class="content-section">
+                <div class="framework-card">
+                    <h2 class="framework-title">⚡ RTF Framework</h2>
+                    <p class="framework-acronym">Role • Task • Format</p>
+                    
+                    <p><strong>Best for:</strong> Quick requests, straightforward tasks, time-sensitive work</p>
+                    <p><strong>Developed by:</strong> Prompt engineering practitioners (simplified version of complex frameworks)</p>
+                    
+                    <div class="framework-element" style="margin-top: 2rem;">
+                        <span class="element-letter">R</span>
+                        <span class="element-title">ROLE - Who are you?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Quick expertise assignment: "You're a Python expert..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">T</span>
+                        <span class="element-title">TASK - What do I need?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">One clear action: "Write a function that validates email addresses..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">F</span>
+                        <span class="element-title">FORMAT - How should output look?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Structure specification: "Provide code, then 3-bullet explanation..."</p>
+                    </div>
+                </div>
+                
+                <h3>RTF in Action: Real Examples</h3>
+                
+                <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0;">
+                    <h4 style="color: #078930;">Example 1: Email Writing</h4>
+                    <div class="template-box" style="margin-top: 1rem;">
+                        <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>Role:</strong> You're a customer success manager at a SaaS company.
+<strong>Task:</strong> Write an email apologizing for a 2-hour service outage yesterday.
+<strong>Format:</strong> Subject line + 3-paragraph email (acknowledge issue, explain fix, offer compensation). Tone: empathetic but professional.
+                    </div>
+                    
+                    <h4 style="color: #078930; margin-top: 2rem;">Example 2: Code Generation</h4>
+                    <div class="template-box" style="margin-top: 1rem;">
+                        <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>Role:</strong> You're a React developer.
+<strong>Task:</strong> Create a reusable Button component with loading state.
+<strong>Format:</strong> TypeScript code with props interface, component code, usage example. Include comments explaining key logic.
+                    </div>
+                    
+                    <h4 style="color: #078930; margin-top: 2rem;">Example 3: Data Analysis</h4>
+                    <div class="template-box" style="margin-top: 1rem;">
+                        <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>Role:</strong> You're a data analyst at Netflix.
+<strong>Task:</strong> Analyze why our Q3 churn rate increased from 3% to 5%.
+<strong>Format:</strong> Executive summary (3 bullets) + detailed analysis (5 potential causes with data to investigate) + 3 actionable recommendations.
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 When to use RTF:</strong> Need fast results? Don't need extensive multi-step process? RTF gets you 80% quality in 20% of the time. Save RISEN for high-stakes projects.</p>
+                </div>
+            </section>
+
+            <!-- CRAFT Framework -->
+            <section class="content-section">
+                <div class="framework-card">
+                    <h2 class="framework-title">🎨 CRAFT Framework</h2>
+                    <p class="framework-acronym">Context • Role • Action • Format • Target audience</p>
+                    
+                    <p><strong>Best for:</strong> Creative work, content creation, marketing copy, storytelling</p>
+                    <p><strong>Developed by:</strong> Content creators and copywriters adapting prompt engineering for creative fields</p>
+                    
+                    <div class="framework-element" style="margin-top: 2rem;">
+                        <span class="element-letter">C</span>
+                        <span class="element-title">CONTEXT - What's the background?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Set the scene: "We're launching a sustainable sneaker brand targeting Gen Z environmentalists..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">R</span>
+                        <span class="element-title">ROLE - What's your perspective?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Creative expertise: "You're a viral TikTok content creator with 2M followers..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">A</span>
+                        <span class="element-title">ACTION - What creative output?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">The creative ask: "Generate 10 video concepts that could go viral..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">F</span>
+                        <span class="element-title">FORMAT - How should it be structured?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Creative format: "Each concept: hook (first 3 seconds) + middle (main content) + CTA..."</p>
+                    </div>
+                    
+                    <div class="framework-element">
+                        <span class="element-letter">T</span>
+                        <span class="element-title">TARGET AUDIENCE - Who's consuming this?</span>
+                        <p style="margin: 1rem 0 0 3rem; color: #475569;">Audience details: "18-25 year olds, environmentally conscious, active on TikTok, value authenticity over polish..."</p>
+                    </div>
+                </div>
+                
+                <h3>CRAFT in Action: Marketing Campaign</h3>
+                
+                <div class="template-box">
+                    <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>CONTEXT:</strong> We're a meal kit delivery startup competing with HelloFresh and Blue Apron. Our unique angle: all ingredients sourced from local farms within 50 miles. Launched 6 months ago, have 500 customers, want to reach 5,000.
+
+<strong>ROLE:</strong> You're a growth marketer who specializes in direct-to-consumer food brands. You've scaled 3 startups from $0 to $10M revenue.
+
+<strong>ACTION:</strong> Create a 30-day Instagram content calendar designed to grow our following from 2,000 to 10,000 and convert 2% to paying customers.
+
+<strong>FORMAT:</strong> 
+- Content pillars (3-4 themes)
+- Post schedule (what to post when)
+- 10 specific post ideas with captions and hashtag strategy
+- Story series concepts
+- Engagement tactics (polls, questions, etc.)
+
+<strong>TARGET AUDIENCE:</strong> 
+- Age: 28-42
+- Income: $75K-$150K household
+- Values: health, sustainability, supporting local businesses
+- Pain points: "too busy to grocery shop," "want healthy meals without effort"
+- Social behavior: active on Instagram, trust influencer recommendations
+                </div>
+                
+                <div class="success-box">
+                    <p><strong>✅ Result:</strong> ChatGPT delivers a detailed, actionable content strategy tailored to your specific audience and business goals. Ready to execute immediately.</p>
+                </div>
+            </section>
+
+            <!-- Framework Comparison -->
+            <section class="content-section">
+                <h2>🤔 Which Framework Should You Use?</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Best Framework</th>
+                            <th>Why?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Writing code quickly</td>
+                            <td><strong>RTF</strong></td>
+                            <td>Fast, focused, no unnecessary detail</td>
+                        </tr>
+                        <tr>
+                            <td>Business strategy document</td>
+                            <td><strong>RISEN</strong></td>
+                            <td>Comprehensive, structured, multi-step thinking</td>
+                        </tr>
+                        <tr>
+                            <td>Social media campaign</td>
+                            <td><strong>CRAFT</strong></td>
+                            <td>Audience-focused, creative, context-rich</td>
+                        </tr>
+                        <tr>
+                            <td>Technical documentation</td>
+                            <td><strong>RISEN</strong></td>
+                            <td>Needs clear steps, end goal, narrowing scope</td>
+                        </tr>
+                        <tr>
+                            <td>Email to customer</td>
+                            <td><strong>RTF</strong></td>
+                            <td>Quick turnaround, simple format</td>
+                        </tr>
+                        <tr>
+                            <td>Blog post about complex topic</td>
+                            <td><strong>CRAFT</strong></td>
+                            <td>Requires audience understanding, creative approach</td>
+                        </tr>
+                        <tr>
+                            <td>Data analysis with recommendations</td>
+                            <td><strong>RISEN</strong></td>
+                            <td>Multi-step process, clear deliverables</td>
+                        </tr>
+                        <tr>
+                            <td>Product description for e-commerce</td>
+                            <td><strong>CRAFT</strong></td>
+                            <td>Target audience crucial, creative copy needed</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="info-box" style="margin-top: 2rem;">
+                    <p><strong>🎯 Pro tip:</strong> Start with RTF for speed. If output isn't detailed enough, upgrade to RISEN (for complex tasks) or CRAFT (for creative work).</p>
+                </div>
+            </section>
+
+            <!-- Template Library -->
+            <section class="content-section">
+                <h2>📚 Your Personal Template Library</h2>
+                
+                <p>Copy these templates to your notes app. Customize variables (in [brackets]) for instant high-quality prompts.</p>
+                
+                <div class="template-library">
+                    <div class="template-card">
+                        <h4>💼 Business Analysis</h4>
+                        <div class="use-case-tag">RISEN</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Role: Business analyst at [Company]
+Instructions: Analyze [Topic/Problem]
+Steps: 1) Current state 2) Issues 3) Solutions
+End goal: [Format: report/presentation/email]
+Narrowing: Focus on [Constraints]
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <h4>💻 Code Generation</h4>
+                        <div class="use-case-tag">RTF</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Role: Expert [Language] developer
+Task: Write [Function/Component] that [Does what]
+Format: Code + docstring + usage example
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <h4>✍️ Content Writing</h4>
+                        <div class="use-case-tag">CRAFT</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Context: [Business/project background]
+Role: Content writer for [Industry]
+Action: Write [Type: blog/email/ad copy]
+Format: [Structure: intro/body/CTA]
+Target: [Age/interests/pain points]
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <h4>🎓 Learning & Explanation</h4>
+                        <div class="use-case-tag">RTF</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Role: Teacher explaining to [Audience level]
+Task: Explain [Complex topic]
+Format: Use analogies, examples, then summary
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <h4>📊 Data Analysis</h4>
+                        <div class="use-case-tag">RISEN</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Role: Data analyst at [Company]
+Instructions: Analyze [Dataset/metrics]
+Steps: Clean → Analyze → Visualize → Recommend
+End goal: [Report/dashboard/presentation]
+Narrowing: Focus on [Key metrics]
+                        </div>
+                    </div>
+                    
+                    <div class="template-card">
+                        <h4>🚀 Product Launch</h4>
+                        <div class="use-case-tag">CRAFT</div>
+                        <div class="template-box" style="margin-top: 1rem; font-size: 0.8rem;">
+Context: Launching [Product] to [Market]
+Role: Product marketer at [Type of company]
+Action: Create [Launch plan/messaging/content]
+Format: [Deliverable type]
+Target: [Customer segment details]
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Customization -->
+            <section class="content-section">
+                <h2>⚙️ Advanced: Customizing Frameworks</h2>
+                
+                <div class="success-box">
+                    <h3>Hybrid Framework Example (RISEN + Chain-of-Thought)</h3>
+                    
+                    <div class="template-box" style="margin-top: 1rem;">
+                        <button class="copy-button" onclick="navigator.clipboard.writeText(this.parentElement.textContent.trim())">📋 Copy</button>
+<strong>ROLE:</strong> Act as a financial advisor specializing in retirement planning.
+
+<strong>INSTRUCTIONS:</strong> Should I max out my 401(k) or pay off my $30K student loan at 5% interest? I'm 28, earning $80K/year, have $10K emergency fund.
+
+<strong>STEPS + CHAIN-OF-THOUGHT:</strong> Let's think through this step-by-step:
+1. Calculate opportunity cost of each option
+2. Consider tax implications (401k deduction vs loan interest)
+3. Evaluate risk factors (job security, market volatility)
+4. Compare 10-year outcomes for both strategies
+5. Provide personalized recommendation
+
+<strong>END GOAL:</strong> Clear recommendation with:
+- Side-by-side comparison table
+- 10-year projections
+- Action plan (what to do first)
+
+<strong>NARROWING:</strong> 
+- Assume moderate risk tolerance
+- Employer matches 401k up to 4%
+- Focus on math, not emotional factors
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <p><strong>💡 Pro tip:</strong> Don't be afraid to mix frameworks. RISEN + few-shot examples? RTF + chain-of-thought? Experiment to find what works for your specific needs.</p>
+                </div>
+            </section>
+
+            <!-- Hands-On Exercise -->
+            <section class="content-section">
+                <h2>🎯 Hands-On Exercise: Framework Mastery Challenge</h2>
+                
+                <div class="success-box">
+                    <h3>📝 Practice Each Framework</h3>
+                    
+                    <p><strong>Your Task:</strong> You're launching a side hustle selling handmade candles online. Create prompts for:</p>
+                    
+                    <ol style="line-height: 2.5; margin-top: 1rem;">
+                        <li><strong>Using RISEN:</strong> Create a comprehensive 90-day business plan (target market, pricing strategy, marketing channels, financial projections)</li>
+                        
+                        <li><strong>Using RTF:</strong> Write 5 compelling product descriptions for your Etsy shop (focus on scent profiles, ingredients, ambiance)</li>
+                        
+                        <li><strong>Using CRAFT:</strong> Design an Instagram content strategy to gain your first 1,000 followers and convert 5% to customers</li>
+                    </ol>
+                    
+                    <p style="margin-top: 1.5rem;"><strong>Reflection Questions:</strong></p>
+                    <ul>
+                        <li>Which framework felt most natural for each task?</li>
+                        <li>Did ChatGPT's output quality differ based on framework?</li>
+                        <li>Which template will you add to your personal library first?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📚 Summary: Your Framework Arsenal</h2>
+                
+                <ul>
+                    <li>✅ <strong>RISEN (Role/Instructions/Steps/End/Narrowing):</strong> Complex, multi-step projects requiring comprehensive analysis</li>
+                    <li>✅ <strong>RTF (Role/Task/Format):</strong> Quick, straightforward requests when speed matters</li>
+                    <li>✅ <strong>CRAFT (Context/Role/Action/Format/Target):</strong> Creative work requiring deep audience understanding</li>
+                    <li>✅ <strong>Framework selection:</strong> RTF for speed, RISEN for complexity, CRAFT for creativity</li>
+                    <li>✅ <strong>Template library:</strong> 6 copy-paste templates for common scenarios</li>
+                    <li>✅ <strong>Customization:</strong> Hybrid frameworks (RISEN + CoT, RTF + few-shot) for edge cases</li>
+                </ul>
+                
+                <div class="success-box">
+                    <p><strong>🎯 Key Takeaway:</strong> Frameworks aren't restrictive rules — they're mental checklists that ensure you never miss critical prompt elements. Professional prompt engineers don't reinvent the wheel each time; they use proven frameworks and adapt as needed. You now have the same tools.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section">
+                <h2>📝 Test Your Understanding</h2>
+                
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 1: What does the "E" in RISEN stand for?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Examples</div>
+                            <div class="quiz-option" data-value="b">Explanation</div>
+                            <div class="quiz-option" data-value="c">End goal</div>
+                            <div class="quiz-option" data-value="d">Execution</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 2: When should you use RTF framework?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Only for creative writing</div>
+                            <div class="quiz-option" data-value="b">Quick, straightforward tasks where speed matters</div>
+                            <div class="quiz-option" data-value="c">Never - RISEN is always better</div>
+                            <div class="quiz-option" data-value="d">Only for business analysis</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="a">
+                        <h3>Question 3: What makes CRAFT framework different from others?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">It emphasizes target audience and is designed for creative work</div>
+                            <div class="quiz-option" data-value="b">It's the fastest framework</div>
+                            <div class="quiz-option" data-value="c">It only works for marketing</div>
+                            <div class="quiz-option" data-value="d">It doesn't require role assignment</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="c">
+                        <h3>Question 4: You need to write a complex technical specification document. Which framework is best?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">RTF - it's simple and fast</div>
+                            <div class="quiz-option" data-value="b">CRAFT - it's creative</div>
+                            <div class="quiz-option" data-value="c">RISEN - it provides steps, end goal, and narrowing for complex tasks</div>
+                            <div class="quiz-option" data-value="d">None - frameworks don't work for technical content</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="quiz-question" data-answer="b">
+                        <h3>Question 5: What's the best approach to frameworks?</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" data-value="a">Always use all elements of every framework</div>
+                            <div class="quiz-option" data-value="b">Start with one, experiment, and customize as needed - even mix frameworks</div>
+                            <div class="quiz-option" data-value="c">Stick to one framework for all tasks</div>
+                            <div class="quiz-option" data-value="d">Frameworks are too restrictive - avoid them</div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recommended Resources -->
+            <section style="background: linear-gradient(135deg, #ecfdf5 0%, #fef9c3 100%); padding: 2rem; border-radius: 12px; margin: 3rem 0; border: 2px solid #078930;">
+                <h2 style="color: #065f46; margin-top: 0;">🛠️ Organize & Scale Your Prompts</h2>
+                <p style="font-size: 1.1rem; color: #065f46; line-height: 1.7; margin-bottom: 1.5rem;">
+                    You've learned frameworks. Now organize and reuse your best prompts with these professional prompt management tools:
+                </p>
+
+                <!-- PromptBase -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">📦</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">PromptBase - Prompt Marketplace</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">promptbase.com | Free to browse</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Buy & sell prompts:</strong> Marketplace with 100,000+ ready-to-use prompts across every category. Buy tested prompts from experts or sell your own creations. Perfect for finding inspiration and proven templates.
+                    </p>
+                    <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border-left: 3px solid #078930; margin-bottom: 1rem;">
+                        <p style="margin: 0; color: #334155; font-size: 0.95rem;"><strong>💡 Use Case:</strong> Need a prompt for "product description generator" or "legal contract analyzer"? Browse 100+ variations, see ratings, read reviews, buy for $2-10, and get instant results instead of spending hours crafting from scratch.</p>
+                    </div>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>Quality Tested:</strong> User ratings and reviews</li>
+                        <li><strong>All Platforms:</strong> ChatGPT, DALL-E, Midjourney, Stable Diffusion</li>
+                        <li><strong>Instant Access:</strong> Copy-paste ready prompts</li>
+                        <li><strong>Earn Money:</strong> Sell your best prompts</li>
+                    </ul>
+                    <a href="https://promptbase.com/" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Explore PromptBase →
+                    </a>
+                </div>
+
+                <!-- Notion Template -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <span style="font-size: 2rem;">📝</span>
+                        <div>
+                            <h3 style="margin: 0; color: #065f46; font-size: 1.3rem;">Notion Prompt Library Template</h3>
+                            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Notion | Free + Premium options</p>
+                        </div>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; margin-bottom: 1rem;">
+                        <strong>Personal knowledge base:</strong> Pre-built Notion templates to organize your prompts by category, tag by use case, track performance, and build your personal AI toolkit. Many creators sell premium templates with 500+ prompts included.
+                    </p>
+                    <ul style="color: #475569; line-height: 1.8; margin-bottom: 1rem;">
+                        <li><strong>Organized Library:</strong> Search, filter, tag your prompts</li>
+                        <li><strong>Templates Included:</strong> Premium versions with 500+ prompts</li>
+                        <li><strong>Team Collaboration:</strong> Share with colleagues</li>
+                        <li><strong>Version Control:</strong> Track iterations and improvements</li>
+                    </ul>
+                    <a href="https://www.notion.so/templates/ai-prompts" target="_blank" rel="noopener" style="display: inline-block; background: linear-gradient(135deg, #078930 0%, #0d9488 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">
+                        Get Notion Templates →
+                    </a>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="content-section">
+                <h2>🚀 Next Step: Apply to Real Work</h2>
+                
+                <p>You've learned <strong>what ChatGPT is</strong>, <strong>how to write effective prompts</strong>, <strong>advanced techniques</strong>, and <strong>proven frameworks</strong>. Now it's time to apply these skills to real use cases.</p>
+                
+                <div class="info-box">
+                    <p><strong>Coming up in Tutorial 5:</strong> ChatGPT for Writing & Content — master blog posts, emails, social media, editing, and content repurposing. Real examples, templates, and workflows you can use immediately.</p>
+                </div>
+
+                <!-- Navigation -->
+                <div class="tutorial-nav">
+                    <a href="advanced-prompting-techniques.html" class="prev">← Tutorial 3: Advanced Techniques</a>
+                    <a href="chatgpt-for-writing.html" class="next">Module 5: Writing & Content →</a>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Scripts -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Linear Regression - the foundational ML algorithm. Learn how machines predict continuous values using mathematical relationships in data.">
+    <meta name="keywords" content="linear regression tutorial, linear regression machine learning, regression analysis, predict continuous values">
+    <title>Linear Regression - Complete ML Tutorial | Nebaz AI Academy</title>
+    <link rel="canonical" href="linear-regression.html">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+        }
+        
+        .tutorial-breadcrumb {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .tutorial-intro {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            margin-top: 1rem;
+        }
+        
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .meta-item {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .content-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #065f46;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .example-box {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+        }
+        
+        .example-box p {
+            margin: 0;
+        }
+        
+        .formula-box {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            border-color: #078930;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .info-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .info-card p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .comparison-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .comparison-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        @media (max-width: 768px) {
+            .tutorial-meta-info {
+                justify-content: center;
+            }
+            
+            .tutorial-navigation {
+                flex-direction: column;
+            }
+            
+            .tutorial-navigation a {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation injected by navigation.js -->
+
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/machine-learning.html">Machine Learning</a> → 
+                <span>Linear Regression</span>
+            </div>
+            <h1>Linear Regression</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  
+  <p style="margin-top:0.75rem;">🇪🇹 <em>Predict teff yield from rainfall and soil features using regional agricultural open data — regression with missing values common in field surveys.</em></p>
+</div>
+            <p class="tutorial-intro">Master the foundational ML algorithm that teaches computers to find mathematical relationships in data</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📅 Tutorial 2</span>
+                <span class="meta-item">📊 Beginner</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="tutorial-content">
+        <article>
+            <!-- Certificate Motivation Banner -->
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free Machine Learning Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+
+            <!-- Introduction -->
+            <section class="content-section">
+                <h2>📈 Welcome to Linear Regression</h2>
+                <p>
+                    Linear Regression is where the real magic of machine learning begins. It's the algorithm that powers countless real-world applications: predicting house prices, forecasting stock markets, estimating temperature trends, and so much more.
+                </p>
+                <p>
+                    In this tutorial, you'll understand <strong>how machines learn to find the best straight line through your data</strong> — and why that simple concept is so powerful.
+                </p>
+            </section>
+
+            <!-- What is Linear Regression? -->
+            <section class="content-section">
+                <h2>📖 What is Linear Regression?</h2>
+                
+                <div class="info-box">
+                    <h3>Definition</h3>
+                    <p>
+                        <strong>Linear Regression</strong> is a supervised learning algorithm that finds the best straight line (or plane in higher dimensions) that fits your data. It learns to predict a continuous numerical value based on one or more input features.
+                    </p>
+                </div>
+
+                <p>
+                    Imagine you have data showing house sizes and their selling prices. Linear regression finds the best-fitting line that shows the relationship: as house size increases, price increases proportionally.
+                </p>
+
+                <h3>The Core Equation</h3>
+                <p>
+                    Linear regression uses this simple equation:
+                </p>
+                
+                <div class="formula-box">
+                    y = mx + b
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: #64748b;">
+                        Or in ML terms: <strong>y = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</strong>
+                    </p>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Meaning</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>y</strong></td>
+                            <td>Predicted output (target value)</td>
+                            <td>House price</td>
+                        </tr>
+                        <tr>
+                            <td><strong>x</strong></td>
+                            <td>Input feature(s)</td>
+                            <td>House size</td>
+                        </tr>
+                        <tr>
+                            <td><strong>w (weight)</strong></td>
+                            <td>Slope - how much y changes per unit of x</td>
+                            <td>$100 per square foot</td>
+                        </tr>
+                        <tr>
+                            <td><strong>b (bias)</strong></td>
+                            <td>Y-intercept - value when x=0</td>
+                            <td>Base price: $50,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <p>
+                        <strong>🏠 Real Example:</strong> If we find that <code>Price = 100 × Size + 50,000</code>, it means:
+                    </p>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>For every 1 sq ft increase, price goes up $100 (weight)</li>
+                        <li>A 0 sq ft house would cost $50,000 base (bias) - not realistic but mathematically it's there</li>
+                        <li>A 2000 sq ft house: Price = (100 × 2000) + 50,000 = $250,000</li>
+                    </ul>
+                </div>
+
+                <h3>🧠 How Does Linear Regression Learn?</h3>
+                <p>
+                    The algorithm doesn't know the best weights (w) and bias (b) at first. It starts with random values and gradually adjusts them to minimize prediction errors. This process is called <strong>training</strong>.
+                </p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <strong>Step-by-Step Learning Process:</strong><br><br>
+                    
+                    <strong>1. Start with Random Weights</strong><br>
+                    • w = 50, b = 0 (just guessing)<br>
+                    • Prediction for 2000 sq ft house: 50 × 2000 + 0 = $100,000<br>
+                    • Actual price: $250,000<br>
+                    • Error: $150,000 off! 😱<br><br>
+
+                    <strong>2. Calculate the Error (Loss)</strong><br>
+                    • Use Mean Squared Error (MSE): average of (prediction - actual)²<br>
+                    • MSE = (100,000 - 250,000)² = 22,500,000,000<br>
+                    • Huge error! Need to adjust weights<br><br>
+
+                    <strong>3. Adjust Weights Using Gradient Descent</strong><br>
+                    • Calculate gradient: which direction to move w and b<br>
+                    • Update: w = w + learning_rate × gradient<br>
+                    • New w = 75, b = 10,000<br>
+                    • New prediction: 75 × 2000 + 10,000 = $160,000<br>
+                    • Better! Error reduced to $90,000<br><br>
+
+                    <strong>4. Repeat Thousands of Times</strong><br>
+                    • After 1000 iterations: w = 98, b = 48,000<br>
+                    • After 5000 iterations: w = 100, b = 50,000 ✅<br>
+                    • Prediction: 100 × 2000 + 50,000 = $250,000<br>
+                    • Perfect! Error ≈ 0
+                </div>
+
+                <h3>📊 Loss Function: Measuring Error</h3>
+                <p>
+                    The <strong>Loss Function</strong> tells us how bad our predictions are. The goal: minimize this loss!
+                </p>
+
+                <div class="formula-box">
+                    MSE = (1/n) × Σ(actual - predicted)²
+                    <p style="font-size: 0.9rem; margin-top: 1rem; color: #64748b;">
+                        Average of squared differences between actual and predicted values
+                    </p>
+                </div>
+
+                <p><strong>Why square the errors?</strong></p>
+                <ul>
+                    <li>• Makes all errors positive (a -100 error is just as bad as +100)</li>
+                    <li>• Penalizes large errors more heavily (100² = 10,000 vs 10² = 100)</li>
+                    <li>• Creates a smooth, bowl-shaped curve that's easy to optimize</li>
+                </ul>
+
+                <h3>⚡ Gradient Descent: The Optimization Engine</h3>
+                <p>
+                    <strong>Gradient Descent</strong> is the algorithm that adjusts weights to minimize loss. Think of it like walking downhill in the dark—you feel which direction goes down and take small steps.
+                </p>
+
+                <div style="background: #ecfdf5; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0; border-left: 4px solid #078930;">
+                    <strong>🎯 The Gradient Descent Algorithm:</strong><br><br>
+                    
+                    <strong>Step 1:</strong> Calculate gradient (slope) of loss with respect to each weight<br>
+                    • Gradient = ∂Loss/∂w (how much loss changes when we change w)<br>
+                    • If gradient is positive → decrease w<br>
+                    • If gradient is negative → increase w<br><br>
+
+                    <strong>Step 2:</strong> Update weights in opposite direction of gradient<br>
+                    • w_new = w_old - learning_rate × gradient<br>
+                    • b_new = b_old - learning_rate × gradient<br><br>
+
+                    <strong>Step 3:</strong> Repeat until convergence<br>
+                    • Stop when loss stops decreasing<br>
+                    • Or after fixed number of iterations (epochs)<br><br>
+
+                    <strong>Learning Rate:</strong> Controls step size<br>
+                    • Too high → overshoot minimum, oscillate<br>
+                    • Too low → takes forever to converge<br>
+                    • Typical value: 0.01 or 0.001
+                </div>
+                </p>
+                </div>
+            </section>
+
+            <!-- How Linear Regression Works -->
+            <section class="content-section">
+                <h2>⚙️ How Does Linear Regression Learn?</h2>
+                
+                <p>
+                    Linear Regression learns by finding the weights (w) and bias (b) that minimize errors. Here's the step-by-step process:
+                </p>
+
+                <h3>Step 1: Start with Random Guesses</h3>
+                <p>
+                    The algorithm starts with random weights and bias values. It's like drawing a random line through your data.
+                </p>
+
+                <h3>Step 2: Make Predictions</h3>
+                <p>
+                    Using the current weights and bias, predict y-values for all training examples.
+                </p>
+
+                <h3>Step 3: Calculate Error (Loss)</h3>
+                <p>
+                    Compare predictions to actual values. The most common error metric is <strong>Mean Squared Error (MSE)</strong>:
+                </p>
+                
+                <div class="formula-box">
+                    MSE = (1/n) × Σ(actual - predicted)²
+                </div>
+
+                <p>
+                    We square the errors so large mistakes are penalized more.
+                </p>
+
+                <h3>Step 4: Adjust Weights</h3>
+                <p>
+                    Using calculus (specifically, gradient descent), the algorithm adjusts weights and bias to reduce error. This is the "learning" part!
+                </p>
+
+                <h3>Step 5: Repeat</h3>
+                <p>
+                    Repeat steps 2-4 many times until the line fits the data well (or error stops improving).
+                </p>
+
+                <div class="success-box">
+                    <p>✅ <strong>Why Squared Error?</strong> Squaring the error means a prediction 10 units off is 100 times worse than being 1 unit off. This encourages the model to avoid large mistakes.</p>
+                </div>
+            </section>
+
+            <!-- Simple Example -->
+            <section class="content-section">
+                <h2>💻 Linear Regression in Python</h2>
+                
+                <p>
+                    Let's build a simple Linear Regression model using scikit-learn:
+                </p>
+
+                <pre><code class="language-python"># Import libraries
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data: House size (sq ft) and price ($1000s)
+X = np.array([[1000], [1500], [2000], [2500], [3000], [3500]])
+y = np.array([200, 280, 350, 420, 500, 580])
+
+# Create and train the model
+model = LinearRegression()
+model.fit(X, y)
+
+# Access learned parameters
+print(f"Weight (slope): ${model.coef_[0]:.2f} per sq ft")
+print(f"Bias (intercept): ${model.intercept_:.2f}k")
+
+# Make predictions
+test_sizes = np.array([[1800], [2200], [2800]])
+predictions = model.predict(test_sizes)
+
+for size, price in zip(test_sizes, predictions):
+    print(f"A {size[0]} sq ft house is predicted to cost ${price*1000:,.0f}")
+
+# Evaluate on training data
+train_predictions = model.predict(X)
+r2 = r2_score(y, train_predictions)
+print(f"\nModel R² Score: {r2:.3f} (1.0 = perfect fit)")</code></pre>
+
+                <div class="info-box">
+                    <p>💡 <strong>R² Score:</strong> Ranges from 0 to 1. Higher is better. 0.95 means the model explains 95% of the variance in your data.</p>
+                </div>
+            </section>
+
+            <!-- Multivariate Linear Regression -->
+            <section class="content-section">
+                <h2>🔀 Multiple Features (Multivariate Linear Regression)</h2>
+                
+                <p>
+                    House price doesn't depend only on size! It also depends on bedrooms, bathrooms, location, etc. Linear Regression handles multiple features:
+                </p>
+
+                <div class="formula-box">
+                    Price = w₁×Size + w₂×Bedrooms + w₃×Bathrooms + ... + b
+                </div>
+
+                <pre><code class="language-python"># Multiple features: [size, bedrooms, bathrooms, age]
+X_multi = np.array([
+    [2000, 3, 2, 5],
+    [2500, 4, 2.5, 3],
+    [1800, 3, 1.5, 10],
+    [3000, 4, 3, 2],
+    [2200, 3, 2, 7]
+])
+y = np.array([350, 420, 300, 480, 380])  # Prices in $1000s
+
+# Train multivariate model
+model = LinearRegression()
+model.fit(X_multi, y)
+
+# Each feature has its own weight
+feature_names = ['Size', 'Bedrooms', 'Bathrooms', 'Age']
+for name, weight in zip(feature_names, model.coef_):
+    print(f"{name}: ${weight:.2f}k per unit")
+print(f"Base price: ${model.intercept_:.2f}k")</code></pre>
+
+                <p>
+                    Now the model learns: size increases price by X, each bedroom adds Y, each bathroom adds Z, etc.
+                </p>
+            </section>
+
+            <!-- Strengths and Limitations -->
+            <section class="content-section">
+                <h2>✅ Strengths & ❌ Limitations</h2>
+                
+                <div class="cards-grid">
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Simple & Interpretable</h3>
+                        <p>You can easily understand what each feature contributes to the prediction</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Fast & Efficient</h3>
+                        <p>Trains quickly even on large datasets</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Good Baseline</h3>
+                        <p>Great starting point before trying complex algorithms</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Assumes Linear Relationships</h3>
+                        <p>Real-world relationships are often curved or non-linear</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Sensitive to Outliers</h3>
+                        <p>One extreme value can pull the line way off</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="card-icon">❌</div>
+                        <h3>Assumes Independence</h3>
+                        <p>Assumes features don't interact with each other in complex ways</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- When to Use Linear Regression -->
+            <section class="content-section">
+                <h2>🎯 When to Use Linear Regression</h2>
+                
+                <p>
+                    Linear Regression works best when:
+                </p>
+
+                <ul>
+                    <li><strong>Relationship is roughly linear</strong> - Plot your data and look for a straight-line pattern</li>
+                    <li><strong>You have continuous output</strong> - Predicting prices, temperatures, distances (not categories)</li>
+                    <li><strong>You need interpretability</strong> - When you need to explain your model to others</li>
+                    <li><strong>Data is relatively clean</strong> - Few outliers or missing values</li>
+                    <li><strong>You want a baseline</strong> - Before trying more complex algorithms</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p>⚠️ <strong>Don't use Linear Regression for:</strong> Predicting categories (use Logistic Regression instead), highly non-linear patterns (use Decision Trees, Random Forests), or when you expect complex feature interactions</p>
+                </div>
+            </section>
+
+            <!-- Key Concepts -->
+            <section class="content-section">
+                <h2>📚 Key Concepts to Remember</h2>
+                
+                <div class="info-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Supervised Learning:</strong> Linear Regression learns from labeled examples (input → output pairs)</li>
+                        <li><strong>Regression:</strong> Predicting continuous numerical values (not categories)</li>
+                        <li><strong>Weights:</strong> The learned importance of each feature</li>
+                        <li><strong>MSE:</strong> Measures how far predictions are from actual values</li>
+                        <li><strong>Gradient Descent:</strong> The optimization algorithm that adjusts weights to minimize error</li>
+                        <li><strong>R² Score:</strong> Measures how well the line fits the data (0-1, higher is better)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="content-section">
+                <h2>📋 Summary</h2>
+                
+                <h3>What You've Learned:</h3>
+                <ul>
+                    <li>Linear Regression finds the best-fitting line through your data</li>
+                    <li>It uses the equation: y = w₁x₁ + w₂x₂ + ... + b</li>
+                    <li>The algorithm learns by minimizing prediction error (MSE)</li>
+                    <li>Gradient descent optimizes weights to reduce loss</li>
+                    <li>It works for both single and multiple features</li>
+                    <li>R² score measures goodness of fit (0-1, higher is better)</li>
+                    <li>Simple, interpretable, but assumes linear relationships</li>
+                </ul>
+
+                <h3>What's Next?</h3>
+                <p>
+                    In the next tutorial, <strong>Logistic Regression</strong>, we'll learn how to handle classification problems (predicting categories instead of continuous values). Despite its name, Logistic Regression is a classification algorithm — not regression!
+                </p>
+
+                <div class="success-box">
+                    <p>🎉 <strong>Congratulations!</strong> You now understand the foundational algorithm that powers countless real-world predictions. Linear Regression may be simple, but mastering it is essential for your ML journey!</p>
+                </div>
+            </section>
+
+            <!-- Knowledge Check Quiz -->
+            <section class="content-section quiz-section">
+                <h2>📝 Knowledge Check</h2>
+                <p>Test your understanding of Linear Regression!</p>
+                <div class="quiz-container">
+                    <div class="quiz-question" data-answer="B">
+                        <h4>1. What is the main goal of linear regression?</h4>
+                        <div class="quiz-option" data-value="A">A) Classify data into categories</div>
+                        <div class="quiz-option" data-value="B">B) Find the best-fitting line to predict continuous values</div>
+                        <div class="quiz-option" data-value="C">C) Cluster similar data points</div>
+                        <div class="quiz-option" data-value="D">D) Reduce dimensionality</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="C">
+                        <h4>2. What does the coefficient (slope) in y = mx + b represent?</h4>
+                        <div class="quiz-option" data-value="A">A) The y-intercept</div>
+                        <div class="quiz-option" data-value="B">B) The error term</div>
+                        <div class="quiz-option" data-value="C">C) How much y changes for a unit change in x</div>
+                        <div class="quiz-option" data-value="D">D) The total number of data points</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="A">
+                        <h4>3. What does R² (R-squared) measure?</h4>
+                        <div class="quiz-option" data-value="A">A) How well the model explains variance in the data (0-1)</div>
+                        <div class="quiz-option" data-value="B">B) The average prediction error</div>
+                        <div class="quiz-option" data-value="C">C) The slope of the line</div>
+                        <div class="quiz-option" data-value="D">D) The intercept value</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="D">
+                        <h4>4. What is the purpose of the cost function (MSE) in linear regression?</h4>
+                        <div class="quiz-option" data-value="A">A) To calculate the slope</div>
+                        <div class="quiz-option" data-value="B">B) To split data into train/test sets</div>
+                        <div class="quiz-option" data-value="C">C) To remove outliers</div>
+                        <div class="quiz-option" data-value="D">D) To measure prediction errors and optimize the model</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                    <div class="quiz-question" data-answer="B">
+                        <h4>5. When should you use multiple linear regression?</h4>
+                        <div class="quiz-option" data-value="A">A) When you have only one feature</div>
+                        <div class="quiz-option" data-value="B">B) When you have multiple features affecting the target</div>
+                        <div class="quiz-option" data-value="C">C) For classification problems</div>
+                        <div class="quiz-option" data-value="D">D) When data is non-linear</div>
+                        <div class="quiz-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="introduction-to-ml.html" class="btn btn-secondary">← Previous: Introduction to ML</a>
+                <a href="logistic-regression.html" class="btn btn-primary">Next: Logistic Regression →</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script></body>
+
+</html>

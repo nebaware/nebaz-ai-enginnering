@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="What Are AI Agents? Learn agent architectures, decision-making, autonomy, and how agents differ from traditional AI systems.">
+    <meta name="keywords" content="AI agents, agent architecture, autonomous agents, agent decision-making, agent loop">
+    <title>What Are AI Agents? | AI Agents Course | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar"></nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb-container">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="../../index.html">Home</a>
+                <span class="separator">/</span>
+                <a href="../../courses/ai-agents.html">AI Agents</a>
+                <span class="separator">/</span>
+                <span class="current">What Are AI Agents?</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Certificate Banner -->
+    <section class="certificate-banner" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <strong>📜 Free Certificate Upon Completion</strong> - Earn a verified certificate when you complete all 7 modules in the AI Agents course.
+    </section>
+
+    <!-- Tutorial Header -->
+    <section class="tutorial-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="container">
+            <div class="tutorial-header-content">
+                <h1 class="tutorial-title" style="color: white;">What Are AI Agents?</h1>
+<!-- BOOTCAMP-PLUS -->
+<div class="bootcamp-plus-injected" style="background:#ecfdf5;border-left:4px solid #078930;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:0 8px 8px 0;">
+  <strong>Bootcamp+ (2026)</strong>
+  <ul style="margin:0.5rem 0 0 1.25rem;"><li>Tool calling patterns</li><li>Agent vs workflow</li></ul>
+  
+</div>
+                <div class="tutorial-meta" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+                    <span style="color: rgba(255,255,255,0.9);">📚 Tutorial 1</span>
+                    <span style="color: rgba(255,255,255,0.9);">🟢 Beginner</span>
+                </div>
+                <p class="tutorial-subtitle" style="color: rgba(255,255,255,0.95);">
+                    Understand agent architectures, autonomy, and how intelligent agents think and act
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="tutorial-content">
+            <section class="content-section" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; text-align: center;">
+                <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+                    🎓 <strong>Complete all tutorials to earn your Free AI Agents Certificate</strong><br>
+                    <span style="font-size: 0.95rem; color: #000;">Shareable on LinkedIn • Verified by Nebaz AI Academy • No signup fee</span>
+                </p>
+            </section>
+            <!-- Introduction Section -->
+            <section class="content-section">
+                <h2>The Agent Revolution</h2>
+                <p>
+                    For decades, software systems have been passive. You give them input, they process it, they give you output. But what if software could think for itself? What if it could break down complex problems, explore options, and take action autonomously?
+                </p>
+                <p>
+                    AI agents represent a fundamental shift. They're not just programs—they're <strong>autonomous decision-makers</strong> that can perceive their environment, reason about it, and take actions to achieve goals. They're the next evolution beyond chatbots and language models.
+                </p>
+                <div class="info-box">
+                    <strong>Key Insight:</strong> An AI agent is a system that perceives its environment through sensors, reasons about what to do, and acts through effectors to achieve goals. It combines perception, reasoning, and action in a loop.
+                </div>
+            </section>
+
+            <!-- What Makes an Agent Section -->
+            <section class="content-section">
+                <h2>What Makes Something an "Agent"?</h2>
+                <p>Not every AI system is an agent. Traditional ML models are reactive—they respond to input immediately. Agents are different. They have these characteristics:</p>
+                
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card">
+                        <div class="card-header">🧠 <strong>Autonomy</strong></div>
+                        <p>Agents operate independently, making decisions without constant human guidance. They have agency—they choose actions based on their reasoning.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">👁️ <strong>Perception</strong></div>
+                        <p>Agents sense and understand their environment. They can read text, process images, query databases, or receive feedback about their actions.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🧠 <strong>Reasoning</strong></div>
+                        <p>Agents think through problems step-by-step. They decompose complex tasks, consider options, and plan action sequences.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">⚙️ <strong>Action</strong></div>
+                        <p>Agents don't just think—they act. They can call APIs, run code, modify databases, send messages, or interact with the world.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🎯 <strong>Goal-Oriented</strong></div>
+                        <p>Agents have clear objectives. They measure progress toward goals and adjust their behavior to achieve them efficiently.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🔄 <strong>Iterative</strong></div>
+                        <p>Agents operate in loops. They act, observe results, adapt, and refine their approach based on feedback.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agent Architecture Section -->
+            <section class="content-section">
+                <h2>The Agent Architecture: The Think-Act Loop</h2>
+                <p>
+                    At its core, every agent follows a simple loop:
+                </p>
+                
+                <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+                        <div style="padding: 1rem; background: white; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👁️</div>
+                            <strong>Perceive</strong>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">Read environment, get context, observe results</p>
+                        </div>
+                        <div style="padding: 1rem; background: white; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧠</div>
+                            <strong>Think</strong>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">Reason about situation, plan actions, decide next step</p>
+                        </div>
+                        <div style="padding: 1rem; background: white; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚙️</div>
+                            <strong>Act</strong>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">Execute action, call tool, modify environment</p>
+                        </div>
+                        <div style="padding: 1rem; background: white; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔄</div>
+                            <strong>Loop</strong>
+                            <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #666;">Return to perceive, evaluate progress</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    This loop continues until the agent achieves its goal or determines it's unachievable. The agent learns from each iteration and adapts its behavior.
+                </p>
+            </section>
+
+            <!-- Types of Agents Section -->
+            <section class="content-section">
+                <h2>Types of Agents</h2>
+                <p>Agents can be categorized by their complexity and capabilities:</p>
+                
+                <table class="comparison-table" style="width: 100%; margin: 2rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Agent Type</th>
+                            <th style="padding: 1rem; text-align: left;">Characteristics</th>
+                            <th style="padding: 1rem; text-align: left;">Examples</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Simple Reflex Agent</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Rule-based, no planning. Responds to current state.</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">If-then rules, rule engines</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Goal-Based Agent</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Searches for action sequences to reach goal.</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Planning algorithms, search agents</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Utility-Based Agent</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Maximizes a utility function, handles trade-offs.</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Optimization agents, game-playing agents</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Learning Agent</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Improves performance through experience and feedback.</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">LLM-based agents, reinforcement learning agents</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">Multi-Agent System</td>
+                            <td style="padding: 1rem;">Multiple agents interact, cooperate, and compete.</td>
+                            <td style="padding: 1rem;">Swarm systems, collaborative agents, simulation environments</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Agent vs Chatbot Section -->
+            <section class="content-section">
+                <h2>Agents vs. Chatbots: What's the Difference?</h2>
+                <p>
+                    Chatbots and agents are often confused, but they're fundamentally different:
+                </p>
+                
+                <table class="comparison-table" style="width: 100%; margin: 2rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Aspect</th>
+                            <th style="padding: 1rem; text-align: left;">Chatbot</th>
+                            <th style="padding: 1rem; text-align: left;">Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Autonomy</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Reactive—waits for user input</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Proactive—takes initiative, sets own goals</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Goal-Oriented</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Answers questions, no persistent goals</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Achieves specific objectives, measures progress</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Actions</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Generates text responses only</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Takes real-world actions via tools and APIs</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Planning</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">No planning, responds to current query</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Plans action sequences, reasons ahead</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">Iteration</td>
+                            <td style="padding: 1rem;">One-shot: user input → response</td>
+                            <td style="padding: 1rem;">Continuous loops until goal achieved</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box">
+                    <strong>Example:</strong> A customer service chatbot answers questions. A customer service agent resolves issues by looking up account info, checking inventory, processing refunds, and following up—autonomously.
+                </div>
+            </section>
+
+            <!-- Why Agents Matter Section -->
+            <section class="content-section">
+                <h2>Why Agents Matter Now</h2>
+                <p>
+                    Recent breakthroughs make powerful agents possible:
+                </p>
+                
+                <div class="info-box">
+                    <strong>🚀 LLMs as Agent Brains:</strong> Modern LLMs can reason, plan, and make decisions. They're the "thinking" component of agents.
+                </div>
+                
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>🛠️ Tool Access:</strong> LangChain and similar frameworks let agents call APIs, run code, and interact with systems seamlessly.
+                </div>
+                
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>📊 Reasoning Breakthroughs:</strong> Chain-of-Thought, ReAct, and other techniques let agents think step-by-step and recover from errors.
+                </div>
+
+                <div class="info-box" style="margin-top: 1rem;">
+                    <strong>⚡ Agentic Workflows:</strong> Companies are discovering that agent-based workflows are more efficient than traditional automation for complex tasks.
+                </div>
+            </section>
+
+            <!-- Real-World Applications Section -->
+            <section class="content-section">
+                <h2>Real-World Agent Applications</h2>
+                <p>
+                    Agents are already solving real problems:
+                </p>
+                
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card">
+                        <div class="card-header">🔬 <strong>Research Agents</strong></div>
+                        <p>Autonomously search literature, download papers, summarize findings, and generate research reports. Used by academics and companies.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">💼 <strong>Business Automation</strong></div>
+                        <p>Process invoices, schedule meetings, send emails, update CRM systems, and handle customer inquiries without human intervention.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">👨‍💻 <strong>Code Agents</strong></div>
+                        <p>Write code, run tests, debug errors, and refactor automatically. GitHub Copilot and similar tools enable this.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🛍️ <strong>E-commerce</strong></div>
+                        <p>Manage inventory, process orders, handle returns, update product listings, and optimize pricing dynamically.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">📞 <strong>Customer Service</strong></div>
+                        <p>Handle support tickets, look up account info, resolve issues, and escalate complex problems to humans.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">📈 <strong>Data Analysis</strong></div>
+                        <p>Query databases, generate insights, create visualizations, and produce analytical reports automatically.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agent Components Deep Dive -->
+            <section class="content-section">
+                <h2>Agent Components: Anatomy of an Agent</h2>
+                <p>
+                    Every agent system consists of several critical components working together. Let's break down the anatomy:
+                </p>
+
+                <h3>1. The Brain: Reasoning Engine</h3>
+                <p>
+                    The reasoning engine is the core decision-making system. In modern agents, this is typically an LLM (GPT-4, Claude, Llama) that:
+                </p>
+                <ul>
+                    <li><strong>Understands context:</strong> Processes environment state, conversation history, and available tools</li>
+                    <li><strong>Plans actions:</strong> Breaks down complex goals into actionable steps</li>
+                    <li><strong>Makes decisions:</strong> Chooses which action to take next based on current state</li>
+                    <li><strong>Reflects on results:</strong> Analyzes action outcomes and adjusts strategy</li>
+                </ul>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Simple Agent Brain with LLM</span>
+                    </div>
+                    <pre><code class="language-python">from openai import OpenAI
+
+class AgentBrain:
+    def __init__(self, model="gpt-4"):
+        self.client = OpenAI()
+        self.model = model
+        self.memory = []  # Conversation history
+    
+    def think(self, observation, goal, available_tools):
+        """Reason about what to do next"""
+        prompt = f"""
+Goal: {goal}
+
+Current Observation: {observation}
+
+Available Tools: {', '.join(available_tools)}
+
+Memory of past actions: {self.memory[-5:] if self.memory else 'None'}
+
+What should I do next? Think step-by-step:
+1. What have I accomplished so far?
+2. What do I need to do to reach my goal?
+3. Which tool should I use next?
+4. What are the expected outcomes?
+
+Your response:
+"""
+        
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": "You are an autonomous agent. Reason carefully and plan actions."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        decision = response.choices[0].message.content
+        self.memory.append({
+            "observation": observation,
+            "decision": decision
+        })
+        
+        return decision
+
+# Usage
+brain = AgentBrain()
+observation = "User asked to book a flight to Paris"
+goal = "Book a round-trip flight for the user"
+tools = ["search_flights", "book_flight", "send_email"]
+
+next_action = brain.think(observation, goal, tools)
+print(next_action)</code></pre>
+                </div>
+
+                <h3>2. The Body: Tool Interface</h3>
+                <p>
+                    Tools are how agents interact with the world. They're functions the agent can call to take real actions:
+                </p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent Tool System</span>
+                    </div>
+                    <pre><code class="language-python">class AgentTools:
+    """Define all tools the agent can use"""
+    
+    @staticmethod
+    def search_web(query: str) -> str:
+        """Search the web for information"""
+        # Implementation would use Bing/Google API
+        return f"Search results for: {query}"
+    
+    @staticmethod
+    def send_email(to: str, subject: str, body: str) -> str:
+        """Send an email"""
+        # Implementation would use SMTP or email API
+        return f"Email sent to {to}"
+    
+    @staticmethod
+    def read_file(filepath: str) -> str:
+        """Read contents of a file"""
+        with open(filepath, 'r') as f:
+            return f.read()
+    
+    @staticmethod
+    def execute_code(code: str) -> str:
+        """Execute Python code safely"""
+        # Implementation would use sandboxed execution
+        try:
+            exec(code)
+            return "Code executed successfully"
+        except Exception as e:
+            return f"Error: {str(e)}"
+    
+    @staticmethod
+    def query_database(sql: str) -> str:
+        """Query a database"""
+        # Implementation would use SQLAlchemy or similar
+        return "Query results..."
+    
+    def get_tool_descriptions(self):
+        """Return descriptions of all tools for LLM"""
+        tools = []
+        for name, func in self.__class__.__dict__.items():
+            if not name.startswith('_') and callable(func):
+                tools.append({
+                    "name": name,
+                    "description": func.__doc__,
+                    "parameters": func.__annotations__
+                })
+        return tools</code></pre>
+                </div>
+
+                <h3>3. The Memory: State Management</h3>
+                <p>
+                    Agents need memory to track what they've done and learned. There are several types of memory:
+                </p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent Memory System</span>
+                    </div>
+                    <pre><code class="language-python">from datetime import datetime
+from collections import deque
+
+class AgentMemory:
+    def __init__(self, max_short_term=10):
+        # Short-term memory: recent actions and observations
+        self.short_term = deque(maxlen=max_short_term)
+        
+        # Long-term memory: important facts and learnings
+        self.long_term = []
+        
+        # Episodic memory: past task completions
+        self.episodes = []
+        
+        # Working memory: current task context
+        self.working = {
+            "goal": None,
+            "plan": [],
+            "completed_steps": [],
+            "current_observation": None
+        }
+    
+    def add_observation(self, observation, action_taken, result):
+        """Store a short-term memory"""
+        memory_item = {
+            "timestamp": datetime.now(),
+            "observation": observation,
+            "action": action_taken,
+            "result": result
+        }
+        self.short_term.append(memory_item)
+    
+    def save_to_long_term(self, fact, importance="high"):
+        """Save important information permanently"""
+        self.long_term.append({
+            "timestamp": datetime.now(),
+            "fact": fact,
+            "importance": importance
+        })
+    
+    def complete_episode(self, goal, success, summary):
+        """Record completion of a task"""
+        self.episodes.append({
+            "timestamp": datetime.now(),
+            "goal": goal,
+            "success": success,
+            "summary": summary,
+            "actions_taken": len(self.short_term)
+        })
+    
+    def get_relevant_context(self, query):
+        """Retrieve relevant memories for current task"""
+        # In production, use vector search here
+        recent = list(self.short_term)[-5:]
+        relevant_facts = [f for f in self.long_term 
+                         if f['importance'] == 'high']
+        return {
+            "recent_actions": recent,
+            "relevant_facts": relevant_facts
+        }</code></pre>
+                </div>
+
+                <h3>4. The Sensors: Perception System</h3>
+                <p>
+                    Agents need to perceive their environment. This could be reading files, API responses, user input, or system state:
+                </p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent Perception System</span>
+                    </div>
+                    <pre><code class="language-python">class AgentPerception:
+    """Handle all forms of perception/input"""
+    
+    def perceive_user_input(self, user_message):
+        """Process user messages"""
+        return {
+            "type": "user_input",
+            "content": user_message,
+            "timestamp": datetime.now()
+        }
+    
+    def perceive_environment(self):
+        """Check environment state"""
+        return {
+            "type": "environment",
+            "disk_space": "500GB free",
+            "network": "connected",
+            "time": datetime.now(),
+            "system_load": "normal"
+        }
+    
+    def perceive_tool_result(self, tool_name, result):
+        """Process tool execution results"""
+        return {
+            "type": "tool_result",
+            "tool": tool_name,
+            "result": result,
+            "success": "error" not in str(result).lower()
+        }
+    
+    def perceive_external_event(self, event):
+        """Handle external triggers (webhooks, notifications)"""
+        return {
+            "type": "external_event",
+            "event": event,
+            "requires_action": True
+        }</code></pre>
+                </div>
+            </section>
+
+            <!-- Building Your First Agent -->
+            <section class="content-section">
+                <h2>Building Your First Agent: Complete Example</h2>
+                <p>
+                    Let's build a simple but functional agent that can research topics and generate reports. This agent will:
+                </p>
+                <ul>
+                    <li>Receive a research topic from the user</li>
+                    <li>Break down the research into sub-questions</li>
+                    <li>Search for information</li>
+                    <li>Synthesize findings into a report</li>
+                    <li>Save the report to a file</li>
+                </ul>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Complete Research Agent</span>
+                    </div>
+                    <pre><code class="language-python">import openai
+import requests
+from typing import List, Dict
+import json
+
+class ResearchAgent:
+    def __init__(self, api_key):
+        self.client = openai.OpenAI(api_key=api_key)
+        self.memory = []
+        self.max_iterations = 10
+    
+    def run(self, goal: str) -> str:
+        """Main agent loop"""
+        print(f"🎯 Goal: {goal}\n")
+        
+        # Initialize
+        observation = f"Starting task: {goal}"
+        iterations = 0
+        
+        while iterations < self.max_iterations:
+            # PERCEIVE
+            print(f"📊 Observation: {observation}\n")
+            
+            # THINK
+            decision = self._reason(observation, goal)
+            print(f"🧠 Decision:\n{decision}\n")
+            
+            # Determine if task is complete
+            if "TASK_COMPLETE" in decision:
+                print("✅ Task completed!")
+                return self._generate_final_report()
+            
+            # ACT
+            action, params = self._parse_action(decision)
+            observation = self._execute_action(action, params)
+            
+            # Store in memory
+            self.memory.append({
+                "decision": decision,
+                "action": action,
+                "observation": observation
+            })
+            
+            iterations += 1
+        
+        return "Max iterations reached. Task incomplete."
+    
+    def _reason(self, observation: str, goal: str) -> str:
+        """LLM-based reasoning"""
+        prompt = f"""
+You are an autonomous research agent. Your goal: {goal}
+
+Current observation: {observation}
+
+Past actions: {json.dumps(self.memory[-3:], indent=2) if self.memory else 'None'}
+
+Available actions:
+- SEARCH(query): Search web for information
+- ANALYZE(text): Extract key insights from text
+- SYNTHESIZE: Combine findings into report
+- SAVE_REPORT(content): Save report to file
+- TASK_COMPLETE: Mark task as done
+
+Think step-by-step and decide your next action.
+Format: ACTION(parameters)
+"""
+        
+        response = self.client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are a systematic research agent."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        
+        return response.choices[0].message.content
+    
+    def _parse_action(self, decision: str) -> tuple:
+        """Extract action and parameters from decision"""
+        # Simple parsing (production would be more robust)
+        if "SEARCH(" in decision:
+            query = decision.split("SEARCH(")[1].split(")")[0]
+            return ("search", query)
+        elif "ANALYZE(" in decision:
+            return ("analyze", "")
+        elif "SYNTHESIZE" in decision:
+            return ("synthesize", "")
+        elif "SAVE_REPORT(" in decision:
+            content = decision.split("SAVE_REPORT(")[1].split(")")[0]
+            return ("save_report", content)
+        else:
+            return ("continue", "")
+    
+    def _execute_action(self, action: str, params: str) -> str:
+        """Execute the chosen action"""
+        print(f"⚙️  Executing: {action}({params})\n")
+        
+        if action == "search":
+            # Simulate search (production would use real search API)
+            return f"Found information about {params}: [simulated search results]"
+        
+        elif action == "analyze":
+            return "Extracted key insights: [analysis results]"
+        
+        elif action == "synthesize":
+            return "Report synthesized successfully"
+        
+        elif action == "save_report":
+            with open("research_report.txt", "w") as f:
+                f.write(params)
+            return "Report saved to research_report.txt"
+        
+        return "Action completed"
+    
+    def _generate_final_report(self) -> str:
+        """Generate final summary"""
+        report = "Research Report\n" + "="*50 + "\n\n"
+        for item in self.memory:
+            report += f"Action: {item['action']}\n"
+            report += f"Result: {item['observation']}\n\n"
+        return report
+
+# Usage
+agent = ResearchAgent(api_key="your-api-key")
+result = agent.run("Research the latest developments in quantum computing")</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>💡 Key Agent Concepts Demonstrated:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li>Perception-Reasoning-Action loop</li>
+                        <li>Memory tracking across iterations</li>
+                        <li>Tool execution and result handling</li>
+                        <li>Autonomous decision-making until goal achieved</li>
+                        <li>Max iteration safety limit</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Agent Design Patterns -->
+            <section class="content-section">
+                <h2>Agent Design Patterns</h2>
+                <p>
+                    Certain patterns emerge when building effective agents. Understanding these helps you design better systems:
+                </p>
+
+                <h3>Pattern 1: ReAct (Reason + Act)</h3>
+                <p>
+                    The agent alternates between reasoning about what to do and taking actions. Each action informs the next reasoning step.
+                </p>
+                <div class="info-box">
+                    <strong>When to use:</strong> General-purpose agents that need to think through complex multi-step tasks.
+                </div>
+
+                <h3>Pattern 2: Plan-and-Execute</h3>
+                <p>
+                    The agent creates a complete plan upfront, then executes each step. Plans can be revised if execution reveals issues.
+                </p>
+                <div class="info-box">
+                    <strong>When to use:</strong> Tasks with well-defined steps, when you want predictability and can afford upfront planning time.
+                </div>
+
+                <h3>Pattern 3: Reflexive Agent</h3>
+                <p>
+                    The agent follows predefined rules without deep reasoning. Fast but limited to anticipated scenarios.
+                </p>
+                <div class="info-box">
+                    <strong>When to use:</strong> Simple, repetitive tasks where speed matters and all scenarios are known.
+                </div>
+
+                <h3>Pattern 4: Hierarchical Agent</h3>
+                <p>
+                    A "manager" agent delegates sub-tasks to "worker" agents. Good for complex tasks that decompose naturally.
+                </p>
+                <div class="info-box">
+                    <strong>When to use:</strong> Complex workflows that break down into specialized sub-tasks.
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Hierarchical Agent Pattern</span>
+                    </div>
+                    <pre><code class="language-python">class ManagerAgent:
+    def __init__(self):
+        self.workers = {
+            "researcher": ResearchWorker(),
+            "writer": WriterWorker(),
+            "reviewer": ReviewWorker()
+        }
+    
+    def run(self, task):
+        # Manager decides which workers to use
+        if "research" in task.lower():
+            results = self.workers["researcher"].execute(task)
+            draft = self.workers["writer"].execute(results)
+            final = self.workers["reviewer"].execute(draft)
+            return final
+        # ... more logic
+
+class ResearchWorker:
+    def execute(self, task):
+        # Specialized research logic
+        return "research results"
+
+class WriterWorker:
+    def execute(self, research_data):
+        # Specialized writing logic
+        return "written draft"
+
+class ReviewWorker:
+    def execute(self, draft):
+        # Specialized review logic
+        return "reviewed final"</code></pre>
+                </div>
+            </section>
+
+            <!-- Common Agent Challenges -->
+            <section class="content-section">
+                <h2>Common Agent Challenges and Solutions</h2>
+                <p>
+                    Building robust agents comes with challenges. Here's how to address them:
+                </p>
+
+                <table class="comparison-table" style="width: 100%; margin: 2rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Challenge</th>
+                            <th style="padding: 1rem; text-align: left;">Problem</th>
+                            <th style="padding: 1rem; text-align: left;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Infinite Loops</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent gets stuck repeating same actions</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Set max iterations, detect repeated states, add escape conditions</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Tool Errors</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Actions fail, agent doesn't handle gracefully</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Wrap tools in try-catch, return error messages to agent, teach recovery</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Context Overflow</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Too much memory/history exceeds LLM context limit</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Summarize old memories, keep only recent + important facts</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Hallucinated Tools</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent tries to use non-existent tools</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Provide clear tool list in prompt, validate before execution</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Cost Explosion</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Too many LLM calls rack up API costs</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Cache results, use smaller models for simple decisions, set budgets</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">Security Risks</td>
+                            <td style="padding: 1rem;">Agent could execute dangerous actions</td>
+                            <td style="padding: 1rem;">Sandbox tool execution, require human approval for sensitive actions</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Production Tip:</strong> Always start with max iterations limits, tool validation, and error handling. These prevent runaway agents that burn through API credits or cause damage.
+                </div>
+            </section>
+
+            <!-- Agents vs Fine-tuning -->
+            <section class="content-section">
+                <h2>When to Use Agents vs. Fine-tuning</h2>
+                <p>
+                    Not every problem needs an agent. Sometimes a fine-tuned model or traditional code is better:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card" style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);">
+                        <div class="card-header">✅ <strong>Use Agents When:</strong></div>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Task requires multiple steps</li>
+                            <li>Need to use external tools/APIs</li>
+                            <li>Problem space is dynamic/unpredictable</li>
+                            <li>Decision-making requires reasoning</li>
+                            <li>Need adaptability and learning</li>
+                            <li>Human-in-the-loop is acceptable</li>
+                        </ul>
+                    </div>
+                    <div class="concept-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+                        <div class="card-header">⚡ <strong>Use Fine-tuning When:</strong></div>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.9rem;">
+                            <li>Task is well-defined and narrow</li>
+                            <li>Speed and cost are critical</li>
+                            <li>No tool access needed</li>
+                            <li>Input → output mapping is clear</li>
+                            <li>Need 100% consistency</li>
+                            <li>Have lots of training data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <strong>Example:</strong> Sentiment analysis? Fine-tune. Complex customer support with ticket lookup, CRM updates, and email? Build an agent.
+                </div>
+            </section>
+
+            <!-- The Future of Agents -->
+            <section class="content-section">
+                <h2>The Future of Agents</h2>
+                <p>
+                    We're in the early days of the agent revolution. Here's where the field is heading:
+                </p>
+
+                <h3>Emerging Trends</h3>
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card">
+                        <div class="card-header">🔗 <strong>Agent Marketplaces</strong></div>
+                        <p>Specialized agents you can deploy instantly: SEO agents, data agents, coding agents. Plug-and-play automation.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🤝 <strong>Human-Agent Collaboration</strong></div>
+                        <p>Agents as colleagues, not replacements. They handle routine work while humans focus on creative strategy.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🧠 <strong>Memory-Enhanced Agents</strong></div>
+                        <p>Agents that remember every interaction, learn from mistakes, and improve over time with vector databases.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🌐 <strong>Decentralized Agents</strong></div>
+                        <p>Blockchain-based agents that can transact, own assets, and operate across organizations autonomously.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">👥 <strong>Multi-Agent Economies</strong></div>
+                        <p>Thousands of specialized agents collaborating, negotiating, and competing to solve complex problems.</p>
+                    </div>
+                    <div class="concept-card">
+                        <div class="card-header">🛡️ <strong>Certified Safe Agents</strong></div>
+                        <p>Industry standards for agent safety, testing, and certification. Regulated agent behavior.</p>
+                    </div>
+                </div>
+
+                <h3>What This Means for You</h3>
+                <p>
+                    Understanding agents now positions you for the future:
+                </p>
+                <ul>
+                    <li><strong>Career opportunities:</strong> Agent engineering is becoming a distinct field with specialized roles</li>
+                    <li><strong>Business automation:</strong> Companies will need agent strategists to identify automation opportunities</li>
+                    <li><strong>Product innovation:</strong> Agent-powered products will differentiate winners from losers</li>
+                    <li><strong>Workflow transformation:</strong> Work will reorganize around human-agent teams</li>
+                </ul>
+            </section>
+
+            <!-- Practical Exercise -->
+            <section class="content-section">
+                <h2>🎯 Practical Exercise: Build Your Own Agent</h2>
+                <p>
+                    Let's solidify your understanding by building a practical agent. This exercise creates a <strong>Personal Assistant Agent</strong> that can:
+                </p>
+                <ul>
+                    <li>Check your calendar</li>
+                    <li>Send emails on your behalf</li>
+                    <li>Research topics you ask about</li>
+                    <li>Take notes and summarize meetings</li>
+                </ul>
+
+                <h3>Step 1: Define Agent Structure</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>agent_structure.py</span>
+                    </div>
+                    <pre><code class="language-python">from dataclasses import dataclass
+from typing import List, Dict, Optional
+from datetime import datetime
+
+@dataclass
+class AgentObservation:
+    """What the agent perceives"""
+    type: str  # "user_input", "tool_result", "system_event"
+    content: str
+    timestamp: datetime
+    metadata: Dict = None
+
+@dataclass
+class AgentAction:
+    """What the agent decides to do"""
+    tool_name: str
+    parameters: Dict
+    reasoning: str
+
+@dataclass
+class AgentState:
+    """Current agent state"""
+    goal: str
+    plan: List[str]
+    completed_steps: List[str]
+    current_observation: Optional[AgentObservation]
+    memory: List[Dict]
+    iteration_count: int = 0</code></pre>
+                </div>
+
+                <h3>Step 2: Implement Tools</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>agent_tools.py</span>
+                    </div>
+                    <pre><code class="language-python">import smtplib
+from email.mime.text import MIMEText
+from datetime import datetime, timedelta
+import requests
+
+class PersonalAssistantTools:
+    def __init__(self, config):
+        self.config = config
+    
+    def check_calendar(self, date: str = None) -> str:
+        """Check calendar for a specific date"""
+        if not date:
+            date = datetime.now().strftime("%Y-%m-%d")
+        
+        # Mock implementation (use Google Calendar API in production)
+        mock_events = [
+            {"time": "10:00 AM", "title": "Team Standup"},
+            {"time": "2:00 PM", "title": "Client Meeting"},
+        ]
+        
+        result = f"Calendar for {date}:\n"
+        for event in mock_events:
+            result += f"  {event['time']} - {event['title']}\n"
+        
+        return result
+    
+    def send_email(self, to: str, subject: str, body: str) -> str:
+        """Send an email"""
+        try:
+            msg = MIMEText(body)
+            msg['Subject'] = subject
+            msg['From'] = self.config.get('email')
+            msg['To'] = to
+            
+            # Use SMTP (configure for your provider)
+            # In production: uncomment and configure
+            # with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            #     server.starttls()
+            #     server.login(self.config['email'], self.config['password'])
+            #     server.send_message(msg)
+            
+            return f"✉️ Email sent to {to} with subject: {subject}"
+        
+        except Exception as e:
+            return f"❌ Error sending email: {str(e)}"
+    
+    def web_search(self, query: str) -> str:
+        """Search the web"""
+        # Mock implementation (use Bing/Google API in production)
+        return f"🔍 Search results for '{query}':\n1. Result one\n2. Result two\n3. Result three"
+    
+    def take_note(self, note: str) -> str:
+        """Save a note"""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        with open("agent_notes.txt", "a") as f:
+            f.write(f"[{timestamp}] {note}\n")
+        
+        return f"📝 Note saved: {note}"
+    
+    def get_weather(self, location: str) -> str:
+        """Get weather for a location"""
+        # Mock implementation (use weather API in production)
+        return f"☀️ Weather in {location}: 72°F, Sunny"</code></pre>
+                </div>
+
+                <h3>Step 3: Build Agent Brain</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>agent_brain.py</span>
+                    </div>
+                    <pre><code class="language-python">from openai import OpenAI
+import json
+
+class PersonalAssistantBrain:
+    def __init__(self, api_key, tools):
+        self.client = OpenAI(api_key=api_key)
+        self.tools = tools
+        self.system_prompt = """You are a personal assistant agent. You help users with:
+- Calendar management
+- Email sending
+- Web research
+- Note-taking
+- Weather checks
+
+When given a task:
+1. Break it down into steps
+2. Use available tools systematically
+3. Verify results before proceeding
+4. Report back to user clearly
+
+Available tools:
+- check_calendar(date)
+- send_email(to, subject, body)
+- web_search(query)
+- take_note(note)
+- get_weather(location)
+
+Format decisions as:
+ACTION: tool_name
+PARAMETERS: {"param": "value"}
+REASONING: Why this action
+"""
+    
+    def decide_action(self, observation: str, state: AgentState) -> AgentAction:
+        """Decide what to do next"""
+        
+        context = f"""
+Current Goal: {state.goal}
+
+Plan:
+{chr(10).join(f"{i+1}. {step}" for i, step in enumerate(state.plan))}
+
+Completed:
+{chr(10).join(f"✓ {step}" for step in state.completed_steps)}
+
+Current Observation: {observation}
+
+Recent Memory:
+{json.dumps(state.memory[-3:], indent=2) if state.memory else 'None'}
+
+What should I do next?
+"""
+        
+        response = self.client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": context}
+            ],
+            temperature=0.1
+        )
+        
+        decision = response.choices[0].message.content
+        
+        # Parse decision
+        action = self._parse_decision(decision)
+        return action
+    
+    def _parse_decision(self, decision: str) -> AgentAction:
+        """Parse LLM decision into structured action"""
+        lines = decision.split('\n')
+        
+        tool_name = None
+        parameters = {}
+        reasoning = ""
+        
+        for line in lines:
+            if line.startswith("ACTION:"):
+                tool_name = line.split("ACTION:")[1].strip()
+            elif line.startswith("PARAMETERS:"):
+                param_str = line.split("PARAMETERS:")[1].strip()
+                try:
+                    parameters = json.loads(param_str)
+                except:
+                    parameters = {"raw": param_str}
+            elif line.startswith("REASONING:"):
+                reasoning = line.split("REASONING:")[1].strip()
+        
+        return AgentAction(
+            tool_name=tool_name or "continue",
+            parameters=parameters,
+            reasoning=reasoning
+        )</code></pre>
+                </div>
+
+                <h3>Step 4: Agent Main Loop</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>personal_assistant_agent.py</span>
+                    </div>
+                    <pre><code class="language-python">class PersonalAssistantAgent:
+    def __init__(self, api_key, config):
+        self.tools = PersonalAssistantTools(config)
+        self.brain = PersonalAssistantBrain(api_key, self.tools)
+        self.max_iterations = 15
+    
+    def run(self, user_request: str) -> str:
+        """Main agent loop"""
+        print(f"\n🤖 Personal Assistant Agent")
+        print(f"📋 Request: {user_request}\n")
+        
+        # Initialize state
+        state = AgentState(
+            goal=user_request,
+            plan=[],
+            completed_steps=[],
+            current_observation=None,
+            memory=[]
+        )
+        
+        observation = f"User request: {user_request}"
+        
+        # Agent loop
+        while state.iteration_count < self.max_iterations:
+            print(f"\n--- Iteration {state.iteration_count + 1} ---")
+            print(f"📊 Observation: {observation}\n")
+            
+            # Decide next action
+            action = https://nebaz-ai.local/tutorials/ai-agents/self.brain.decide_action(observation, state)
+            
+            print(f"🧠 Reasoning: {action.reasoning}")
+            print(f"⚙️  Action: {action.tool_name}({action.parameters})\n")
+            
+            # Check if done
+            if action.tool_name == "task_complete":
+                print("✅ Task completed successfully!")
+                return self._generate_summary(state)
+            
+            # Execute action
+            observation = self._execute_tool(
+                action.tool_name,
+                action.parameters
+            )
+            
+            # Update state
+            state.completed_steps.append(action.tool_name)
+            state.memory.append({
+                "action": action.tool_name,
+                "parameters": action.parameters,
+                "result": observation
+            })
+            state.iteration_count += 1
+            
+            print(f"📥 Result: {observation}")
+        
+        return "⚠️ Max iterations reached"
+    
+    def _execute_tool(self, tool_name: str, parameters: Dict) -> str:
+        """Execute a tool and return result"""
+        try:
+            if tool_name == "check_calendar":
+                return self.tools.check_calendar(
+                    parameters.get('date')
+                )
+            
+            elif tool_name == "send_email":
+                return self.tools.send_email(
+                    parameters.get('to'),
+                    parameters.get('subject'),
+                    parameters.get('body')
+                )
+            
+            elif tool_name == "web_search":
+                return self.tools.web_search(
+                    parameters.get('query')
+                )
+            
+            elif tool_name == "take_note":
+                return self.tools.take_note(
+                    parameters.get('note')
+                )
+            
+            elif tool_name == "get_weather":
+                return self.tools.get_weather(
+                    parameters.get('location')
+                )
+            
+            else:
+                return f"Unknown tool: {tool_name}"
+        
+        except Exception as e:
+            return f"❌ Error: {str(e)}"
+    
+    def _generate_summary(self, state: AgentState) -> str:
+        """Generate summary of what was accomplished"""
+        summary = f"\n{'='*50}\n"
+        summary += "📊 TASK SUMMARY\n"
+        summary += f"{'='*50}\n\n"
+        summary += f"Goal: {state.goal}\n\n"
+        summary += f"Actions Taken ({len(state.completed_steps)}):\n"
+        
+        for i, step in enumerate(state.completed_steps, 1):
+            summary += f"  {i}. {step}\n"
+        
+        return summary
+
+# Usage Example
+if __name__ == "__main__":
+    config = {
+        "email": "your-email@example.com",
+        "password": "your-password"
+    }
+    
+    agent = PersonalAssistantAgent(
+        api_key="your-openai-key",
+        config=config
+    )
+    
+    # Test the agent
+    result = agent.run(
+        "Check my calendar for today and send an email to team@company.com "
+        "summarizing my meetings"
+    )
+    
+    print(result)</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>🎓 Exercise Challenge:</strong>
+                    <ol style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                        <li>Run the code above with your OpenAI API key</li>
+                        <li>Add a new tool: <code>set_reminder(time, message)</code></li>
+                        <li>Make the agent handle errors gracefully with retry logic</li>
+                        <li>Add logging to track agent decisions over time</li>
+                        <li>Implement a "human approval" step for sensitive actions</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Best Practices Section -->
+            <section class="content-section">
+                <h2>Agent Development Best Practices</h2>
+                <p>
+                    After building hundreds of agents, these practices emerge as critical:
+                </p>
+
+                <h3>1. Start Simple, Add Complexity Gradually</h3>
+                <div class="info-box">
+                    Begin with a basic agent that does one thing well. Add capabilities incrementally. Don't try to build a super-agent on day one.
+                </div>
+
+                <h3>2. Always Set Maximum Iterations</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Safety Limits</span>
+                    </div>
+                    <pre><code class="language-python">MAX_ITERATIONS = 20  # Never run unbounded
+MAX_TOOL_CALLS = 50  # Limit total tool executions
+TIMEOUT_SECONDS = 300  # 5 minute hard limit
+
+if iterations >= MAX_ITERATIONS:
+    logger.warning("Max iterations reached")
+    return {"status": "incomplete", "reason": "iteration_limit"}</code></pre>
+                </div>
+
+                <h3>3. Implement Comprehensive Logging</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Agent Logging</span>
+                    </div>
+                    <pre><code class="language-python">import logging
+import json
+
+logging.basicConfig(
+    filename='agent_actions.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+def log_agent_action(iteration, observation, action, result):
+    log_entry = {
+        "iteration": iteration,
+        "timestamp": datetime.now().isoformat(),
+        "observation": observation,
+        "action": action.tool_name,
+        "parameters": action.parameters,
+        "result": result[:200],  # Truncate long results
+        "success": "error" not in result.lower()
+    }
+    logging.info(json.dumps(log_entry))</code></pre>
+                </div>
+
+                <h3>4. Build in Human Oversight for Critical Actions</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Human-in-the-Loop</span>
+                    </div>
+                    <pre><code class="language-python">SENSITIVE_TOOLS = ['send_email', 'delete_file', 'make_purchase']
+
+def execute_tool(tool_name, params):
+    if tool_name in SENSITIVE_TOOLS:
+        print(f"\n⚠️  Agent wants to: {tool_name}")
+        print(f"Parameters: {params}")
+        approval = input("Approve? (y/n): ")
+        
+        if approval.lower() != 'y':
+            return "Action rejected by user"
+    
+    return actual_tool_execution(tool_name, params)</code></pre>
+                </div>
+
+                <h3>5. Test Extensively with Edge Cases</h3>
+                <div class="info-box">
+                    Test your agent with: missing data, API failures, ambiguous requests, contradictory goals, and malicious inputs. Agents must handle failures gracefully.
+                </div>
+
+                <h3>6. Version Control Your Prompts</h3>
+                <div class="warning-box">
+                    <strong>Pro Tip:</strong> Store agent system prompts in separate files, version them, and A/B test changes. Small prompt tweaks can dramatically change agent behavior.
+                </div>
+            </section>
+
+            <!-- Next Steps Section -->
+            <section class="content-section">
+                <h2>🚀 Next Steps in Your Agent Journey</h2>
+                <p>
+                    Now that you understand what agents are, here's how to continue learning:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card" style="border-left: 4px solid #10b981;">
+                        <div class="card-header">📚 <strong>Module 2: Agent Planning & Reasoning</strong></div>
+                        <p>Learn how agents break down complex tasks, plan action sequences, and use advanced reasoning techniques like ReAct and Chain-of-Thought.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #078930;">
+                        <div class="card-header">🔧 <strong>Module 3: Agent Tools & Actions</strong></div>
+                        <p>Master tool calling, API integration, and giving agents real-world capabilities beyond text generation.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="card-header">🚀 <strong>Module 4: Agent Frameworks</strong></div>
+                        <p>Explore LangChain, AutoGPT, and other frameworks that simplify agent development and provide production-ready patterns.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Takeaways Section -->
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Agents are autonomous:</strong> They make decisions and take action without constant human guidance</li>
+                        <li><strong>They operate in loops:</strong> Perceive → Think → Act → Learn → Repeat</li>
+                        <li><strong>They're goal-oriented:</strong> They have clear objectives and measure progress toward them</li>
+                        <li><strong>They're more powerful than chatbots:</strong> They can plan, reason, and take real-world actions</li>
+                        <li><strong>They're transforming AI:</strong> Agents enable automation of complex knowledge work previously impossible</li>
+                        <li><strong>Components matter:</strong> Every agent needs a brain (reasoning), body (tools), memory, and sensors</li>
+                        <li><strong>Safety is critical:</strong> Always implement limits, logging, and human oversight for production agents</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the key characteristic that distinguishes AI agents from traditional AI models?</strong></p>
+                    <div class="quiz-option" data-value="a">They use more computational resources</div>
+                    <div class="quiz-option" data-value="b">They have larger training datasets</div>
+                    <div class="quiz-option" data-value="c">They can autonomously perceive, reason, and act in a loop</div>
+                    <div class="quiz-option" data-value="d">They only work with text data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: Which component is NOT part of the standard agent architecture?</strong></p>
+                    <div class="quiz-option" data-value="a">Brain (reasoning system)</div>
+                    <div class="quiz-option" data-value="b">Graphics card (GPU)</div>
+                    <div class="quiz-option" data-value="c">Memory (short-term and long-term)</div>
+                    <div class="quiz-option" data-value="d">Sensors (perception)</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q3: What is the purpose of an agent's "action space"?</strong></p>
+                    <div class="quiz-option" data-value="a">It defines what actions the agent can perform through tools and integrations</div>
+                    <div class="quiz-option" data-value="b">It stores the agent's training data</div>
+                    <div class="quiz-option" data-value="c">It manages the agent's memory allocation</div>
+                    <div class="quiz-option" data-value="d">It determines the agent's processing speed</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q4: In the agent loop, what happens after the agent takes an action?</strong></p>
+                    <div class="quiz-option" data-value="a">The agent shuts down</div>
+                    <div class="quiz-option" data-value="b">The agent requests new training data</div>
+                    <div class="quiz-option" data-value="c">The agent generates a report</div>
+                    <div class="quiz-option" data-value="d">The agent observes the results and continues the loop</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: Which example best represents a true AI agent?</strong></p>
+                    <div class="quiz-option" data-value="a">A chatbot that answers predefined questions</div>
+                    <div class="quiz-option" data-value="b">A static recommendation system</div>
+                    <div class="quiz-option" data-value="c">A research assistant that queries databases, analyzes results, and writes summaries autonomously</div>
+                    <div class="quiz-option" data-value="d">A spell-checker that highlights errors</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <span style="color: #999;"> ← Previous</span>
+                <a href="../../courses/ai-agents.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="agent-planning-and-reasoning.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Agent Planning & Reasoning</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build a sentiment analysis system using LSTM and GRU networks with TensorFlow. Learn text preprocessing, word embeddings, and attention mechanisms.">
+    <meta name="keywords" content="sentiment analysis, LSTM, RNN, NLP, deep learning project, text classification">
+    <title>Project: Sentiment Analysis with RNNs | Nebaz AI Academy</title>
+    <link rel="canonical" href="sentiment-analysis-rnn.html">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <script src="../../../js/navigation.js"></script>
+    <link href="../../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        .tutorial-header { background: linear-gradient(135deg, #0d9488 0%, #078930 100%); padding: 3rem 0; color: white; }
+        .tutorial-breadcrumb { margin-bottom: 1rem; opacity: 0.9; }
+        .tutorial-breadcrumb a { color: white; text-decoration: none; }
+        .tutorial-breadcrumb a:hover { text-decoration: underline; }
+        .tutorial-intro { font-size: 1.25rem; opacity: 0.95; margin-top: 1rem; }
+        .tutorial-meta-info { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .meta-item { background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; }
+        .tutorial-content { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+        .content-section { margin-bottom: 2.5rem; }
+        .tutorial-content h2 { font-size: 1.875rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); }
+        .tutorial-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: var(--text-dark); }
+        .tutorial-content p { margin-bottom: 1.25rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content ul, .tutorial-content ol { margin-bottom: 1.5rem; padding-left: 2rem; line-height: 1.8; color: var(--text-medium); }
+        .tutorial-content li { margin-bottom: 0.5rem; }
+        .tutorial-content code { background-color: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 0.25rem; font-family: 'Courier New', monospace; font-size: 0.9em; color: #e11d48; }
+        .tutorial-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1.5rem; border-radius: 0.75rem; overflow-x: auto; margin-bottom: 1.5rem; }
+        .tutorial-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .info-box { background-color: #ecfdf5; border-left: 4px solid #078930; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .warning-box { background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .success-box { background-color: #d1fae5; border-left: 4px solid #10b981; padding: 1.25rem; border-radius: 0.5rem; margin: 1.5rem 0; }
+        .step-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { display: inline-block; width: 40px; height: 40px; background: linear-gradient(135deg, #0d9488 0%, #078930 100%); color: white; border-radius: 50%; text-align: center; line-height: 40px; font-weight: bold; font-size: 1.2rem; margin-right: 1rem; }
+        .checkpoint-box { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; }
+        .checkpoint-box h3 { color: white; margin-top: 0; }
+    </style>
+</head>
+<body>
+    <header class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../../index.html">Home</a> → 
+                <a href="../../../courses/deep-learning.html">Deep Learning</a> → 
+                <span>Sentiment Analysis RNN Project</span>
+            </div>
+            <h1>💬 Sentiment Analysis with RNNs</h1>
+            <p class="tutorial-intro">Build a text sentiment classifier using LSTM/GRU networks with attention mechanisms</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">🚀 Advanced</span>
+                <span class="meta-item">⏱️ 7 hours</span>
+                <span class="meta-item">💻 Python + TensorFlow</span>
+                <span class="meta-item">📝 NLP Project</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="tutorial-content">
+        <article>
+            <section class="content-section">
+                <h2>🎯 Project Overview</h2>
+                <p>
+                    Sentiment analysis powers product reviews, social media monitoring, customer feedback analysis, and brand reputation management. In this project, you'll build an LSTM-based sentiment classifier achieving 90%+ accuracy on IMDB movie reviews.
+                </p>
+
+                <h3>Real-World Applications</h3>
+                <ul>
+                    <li><strong>Customer Feedback:</strong> Analyze millions of reviews automatically</li>
+                    <li><strong>Social Media Monitoring:</strong> Track brand sentiment on Twitter, Reddit</li>
+                    <li><strong>Financial Markets:</strong> Predict stock movements from news sentiment</li>
+                    <li><strong>Product Development:</strong> Identify pain points from user feedback</li>
+                    <li><strong>Political Analysis:</strong> Gauge public opinion on policies</li>
+                </ul>
+
+                <h3>What You'll Build</h3>
+                <ul>
+                    <li><strong>Text Preprocessing Pipeline:</strong> Tokenization, padding, vocabulary building</li>
+                    <li><strong>Word Embeddings:</strong> Learn dense vector representations</li>
+                    <li><strong>LSTM Model:</strong> Capture sequential dependencies in text</li>
+                    <li><strong>Bidirectional RNN:</strong> Process text forward and backward</li>
+                    <li><strong>Attention Mechanism:</strong> Focus on important words</li>
+                    <li><strong>Model Comparison:</strong> Simple RNN, LSTM, GRU, Bi-LSTM</li>
+                </ul>
+
+                <div class="success-box">
+                    <p>🚀 <strong>High Demand:</strong> Sentiment analysis is the #1 NLP task in industry. This project demonstrates your ability to build production-ready text classifiers!</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Dataset & Setup</h2>
+                
+                <div class="step-card">
+                    <h3><span class="step-number">1</span> Install Dependencies</h3>
+                    <pre><code class="language-bash">pip install tensorflow numpy matplotlib seaborn scikit-learn wordcloud</code></pre>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span> Load IMDB Dataset</h3>
+                    <pre><code class="language-python">import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import classification_report, confusion_matrix
+from wordcloud import WordCloud
+
+# Load IMDB dataset (50,000 movie reviews)
+(X_train, y_train), (X_test, y_test) = keras.datasets.imdb.load_data(num_words=10000)
+
+print("Dataset Info:")
+print(f"Training samples: {len(X_train)}")  # 25,000
+print(f"Test samples: {len(X_test)}")        # 25,000
+print(f"Classes: Binary (0=negative, 1=positive)")
+print(f"\nClass distribution:")
+print(f"Train - Positive: {sum(y_train)}, Negative: {len(y_train) - sum(y_train)}")
+print(f"Test - Positive: {sum(y_test)}, Negative: {len(y_test) - sum(y_test)}")
+
+# Example review (encoded as integers)
+print(f"\nExample review (first 10 words): {X_train[0][:10]}")
+print(f"Label: {y_train[0]} ({'Positive' if y_train[0] == 1 else 'Negative'})")</code></pre>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>💡 IMDB Dataset:</strong> 50,000 movie reviews (25k train, 25k test), perfectly balanced between positive and negative. Reviews are already tokenized as integer sequences. Vocabulary limited to 10,000 most frequent words.</p>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 1: Text Preprocessing</h2>
+                
+                <h3>Decode and Analyze Reviews</h3>
+                <pre><code class="language-python"># Get word index (word → integer mapping)
+word_index = keras.datasets.imdb.get_word_index()
+reverse_word_index = {value: key for key, value in word_index.items()}
+
+def decode_review(encoded_review):
+    """Convert integer sequence back to text"""
+    # Note: indices are offset by 3 (0=padding, 1=start, 2=unknown)
+    return ' '.join([reverse_word_index.get(i - 3, '?') for i in encoded_review])
+
+# Display sample reviews
+print("SAMPLE REVIEWS:")
+print("="*80)
+for i in range(3):
+    sentiment = "POSITIVE" if y_train[i] == 1 else "NEGATIVE"
+    print(f"\n{sentiment} Review {i+1}:")
+    print(decode_review(X_train[i])[:300] + "...")
+
+# Review length statistics
+review_lengths = [len(review) for review in X_train]
+print(f"\nReview Length Statistics:")
+print(f"Mean: {np.mean(review_lengths):.0f} words")
+print(f"Median: {np.median(review_lengths):.0f} words")
+print(f"Max: {max(review_lengths)} words")
+print(f"Min: {min(review_lengths)} words")
+
+# Visualize length distribution
+plt.figure(figsize=(12, 5))
+plt.hist(review_lengths, bins=50, edgecolor='black', alpha=0.7, color='#0d9488')
+plt.axvline(np.mean(review_lengths), color='red', linestyle='--', label=f'Mean: {np.mean(review_lengths):.0f}')
+plt.axvline(250, color='green', linestyle='--', label='Max length: 250')
+plt.xlabel('Review Length (words)')
+plt.ylabel('Frequency')
+plt.title('Review Length Distribution')
+plt.legend()
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <h3>Pad Sequences</h3>
+                <pre><code class="language-python"># Pad sequences to uniform length
+max_length = 250  # Truncate/pad to 250 words
+
+X_train_padded = pad_sequences(X_train, maxlen=max_length, padding='post', truncating='post')
+X_test_padded = pad_sequences(X_test, maxlen=max_length, padding='post', truncating='post')
+
+print(f"Shape after padding:")
+print(f"X_train: {X_train_padded.shape}")  # (25000, 250)
+print(f"X_test: {X_test_padded.shape}")    # (25000, 250)
+print(f"\nExample padded review:")
+print(X_train_padded[0][:20])  # First 20 tokens</code></pre>
+
+                <h3>Word Cloud Visualization</h3>
+                <pre><code class="language-python"># Create word clouds for positive and negative reviews
+positive_reviews = [decode_review(X_train[i]) for i in range(len(X_train)) if y_train[i] == 1]
+negative_reviews = [decode_review(X_train[i]) for i in range(len(X_train)) if y_train[i] == 0]
+
+positive_text = ' '.join(positive_reviews[:1000])  # Sample 1000 reviews
+negative_text = ' '.join(negative_reviews[:1000])
+
+fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+
+# Positive word cloud
+wc_pos = WordCloud(width=800, height=400, background_color='white', colormap='Greens').generate(positive_text)
+axes[0].imshow(wc_pos, interpolation='bilinear')
+axes[0].set_title('Positive Reviews Word Cloud', fontsize=16, fontweight='bold')
+axes[0].axis('off')
+
+# Negative word cloud
+wc_neg = WordCloud(width=800, height=400, background_color='white', colormap='Reds').generate(negative_text)
+axes[1].imshow(wc_neg, interpolation='bilinear')
+axes[1].set_title('Negative Reviews Word Cloud', fontsize=16, fontweight='bold')
+axes[1].axis('off')
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 1: Text Preprocessing Complete</h3>
+                    <p>Data preparation done:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>25,000 training reviews, 25,000 test reviews</li>
+                        <li>Balanced dataset (50% positive, 50% negative)</li>
+                        <li>Sequences padded to 250 words</li>
+                        <li>Vocabulary: 10,000 most frequent words</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🏗️ Part 2: Build LSTM Model</h2>
+                
+                <h3>Simple LSTM Architecture</h3>
+                <pre><code class="language-python"># Build LSTM model
+vocab_size = 10000
+embedding_dim = 128
+lstm_units = 64
+
+lstm_model = keras.Sequential([
+    layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    layers.LSTM(lstm_units, return_sequences=False),
+    layers.Dropout(0.5),
+    layers.Dense(32, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation='sigmoid')  # Binary classification
+])
+
+lstm_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+lstm_model.summary()
+
+# Train model
+print("\n🚀 Training LSTM model...")
+history_lstm = lstm_model.fit(
+    X_train_padded, y_train,
+    batch_size=128,
+    epochs=5,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Evaluate
+test_loss, test_accuracy = lstm_model.evaluate(X_test_padded, y_test, verbose=0)
+print(f"\n📊 LSTM Test Accuracy: {test_accuracy:.2%}")</code></pre>
+
+                <h3>Bidirectional LSTM</h3>
+                <pre><code class="language-python"># Bidirectional LSTM (processes text forward and backward)
+bi_lstm_model = keras.Sequential([
+    layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    layers.Bidirectional(layers.LSTM(lstm_units, return_sequences=False)),
+    layers.Dropout(0.5),
+    layers.Dense(32, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation='sigmoid')
+])
+
+bi_lstm_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+print("\n🚀 Training Bidirectional LSTM...")
+history_bilstm = bi_lstm_model.fit(
+    X_train_padded, y_train,
+    batch_size=128,
+    epochs=5,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Evaluate
+bilstm_test_loss, bilstm_test_accuracy = bi_lstm_model.evaluate(X_test_padded, y_test, verbose=0)
+print(f"\n📊 Bi-LSTM Test Accuracy: {bilstm_test_accuracy:.2%}")
+print(f"Improvement: +{(bilstm_test_accuracy - test_accuracy)*100:.1f}%")</code></pre>
+
+                <h3>GRU Model (Faster Alternative)</h3>
+                <pre><code class="language-python"># GRU model (fewer parameters than LSTM)
+gru_model = keras.Sequential([
+    layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    layers.GRU(lstm_units, return_sequences=False),
+    layers.Dropout(0.5),
+    layers.Dense(32, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation='sigmoid')
+])
+
+gru_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+print("\n🚀 Training GRU model...")
+history_gru = gru_model.fit(
+    X_train_padded, y_train,
+    batch_size=128,
+    epochs=5,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Evaluate
+gru_test_loss, gru_test_accuracy = gru_model.evaluate(X_test_padded, y_test, verbose=0)
+print(f"\n📊 GRU Test Accuracy: {gru_test_accuracy:.2%}")</code></pre>
+
+                <h3>Model Comparison</h3>
+                <pre><code class="language-python"># Compare all models
+import pandas as pd
+
+comparison_df = pd.DataFrame({
+    'Model': ['LSTM', 'Bidirectional LSTM', 'GRU'],
+    'Test Accuracy': [test_accuracy, bilstm_test_accuracy, gru_test_accuracy],
+    'Parameters': [
+        lstm_model.count_params(),
+        bi_lstm_model.count_params(),
+        gru_model.count_params()
+    ]
+})
+
+print("\n" + "="*60)
+print("MODEL COMPARISON")
+print("="*60)
+print(comparison_df.to_string(index=False))
+
+# Visualize
+plt.figure(figsize=(10, 6))
+x = np.arange(len(comparison_df))
+bars = plt.bar(x, comparison_df['Test Accuracy'], color=['#0d9488', '#078930', '#8b5cf6'])
+plt.xlabel('Model')
+plt.ylabel('Test Accuracy')
+plt.title('RNN Model Performance Comparison')
+plt.xticks(x, comparison_df['Model'])
+plt.ylim([0.8, 1.0])
+plt.grid(axis='y', alpha=0.3)
+
+# Add value labels on bars
+for i, bar in enumerate(bars):
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height + 0.005,
+             f'{height:.2%}', ha='center', va='bottom', fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+
+# Best model
+best_idx = comparison_df['Test Accuracy'].idxmax()
+print(f"\n🏆 Best Model: {comparison_df.loc[best_idx, 'Model']}")
+print("Typically Bi-LSTM achieves 88-91% accuracy")</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 2: RNN Models Trained</h3>
+                    <p>Model training complete:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>LSTM: ~87-89% accuracy</li>
+                        <li>Bidirectional LSTM: ~88-91% accuracy (best)</li>
+                        <li>GRU: ~87-89% accuracy (faster training)</li>
+                        <li>All models outperform baseline (50% random)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>📊 Part 3: Evaluation & Analysis</h2>
+                
+                <h3>Confusion Matrix</h3>
+                <pre><code class="language-python"># Use best model (Bi-LSTM)
+y_pred_probs = bi_lstm_model.predict(X_test_padded, verbose=0)
+y_pred = (y_pred_probs > 0.5).astype(int).flatten()
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['Negative', 'Positive'],
+            yticklabels=['Negative', 'Positive'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix - Bi-LSTM')
+plt.show()
+
+# Classification report
+print("\n" + "="*60)
+print("CLASSIFICATION REPORT")
+print("="*60)
+print(classification_report(y_test, y_pred, target_names=['Negative', 'Positive']))</code></pre>
+
+                <h3>Sample Predictions</h3>
+                <pre><code class="language-python"># Test on new reviews
+test_reviews = [
+    "This movie was absolutely fantastic! Best film I've seen all year. The acting was superb.",
+    "Terrible waste of time. The plot made no sense and the acting was awful.",
+    "It was okay, nothing special but not terrible either.",
+    "I loved every minute of it! Highly recommend to everyone.",
+    "Boring and predictable. Couldn't wait for it to end."
+]
+
+def predict_sentiment(review_text, model=bi_lstm_model):
+    """Predict sentiment for new review"""
+    # Tokenize
+    sequence = [[word_index.get(word, 2) for word in review_text.lower().split()]]
+    # Pad
+    padded = pad_sequences(sequence, maxlen=max_length, padding='post', truncating='post')
+    # Predict
+    prob = model.predict(padded, verbose=0)[0][0]
+    sentiment = "POSITIVE" if prob > 0.5 else "NEGATIVE"
+    confidence = prob if prob > 0.5 else (1 - prob)
+    
+    return sentiment, confidence
+
+print("\n" + "="*60)
+print("SAMPLE PREDICTIONS")
+print("="*60)
+for i, review in enumerate(test_reviews, 1):
+    sentiment, confidence = predict_sentiment(review)
+    print(f"\n{i}. Review: \"{review[:60]}...\"")
+    print(f"   Prediction: {sentiment} ({confidence:.1%} confidence)")</code></pre>
+
+                <h3>Error Analysis</h3>
+                <pre><code class="language-python"># Find misclassified examples
+misclassified_idx = np.where(y_pred != y_test)[0]
+
+print("\n" + "="*60)
+print(f"MISCLASSIFIED EXAMPLES ({len(misclassified_idx)} total)")
+print("="*60)
+
+# Show 5 examples
+for idx in misclassified_idx[:5]:
+    review_text = decode_review(X_test[idx])
+    true_sentiment = "POSITIVE" if y_test[idx] == 1 else "NEGATIVE"
+    pred_sentiment = "POSITIVE" if y_pred[idx] == 1 else "NEGATIVE"
+    confidence = y_pred_probs[idx][0]
+    
+    print(f"\nTrue: {true_sentiment} | Predicted: {pred_sentiment} ({confidence:.2f})")
+    print(f"Review: {review_text[:200]}...")
+    print("-" * 60)</code></pre>
+
+                <div class="checkpoint-box">
+                    <h3>✅ Checkpoint 3: Evaluation Complete</h3>
+                    <p>Model performance analyzed:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>88-91% accuracy on test set</li>
+                        <li>Balanced precision and recall</li>
+                        <li>Model works on new unseen reviews</li>
+                        <li>Misclassifications often on ambiguous reviews</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Part 4: Attention Mechanism (Advanced)</h2>
+                
+                <pre><code class="language-python"># Custom attention layer
+class AttentionLayer(layers.Layer):
+    def __init__(self, **kwargs):
+        super(AttentionLayer, self).__init__(**kwargs)
+    
+    def build(self, input_shape):
+        self.W = self.add_weight(name='attention_weight',
+                                 shape=(input_shape[-1], 1),
+                                 initializer='random_normal',
+                                 trainable=True)
+        self.b = self.add_weight(name='attention_bias',
+                                 shape=(input_shape[1], 1),
+                                 initializer='zeros',
+                                 trainable=True)
+        super(AttentionLayer, self).build(input_shape)
+    
+    def call(self, x):
+        # Compute attention scores
+        e = keras.backend.tanh(keras.backend.dot(x, self.W) + self.b)
+        a = keras.backend.softmax(e, axis=1)
+        # Weighted sum
+        output = x * a
+        return keras.backend.sum(output, axis=1)
+
+# LSTM with Attention
+attention_model = keras.Sequential([
+    layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
+    layers.Bidirectional(layers.LSTM(lstm_units, return_sequences=True)),
+    AttentionLayer(),
+    layers.Dropout(0.5),
+    layers.Dense(32, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(1, activation='sigmoid')
+])
+
+attention_model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+print("\n🚀 Training LSTM with Attention...")
+history_attention = attention_model.fit(
+    X_train_padded, y_train,
+    batch_size=128,
+    epochs=5,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Evaluate
+attention_test_loss, attention_test_accuracy = attention_model.evaluate(X_test_padded, y_test, verbose=0)
+print(f"\n🎯 Attention Model Test Accuracy: {attention_test_accuracy:.2%}")
+print(f"Improvement over Bi-LSTM: +{(attention_test_accuracy - bilstm_test_accuracy)*100:.1f}%")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>💾 Part 5: Model Deployment</h2>
+                
+                <pre><code class="language-python"># Save best model
+bi_lstm_model.save('sentiment_bilstm_model.h5')
+print("✅ Model saved as: sentiment_bilstm_model.h5")
+
+# Complete prediction pipeline
+def analyze_sentiment(review_text, model_path='sentiment_bilstm_model.h5'):
+    """
+    Full sentiment analysis pipeline
+    
+    Parameters:
+    -----------
+    review_text : str
+        Text to analyze
+    model_path : str
+        Path to saved model
+    
+    Returns:
+    --------
+    dict with sentiment, confidence, and explanation
+    """
+    # Load model
+    model = keras.models.load_model(model_path)
+    
+    # Preprocess
+    sequence = [[word_index.get(word, 2) for word in review_text.lower().split()]]
+    padded = pad_sequences(sequence, maxlen=max_length, padding='post', truncating='post')
+    
+    # Predict
+    prob = model.predict(padded, verbose=0)[0][0]
+    
+    # Interpret
+    if prob > 0.8:
+        sentiment = "Very Positive"
+        emoji = "😍"
+    elif prob > 0.6:
+        sentiment = "Positive"
+        emoji = "😊"
+    elif prob > 0.4:
+        sentiment = "Neutral"
+        emoji = "😐"
+    elif prob > 0.2:
+        sentiment = "Negative"
+        emoji = "😞"
+    else:
+        sentiment = "Very Negative"
+        emoji = "😠"
+    
+    confidence = max(prob, 1 - prob)
+    
+    return {
+        'sentiment': sentiment,
+        'emoji': emoji,
+        'probability': float(prob),
+        'confidence': float(confidence),
+        'review': review_text
+    }
+
+# Example analysis
+sample_review = "This movie exceeded all my expectations! The storyline was compelling and the cinematography was breathtaking."
+result = analyze_sentiment(sample_review)
+
+print("\n" + "="*60)
+print("SENTIMENT ANALYSIS RESULT")
+print("="*60)
+print(f"Review: {result['review']}")
+print(f"\nSentiment: {result['emoji']} {result['sentiment']}")
+print(f"Confidence: {result['confidence']:.1%}")
+print(f"Positivity Score: {result['probability']:.2f}")</code></pre>
+            </section>
+
+            <section class="content-section">
+                <h2>🎯 Project Summary</h2>
+                
+                <div class="success-box" style="background: linear-gradient(135deg, #0d9488 0%, #078930 100%); color: white; padding: 2rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-top: 0;">🎉 Incredible Work!</h3>
+                    <p style="font-size: 1.1rem;">You've built a production-ready sentiment analysis system using state-of-the-art RNN architectures!</p>
+                </div>
+
+                <h3>🏆 Key Accomplishments</h3>
+                <ul style="font-size: 1.05rem; line-height: 1.8;">
+                    <li>✅ <strong>Processed 50,000 reviews:</strong> Text tokenization, padding, and vocabulary building</li>
+                    <li>✅ <strong>Trained 4 models:</strong> LSTM, Bi-LSTM, GRU, and attention-enhanced LSTM</li>
+                    <li>✅ <strong>Achieved 88-91% accuracy:</strong> Bi-LSTM outperforms baseline models</li>
+                    <li>✅ <strong>Added attention mechanism:</strong> Further 1-2% accuracy boost</li>
+                    <li>✅ <strong>Built prediction API:</strong> Ready for real-world deployment</li>
+                    <li>✅ <strong>Error analysis:</strong> Identified edge cases and limitations</li>
+                </ul>
+
+                <h3>🚀 Next Level Enhancements</h3>
+                <ul>
+                    <li><strong>Use Pre-trained Embeddings:</strong> GloVe or Word2Vec for better representations</li>
+                    <li><strong>Try BERT/Transformers:</strong> Achieve 93-95% accuracy with modern NLP</li>
+                    <li><strong>Multi-class Sentiment:</strong> 1-5 star rating prediction</li>
+                    <li><strong>Deploy as API:</strong> Flask/FastAPI for real-time analysis</li>
+                    <li><strong>Aspect-Based Sentiment:</strong> Identify sentiment for specific product features</li>
+                </ul>
+
+                <div class="info-box">
+                    <p><strong>💼 Interview Talking Points:</strong></p>
+                    <ul style="margin: 0.5rem 0 0 1.5rem;">
+                        <li>"Built sentiment analysis system achieving 90% accuracy using Bidirectional LSTM"</li>
+                        <li>"Processed 50,000 IMDB reviews with text tokenization and sequence padding"</li>
+                        <li>"Implemented attention mechanism improving model interpretability by 2%"</li>
+                        <li>"Deployed production-ready API for real-time sentiment prediction"</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="tutorial-navigation" style="display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e2e8f0;">
+                <a href="image-classification-cnn.html" style="padding: 0.75rem 1.5rem; background-color: #f1f5f9; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">← Previous: Image Classification CNN</a>
+                <a href="object-detection-yolo.html" style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #0d9488 0%, #078930 100%); color: white; border-radius: 0.5rem; font-weight: 600; text-decoration: none;">Next: Object Detection YOLO →</a>
+            </div>
+        </article>
+    </main>
+
+    <script src="../../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../js/common.js"></script>
+    <script src="../../../js/script.js"></script>
+</body>
+
+</html>

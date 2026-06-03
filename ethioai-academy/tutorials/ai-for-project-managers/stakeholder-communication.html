@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial 4: Stakeholder Communication | AI for Project Managers</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <link rel="stylesheet" href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- Tutorial-specific styles -->
+    <style>
+        .tutorial-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            background: white;
+        }
+
+        .tutorial-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .tutorial-intro {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            margin-top: 1rem;
+        }
+
+        .tutorial-breadcrumb {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .tutorial-breadcrumb a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .tutorial-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .tutorial-meta-info {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tutorial-meta-info .meta-item {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .content-section {
+            margin-bottom: 4rem;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            color: #334155;
+            margin-bottom: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .tutorial-content p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #475569;
+            margin-bottom: 1.5rem;
+        }
+
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+
+        .tutorial-content li {
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .tutorial-content strong {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .tutorial-content code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+
+        .tutorial-content pre {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .tutorial-content pre code {
+            background: none;
+            color: #e2e8f0;
+            padding: 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%);
+            border-left: 4px solid #078930;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .info-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-box p {
+            margin-bottom: 0.75rem;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+        }
+
+        .warning-box h4 {
+            color: #92400e;
+            margin-top: 0;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid #10b981;
+            padding: 1.75rem;
+            border-radius: 0.75rem;
+            margin: 2.5rem 0;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+
+        .success-box h4 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1.5rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .tutorial-nav a {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .tutorial-nav a:hover {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .tutorial-content {
+                padding: 2rem 1rem;
+            }
+            
+            .content-section h2 {
+                font-size: 1.75rem;
+            }
+            
+            .tutorial-content p,
+            .tutorial-content li {
+                font-size: 1rem;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tutorial-nav {
+                flex-direction: column;
+            }
+
+            .tutorial-nav .prev,
+            .tutorial-nav .next {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-breadcrumb">
+                <a href="../../index.html">Home</a> → 
+                <a href="../../courses/ai-for-project-managers.html">AI for Project Managers</a> → 
+                Module 4
+            </div>
+            <h1 class="page-title">Tutorial 4: Stakeholder Communication</h1>
+            <p class="tutorial-intro">Write executive reports, handle difficult conversations, and communicate with confidence</p>
+            <div class="tutorial-meta-info">
+                <span class="meta-item">📚 Week 2</span>
+                <span class="meta-item">🎯 Intermediate</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <!-- Introduction -->
+        <section class="content-section">
+            <h2>🎯 Learning Objectives</h2>
+            <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 1.5rem;">By the end of this module, you will be able to:</p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li style="padding: 1rem 1.5rem; margin-bottom: 0.75rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #078930; border-radius: 0.5rem; font-size: 1.05rem; color: #334155;">✓ Write executive status reports in 5 minutes that drive decisions</li>
+                <li style="padding: 1rem 1.5rem; margin-bottom: 0.75rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #078930; border-radius: 0.5rem; font-size: 1.05rem; color: #334155;">✓ Translate technical jargon into stakeholder-friendly language</li>
+                <li style="padding: 1rem 1.5rem; margin-bottom: 0.75rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #078930; border-radius: 0.5rem; font-size: 1.05rem; color: #334155;">✓ Prepare for difficult conversations (delays, budget overruns, scope changes)</li>
+                <li style="padding: 1rem 1.5rem; margin-bottom: 0.75rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid #078930; border-radius: 0.5rem; font-size: 1.05rem; color: #334155;">✓ Create presentation decks with AI-generated talking points</li>
+            </ul>
+        </section>
+
+        <!-- The Communication Burden -->
+        <section class="content-section">
+            <h2>The Stakeholder Communication Trap</h2>
+            
+            <p style="font-size: 1.1rem; font-style: italic; color: #64748b; background: #f8fafc; padding: 1.25rem; border-radius: 0.5rem; border-left: 3px solid #94a3b8;">It's Friday afternoon. You have 3 executive updates due Monday. Each stakeholder needs different information, different detail levels, different tones. Here's what you're facing:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2.5rem 0;">
+                <div style="background: #fff; border: 2px solid #fee2e2; padding: 1.5rem; border-radius: 0.75rem;">
+                    <h4 style="color: #991b1b; margin-top: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 2rem;">👔</span> CEO (C-Level)
+                    </h4>
+                    <p style="font-size: 0.95rem; color: #334155; margin-bottom: 0.75rem;"><strong>Wants:</strong> High-level summary, business impact, ROI</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin: 0;"><strong>Time to write:</strong> 45 minutes</p>
+                </div>
+
+                <div style="background: #fff; border: 2px solid #fed7aa; padding: 1.5rem; border-radius: 0.75rem;">
+                    <h4 style="color: #9a3412; margin-top: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 2rem;">💼</span> Product Owner
+                    </h4>
+                    <p style="font-size: 0.95rem; color: #334155; margin-bottom: 0.75rem;"><strong>Wants:</strong> Feature progress, sprint velocity, roadmap updates</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin: 0;"><strong>Time to write:</strong> 60 minutes</p>
+                </div>
+
+                <div style="background: #fff; border: 2px solid #ecfdf5; padding: 1.5rem; border-radius: 0.75rem;">
+                    <h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 2rem;">👨‍💻</span> Tech Lead
+                    </h4>
+                    <p style="font-size: 0.95rem; color: #334155; margin-bottom: 0.75rem;"><strong>Wants:</strong> Technical details, blockers, resource needs</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin: 0;"><strong>Time to write:</strong> 30 minutes</p>
+                </div>
+
+                <div style="background: #fff; border: 2px solid #dcfce7; padding: 1.5rem; border-radius: 0.75rem;">
+                    <h4 style="color: #065f46; margin-top: 0; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 2rem;">💰</span> Finance Sponsor
+                    </h4>
+                    <p style="font-size: 0.95rem; color: #334155; margin-bottom: 0.75rem;"><strong>Wants:</strong> Budget vs. actual, burn rate, forecasts</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin: 0;"><strong>Time to write:</strong> 45 minutes</p>
+                </div>
+            </div>
+
+            <style>
+                @media (max-width: 768px) {
+                    section div[style*="grid-template-columns: repeat(2"] {
+                        grid-template-columns: 1fr !important;
+                    }
+                }
+            </style>
+
+            <p style="text-align: center; font-size: 1.2rem; font-weight: 600; color: #1e293b; margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 0.75rem; border: 2px solid #fbbf24;"><strong>Total: 3 hours just writing updates—and you haven't even started the actual PM work.</strong></p>
+
+            <p style="margin-top: 2rem; font-size: 1.1rem;">With ChatGPT, you can create ALL four tailored updates in <strong style="color: #059669;">15-20 minutes total</strong>. Let me show you how.</p>
+        </section>
+
+        <!-- Executive Status Reports -->
+        <section class="content-section">
+            <h2>📊 Writing Executive Status Reports in 5 Minutes</h2>
+
+            <p>Executive stakeholders don't need every detail. They need: Status, Risks, Decisions Required. ChatGPT can transform your raw project data into executive-ready summaries.</p>
+
+            <h3>The Master Prompt Framework</h3>
+
+            <pre><code class="language-plaintext">Create an executive status report for my [PROJECT TYPE] project.
+
+PROJECT OVERVIEW:
+- Name: [Project Name]
+- Goal: [What you're building and why]
+- Timeline: [Start date] to [End date]
+- Budget: [Total budget] | Spent: [Amount spent] | Remaining: [Amount left]
+- Team Size: [Number of people]
+
+CURRENT STATUS:
+- Sprint/Phase: [Current sprint number or phase name]
+- % Complete: [Overall project completion percentage]
+- On Track / At Risk / Off Track: [Choose one]
+
+KEY ACCOMPLISHMENTS (This Week/Sprint):
+- [List 3-5 major deliverables or milestones completed]
+
+UPCOMING MILESTONES (Next 2 Weeks):
+- [List 2-3 critical upcoming deliverables]
+
+RISKS & ISSUES:
+- [Risk 1: Description + Impact]
+- [Risk 2: Description + Impact]
+- [Issue 1: Current blocker + Impact]
+
+DECISIONS NEEDED:
+- [Decision 1: What needs approval + By when]
+- [Decision 2: What needs approval + By when]
+
+AUDIENCE: [CEO / VP / Board / Client]
+TONE: Professional, concise, data-driven
+LENGTH: 1 page max (bullet points preferred)
+
+OUTPUT FORMAT:
+- Executive Summary (2-3 sentences)
+- Status Dashboard (Green/Yellow/Red for Schedule, Budget, Scope, Quality)
+- Key Highlights (bullet points)
+- Risks & Mitigation
+- Decisions Required (with deadlines)
+- Next Steps</code></pre>
+
+            <h3>Example: E-Commerce Redesign Project</h3>
+
+            <h4>Input Data</h4>
+
+            <pre><code class="language-plaintext">Create an executive status report for my e-commerce website redesign project.
+
+PROJECT OVERVIEW:
+- Name: E-Commerce Platform Modernization
+- Goal: Redesign checkout flow to reduce 40% cart abandonment and increase conversion by 30%
+- Timeline: Aug 1 - Nov 15 (16 weeks)
+- Budget: $250K | Spent: $180K | Remaining: $70K
+- Team Size: 8 people (2 designers, 3 devs, 1 QA, 1 PM, 1 content writer)
+
+CURRENT STATUS:
+- Sprint: Week 10 of 16
+- % Complete: 65%
+- Status: At Risk (backend performance issues discovered)
+
+KEY ACCOMPLISHMENTS (Last 2 Weeks):
+- Guest checkout feature completed and tested (0 bugs)
+- Mobile UI redesign shipped to production
+- Real-time shipping calculator integrated with FedEx/UPS APIs
+- A/B test shows 15% reduction in abandonment so far
+
+UPCOMING MILESTONES (Next 2 Weeks):
+- Complete payment gateway security audit (Oct 28)
+- Launch Apple Pay / Google Pay integration (Nov 1)
+- Begin load testing for Black Friday traffic (Nov 5)
+
+RISKS & ISSUES:
+- RISK: Backend API performance under load (page load times 3+ seconds with 500 concurrent users). Impact: Could crash during Black Friday. Mitigation: Bringing in DevOps contractor next week.
+- ISSUE: Design team waiting for final brand guidelines from Marketing (delayed 1 week). Impact: Order confirmation page design blocked.
+- RISK: QA engineer out sick for 2 weeks. Impact: Testing backlog growing, may delay launch by 1 week.
+
+DECISIONS NEEDED:
+- DECISION 1: Approve $15K for DevOps contractor (2 weeks) to fix performance issues - Need approval by Oct 26
+- DECISION 2: Should we delay launch from Nov 15 to Nov 22 to ensure Black Friday stability? - Need decision by Nov 1
+
+AUDIENCE: CEO
+TONE: Professional, concise, data-driven
+LENGTH: 1 page max</code></pre>
+
+            <h4>AI-Generated Executive Report</h4>
+
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 0.75rem; padding: 2rem; margin: 2rem 0;">
+                <h4 style="margin-top: 0; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem;">Executive Status Report: E-Commerce Platform Modernization</h4>
+                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 2rem;"><strong>Report Date:</strong> October 25, 2025 | <strong>Project Manager:</strong> [Your Name]</p>
+
+                <h4 style="color: #1e293b; margin-bottom: 0.75rem;">📋 Executive Summary</h4>
+                <p style="margin-bottom: 2rem;">E-commerce checkout redesign is 65% complete (Week 10 of 16) and already showing 15% reduction in cart abandonment in A/B tests. Project is AT RISK due to backend performance issues that could impact Black Friday launch. Decision needed on contractor budget and potential 1-week launch delay.</p>
+
+                <h4 style="color: #1e293b; margin-bottom: 0.75rem;">🎯 Status Dashboard</h4>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🟡</div>
+                        <p style="margin: 0; font-weight: 600; font-size: 0.9rem;">Schedule</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #64748b;">At Risk</p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🟡</div>
+                        <p style="margin: 0; font-weight: 600; font-size: 0.9rem;">Budget</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #64748b;">72% spent</p>
+                    </div>
+                    <div style="background: #dcfce7; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🟢</div>
+                        <p style="margin: 0; font-weight: 600; font-size: 0.9rem;">Scope</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #64748b;">On Track</p>
+                    </div>
+                    <div style="background: #dcfce7; padding: 1rem; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🟢</div>
+                        <p style="margin: 0; font-weight: 600; font-size: 0.9rem;">Quality</p>
+                        <p style="margin: 0; font-size: 0.8rem; color: #64748b;">0 bugs</p>
+                    </div>
+                </div>
+
+                <h4 style="color: #059669; margin-bottom: 0.75rem;">✅ Key Accomplishments</h4>
+                <ul style="margin-bottom: 2rem; color: #475569;">
+                    <li><strong>Guest checkout launched:</strong> Zero production bugs, quality metrics exceeded</li>
+                    <li><strong>Mobile redesign live:</strong> 60% of traffic now has optimized experience</li>
+                    <li><strong>Early results promising:</strong> 15% abandonment reduction in A/B test (goal: 30%)</li>
+                    <li><strong>Shipping integration complete:</strong> Real-time rates from FedEx/UPS</li>
+                </ul>
+
+                <h4 style="color: #dc2626; margin-bottom: 0.75rem;">⚠️ Critical Risks</h4>
+                <div style="background: #fee2e2; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <p style="margin: 0; color: #7f1d1d;"><strong>🚨 Backend Performance Issue (HIGH PRIORITY):</strong> System degrades at 500 concurrent users (3+ second load times). Black Friday expects 2,000+ concurrent users. <strong>Mitigation:</strong> DevOps contractor identified, can start Oct 28 if approved.</p>
+                </div>
+                <div style="background: #fef3c7; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <p style="margin: 0; color: #78350f;"><strong>⏸️ Design Blocker (MEDIUM):</strong> Waiting on Marketing brand guidelines (delayed 1 week). Order confirmation page on hold. <strong>Impact:</strong> May slip 2-3 days if not resolved by Oct 27.</p>
+                </div>
+                <div style="background: #fef3c7; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 2rem;">
+                    <p style="margin: 0; color: #78350f;"><strong>👤 Resource Risk (MEDIUM):</strong> QA engineer out sick 2 weeks. Testing backlog growing. <strong>Mitigation:</strong> Developers doing peer testing, but may need contract QA if absence extends.</p>
+                </div>
+
+                <h4 style="color: #065f46; margin-bottom: 0.75rem;">🎯 Decisions Required</h4>
+                <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                    <p style="margin: 0 0 0.5rem 0; color: #1e293b; font-weight: 600;">1. Approve DevOps Contractor Budget ($15K, 2 weeks)</p>
+                    <p style="margin: 0; color: #475569; font-size: 0.95rem;"><strong>Needed by:</strong> Oct 26 | <strong>Reason:</strong> Fix performance issue before Black Friday | <strong>Risk if declined:</strong> Potential site crash during peak traffic</p>
+                </div>
+                <div style="background: #ecfdf5; padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 2rem;">
+                    <p style="margin: 0 0 0.5rem 0; color: #1e293b; font-weight: 600;">2. Launch Date: Keep Nov 15 or Delay to Nov 22?</p>
+                    <p style="margin: 0; color: #475569; font-size: 0.95rem;"><strong>Needed by:</strong> Nov 1 | <strong>Trade-off:</strong> Nov 15 = ready for Black Friday but higher risk. Nov 22 = more stable but miss peak shopping | <strong>Recommendation:</strong> Approve contractor, keep Nov 15 target, have Nov 22 backup plan</p>
+                </div>
+
+                <h4 style="color: #1e293b; margin-bottom: 0.75rem;">📅 Next 2 Weeks</h4>
+                <ul style="margin-bottom: 0; color: #475569;">
+                    <li>Oct 28: Security audit completion</li>
+                    <li>Nov 1: Apple Pay/Google Pay integration launch</li>
+                    <li>Nov 5: Load testing begins (2,000+ concurrent users)</li>
+                    <li>Nov 10: Final stakeholder demo before launch</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ Why This Report Works</h4>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Executive Summary first:</strong> CEO can read just this and understand situation</li>
+                    <li><strong>Visual status dashboard:</strong> Traffic light colors (🟢🟡🔴) for instant clarity</li>
+                    <li><strong>Accomplishments highlighted:</strong> Shows progress before discussing problems</li>
+                    <li><strong>Risks prioritized:</strong> HIGH/MEDIUM labels help executives focus</li>
+                    <li><strong>Clear decisions needed:</strong> What, by when, and why—ready for approval</li>
+                    <li><strong>One page format:</strong> Fits on a single printed page or email screen</li>
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- Translating Technical to Business -->
+        <section class="content-section">
+            <h2>🔄 Translating Technical Jargon for Stakeholders</h2>
+
+            <p>Technical teams speak in APIs, microservices, and technical debt. Executives speak in ROI, risk, and timelines. ChatGPT bridges this gap.</p>
+
+            <h3>The Translation Prompt</h3>
+
+            <pre><code class="language-plaintext">Translate this technical explanation into non-technical language for a [STAKEHOLDER TYPE] audience.
+
+TECHNICAL EXPLANATION:
+[Paste the technical text from your dev team]
+
+AUDIENCE: [CEO / Board Member / Non-technical Client / Finance Stakeholder]
+
+TRANSLATION REQUIREMENTS:
+- Remove all jargon (API, microservices, database normalization, etc.)
+- Explain in business terms: impact on timeline, cost, user experience, or risk
+- Use analogies if helpful
+- Keep it to 2-3 sentences maximum
+- Focus on "what this means for the project" not "how it works"</code></pre>
+
+            <h3>Real Examples</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin: 2.5rem 0;">
+                <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1.5rem;">
+                    <h4 style="color: #dc2626; margin-top: 0;">❌ Technical Version (Developer's Update)</h4>
+                    <p style="font-style: italic; color: #475569; background: #fee2e2; padding: 1rem; border-radius: 0.5rem;">"We're experiencing N+1 query issues in the ORM layer, causing database connection pool exhaustion. We need to refactor to use eager loading and implement Redis caching for the API responses. This will require 3 days of backend work and might introduce regressions in the user service."</p>
+                </div>
+
+                <div style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 0.75rem; padding: 1.5rem;">
+                    <h4 style="color: #059669; margin-top: 0;">✅ Business-Friendly Translation (For CEO)</h4>
+                    <p style="color: #1e293b; background: #dcfce7; padding: 1rem; border-radius: 0.5rem; margin: 0;"><strong>The Issue:</strong> Our system is running slowly because it's making too many database requests (like opening a filing cabinet 100 times instead of once). This causes page load times to spike during peak traffic.<br><br><strong>The Fix:</strong> 3 days of optimization work to improve speed by 70%. Small risk: this change might affect user login temporarily, so we'll do it over the weekend.<br><br><strong>Business Impact:</strong> Faster site = better user experience = higher conversion rate. Worth the 3-day investment.</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin: 2.5rem 0;">
+                <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1.5rem;">
+                    <h4 style="color: #dc2626; margin-top: 0;">❌ Technical Version</h4>
+                    <p style="font-style: italic; color: #475569; background: #fee2e2; padding: 1rem; border-radius: 0.5rem;">"We need to deprecate the REST API v1 endpoints and migrate all clients to GraphQL. This will require updating our authentication middleware to support JWT tokens instead of session cookies. Estimated effort: 40 story points across 2 sprints."</p>
+                </div>
+
+                <div style="background: #f0fdf4; border: 2px solid #10b981; border-radius: 0.75rem; padding: 1.5rem;">
+                    <h4 style="color: #059669; margin-top: 0;">✅ Business-Friendly Translation</h4>
+                    <p style="color: #1e293b; background: #dcfce7; padding: 1rem; border-radius: 0.5rem; margin: 0;"><strong>What We're Doing:</strong> Upgrading our system's "communication language" to a more modern, efficient version.<br><br><strong>Timeline:</strong> 4 weeks of work, no downtime for users.<br><br><strong>Why It Matters:</strong> This will let us build new features 50% faster going forward, reducing time-to-market for upcoming releases. It's like renovating your kitchen—short-term disruption for long-term efficiency.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>💡 Pro Tip: Create a "Translation Guide"</h4>
+                <p>Use ChatGPT to create a cheat sheet of technical terms translated for your specific stakeholders. Examples:</p>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>API:</strong> "A way for two software systems to talk to each other"</li>
+                    <li><strong>Technical Debt:</strong> "Shortcuts we took that now slow us down—like skipping maintenance on a car"</li>
+                    <li><strong>Refactoring:</strong> "Reorganizing code to make it cleaner—same features, better foundation"</li>
+                    <li><strong>Regression:</strong> "When a new change accidentally breaks something that used to work"</li>
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- Difficult Conversations -->
+        <section class="content-section">
+            <h2>💬 Preparing for Difficult Conversations</h2>
+
+            <p>Delivering bad news (delays, budget overruns, scope cuts) is the hardest part of PM work. AI can help you prepare what to say, anticipate questions, and stay calm under pressure.</p>
+
+            <h3>The Difficult Conversation Prep Prompt</h3>
+
+            <pre><code class="language-plaintext">Help me prepare for a difficult conversation with a stakeholder.
+
+SITUATION:
+- What happened: [Describe the problem: delay, budget overrun, scope cut, quality issue]
+- Why it happened: [Root cause: technical complexity, vendor delay, scope creep, etc.]
+- Impact: [Timeline slip, cost increase, feature removal, etc.]
+
+STAKEHOLDER CONTEXT:
+- Who: [Title and personality: CEO (data-driven), Client (emotional), Board Member (risk-averse)]
+- Their priorities: [What matters most to them: timeline, budget, quality, reputation]
+- Likely reaction: [Angry, disappointed, understanding, nervous]
+
+MY GOAL:
+- Primary: [Get buy-in for new timeline / Get budget approval / Manage expectations]
+- Secondary: [Maintain trust, show accountability, present solutions]
+
+HELP ME WITH:
+1. Opening statement (how to deliver the news clearly but tactfully)
+2. Explanation of root cause (without sounding like excuses)
+3. Solutions and mitigation plan (what I'm doing to fix it)
+4. Anticipated objections and how to respond
+5. Closing statement (next steps and reassurance)</code></pre>
+
+            <h3>Example: Telling a CEO the Launch Will Be Delayed</h3>
+
+            <h4>Input</h4>
+
+            <pre><code class="language-plaintext">Help me prepare for a difficult conversation with a stakeholder.
+
+SITUATION:
+- What happened: E-commerce redesign launch must be delayed from Nov 15 to Nov 22 (1 week slip)
+- Why it happened: Backend performance issues discovered during load testing. System crashes at 500 concurrent users. Black Friday expects 2,000+ users. We need 1 week for DevOps contractor to fix and re-test.
+- Impact: Launch happens AFTER Black Friday starts (Nov 24). We miss the first week of holiday shopping season (estimated $200K in lost revenue opportunity).
+
+STAKEHOLDER CONTEXT:
+- Who: CEO (data-driven, hates surprises, values transparency)
+- Their priorities: Revenue impact, brand reputation (site can't crash on Black Friday), long-term stability
+- Likely reaction: Frustrated (this was promised for pre-Black Friday), but will be rational if I have a solid plan
+
+MY GOAL:
+- Primary: Get approval for 1-week delay and $15K contractor budget
+- Secondary: Maintain trust, show I caught this early, present clear mitigation plan
+
+HELP ME WITH:
+1. Opening statement
+2. Explanation of root cause
+3. Solutions and mitigation plan
+4. Anticipated objections
+5. Closing statement</code></pre>
+
+            <h4>AI-Generated Conversation Guide</h4>
+
+            <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 0.75rem; padding: 2rem; margin: 2rem 0;">
+                <h4 style="margin-top: 0; color: #1e293b;">Difficult Conversation Script: 1-Week Launch Delay</h4>
+
+                <div style="background: #ecfdf5; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #078930;">
+                    <h4 style="color: #065f46; margin-top: 0;">1. Opening Statement (Lead with the news, then context)</h4>
+                    <p style="color: #1e293b; margin: 0;"><strong>Say this:</strong> "I need to discuss a launch date change. We discovered a critical performance issue during load testing that requires us to delay launch from November 15 to November 22—one week later. I want to walk you through what we found, why this decision protects the business, and our plan to move forward."</p>
+                    <p style="color: #64748b; font-size: 0.9rem; margin: 1rem 0 0 0;"><strong>Why this works:</strong> Direct but not defensive. States the problem upfront. Signals you have a plan (builds confidence).</p>
+                </div>
+
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #f59e0b;">
+                    <h4 style="color: #92400e; margin-top: 0;">2. Explanation of Root Cause (Frame as risk prevention)</h4>
+                    <p style="color: #1e293b; margin: 0;"><strong>Say this:</strong> "During our Black Friday load testing—which we started early specifically to catch issues like this—we found that the system crashes when we hit 500 concurrent users. Black Friday traffic will be 2,000+ users. If we launched on Nov 15, we'd likely experience downtime during our most critical sales weekend. The root cause is a backend database architecture issue that our team didn't anticipate at the complexity we're now handling."</p>
+                    <p style="color: #64748b; font-size: 0.9rem; margin: 1rem 0 0 0;"><strong>Why this works:</strong> You caught this proactively (hero, not villain). Data-driven (500 vs 2,000 users). Frames delay as risk mitigation, not failure.</p>
+                </div>
+
+                <div style="background: #dcfce7; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #10b981;">
+                    <h4 style="color: #065f46; margin-top: 0;">3. Solutions and Mitigation Plan (Show control)</h4>
+                    <p style="color: #1e293b; margin: 0 0 1rem 0;"><strong>Say this:</strong> "Here's our plan to fix this and minimize business impact:"</p>
+                    <ul style="color: #1e293b; margin: 0;">
+                        <li><strong>Immediate:</strong> DevOps contractor starts tomorrow (cost: $15K, approved budget exists)</li>
+                        <li><strong>Week 1 (Oct 28-Nov 3):</strong> Fix performance issue, optimize database queries</li>
+                        <li><strong>Week 2 (Nov 4-10):</strong> Re-test at 3,000 concurrent users (150% of expected load)</li>
+                        <li><strong>Nov 22 Launch:</strong> Deploy with confidence—still 2 days before Black Friday</li>
+                        <li><strong>Revenue mitigation:</strong> We'll run pre-Black Friday email campaign (Nov 20-21) to drive early traffic and recapture some of that lost week</li>
+                    </ul>
+                    <p style="color: #64748b; font-size: 0.9rem; margin: 1rem 0 0 0;"><strong>Why this works:</strong> Specific timeline. Shows you're already solving it. Includes revenue recovery plan (addresses CEO's concern).</p>
+                </div>
+
+                <div style="background: #fee2e2; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 2rem; border-left: 4px solid #ef4444;">
+                    <h4 style="color: #991b1b; margin-top: 0;">4. Anticipated Objections (and your responses)</h4>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="color: #1e293b; font-weight: 600; margin: 0 0 0.5rem 0;">❓ "Why didn't we catch this earlier?"</p>
+                        <p style="color: #475569; margin: 0;"><strong>Response:</strong> "We did load testing at 200 users earlier (which passed), but we only reached full Black Friday load levels (500+) in the past week. This is exactly why we scheduled testing 3 weeks before launch—to have time to fix what we find. The alternative would've been launching on Nov 15 and crashing on Black Friday."</p>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="color: #1e293b; font-weight: 600; margin: 0 0 0.5rem 0;">❓ "Can we fix it faster and keep Nov 15?"</p>
+                        <p style="color: #475569; margin: 0;"><strong>Response:</strong> "We considered that. The fix itself is 3-4 days, but we need 2-3 days of re-testing to be confident. Rushing this would give us maybe 1 day of margin before launch—too risky for a Black Friday deployment. Nov 22 gives us a proper safety buffer."</p>
+                    </div>
+
+                    <div style="margin-bottom: 0;">
+                        <p style="color: #1e293b; font-weight: 600; margin: 0 0 0.5rem 0;">❓ "What if this happens again with a different issue?"</p>
+                        <p style="color: #475569; margin: 0;"><strong>Response:</strong> "That's a fair question. We're also running security audits and full regression testing in parallel. The performance issue was the only high-severity item found. We'll have a 'go/no-go' meeting on Nov 20 to make the final launch decision based on test results."</p>
+                    </div>
+                </div>
+
+                <div style="background: #fef9c3; padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid #0ea5e9;">
+                    <h4 style="color: #075985; margin-top: 0;">5. Closing Statement (Next steps + reassurance)</h4>
+                    <p style="color: #1e293b; margin: 0;"><strong>Say this:</strong> "I know this isn't the news you wanted to hear, and I take full accountability for not catching this sooner in testing. The good news is we found it in time to fix it properly. The team is already executing the mitigation plan, and I'll send you daily updates this week. By Nov 22, we'll have a stable, battle-tested system ready for the biggest shopping weekend of the year. Do you have any concerns I haven't addressed?"</p>
+                    <p style="color: #64748b; font-size: 0.9rem; margin: 1rem 0 0 0;"><strong>Why this works:</strong> Takes accountability (builds trust). Ends with confidence and action. Invites questions (shows openness).</p>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <h4>✅ Conversation Best Practices</h4>
+                <ul style="margin-bottom: 0;">
+                    <li><strong>Lead with the headline:</strong> Don't bury bad news in context—state it upfront</li>
+                    <li><strong>Use data, not emotions:</strong> "System crashes at 500 users" is more compelling than "We're worried"</li>
+                    <li><strong>Frame delay as risk management:</strong> You're protecting the business, not missing a deadline</li>
+                    <li><strong>Come with solutions:</strong> Never present a problem without a plan</li>
+                    <li><strong>Take accountability:</strong> "I take responsibility" builds trust, even if it wasn't your fault</li>
+                    <li><strong>Invite questions:</strong> Shows confidence and openness to feedback</li>
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- Practice Exercise -->
+        <section class="content-section">
+            <h2>💪 Practice Exercise</h2>
+
+            <div class="info-box">
+                <h4>🎯 Your Challenge: Create Stakeholder Communications</h4>
+                <p><strong>Scenario:</strong> You're managing a mobile app redesign. You need to communicate with 3 different stakeholders about the same project status.</p>
+                <p><strong>Project Status:</strong></p>
+                <ul>
+                    <li>2 weeks behind schedule due to iOS App Store rejection (technical compliance issue)</li>
+                    <li>Fixed the issue, resubmitted, waiting for re-approval (typically 5-7 days)</li>
+                    <li>Budget is on track ($50K of $75K spent)</li>
+                    <li>Quality is excellent (4.8 star rating in beta testing)</li>
+                </ul>
+                <p><strong>Your Task:</strong> Create 3 different status updates for:</p>
+                <ol>
+                    <li><strong>CEO:</strong> Wants high-level summary, cares about launch date and revenue impact</li>
+                    <li><strong>Marketing Director:</strong> Needs to plan launch campaign, cares about timeline certainty</li>
+                    <li><strong>Engineering Manager:</strong> Technical peer, wants to understand the App Store issue details</li>
+                </ol>
+            </div>
+
+            <h3>Sample Prompt to Get Started</h3>
+
+            <pre><code class="language-plaintext">Create 3 different status updates for the same project, tailored to different stakeholders.
+
+PROJECT: Mobile app redesign
+
+SITUATION:
+- Status: 2 weeks behind schedule
+- Cause: iOS App Store rejected initial submission (technical compliance issue with in-app purchase flow)
+- Current state: Issue fixed, resubmitted Oct 20, waiting for Apple re-approval (typically 5-7 days)
+- New launch date: Nov 1 (was Oct 15)
+- Budget: $50K spent of $75K budget (on track)
+- Quality: 4.8 star rating in beta testing with 200 users
+
+CREATE 3 UPDATES FOR:
+
+1. CEO - [Name]
+   - Cares about: Revenue impact, brand reputation, launch date certainty
+   - Communication style: Bullet points, data-driven, 5 sentences max
+   - Focus on: Business impact, not technical details
+
+2. Marketing Director - [Name]
+   - Cares about: Campaign timeline, messaging, App Store readiness
+   - Communication style: Conversational but professional
+   - Focus on: What this means for launch campaign planning
+
+3. Engineering Manager - [Name]
+   - Cares about: Technical root cause, prevention for future releases
+   - Communication style: Technical depth okay
+   - Focus on: What happened and what we learned</code></pre>
+
+            <div class="success-box">
+                <h4>✅ Try It Now!</h4>
+                <p style="margin-bottom: 0;">Open ChatGPT, use this prompt, and see how AI tailors the same information for 3 different audiences. Notice how the tone, detail level, and focus changes for each stakeholder.</p>
+            </div>
+
+        </section>
+
+        <!-- Key Takeaways -->
+        <section class="content-section">
+            <h2>🎯 Key Takeaways</h2>
+
+            <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 2.5rem; border-radius: 1rem; border: 2px solid #cbd5e1;">
+                <ul style="list-style: none; padding-left: 0; margin: 0;">
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 1.5rem; flex-shrink: 0;">✅</span>
+                        <div>
+                            <strong style="color: #1e293b; font-size: 1.05rem;">Executive reports in 5 minutes using structured prompts</strong>
+                            <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.95rem;">Status, risks, decisions needed—one page, ready to send</p>
+                        </div>
+                    </li>
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 1.5rem; flex-shrink: 0;">✅</span>
+                        <div>
+                            <strong style="color: #1e293b; font-size: 1.05rem;">Translate technical jargon into business language</strong>
+                            <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.95rem;">APIs become "system connections," technical debt becomes "efficiency shortcuts"</p>
+                        </div>
+                    </li>
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 1.5rem; flex-shrink: 0;">✅</span>
+                        <div>
+                            <strong style="color: #1e293b; font-size: 1.05rem;">Prepare for difficult conversations with scripted responses</strong>
+                            <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.95rem;">Anticipate objections, frame delays as risk management, stay calm under pressure</p>
+                        </div>
+                    </li>
+                    <li style="padding: 1rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 1.5rem; flex-shrink: 0;">✅</span>
+                        <div>
+                            <strong style="color: #1e293b; font-size: 1.05rem;">Tailor the same information for different audiences</strong>
+                            <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.95rem;">CEO gets business impact, tech lead gets technical details, marketing gets campaign implications</p>
+                        </div>
+                    </li>
+                    <li style="padding: 1rem 0; display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 1.5rem; flex-shrink: 0;">✅</span>
+                        <div>
+                            <strong style="color: #1e293b; font-size: 1.05rem;">Lead with headlines, follow with context</strong>
+                            <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.95rem;">Executives appreciate directness—state the news upfront, then explain</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- What's Next -->
+        <section class="content-section">
+            <h2>🚀 What's Next?</h2>
+
+            <p style="font-size: 1.1rem;">You now know how to communicate with any stakeholder at any level. Next, we'll dive into <strong>Email & Professional Writing</strong>—mastering PM emails for every scenario, from kickoffs to escalations.</p>
+
+            <div class="info-box">
+                <h4>📚 Coming Up in Tutorial 5: Email & Professional Writing</h4>
+                <ul style="margin-bottom: 0;">
+                    <li>Write kickoff emails that set clear expectations</li>
+                    <li>Craft status update emails people actually read</li>
+                    <li>Handle escalation emails without burning bridges</li>
+                    <li>Adjust tone for different audiences and situations</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Knowledge Check Quiz -->
+        <section class="content-section quiz-section">
+            <h2>📝 Knowledge Check</h2>
+            <p>Test your understanding of AI for stakeholder communication!</p>
+            <div class="quiz-container">
+                <div class="quiz-question" data-answer="C">
+                    <h4>1. How can AI improve stakeholder communication?</h4>
+                    <div class="quiz-option" data-value="A">A) By replacing all human communication</div>
+                    <div class="quiz-option" data-value="B">B) By sending automated generic messages</div>
+                    <div class="quiz-option" data-value="C">C) By drafting tailored messages and status updates</div>
+                    <div class="quiz-option" data-value="D">D) Communication doesn't need AI</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>2. What should PMs consider when using AI for stakeholder updates?</h4>
+                    <div class="quiz-option" data-value="A">A) Send AI-generated content without review</div>
+                    <div class="quiz-option" data-value="B">B) Customize for each stakeholder's needs and communication style</div>
+                    <div class="quiz-option" data-value="C">C) Use the same message for everyone</div>
+                    <div class="quiz-option" data-value="D">D) Avoid using AI entirely</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="A">
+                    <h4>3. How can AI help with difficult stakeholder conversations?</h4>
+                    <div class="quiz-option" data-value="A">A) Drafting diplomatic responses and suggesting approaches</div>
+                    <div class="quiz-option" data-value="B">B) Avoiding the conversation</div>
+                    <div class="quiz-option" data-value="C">C) Making all decisions autonomously</div>
+                    <div class="quiz-option" data-value="D">D) Replacing negotiation skills</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="D">
+                    <h4>4. What is a key benefit of AI in creating executive summaries?</h4>
+                    <div class="quiz-option" data-value="A">A) Making reports longer</div>
+                    <div class="quiz-option" data-value="B">B) Adding unnecessary complexity</div>
+                    <div class="quiz-option" data-value="C">C) Hiding important details</div>
+                    <div class="quiz-option" data-value="D">D) Distilling complex information into concise updates</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                <div class="quiz-question" data-answer="B">
+                    <h4>5. When should PMs not rely solely on AI for communication?</h4>
+                    <div class="quiz-option" data-value="A">A) AI should handle all communication</div>
+                    <div class="quiz-option" data-value="B">B) For sensitive issues requiring personal touch and empathy</div>
+                    <div class="quiz-option" data-value="C">C) Never use AI for communication</div>
+                    <div class="quiz-option" data-value="D">D) Only for internal team messages</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="agile-scrum-with-chatgpt.html" class="prev">← Tutorial 3: Agile & Scrum with ChatGPT</a>
+            <a href="email-professional-writing.html" class="next">Module 5: Email & Professional Writing →</a>
+        </div>
+
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-plaintext.min.html"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

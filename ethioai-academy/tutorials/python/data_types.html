@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about Python's core data types: integers, floats, strings, booleans, and None. Includes hands-on exercises and a BMI calculator mini-project.">
+    <title>Basic Data Types in Python - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .visual-box {
+            background-color: #f1f5f9;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-navigation a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-navigation a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-navigation .next:hover {
+            transform: translateX(3px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+    </style>
+<!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    </head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+        <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge beginner">Beginner</div><h1 class="page-title">Basic Data Types in Python</h1>
+            <p class="page-subtitle">Master Python's core data types and learn when to use each one</p>
+            </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <!-- Hook -->
+        <p>Imagine you're organizing a party. You need to track the number of guests (a whole number), split the bill down to cents (a decimal), store everyone's names (text), check who's confirmed (yes or no), and mark spots for people who haven't responded yet (nothing).</p>
+
+        <p><strong>Data types are how Python understands what kind of information you're working with.</strong> Just like you wouldn't measure someone's height in dollars or count guests using fractions, Python needs to know whether you're dealing with numbers, text, or true/false values. This matters because different types of data can do different things—you can add numbers together, but you can't multiply words (well, not in the way you'd think!).</p>
+
+        <p>If you've ever filled out a form online, you've already encountered data types: number fields only accept digits, text boxes accept letters, and checkboxes are either checked or unchecked. Python uses the same logic.</p>
+
+        <!-- Definition -->
+        <h2>Understanding Python's Core Data Types</h2>
+
+        <p><strong>Data types are categories that tell Python what kind of value you're storing and what operations you can perform with it.</strong> Python has five core built-in data types that you'll use constantly:</p>
+
+        <h3>What is an <code>int</code> (integer)?</h3>
+        <p>An <strong>integer</strong> is a whole number without any decimal point. It can be positive, negative, or zero. Examples: <code>42</code>, <code>-7</code>, <code>0</code>, <code>1000</code>. You use integers when counting things that can't be divided into pieces—like the number of students in a class or items in your shopping cart.</p>
+
+        <h3>What is a <code>float</code> (floating-point number)?</h3>
+        <p>A <strong>float</strong> is a number with a decimal point. Examples: <code>3.14</code>, <code>-0.5</code>, <code>2.0</code>, <code>99.99</code>. "Floating-point" refers to how computers store these numbers internally (the decimal point can "float" to different positions). You use floats for measurements, prices, or anything requiring precision beyond whole numbers.</p>
+
+        <h3>What is a <code>str</code> (string)?</h3>
+        <p>A <strong>string</strong> is text—any sequence of characters wrapped in quotes. Examples: <code>"hello"</code>, <code>'Python'</code>, <code>"42"</code> (yes, numbers in quotes become text!). The name "string" comes from imagining characters strung together like beads on a necklace. You use strings for names, messages, addresses, or any textual information.</p>
+
+        <h3>What is a <code>bool</code> (boolean)?</h3>
+        <p>A <strong>boolean</strong> is a true/false value—it only has two options: <code>True</code> or <code>False</code> (capitalized in Python). Named after mathematician George Boole, booleans answer yes/no questions. You use them for conditions, flags, or tracking status (Is the user logged in? Did the payment succeed?).</p>
+
+        <h3>What is <code>None</code>?</h3>
+        <p><strong><code>None</code></strong> represents the absence of a value—it's Python's way of saying "nothing here." Unlike zero (which is a number) or an empty string (which is still text), <code>None</code> means "no data exists." You use it as a placeholder or to indicate that something hasn't been set yet.</p>
+
+        <h3>How do these work?</h3>
+        <p>Each data type has <strong>different capabilities</strong>. You can perform math operations on <code>int</code> and <code>float</code>, but not on <code>str</code>. You can capitalize a <code>str</code>, but not a <code>bool</code>. <strong>Unlike languages like C or Java</strong>, Python is "dynamically typed"—you don't have to declare types in advance. Python figures out the type automatically based on the value you assign.</p>
+
+        <!-- Analogy -->
+        <h2>The Container Analogy</h2>
+
+        <p><strong>Data types are like container shapes at a drink station.</strong></p>
+
+        <p>Imagine a buffet with different beverage containers: coffee mugs, wine glasses, water bottles, shot glasses, and empty coasters. Each container is designed for a specific type of drink:</p>
+
+        <ul>
+            <li><strong>Coffee mugs (integers):</strong> Hold hot, whole servings—you wouldn't pour half a mug</li>
+            <li><strong>Wine glasses (floats):</strong> Hold precise measurements—down to the milliliter</li>
+            <li><strong>Water bottles (strings):</strong> Hold labels and text—the nutrition facts, brand name</li>
+            <li><strong>Shot glasses (booleans):</strong> Either full or empty—yes or no, that's it</li>
+            <li><strong>Empty coasters (None):</strong> Nothing on them yet—waiting for something to arrive</li>
+        </ul>
+
+        <p>If you try to pour hot soup into a wine glass (wrong type), you'll make a mess. Similarly, if you try to do math with text (<code>"5" + "3"</code>), Python will "concatenate" (stick them together) to get <code>"53"</code> instead of adding to get <code>8</code>. <strong>Using the right type for the right job prevents errors and makes your code work as intended.</strong></p>
+
+        <!-- Visual Model -->
+        <h2>Visual Mental Model</h2>
+
+        <div class="ascii-diagram">DATA TYPE LANDSCAPE
+═══════════════════════════════════════════════════════════════
+
+NUMBERS                          TEXT              LOGIC        ABSENCE
+├─────────┬──────────┐          ┌────────┐      ┌─────────┐   ┌──────┐
+│         │          │          │        │      │         │   │      │
+int      float      │          str      │      bool      │   None   │
+│         │          │          │        │      │         │   │      │
+42       3.14       │      "Hello!"    │      True      │   (empty)│
+-7       0.99       │      "Python"    │      False     │          │
+0        -2.5       │      "123"       │                │          │
+1000     6.022e23   │                  │                │          │
+│         │          │          │        │      │         │   │      │
+↓         ↓          ↓          ↓        ↓      ↓         ↓   ↓      ↓
+Math     Math       Math       Text      Text   Yes/No    Yes/No  Placeholder
+ops      ops        ops        ops       ops    decisions checks  "not set yet"
+(+,-,*,/) (+,-,*,/)            (.upper(), (==,!=)         (if/else)
+                               .lower())
+
+TYPE CHECKING: type(variable) → reveals the container shape</div>
+
+        <div class="info-box">
+            <p>💡 <strong>Key Insight:</strong> The arrows at the bottom show what you can DO with each type. The type determines which operations are valid!</p>
+        </div>
+
+        <!-- Examples -->
+        <h2>Code Examples</h2>
+
+        <h3>Example 1: Basic Type Assignment</h3>
+        <p>Let's create one variable of each type and see what Python thinks they are:</p>
+
+        <pre><code># Creating one variable of each type
+age = 25                    # int: whole number
+price = 19.99               # float: decimal number
+name = "Alice"              # str: text in quotes
+is_student = True           # bool: True or False (capitalized!)
+middle_name = None          # None: no value assigned
+
+# Let's see what Python thinks these are
+print(type(age))            # Output: &lt;class 'int'&gt;
+print(type(price))          # Output: &lt;class 'float'&gt;
+print(type(name))           # Output: &lt;class 'str'&gt;
+print(type(is_student))     # Output: &lt;class 'bool'&gt;
+print(type(middle_name))    # Output: &lt;class 'NoneType'&gt;</code></pre>
+
+        <p><strong>Output:</strong></p>
+        <pre><code>&lt;class 'int'&gt;
+&lt;class 'float'&gt;
+&lt;class 'str'&gt;
+&lt;class 'bool'&gt;
+&lt;class 'NoneType'&gt;</code></pre>
+
+        <h3>Example 2: Type Differences in Action</h3>
+        <p>Watch what happens when the same-looking values have different types:</p>
+
+        <pre><code># Same-looking values, different types!
+num_as_int = 5              # This is a number
+num_as_str = "5"            # This is text that looks like a number
+num_as_float = 5.0          # This is a decimal number
+
+# Watch what happens with addition
+print(num_as_int + 3)       # Math addition: 5 + 3 = 8
+print(num_as_str + "3")     # Text concatenation: "5" + "3" = "53"
+print(num_as_float + 3)     # Math with mixed types: 5.0 + 3 = 8.0
+
+# Booleans have surprising numeric values!
+print(True + 5)             # True acts like 1: 1 + 5 = 6
+print(False + 10)           # False acts like 0: 0 + 10 = 10
+
+# None is special—you can't do math with it
+result = None
+print(result)               # Output: None</code></pre>
+
+        <p><strong>Output:</strong></p>
+        <pre><code>8
+53
+8.0
+6
+10
+None</code></pre>
+
+        <h3>Example 3: Practical Type Conversion</h3>
+        <p>Converting between types (also called "type casting") is essential when working with user input:</p>
+
+        <pre><code># Converting between types (type casting)
+user_input = "42"                    # Comes in as a string from input()
+age = int(user_input)                # Convert string to integer
+print(f"Next year you'll be {age + 1}")  # Now we can do math!
+
+# Converting integers to floats for precision
+miles = 26                           # Whole number
+kilometers = float(miles) * 1.60934  # Convert to float for decimal math
+print(f"{miles} miles = {kilometers:.2f} km")  # .2f means 2 decimal places
+
+# Converting numbers to strings for display
+score = 95
+percentage = 87.5
+report = "Score: " + str(score) + ", Percentage: " + str(percentage) + "%"
+print(report)
+
+# Checking if conversion is safe before doing it
+maybe_number = "123"
+if maybe_number.isdigit():           # Check if string contains only digits
+    number = int(maybe_number)
+    print(f"Successfully converted: {number}")</code></pre>
+
+        <p><strong>Output:</strong></p>
+        <pre><code>Next year you'll be 43
+26 miles = 41.84 km
+Score: 95, Percentage: 87.5%
+Successfully converted: 123</code></pre>
+
+        <h3>Example 4: User Input Processing Pattern</h3>
+        <p>This is a real-world pattern you'll use constantly:</p>
+
+        <pre><code># Real-world pattern: processing user data
+print("=== Student Registration ===")
+
+# Everything from input() comes as a string!
+student_name = input("Enter name: ")              # str
+age_str = input("Enter age: ")                    # str (even though it's a number!)
+gpa_str = input("Enter GPA: ")                    # str
+is_fulltime = input("Full-time? (yes/no): ")      # str
+
+# Convert to appropriate types for processing
+age = int(age_str)                                # Convert to int for comparison
+gpa = float(gpa_str)                              # Convert to float for precision
+full_time = (is_fulltime.lower() == "yes")        # Convert to bool
+
+# Now we can work with the data properly
+print(f"\n--- Student Profile ---")
+print(f"Name: {student_name} ({type(student_name).__name__})")
+print(f"Age: {age} ({type(age).__name__})")
+print(f"GPA: {gpa} ({type(gpa).__name__})")
+print(f"Full-time: {full_time} ({type(full_time).__name__})")
+
+# Demonstrate type-appropriate operations
+if age >= 18:
+    print("✓ Eligible for adult courses")
+if gpa > 3.5:
+    print("✓ Qualifies for honors program")</code></pre>
+
+        <!-- Hands-On Exercise -->
+        <h2>Hands-On Exercise: Create Your Personal Profile</h2>
+
+        <p><strong>Goal:</strong> Create a Python program that stores different types of information about yourself and demonstrates understanding of data types.</p>
+
+        <h3>Step 1: Setup</h3>
+        <ol>
+            <li>Open your text editor or IDE</li>
+            <li>Create a new file called <code>my_profile.py</code></li>
+            <li>Save it in a folder where you can easily find it (like <code>Desktop/python-practice/</code>)</li>
+        </ol>
+
+        <h3>Step 2: Write the Starter Code</h3>
+        <p>Type this exact code into your file:</p>
+
+        <pre><code># My Personal Profile - Data Types Practice
+# Created by: [Your Name]
+
+print("=== CREATING MY PROFILE ===\n")
+
+# TODO: Create variables for each data type below</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>What you're doing:</strong> Setting up the structure with a header comment and print statement. Comments (lines starting with #) are notes for humans—Python ignores them.</p>
+        </div>
+
+        <h3>Step 3: Add Your Profile Data</h3>
+        <p>Below your TODO comment, add these variables with YOUR information:</p>
+
+        <pre><code># Personal information (strings)
+full_name = "Your Name Here"           # Replace with your actual name
+favorite_quote = "Your favorite quote" # Replace with a quote you like
+
+# Numbers about you (integers and floats)
+age = 25                               # Replace with your age (int)
+height_meters = 1.75                   # Replace with your height (float)
+favorite_number = 7                    # Replace with your favorite number (int)
+
+# True/False facts about you (booleans)
+loves_python = True                    # Do you love Python? True or False
+is_morning_person = False              # Are you a morning person? True or False
+
+# Optional information (None if not applicable)
+nickname = None                        # Add your nickname as a string, or leave as None</code></pre>
+
+        <h3>Step 4: Display and Inspect Your Data</h3>
+        <p>Add this code to see your data and check the types:</p>
+
+        <pre><code># Display your profile
+print("📋 MY PROFILE DATA:")
+print(f"Name: {full_name}")
+print(f"Quote: '{favorite_quote}'")
+print(f"Age: {age} years old")
+print(f"Height: {height_meters}m")
+print(f"Favorite Number: {favorite_number}")
+print(f"Loves Python: {loves_python}")
+print(f"Morning Person: {is_morning_person}")
+print(f"Nickname: {nickname}")
+
+# Check the data types
+print("\n🔍 DATA TYPE ANALYSIS:")
+print(f"full_name is a: {type(full_name)}")
+print(f"age is a: {type(age)}")
+print(f"height_meters is a: {type(height_meters)}")
+print(f"loves_python is a: {type(loves_python)}")
+print(f"nickname is a: {type(nickname)}")</code></pre>
+
+        <h3>Step 5: Add Type Conversions</h3>
+        <p>Add this code to practice converting between types:</p>
+
+        <pre><code># Type conversion practice
+print("\n🔄 TYPE CONVERSIONS:")
+
+age_as_string = str(age)
+print(f"Age as string: '{age_as_string}' (type: {type(age_as_string)})")
+
+height_in_cm = int(height_meters * 100)
+print(f"Height in cm: {height_in_cm}cm (type: {type(height_in_cm)})")
+
+favorite_as_float = float(favorite_number)
+print(f"Favorite number as float: {favorite_as_float} (type: {type(favorite_as_float)})")</code></pre>
+
+        <h3>Step 6: Run Your Program</h3>
+        <ol>
+            <li>Save your file (<code>Ctrl+S</code> or <code>Cmd+S</code>)</li>
+            <li>Open your terminal/command prompt</li>
+            <li>Navigate to the folder: <code>cd Desktop/python-practice/</code></li>
+            <li>Run: <code>python my_profile.py</code></li>
+        </ol>
+
+        <h3>Step 7: Expected Output</h3>
+        <p>You should see something like this (with your data):</p>
+
+        <pre><code>=== CREATING MY PROFILE ===
+
+📋 MY PROFILE DATA:
+Name: Alex Johnson
+Quote: 'The only way to do great work is to love what you do.'
+Age: 28 years old
+Height: 1.75m
+Favorite Number: 7
+Loves Python: True
+Morning Person: False
+Nickname: None
+
+🔍 DATA TYPE ANALYSIS:
+full_name is a: &lt;class 'str'&gt;
+age is a: &lt;class 'int'&gt;
+height_meters is a: &lt;class 'float'&gt;
+loves_python is a: &lt;class 'bool'&gt;
+nickname is a: &lt;class 'NoneType'&gt;
+
+🔄 TYPE CONVERSIONS:
+Age as string: '28' (type: &lt;class 'str'&gt;)
+Height in cm: 175cm (type: &lt;class 'int'&gt;)
+Favorite number as float: 7.0 (type: &lt;class 'float'&gt;)</code></pre>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Troubleshooting Tips:</strong></p>
+            <ul style="margin-top: 0.5rem;">
+                <li><strong>NameError: name 'True' is not defined</strong> → Make sure <code>True</code> and <code>False</code> are capitalized</li>
+                <li><strong>SyntaxError: invalid syntax</strong> → Check that all strings have matching quotes</li>
+                <li><strong>Wrong types showing</strong> → Remove quotes from numbers: use <code>25</code> not <code>"25"</code></li>
+            </ul>
+        </div>
+
+        <!-- Common Mistakes -->
+        <h2>Common Mistakes to Avoid</h2>
+
+        <h3>Mistake 1: String Numbers vs. Actual Numbers</h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>age = "25"          # This is a string!
+next_year = age + 1 # TypeError: can only concatenate str to str</code></pre>
+
+        <p><strong>Why it happens:</strong> When you put quotes around a number, Python treats it as text, not a number. You can't add 1 to text.</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code>age = 25            # No quotes = integer
+next_year = age + 1 # Works! Result: 26</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Only use quotes for actual text. If you'll do math with it, don't use quotes.</p>
+        </div>
+
+        <h3>Mistake 2: Forgetting Python 3 Division Behavior</h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>result = 5 / 2
+print(result)       # Expecting 2, but get 2.5</code></pre>
+
+        <p><strong>Why it happens:</strong> In Python 3, the <code>/</code> operator ALWAYS returns a float (decimal), even when dividing integers.</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code># For decimal division (default)
+result = 5 / 2      # Returns 2.5 (float)
+
+# For integer division (floor division)
+result = 5 // 2     # Returns 2 (int, rounds down)</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Use <code>//</code> when you want whole number division. Use <code>/</code> when you want precise division.</p>
+        </div>
+
+        <h3>Mistake 3: Lowercase <code>true</code> and <code>false</code></h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>is_valid = true     # NameError: name 'true' is not defined</code></pre>
+
+        <p><strong>Why it happens:</strong> In Python, booleans MUST be capitalized: <code>True</code> and <code>False</code>. Other languages use lowercase, which causes confusion.</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code>is_valid = True     # Capital T
+is_complete = False # Capital F</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Think of <code>True</code> and <code>False</code> as proper names (like "Python" itself).</p>
+        </div>
+
+        <h3>Mistake 4: Treating <code>None</code> Like Zero</h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>value = None
+total = value + 10  # TypeError: unsupported operand type(s) for +</code></pre>
+
+        <p><strong>Why it happens:</strong> <code>None</code> isn't zero—it's "nothing at all." You can't do math with nothing.</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code>value = None
+
+# Check before using
+if value is None:
+    value = 0       # Set a default if None
+
+total = value + 10  # Now it works: 0 + 10 = 10</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Always check if a variable is <code>None</code> before using it. Use <code>if value is None:</code></p>
+        </div>
+
+        <h3>Mistake 5: Mixing Types in Concatenation</h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>age = 25
+message = "I am " + age + " years old"  # TypeError</code></pre>
+
+        <p><strong>Why it happens:</strong> The <code>+</code> operator with strings means "stick together," but you can't stick text and numbers together directly.</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code>age = 25
+
+# Option 1: Convert to string
+message = "I am " + str(age) + " years old"
+
+# Option 2: Use f-strings (modern and preferred!)
+message = f"I am {age} years old"
+
+# Option 3: Use commas in print
+print("I am", age, "years old")</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Get comfortable with f-strings (<code>f"text {variable}"</code>). They're the easiest way to mix text and variables.</p>
+        </div>
+
+        <h3>Mistake 6: Invalid Type Conversions</h3>
+        
+        <p><strong>Problem:</strong></p>
+        <pre><code>text = "hello"
+number = int(text)  # ValueError: invalid literal for int()</code></pre>
+
+        <p><strong>Why it happens:</strong> Not all conversions are possible. You can't turn random text into a number—the text must look like a number!</p>
+
+        <p><strong>Solution:</strong></p>
+        <pre><code># This works - text looks like a number
+text = "42"
+number = int(text)  # Success: 42
+
+# Check first if conversion is safe
+text = "hello"
+if text.isdigit():
+    number = int(text)
+else:
+    print("Can't convert to number")</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Prevention tip:</strong> Before converting strings to numbers, use <code>.isdigit()</code> to check first!</p>
+        </div>
+
+        <!-- Mini-Project -->
+        <h2>Mini-Project: BMI Calculator with Health Categories</h2>
+
+        <p><strong>Goal:</strong> Build a Body Mass Index calculator that takes user input, performs type conversions, does calculations with floats, and uses different data types appropriately.</p>
+
+        <div class="info-box">
+            <p>💡 <strong>What you'll practice:</strong> Taking user input (strings), converting to floats, performing calculations, using booleans for comparisons, and displaying formatted output</p>
+        </div>
+
+        <p><strong>Time estimate:</strong> 15-30 minutes</p>
+
+        <h3>Requirements Checklist</h3>
+
+        <div class="requirements-checklist">
+            <ul>
+                <li>Prompt user for weight in kilograms</li>
+                <li>Prompt user for height in meters</li>
+                <li>Convert string inputs to floats</li>
+                <li>Calculate BMI using formula: <code>weight / (height ** 2)</code></li>
+                <li>Round the BMI to 2 decimal places</li>
+                <li>Determine health category (Underweight, Normal, Overweight, Obese)</li>
+                <li>Display the result with appropriate formatting</li>
+                <li>Show the data types being used</li>
+            </ul>
+        </div>
+
+        <h3>Complete Starter Code</h3>
+
+        <pre><code># BMI Calculator - Mini Project
+# Practices: user input, type conversion, float math, conditionals
+
+print("=" * 40)
+print("   BMI CALCULATOR")
+print("=" * 40)
+print()
+
+# Get user input
+print("Please enter your measurements:")
+weight_str = input("Weight (kg): ")
+height_str = input("Height (m): ")
+
+# Convert to floats
+weight = float(weight_str)
+height = float(height_str)
+
+# Calculate BMI
+bmi = weight / (height ** 2)
+bmi_rounded = round(bmi, 2)
+
+# Determine category
+if bmi < 18.5:
+    category = "Underweight"
+elif bmi < 25:
+    category = "Normal weight"
+elif bmi < 30:
+    category = "Overweight"
+else:
+    category = "Obese"
+
+# Display results
+print("\n" + "=" * 40)
+print("   RESULTS")
+print("=" * 40)
+print(f"Your BMI: {bmi_rounded}")
+print(f"Category: {category}")
+print("=" * 40)</code></pre>
+
+        <h3>Expected Output</h3>
+
+        <pre><code>========================================
+   BMI CALCULATOR
+========================================
+
+Please enter your measurements:
+Weight (kg): 70
+Height (m): 1.75
+
+========================================
+   RESULTS
+========================================
+Your BMI: 22.86
+Category: Normal weight
+========================================</code></pre>
+
+        <h3>Testing Your Project</h3>
+
+        <p>Test with these values to verify it works correctly:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Weight (kg)</th>
+                    <th>Height (m)</th>
+                    <th>Expected BMI</th>
+                    <th>Expected Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>70</td>
+                    <td>1.75</td>
+                    <td>22.86</td>
+                    <td>Normal weight</td>
+                </tr>
+                <tr>
+                    <td>50</td>
+                    <td>1.75</td>
+                    <td>16.33</td>
+                    <td>Underweight</td>
+                </tr>
+                <tr>
+                    <td>90</td>
+                    <td>1.75</td>
+                    <td>29.39</td>
+                    <td>Overweight</td>
+                </tr>
+                <tr>
+                    <td>100</td>
+                    <td>1.75</td>
+                    <td>32.65</td>
+                    <td>Obese</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Bonus Challenges 🌟</h3>
+
+        <ol>
+            <li>
+                <strong>Add Input Validation:</strong>
+                <ul>
+                    <li>Check if the user entered valid numbers</li>
+                    <li>Handle errors gracefully if they enter text instead of numbers</li>
+                    <li>Hint: Use try/except (we'll learn this later, but you can look it up!)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Imperial Units Support:</strong>
+                <ul>
+                    <li>Ask the user if they want to use pounds and feet/inches</li>
+                    <li>Convert imperial to metric before calculating</li>
+                    <li>Formula: <code>weight_kg = weight_lbs / 2.205</code>, <code>height_m = height_inches * 0.0254</code></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Health Advice:</strong>
+                <ul>
+                    <li>Add personalized messages for each category</li>
+                    <li>Example: "Great! You're in the healthy range. Keep it up!"</li>
+                    <li>Store different messages in variables (strings!)</li>
+                </ul>
+            </li>
+        </ol>
+
+        <!-- Summary -->
+        <h2>Summary</h2>
+
+        <h3>Key Takeaways ✅</h3>
+
+        <ul>
+            <li><strong>Five core types:</strong> <code>int</code> (whole numbers), <code>float</code> (decimals), <code>str</code> (text), <code>bool</code> (True/False), and <code>None</code> (absence of value)</li>
+            <li><strong>Types matter:</strong> Different types enable different operations—you can do math with numbers but not with strings</li>
+            <li><strong>Check types anytime:</strong> Use <code>type(variable)</code> to see what type Python thinks something is</li>
+            <li><strong>Convert when needed:</strong> Use <code>int()</code>, <code>float()</code>, <code>str()</code>, and <code>bool()</code> to convert between types</li>
+            <li><strong>User input is always strings:</strong> When you use <code>input()</code>, you always get a string back—convert it if you need to do math!</li>
+        </ul>
+
+        <h3>What Makes Data Types Special 🌟</h3>
+
+        <ol>
+            <li><strong>They're the foundation of everything:</strong> Every variable, every function return value, every piece of data has a type. Understanding types means understanding how Python thinks.</li>
+            <li><strong>They prevent errors:</strong> Python's type system catches mistakes early. If you try to divide text, Python stops you with an error instead of giving you garbage results.</li>
+            <li><strong>They're automatic but controllable:</strong> Python figures out types for you (dynamic typing), but you can always convert them when needed. It's the best of both worlds!</li>
+        </ol>
+
+        <!-- Recommended Tools Section -->
+        <div style="background: linear-gradient(135deg, #eff6ff 0%, #ecfdf5 100%); padding: 2rem; border-radius: 12px; margin: 2.5rem 0;">
+            <h3 style="margin-top: 0; color: #065f46;">📚 Level Up Your Python Learning</h3>
+            <p style="color: #475569; margin-bottom: 1.5rem;">Master Python faster with interactive courses and structured practice</p>
+            
+            <div style="display: grid; gap: 1.5rem;">
+                <!-- DataCamp -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 2rem;">🎯</span>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">DataCamp - Interactive Python Courses</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">
+                                <strong>Price:</strong> $25/month (free trial available) | <strong>Perfect for:</strong> Hands-on learners who want instant feedback
+                            </p>
+                            <p style="margin: 0 0 1rem 0; color: #475569; font-size: 0.9rem;">
+                                Learn Python through interactive exercises with instant feedback. Type code directly in your browser, get hints when stuck, and track your progress with skill assessments.
+                            </p>
+                            <div style="margin-bottom: 1rem;">
+                                <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #065f46; font-size: 0.9rem;">What makes DataCamp great:</p>
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #475569; font-size: 0.875rem;">
+                                    <li>Learn by doing—write code in every lesson (not just watching videos)</li>
+                                    <li>Instant feedback on your code with smart hints</li>
+                                    <li>Bite-sized lessons (3-4 min each) perfect for busy schedules</li>
+                                    <li>300+ Python exercises from basics to data science</li>
+                                </ul>
+                            </div>
+                            <a href="https://www.datacamp.com/courses/intro-to-python-for-data-science&amp;utm_medium=python&amp;utm_campaign=tutorial3" 
+                               target="_blank" 
+                               style="display: inline-block; background: #078930; color: white; padding: 0.625rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                Start Free Trial →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Udemy Courses -->
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: start; gap: 1rem;">
+                        <span style="font-size: 2rem;">🎓</span>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #065f46;">Udemy Python Complete Courses</h4>
+                            <p style="margin: 0 0 0.75rem 0; color: #64748b; font-size: 0.875rem;">
+                                <strong>Price:</strong> ₹499 (on sale from ₹3,499) | <strong>Perfect for:</strong> Comprehensive video-based learning with projects
+                            </p>
+                            <p style="margin: 0 0 1rem 0; color: #475569; font-size: 0.9rem;">
+                                One-time payment for lifetime access to complete Python courses. Learn from industry experts with 20-40 hours of video content, downloadable resources, and certificate of completion.
+                            </p>
+                            <div style="margin-bottom: 1rem;">
+                                <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #065f46; font-size: 0.9rem;">Top-rated courses include:</p>
+                                <ul style="margin: 0; padding-left: 1.25rem; color: #475569; font-size: 0.875rem;">
+                                    <li><strong>"100 Days of Code: Python Pro"</strong> - 60+ hours, 4.7★ rating</li>
+                                    <li><strong>"Complete Python Bootcamp"</strong> - Build 10+ real projects</li>
+                                    <li><strong>"Python for Data Science"</strong> - Learn NumPy, Pandas, Matplotlib</li>
+                                    <li>30-day money-back guarantee on all courses</li>
+                                </ul>
+                            </div>
+                            <a href="https://www.udemy.com/topic/python/&amp;utm_medium=python&amp;utm_campaign=tutorial3" 
+                               target="_blank" 
+                               style="display: inline-block; background: #078930; color: white; padding: 0.625rem 1.25rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                                Browse Python Courses →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin: 1.5rem 0 0 0; color: #64748b; font-size: 0.8125rem; text-align: center;">
+                💡 <em>These resources complement our free tutorials with structured practice and expert guidance—but you can absolutely master Python without them!</em>
+            </p>
+        </div>
+
+        <h3>Your Next Steps 📋</h3>
+
+        <div class="requirements-checklist">
+            <ul>
+                <li><strong>Practice creating variables</strong> of each type without looking at examples</li>
+                <li><strong>Experiment with <code>type()</code></strong> on different values to build intuition</li>
+                <li><strong>Try breaking things:</strong> What happens if you add <code>int + str</code>? Learn from errors!</li>
+                <li><strong>Complete the BMI mini-project</strong> and all three bonus challenges</li>
+                <li><strong>Move on to operators</strong> to learn what you can DO with these data types</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <p>🎯 <strong>Closing Motivation:</strong> You've just learned the alphabet of programming! Just like how 26 letters combine to create every English word, these five data types combine to create every Python program ever written. From Instagram to Spotify to NASA's spacecraft software—they all start with <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, and <code>None</code>.</p>
+        </div>
+
+        <p>The difference between a beginner and an expert isn't that experts use different types—they just get really good at choosing the right type for the right job. <strong>You're now equipped with that same foundation.</strong> Every line of code you write from now on will use these types, and you'll get faster and more confident with every program.</p>
+
+        <p>Don't just read this tutorial—<strong>type out the examples, break things on purpose, and build the mini-project.</strong> That's where the real learning happens. Your fingers need to remember this stuff, not just your eyes.</p>
+
+        <p><strong>Next up:</strong> You'll learn operators—the verbs that let your data types actually do things. Addition, comparison, logic—that's where your code comes alive. But you needed to understand the nouns (data types) first, and now you do.</p>
+
+        <p><strong>Keep coding! 🚀</strong></p>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Data Types in Python</h2>
+                <p class="quiz-description">Check your understanding of Python's basic data types</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. Which of the following is a float in Python?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">42</div>
+                    <div class="quiz-option" data-correct="true">3.14</div>
+                    <div class="quiz-option" data-correct="false">"3.14"</div>
+                    <div class="quiz-option" data-correct="false">True</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What is the result of: <code>type("Hello")</code>?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">&lt;class 'int'&gt;</div>
+                    <div class="quiz-option" data-correct="true">&lt;class 'str'&gt;</div>
+                    <div class="quiz-option" data-correct="false">&lt;class 'float'&gt;</div>
+                    <div class="quiz-option" data-correct="false">&lt;class 'bool'&gt;</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. Which value represents "nothing" or "no value" in Python?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">0</div>
+                    <div class="quiz-option" data-correct="false">False</div>
+                    <div class="quiz-option" data-correct="true">None</div>
+                    <div class="quiz-option" data-correct="false">""</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What happens when you add an integer and a float: <code>10 + 3.5</code>?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Python throws an error</div>
+                    <div class="quiz-option" data-correct="true">Result is 13.5 (a float)</div>
+                    <div class="quiz-option" data-correct="false">Result is 13 (an integer)</div>
+                    <div class="quiz-option" data-correct="false">Result is "103.5" (a string)</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">5. Which of these is NOT a boolean value in Python?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">True</div>
+                    <div class="quiz-option" data-correct="false">False</div>
+                    <div class="quiz-option" data-correct="true">"True"</div>
+                    <div class="quiz-option" data-correct="false">Both True and False are boolean</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="variables.html" class="btn btn-secondary">← Previous: Variables</a>
+                <a href="python-operators-tutorial.html" class="btn btn-primary">Next: Operators →</a>
+            </div>
+        </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Train machine learning models to predict bugs before they happen. Learn defect prediction, code complexity analysis, and risk-based testing strategies.">
+    <title>Tutorial 3: Bug Prediction with Machine Learning - Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <!-- Prism.js for Syntax Highlighting -->
+    <link href="../../../vendor/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Tutorial-specific styles */
+        .tutorial-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        .tutorial-header {
+            background: linear-gradient(135deg, #078930 0%, #0d9488 100%);
+            padding: 3rem 0;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .tutorial-content h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+        
+        .tutorial-content p {
+            margin-bottom: 1.25rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content ul,
+        .tutorial-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+        
+        .tutorial-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tutorial-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e11d48;
+        }
+        
+        .tutorial-content pre {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tutorial-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .info-box {
+            background-color: #ecfdf5;
+            border-left: 4px solid #078930;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .warning-box {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning-box p {
+            margin: 0;
+            color: #92400e;
+        }
+        
+        .success-box {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .success-box p {
+            margin: 0;
+            color: #065f46;
+        }
+        
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .tutorial-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-light);
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .tutorial-nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(-3px);
+        }
+        
+        .tutorial-nav .next:hover {
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar - Auto-injected by common.js -->
+    
+    <!-- Tutorial Header -->
+    <div class="tutorial-header">
+        <div class="container">
+            <div class="tutorial-badge intermediate">Intermediate</div>
+            <h1 class="page-title">Bug Prediction with Machine Learning</h1>
+            <p class="page-subtitle">Train ML models to predict where bugs will occur and prioritize testing efforts based on risk</p>
+        </div>
+    </div>
+
+    <!-- Tutorial Content -->
+    <div class="tutorial-content">
+        
+        <p>Imagine knowing where bugs will appear before they happen. No more random test selection. No more wondering "Did we test the right things?" Machine learning can analyze your codebase, historical defects, and development patterns to predict which files and modules are most likely to contain bugs—before your users find them.</p>
+
+        <p>In this tutorial, you'll build a real bug prediction system using scikit-learn, train it on historical defect data, and deploy it to prioritize your testing efforts. By the end, you'll have a working model that tells you exactly where to focus your QA resources.</p>
+
+        <h2>Why Predict Bugs?</h2>
+        
+        <p>Traditional testing approaches test everything equally—or worse, test randomly based on what's convenient. But not all code is equal:</p>
+
+        <ul>
+            <li><strong>80% of defects occur in 20% of modules</strong> (Pareto Principle in software)</li>
+            <li><strong>Complex code is 5-10x more likely to have bugs</strong> than simple code</li>
+            <li><strong>Recently changed files are 3x more bug-prone</strong> than stable code</li>
+            <li><strong>Code touched by many developers has higher defect density</strong> due to coordination issues</li>
+        </ul>
+
+        <div class="info-box">
+            <p>💡 <strong>Real Impact:</strong> Microsoft Research found that bug prediction models helped reduce defects by 20-30% by focusing testing on high-risk areas. Google uses ML-based risk analysis to prioritize billions of test executions daily.</p>
+        </div>
+
+        <h2>Understanding Defect Prediction</h2>
+
+        <p>Bug prediction is a <strong>classification problem</strong> in machine learning. Given features about a code module, predict:</p>
+
+        <ul>
+            <li><strong>Binary Classification:</strong> Will this file have a bug? (Yes/No)</li>
+            <li><strong>Severity Prediction:</strong> How severe will the bug be? (Low/Medium/High/Critical)</li>
+            <li><strong>Defect Count:</strong> How many bugs will this module have? (Regression)</li>
+        </ul>
+
+        <h3>What Features Predict Bugs?</h3>
+
+        <p>ML models learn from <strong>features</strong>—measurable characteristics that correlate with defects:</p>
+
+        <table style="width:100%; border-collapse: collapse; margin: 1.5rem 0;">
+            <thead>
+                <tr style="background-color: #f1f5f9;">
+                    <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Feature Category</th>
+                    <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Examples</th>
+                    <th style="padding: 0.75rem; text-align: left; border: 1px solid #e2e8f0;">Why It Matters</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Code Complexity</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Cyclomatic complexity, lines of code, nesting depth</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Complex code is harder to understand and test</td>
+                </tr>
+                <tr style="background-color: #f9fafb;">
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Change Metrics</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Number of commits, lines changed, churn rate</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Frequent changes introduce instability</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Developer Metrics</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Number of contributors, experience level</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Too many cooks spoil the code</td>
+                </tr>
+                <tr style="background-color: #f9fafb;">
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Historical Defects</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Past bugs in this file, bug fix frequency</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Buggy code tends to stay buggy</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;"><strong>Code Dependencies</strong></td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Coupling, number of dependencies</td>
+                    <td style="padding: 0.75rem; border: 1px solid #e2e8f0;">Highly coupled code spreads bugs</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Collecting Training Data</h2>
+
+        <p>First, we need historical data about which files had bugs. Let's extract this from Git and bug tracking systems:</p>
+
+        <pre><code class="language-python">import pandas as pd
+import subprocess
+import json
+from collections import defaultdict
+
+class DefectDataCollector:
+    """
+    Collect historical defect data from Git repository
+    and prepare it for machine learning
+    """
+    
+    def __init__(self, repo_path):
+        self.repo_path = repo_path
+        self.defect_data = defaultdict(lambda: {
+            'bug_count': 0,
+            'commits': 0,
+            'lines_changed': 0,
+            'developers': set(),
+            'last_modified': None
+        })
+    
+    def extract_git_history(self):
+        """
+        Extract commit history from Git
+        Identify bug-fixing commits by keywords
+        """
+        # Get all commits with file changes
+        cmd = [
+            'git', 'log',
+            '--all',
+            '--numstat',
+            '--pretty=format:%H|%an|%ad|%s',
+            '--date=short'
+        ]
+        
+        result = subprocess.run(
+            cmd,
+            cwd=self.repo_path,
+            capture_output=True,
+            text=True
+        )
+        
+        commits = result.stdout.split('\n\n')
+        
+        for commit_block in commits:
+            if not commit_block.strip():
+                continue
+            
+            lines = commit_block.strip().split('\n')
+            if not lines:
+                continue
+            
+            # Parse commit metadata
+            metadata = lines[0].split('|')
+            if len(metadata) < 4:
+                continue
+            
+            commit_hash, author, date, message = metadata
+            
+            # Identify if this is a bug fix
+            is_bug_fix = self._is_bug_fix_commit(message)
+            
+            # Parse file changes
+            for i in range(1, len(lines)):
+                parts = lines[i].split('\t')
+                if len(parts) != 3:
+                    continue
+                
+                added, deleted, filepath = parts
+                
+                # Skip non-code files
+                if not self._is_code_file(filepath):
+                    continue
+                
+                # Update file statistics
+                try:
+                    lines_changed = int(added) + int(deleted)
+                except ValueError:
+                    lines_changed = 0
+                
+                self.defect_data[filepath]['commits'] += 1
+                self.defect_data[filepath]['lines_changed'] += lines_changed
+                self.defect_data[filepath]['developers'].add(author)
+                self.defect_data[filepath]['last_modified'] = date
+                
+                if is_bug_fix:
+                    self.defect_data[filepath]['bug_count'] += 1
+        
+        print(f"✅ Extracted data for {len(self.defect_data)} files")
+        return self.defect_data
+    
+    def _is_bug_fix_commit(self, message):
+        """Identify bug fix commits by keywords"""
+        bug_keywords = [
+            'fix', 'bug', 'issue', 'defect', 'error',
+            'crash', 'problem', 'resolve', 'patch'
+        ]
+        message_lower = message.lower()
+        return any(keyword in message_lower for keyword in bug_keywords)
+    
+    def _is_code_file(self, filepath):
+        """Filter for actual code files"""
+        code_extensions = ['.py', '.java', '.js', '.ts', '.cpp', '.c', '.go', '.rb']
+        return any(filepath.endswith(ext) for ext in code_extensions)
+    
+    def to_dataframe(self):
+        """Convert collected data to pandas DataFrame"""
+        rows = []
+        
+        for filepath, data in self.defect_data.items():
+            rows.append({
+                'file': filepath,
+                'bug_count': data['bug_count'],
+                'commits': data['commits'],
+                'lines_changed': data['lines_changed'],
+                'num_developers': len(data['developers']),
+                'has_bug': 1 if data['bug_count'] > 0 else 0  # Target variable
+            })
+        
+        df = pd.DataFrame(rows)
+        print(f"\n📊 Dataset shape: {df.shape}")
+        print(f"Files with bugs: {df['has_bug'].sum()} ({df['has_bug'].mean()*100:.1f}%)")
+        
+        return df
+
+# Usage
+collector = DefectDataCollector('/path/to/your/repo')
+collector.extract_git_history()
+df = collector.to_dataframe()
+print(df.head())
+</code></pre>
+
+        <h2>Calculating Code Complexity Metrics</h2>
+
+        <p>Now let's add code complexity features using the <code>radon</code> library:</p>
+
+        <pre><code class="language-bash"># Install radon for complexity analysis
+pip install radon
+</code></pre>
+
+        <pre><code class="language-python">from radon.complexity import cc_visit
+from radon.metrics import h_visit, mi_visit
+import os
+
+class ComplexityAnalyzer:
+    """
+    Calculate code complexity metrics for prediction
+    """
+    
+    def __init__(self, repo_path):
+        self.repo_path = repo_path
+    
+    def calculate_cyclomatic_complexity(self, filepath):
+        """
+        Calculate cyclomatic complexity (CC)
+        Higher CC = more complex = more bugs
+        """
+        try:
+            with open(os.path.join(self.repo_path, filepath), 'r') as f:
+                code = f.read()
+            
+            # Calculate complexity for each function
+            complexity_list = cc_visit(code)
+            
+            if not complexity_list:
+                return 0
+            
+            # Return average complexity
+            avg_complexity = sum(c.complexity for c in complexity_list) / len(complexity_list)
+            max_complexity = max(c.complexity for c in complexity_list)
+            
+            return {
+                'avg_complexity': avg_complexity,
+                'max_complexity': max_complexity,
+                'num_functions': len(complexity_list)
+            }
+        
+        except Exception as e:
+            return {
+                'avg_complexity': 0,
+                'max_complexity': 0,
+                'num_functions': 0
+            }
+    
+    def calculate_maintainability_index(self, filepath):
+        """
+        Calculate maintainability index (0-100)
+        Lower MI = harder to maintain = more bugs
+        """
+        try:
+            with open(os.path.join(self.repo_path, filepath), 'r') as f:
+                code = f.read()
+            
+            mi = mi_visit(code, multi=True)
+            
+            if not mi:
+                return 100  # Perfect score if no code
+            
+            return sum(mi) / len(mi)
+        
+        except Exception:
+            return 100
+    
+    def get_file_metrics(self, filepath):
+        """Get lines of code"""
+        try:
+            with open(os.path.join(self.repo_path, filepath), 'r') as f:
+                lines = f.readlines()
+            
+            # Count non-empty, non-comment lines
+            loc = sum(1 for line in lines if line.strip() and not line.strip().startswith('#'))
+            
+            return {
+                'lines_of_code': loc,
+                'total_lines': len(lines)
+            }
+        except Exception:
+            return {
+                'lines_of_code': 0,
+                'total_lines': 0
+            }
+    
+    def enrich_dataframe(self, df):
+        """Add complexity metrics to existing DataFrame"""
+        
+        complexity_metrics = []
+        
+        for idx, row in df.iterrows():
+            filepath = row['file']
+            
+            # Calculate all metrics
+            cc = self.calculate_cyclomatic_complexity(filepath)
+            mi = self.calculate_maintainability_index(filepath)
+            loc = self.get_file_metrics(filepath)
+            
+            complexity_metrics.append({
+                'avg_complexity': cc['avg_complexity'],
+                'max_complexity': cc['max_complexity'],
+                'num_functions': cc['num_functions'],
+                'maintainability_index': mi,
+                'lines_of_code': loc['lines_of_code'],
+                'total_lines': loc['total_lines']
+            })
+            
+            if idx % 100 == 0:
+                print(f"Processed {idx}/{len(df)} files...")
+        
+        # Merge with original DataFrame
+        complexity_df = pd.DataFrame(complexity_metrics)
+        enriched_df = pd.concat([df, complexity_df], axis=1)
+        
+        print(f"✅ Added {len(complexity_df.columns)} complexity features")
+        return enriched_df
+
+# Usage
+analyzer = ComplexityAnalyzer('/path/to/your/repo')
+enriched_df = analyzer.enrich_dataframe(df)
+print(enriched_df.head())
+</code></pre>
+
+        <div class="info-box">
+            <p>💡 <strong>Cyclomatic Complexity:</strong> Measures the number of independent paths through code. CC > 10 is considered risky, CC > 20 is very risky. Studies show files with CC > 15 have 2-3x more bugs.</p>
+        </div>
+
+        <h2>Training a Bug Prediction Model</h2>
+
+        <p>Now let's train a Random Forest classifier to predict bugs:</p>
+
+        <pre><code class="language-python">from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+class BugPredictor:
+    """
+    Machine learning model to predict bug-prone files
+    """
+    
+    def __init__(self):
+        self.model = None
+        self.scaler = StandardScaler()
+        self.feature_names = None
+    
+    def prepare_features(self, df):
+        """
+        Prepare features for training
+        """
+        # Select feature columns
+        feature_cols = [
+            'commits',
+            'lines_changed',
+            'num_developers',
+            'avg_complexity',
+            'max_complexity',
+            'num_functions',
+            'maintainability_index',
+            'lines_of_code'
+        ]
+        
+        self.feature_names = feature_cols
+        
+        # Extract features and target
+        X = df[feature_cols].fillna(0)
+        y = df['has_bug']
+        
+        # Handle any remaining NaN or inf values
+        X = X.replace([np.inf, -np.inf], np.nan).fillna(0)
+        
+        return X, y
+    
+    def train(self, df, test_size=0.3):
+        """
+        Train the bug prediction model
+        """
+        # Prepare data
+        X, y = self.prepare_features(df)
+        
+        # Split into training and testing sets
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42, stratify=y
+        )
+        
+        # Scale features
+        X_train_scaled = self.scaler.fit_transform(X_train)
+        X_test_scaled = self.scaler.transform(X_test)
+        
+        print(f"📊 Training set: {len(X_train)} samples")
+        print(f"📊 Test set: {len(X_test)} samples")
+        print(f"📊 Positive class ratio: {y_train.mean()*100:.1f}%\n")
+        
+        # Train Random Forest
+        self.model = RandomForestClassifier(
+            n_estimators=100,
+            max_depth=10,
+            min_samples_split=5,
+            min_samples_leaf=2,
+            random_state=42,
+            class_weight='balanced'  # Handle imbalanced data
+        )
+        
+        print("🤖 Training Random Forest model...")
+        self.model.fit(X_train_scaled, y_train)
+        
+        # Evaluate on test set
+        y_pred = self.model.predict(X_test_scaled)
+        y_pred_proba = self.model.predict_proba(X_test_scaled)[:, 1]
+        
+        print("\n" + "="*60)
+        print("MODEL PERFORMANCE")
+        print("="*60)
+        print("\nClassification Report:")
+        print(classification_report(y_test, y_pred, target_names=['No Bug', 'Bug']))
+        
+        print("\nConfusion Matrix:")
+        cm = confusion_matrix(y_test, y_pred)
+        print(cm)
+        print(f"True Negatives: {cm[0,0]}, False Positives: {cm[0,1]}")
+        print(f"False Negatives: {cm[1,0]}, True Positives: {cm[1,1]}")
+        
+        print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_pred_proba):.3f}")
+        
+        # Feature importance
+        self._print_feature_importance()
+        
+        return {
+            'X_test': X_test_scaled,
+            'y_test': y_test,
+            'y_pred': y_pred,
+            'y_pred_proba': y_pred_proba
+        }
+    
+    def _print_feature_importance(self):
+        """Show which features matter most"""
+        if self.model is None:
+            return
+        
+        importances = self.model.feature_importances_
+        indices = np.argsort(importances)[::-1]
+        
+        print("\n" + "="*60)
+        print("FEATURE IMPORTANCE")
+        print("="*60)
+        
+        for i, idx in enumerate(indices):
+            print(f"{i+1}. {self.feature_names[idx]}: {importances[idx]:.4f}")
+    
+    def predict_bug_probability(self, file_features):
+        """
+        Predict probability that a file contains bugs
+        
+        Args:
+            file_features: dict with keys matching feature_names
+        
+        Returns:
+            float: Probability of bug (0.0 to 1.0)
+        """
+        if self.model is None:
+            raise ValueError("Model not trained yet!")
+        
+        # Create feature vector
+        X = np.array([[file_features[f] for f in self.feature_names]])
+        X_scaled = self.scaler.transform(X)
+        
+        # Predict probability
+        prob = self.model.predict_proba(X_scaled)[0, 1]
+        
+        return prob
+    
+    def prioritize_testing(self, df, top_n=20):
+        """
+        Rank files by bug probability for test prioritization
+        """
+        X, _ = self.prepare_features(df)
+        X_scaled = self.scaler.transform(X)
+        
+        # Get bug probabilities
+        bug_probs = self.model.predict_proba(X_scaled)[:, 1]
+        
+        # Create results DataFrame
+        results = df.copy()
+        results['bug_probability'] = bug_probs
+        results['risk_level'] = pd.cut(
+            bug_probs,
+            bins=[0, 0.3, 0.6, 1.0],
+            labels=['Low', 'Medium', 'High']
+        )
+        
+        # Sort by probability
+        results = results.sort_values('bug_probability', ascending=False)
+        
+        print("\n" + "="*60)
+        print(f"TOP {top_n} HIGH-RISK FILES")
+        print("="*60)
+        
+        for idx, row in results.head(top_n).iterrows():
+            print(f"\n📁 {row['file']}")
+            print(f"   Risk: {row['risk_level']} ({row['bug_probability']*100:.1f}% probability)")
+            print(f"   Complexity: {row['avg_complexity']:.1f}, LOC: {row['lines_of_code']}")
+            print(f"   Changes: {row['commits']} commits, {row['num_developers']} developers")
+        
+        return results
+
+# Complete workflow
+print("🚀 Starting bug prediction pipeline...\n")
+
+# Train model
+predictor = BugPredictor()
+results = predictor.train(enriched_df)
+
+# Prioritize testing
+priority_df = predictor.prioritize_testing(enriched_df, top_n=20)
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>Model Output:</strong> You now have a ranked list of files by bug probability! Focus your testing on the top 20% highest-risk files to catch 80% of bugs.</p>
+        </div>
+
+        <h2>Interpreting Model Results</h2>
+
+        <p>Understanding what the model tells you:</p>
+
+        <ul>
+            <li><strong>High Precision (>80%):</strong> When model says "bug," it's usually right → Focus testing here</li>
+            <li><strong>High Recall (>70%):</strong> Model catches most buggy files → Good safety net</li>
+            <li><strong>ROC-AUC > 0.75:</strong> Model distinguishes buggy from clean code well</li>
+            <li><strong>Feature Importance:</strong> Shows what makes code risky (usually complexity + churn)</li>
+        </ul>
+
+        <h3>Risk-Based Test Strategy</h3>
+
+        <pre><code class="language-python">def create_test_strategy(priority_df):
+    """
+    Generate actionable test strategy based on predictions
+    """
+    high_risk = priority_df[priority_df['risk_level'] == 'High']
+    medium_risk = priority_df[priority_df['risk_level'] == 'Medium']
+    low_risk = priority_df[priority_df['risk_level'] == 'Low']
+    
+    strategy = f"""
+    
+TEST PRIORITIZATION STRATEGY
+{"="*60}
+
+🔴 HIGH RISK FILES ({len(high_risk)} files)
+   - Allocate 50% of testing effort here
+   - Full test coverage (unit + integration + E2E)
+   - Mandatory code review
+   - Consider refactoring if complexity > 20
+   
+🟡 MEDIUM RISK FILES ({len(medium_risk)} files)
+   - Allocate 30% of testing effort
+   - Focus on integration and critical paths
+   - Standard code review
+   
+🟢 LOW RISK FILES ({len(low_risk)} files)
+   - Allocate 20% of testing effort
+   - Smoke tests and basic validation
+   - Optional code review
+   
+TOTAL EFFORT DISTRIBUTION:
+   Test Budget: Assume 100 testing hours
+   High Risk: 50 hours across {len(high_risk)} files
+   Medium Risk: 30 hours across {len(medium_risk)} files
+   Low Risk: 20 hours across {len(low_risk)} files
+    """
+    
+    print(strategy)
+    
+    # Export high-risk files for CI/CD
+    high_risk_files = high_risk['file'].tolist()
+    
+    with open('high_risk_files.json', 'w') as f:
+        json.dump(high_risk_files, f, indent=2)
+    
+    print(f"✅ Saved {len(high_risk_files)} high-risk files to high_risk_files.json")
+    
+    return high_risk_files
+
+high_risk_files = create_test_strategy(priority_df)
+</code></pre>
+
+        <h2>Continuous Monitoring</h2>
+
+        <p>Bug prediction isn't one-time—retrain as your codebase evolves:</p>
+
+        <pre><code class="language-python">import schedule
+import time
+
+def retrain_model():
+    """
+    Automated retraining pipeline
+    Run weekly or after major releases
+    """
+    print("🔄 Starting automated model retraining...")
+    
+    # 1. Collect latest data
+    collector = DefectDataCollector('/path/to/repo')
+    collector.extract_git_history()
+    df = collector.to_dataframe()
+    
+    # 2. Calculate complexity
+    analyzer = ComplexityAnalyzer('/path/to/repo')
+    enriched_df = analyzer.enrich_dataframe(df)
+    
+    # 3. Retrain model
+    predictor = BugPredictor()
+    predictor.train(enriched_df)
+    
+    # 4. Update prioritization
+    priority_df = predictor.prioritize_testing(enriched_df)
+    
+    # 5. Send alerts for new high-risk files
+    # (Integrate with Slack, email, etc.)
+    
+    print("✅ Model retraining complete!")
+
+# Schedule weekly retraining
+schedule.every().monday.at("02:00").do(retrain_model)
+
+# Or trigger on new releases
+# retrain_model()  # Call after deploy
+</code></pre>
+
+        <h2>Real-World Integration</h2>
+
+        <p>Integrate bug prediction into your CI/CD pipeline:</p>
+
+        <pre><code class="language-yaml"># .github/workflows/bug-prediction.yml
+name: Bug Risk Analysis
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  analyze-risk:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Full history for analysis
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        pip install pandas scikit-learn radon
+    
+    - name: Run bug prediction
+      run: |
+        python bug_predictor.py --analyze-pr
+    
+    - name: Comment on PR
+      uses: actions/github-script@v5
+      with:
+        script: |
+          const fs = require('fs');
+          const results = JSON.parse(fs.readFileSync('risk_analysis.json'));
+          
+          let comment = '## 🤖 AI Bug Risk Analysis\\n\\n';
+          
+          if (results.high_risk_files.length > 0) {
+            comment += '⚠️ **High Risk Files Detected:**\\n';
+            results.high_risk_files.forEach(file => {
+              comment += `- \`${file.name}\` (${(file.probability * 100).toFixed(1)}% bug probability)\\n`;
+            });
+            comment += '\\n**Recommendation:** Add comprehensive tests for these files.\\n';
+          } else {
+            comment += '✅ No high-risk files detected in this PR.\\n';
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+</code></pre>
+
+        <div class="success-box">
+            <p>✅ <strong>CI/CD Integration:</strong> Now every PR automatically gets a risk assessment, helping developers know where to focus testing!</p>
+        </div>
+
+        <h2>Best Practices</h2>
+
+        <ol>
+            <li><strong>Start Simple:</strong> Begin with basic metrics (complexity, churn, history), add sophistication later</li>
+            <li><strong>Validate Predictions:</strong> Track whether predicted high-risk files actually had bugs</li>
+            <li><strong>Update Regularly:</strong> Retrain monthly or after major releases</li>
+            <li><strong>Combine with Human Judgment:</strong> Use predictions to inform, not replace, QA expertise</li>
+            <li><strong>Monitor Model Drift:</strong> If accuracy drops, investigate changes in development patterns</li>
+            <li><strong>Balance Precision/Recall:</strong> Tune thresholds based on testing capacity</li>
+            <li><strong>Explain Predictions:</strong> Use SHAP or LIME to show why a file is risky</li>
+        </ol>
+
+        <div class="warning-box">
+            <p>⚠️ <strong>Avoid Overfitting:</strong> Don't train on too few samples (<100 files) or the model will memorize specific files rather than learn patterns. Collect at least 6-12 months of history.</p>
+        </div>
+
+        <h2>Practice Exercise</h2>
+
+        <p><strong>Challenge:</strong> Build a complete bug prediction system for an open-source project:</p>
+        <ol>
+            <li>Clone a GitHub repo (e.g., popular Python project with >1000 commits)</li>
+            <li>Extract Git history and calculate complexity metrics</li>
+            <li>Train a Random Forest model</li>
+            <li>Generate a risk report ranking the top 50 highest-risk files</li>
+            <li>Validate predictions by checking if recent bugs occurred in predicted high-risk files</li>
+        </ol>
+
+        <p><strong>Bonus:</strong> Add time-series features (bug trends over time) and ensemble multiple models!</p>
+
+        <h2>Key Takeaways</h2>
+
+        <ul>
+            <li>Bug prediction uses ML to identify high-risk code before bugs occur</li>
+            <li>Key features: complexity metrics, change frequency, developer patterns, historical defects</li>
+            <li>Random Forest models achieve 75-85% accuracy on mature codebases</li>
+            <li>Risk-based testing focuses QA effort on the 20% of code with 80% of bugs</li>
+            <li>Integrate predictions into CI/CD for automated risk alerts on PRs</li>
+            <li>Retrain models regularly as codebase and team patterns evolve</li>
+        </ul>
+
+        <h2>What's Next?</h2>
+
+        <p>In the next tutorial, <strong>Visual AI Testing & Computer Vision</strong>, you'll learn to use AI for layout testing, screenshot comparison, and detecting visual regressions. You'll explore:</p>
+        <ul>
+            <li>Computer vision for UI validation</li>
+            <li>Perceptual diff algorithms</li>
+            <li>Applitools and Percy integration</li>
+            <li>Building custom visual testing with OpenCV</li>
+        </ul>
+
+        <div class="success-box">
+            <p>✅ <strong>Tutorial Complete!</strong> You can now predict bugs before they happen and prioritize testing like data-driven QA teams at Google and Microsoft!</p>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <h2 class="quiz-title">🎯 Test Your Knowledge: Bug Prediction</h2>
+                <p class="quiz-description">Check your understanding of ML-based defect prediction</p>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">1. What percentage of defects typically occur in what percentage of code modules?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">50% of defects in 50% of modules</div>
+                    <div class="quiz-option" data-correct="true">80% of defects in 20% of modules</div>
+                    <div class="quiz-option" data-correct="false">90% of defects in 10% of modules</div>
+                    <div class="quiz-option" data-correct="false">Defects are evenly distributed</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">2. What is cyclomatic complexity and why does it matter for bug prediction?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">The number of lines in a file</div>
+                    <div class="quiz-option" data-correct="true">The number of independent paths through code; higher complexity correlates with more bugs</div>
+                    <div class="quiz-option" data-correct="false">The number of functions in a module</div>
+                    <div class="quiz-option" data-correct="false">The depth of inheritance in classes</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">3. Which ML algorithm is commonly used for bug prediction in this tutorial?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Linear Regression</div>
+                    <div class="quiz-option" data-correct="false">Neural Networks</div>
+                    <div class="quiz-option" data-correct="true">Random Forest Classifier</div>
+                    <div class="quiz-option" data-correct="false">K-Means Clustering</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-question">
+                <p class="quiz-question-text">4. What is the recommended approach for integrating bug prediction into development workflow?</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" data-correct="false">Run predictions manually once per year</div>
+                    <div class="quiz-option" data-correct="false">Replace all human QA with ML models</div>
+                    <div class="quiz-option" data-correct="true">Integrate into CI/CD to analyze PRs automatically and prioritize testing</div>
+                    <div class="quiz-option" data-correct="false">Only use predictions for legacy code</div>
+                </div>
+                <div class="quiz-feedback"></div>
+            </div>
+
+            <div class="quiz-results"></div>
+        </div>
+        
+        <!-- Navigation to Next/Previous Tutorial -->
+        <div class="tutorial-nav">
+            <a href="ai-test-automation.html" class="prev">← Previous: AI-Powered Test Automation</a>
+            <a href="visual-ai-testing.html" class="next">Next: Visual AI Testing →</a>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+
+    <!-- Prism.js for Syntax Highlighting -->
+    <script src="../../../vendor/prism/1.29.0/prism.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="../../../vendor/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>

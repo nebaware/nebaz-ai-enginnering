@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Agent Planning & Reasoning - Learn how agents think. Master ReAct, Chain-of-Thought, Tree-of-Thought, and hierarchical planning.">
+    <meta name="keywords" content="agent reasoning, ReAct pattern, chain-of-thought, tree-of-thought, agent planning, hierarchical planning">
+    <title>Agent Planning & Reasoning | AI Agents Course | Nebaz AI Academy</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/nebaz-theme.css">
+    <link rel="stylesheet" href="../../css/mobile-enhancements.css">
+    <link rel="stylesheet" href="../../../vendor/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <script src="../../../vendor/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="../../js/navigation.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar"></nav>
+
+    <!-- Breadcrumb -->
+    <div class="concept-card">
+                        <strong>🖊️ Writing</strong>
+                        <p>Draft multiple versions, evaluate, refine best one</p>
+                    </div>
+                    <div class="concept-card">
+                        <strong>🔍 Decision Making</strong>
+                        <p>Explore options, compare trade-offs, choose best</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Self-Refine Section -->
+            <section class="content-section">
+                <h2>Self-Refinement Patterns</h2>
+                <p>
+                    Agents improve by reflecting on their own work:
+                </p>
+                
+                <h3>Self-Critique Loop</h3>
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>1. Generate:</strong> Agent produces initial answer</p>
+                    <p><strong>2. Critique:</strong> Agent reviews its own work, identifies flaws</p>
+                    <p><strong>3. Refine:</strong> Agent improves based on critique</p>
+                    <p><strong>4. Verify:</strong> Check if refined answer is better</p>
+                    <p><strong>5. Iterate:</strong> Repeat until satisfactory</p>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Implementing Self-Refinement</h3>
+                <pre><code class="language-python">def refine_answer(question: str, initial_answer: str) -> str:
+    """Agent refines its answer through self-critique"""
+    
+    # Step 1: Generate
+    answer = llm(question)
+    
+    # Step 2: Critique
+    critique_prompt = f"""
+    Question: {question}
+    Initial Answer: {answer}
+    
+    Critique this answer. What's wrong? How could it be better?
+    """
+    critique = llm(critique_prompt)
+    
+    # Step 3: Refine
+    refine_prompt = f"""
+    Question: {question}
+    Initial Answer: {answer}
+    Critique: {critique}
+    
+    Based on the critique, provide an improved answer.
+    """
+    refined_answer = llm(refine_prompt)
+    
+    return refined_answer
+
+# Example
+question = "Explain photosynthesis simply"
+refined = refine_answer(question, "Plants make food from sun")
+# Agent will critique, then improve its explanation
+</code></pre>
+            </section>
+
+            <!-- Hierarchical Planning Section -->
+            <section class="content-section">
+                <h2>Hierarchical Planning</h2>
+                <p>
+                    Complex tasks need hierarchical decomposition. Agents break big goals into subgoals:
+                </p>
+                
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin: 1.5rem 0;">
+                    <p><strong>Goal:</strong> "Write a blog post about AI agents"</p>
+                    <div style="margin-left: 1.5rem; margin-top: 1rem;">
+                        <p><strong>├─ Subgoal 1:</strong> Research AI agent applications</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  ├─ Search for use cases</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  └─ Compile findings</p>
+                        
+                        <p style="margin-top: 0.5rem;"><strong>├─ Subgoal 2:</strong> Outline the blog post</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  ├─ Define sections</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  └─ Create heading structure</p>
+                        
+                        <p style="margin-top: 0.5rem;"><strong>├─ Subgoal 3:</strong> Write draft sections</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  ├─ Introduction</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  ├─ Main content</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  └─ Conclusion</p>
+                        
+                        <p style="margin-top: 0.5rem;"><strong>└─ Subgoal 4:</strong> Edit and polish</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  ├─ Grammar check</p>
+                        <p style="margin-left: 1rem; color: #666; font-size: 0.9rem;">  └─ Final review</p>
+                    </div>
+                </div>
+
+                <p>
+                    Hierarchical planning helps agents:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 2rem;">
+                    <li>Break overwhelming tasks into manageable pieces</li>
+                    <li>Track progress toward main goal</li>
+                    <li>Recover gracefully if a subtask fails</li>
+                    <li>Reuse subgoal solutions for similar problems</li>
+                </ul>
+
+                <h3>Implementing Hierarchical Planner</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>hierarchical_planner.py</span>
+                    </div>
+                    <pre><code class="language-python">from dataclasses import dataclass
+from typing import List, Optional
+from enum import Enum
+
+class TaskStatus(Enum):
+    NOT_STARTED = "not_started"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+@dataclass
+class Subgoal:
+    id: str
+    description: str
+    status: TaskStatus
+    dependencies: List[str]  # IDs of subtasks that must complete first
+    subtasks: List['Subgoal']
+    result: Optional[str] = None
+
+class HierarchicalPlanner:
+    def __init__(self, llm):
+        self.llm = llm
+        self.plan = None
+    
+    def create_plan(self, goal: str) -> Subgoal:
+        """Decompose goal into hierarchical subgoals"""
+        prompt = f"""
+Break down this goal into a hierarchical plan:
+Goal: {goal}
+
+Create a tree of subgoals. For each subgoal:
+1. Give it a clear description
+2. List any dependencies (what must finish first)
+3. Break it into smaller subtasks if needed
+
+Format as:
+Subgoal 1: [description]
+  Dependencies: []
+  Subtasks:
+    - 1.1: [description]
+    - 1.2: [description]
+
+Your hierarchical plan:
+"""
+        
+        plan_text = self.llm(prompt)
+        plan = self._parse_plan(plan_text)
+        self.plan = plan
+        return plan
+    
+    def execute_plan(self, plan: Subgoal) -> str:
+        """Execute plan by traversing tree"""
+        print(f"🎯 Executing: {plan.description}\n")
+        
+        # Check dependencies
+        for dep_id in plan.dependencies:
+            dep = self._find_subgoal(dep_id)
+            if dep.status != TaskStatus.COMPLETED:
+                print(f"⏸️  Waiting for dependency: {dep.description}")
+                return "Dependencies not met"
+        
+        # Execute subtasks first
+        if plan.subtasks:
+            for subtask in plan.subtasks:
+                result = self.execute_plan(subtask)
+                if subtask.status == TaskStatus.FAILED:
+                    plan.status = TaskStatus.FAILED
+                    return "Subtask failed"
+        
+        # Execute this task
+        plan.status = TaskStatus.IN_PROGRESS
+        result = self._execute_task(plan.description)
+        
+        if "error" in result.lower():
+            plan.status = TaskStatus.FAILED
+        else:
+            plan.status = TaskStatus.COMPLETED
+            plan.result = result
+        
+        print(f"✅ Completed: {plan.description}\n")
+        return result
+    
+    def _execute_task(self, task: str) -> str:
+        """Execute a single task"""
+        # In production, this would call appropriate tools
+        return f"Executed: {task}"
+    
+    def _parse_plan(self, plan_text: str) -> Subgoal:
+        """Parse LLM output into Subgoal tree"""
+        # Simplified parsing (production would be more robust)
+        return Subgoal(
+            id="root",
+            description="Main goal",
+            status=TaskStatus.NOT_STARTED,
+            dependencies=[],
+            subtasks=[]
+        )
+    
+    def _find_subgoal(self, goal_id: str) -> Optional[Subgoal]:
+        """Find subgoal by ID in tree"""
+        # Traverse plan tree to find subgoal
+        pass
+
+# Usage
+planner = HierarchicalPlanner(llm=openai_llm)
+plan = planner.create_plan("Research and write a technical blog post on AI agents")
+result = planner.execute_plan(plan)</code></pre>
+                </div>
+            </section>
+
+            <!-- Advanced Reasoning Techniques -->
+            <section class="content-section">
+                <h2>Advanced Reasoning Techniques</h2>
+                <p>
+                    Beyond the core patterns, several advanced techniques enhance agent reasoning:
+                </p>
+
+                <h3>1. Few-Shot Reasoning Examples</h3>
+                <p>
+                    Show agents examples of good reasoning to guide their thinking:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Few-Shot Reasoning</span>
+                    </div>
+                    <pre><code class="language-python">few_shot_prompt = """
+Here are examples of good reasoning:
+
+Example 1:
+Q: How many days until Christmas from Oct 15?
+Reasoning:
+- October has 31 days
+- Days left in October: 31 - 15 = 16 days
+- November: 30 days
+- December: 25 days until Christmas
+- Total: 16 + 30 + 25 = 71 days
+Answer: 71 days
+
+Example 2:
+Q: If I save $50/month, how much in 1 year?
+Reasoning:
+- Savings per month: $50
+- Months in year: 12
+- Total: $50 × 12 = $600
+Answer: $600
+
+Now solve this:
+Q: {user_question}
+Reasoning:
+"""</code></pre>
+                </div>
+
+                <h3>2. Socratic Questioning</h3>
+                <p>
+                    Agents ask themselves probing questions to deepen reasoning:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Socratic Method</span>
+                    </div>
+                    <pre><code class="language-python">def socratic_reasoning(question: str) -> str:
+    """Agent reasons through Socratic self-questioning"""
+    
+    prompts = [
+        f"What is the core problem in: {question}",
+        "What do I already know about this?",
+        "What assumptions am I making?",
+        "What would disprove my current thinking?",
+        "What's a simpler version of this problem?",
+        "How can I verify my answer?"
+    ]
+    
+    reasoning_chain = []
+    for prompt in prompts:
+        response = llm(prompt)
+        reasoning_chain.append(f"Q: {prompt}\nA: {response}\n")
+    
+    # Final answer based on complete reasoning
+    final_prompt = f"""
+Based on this reasoning chain:
+{''.join(reasoning_chain)}
+
+Original question: {question}
+Your final answer:
+"""
+    return llm(final_prompt)</code></pre>
+                </div>
+
+                <h3>3. Counterfactual Reasoning</h3>
+                <p>
+                    Agents consider "what if" scenarios to test their reasoning:
+                </p>
+                <div class="info-box">
+                    <strong>Example:</strong> "What if my initial assumption was wrong? Would my conclusion still hold? What alternative explanations exist?"
+                </div>
+
+                <h3>4. Analogical Reasoning</h3>
+                <p>
+                    Agents draw parallels to similar problems they've solved:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Analogical Reasoning</span>
+                    </div>
+                    <pre><code class="language-python">analogical_prompt = f"""
+Problem: {current_problem}
+
+This problem is similar to: [identify analogous problem]
+
+In that problem, we solved it by: [describe solution approach]
+
+Applying same logic here:
+Step 1: [adapt approach]
+Step 2: [continue adaptation]
+...
+
+Solution: [final answer]
+"""</code></pre>
+                </div>
+            </section>
+
+            <!-- ReAct Implementation Deep Dive -->
+            <section class="content-section">
+                <h2>Building a Production ReAct Agent</h2>
+                <p>
+                    Let's build a complete, production-quality ReAct agent with error handling, logging, and retry logic:
+                </p>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>production_react_agent.py</span>
+                    </div>
+                    <pre><code class="language-python">import openai
+from typing import List, Dict, Callable
+import json
+import logging
+from datetime import datetime
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class ProductionReActAgent:
+    def __init__(self, api_key: str, tools: Dict[str, Callable]):
+        self.client = openai.OpenAI(api_key=api_key)
+        self.tools = tools
+        self.max_iterations = 15
+        self.max_retries = 3
+        self.conversation_history = []
+    
+    def run(self, task: str) -> Dict:
+        """Execute task using ReAct pattern"""
+        logger.info(f"Starting task: {task}")
+        
+        observation = f"Task: {task}"
+        iteration = 0
+        
+        while iteration < self.max_iterations:
+            iteration += 1
+            logger.info(f"\n--- Iteration {iteration} ---")
+            
+            # THOUGHT: Reason about what to do
+            thought = self._think(observation, task)
+            logger.info(f"Thought: {thought}")
+            
+            # Check if task complete
+            if "FINAL ANSWER:" in thought:
+                answer = thought.split("FINAL ANSWER:")[1].strip()
+                return {
+                    "status": "success",
+                    "answer": answer,
+                    "iterations": iteration,
+                    "history": self.conversation_history
+                }
+            
+            # ACTION: Parse and execute action
+            action, params = self._parse_action(thought)
+            logger.info(f"Action: {action}({params})")
+            
+            # Execute with retries
+            observation = self._execute_with_retry(action, params)
+            logger.info(f"Observation: {observation[:200]}...")
+            
+            # Store in history
+            self.conversation_history.append({
+                "iteration": iteration,
+                "thought": thought,
+                "action": action,
+                "observation": observation,
+                "timestamp": datetime.now().isoformat()
+            })
+        
+        return {
+            "status": "incomplete",
+            "reason": "max_iterations_reached",
+            "iterations": iteration,
+            "history": self.conversation_history
+        }
+    
+    def _think(self, observation: str, task: str) -> str:
+        """ReAct thinking step"""
+        context = self._build_context(observation, task)
+        
+        system_prompt = """You are a ReAct agent. For each turn:
+
+1. THOUGHT: Reason about the observation and what to do next
+2. ACTION: Choose a tool and parameters
+3. Wait for OBSERVATION
+
+When you have the final answer, respond with:
+FINAL ANSWER: [your answer]
+
+Available tools:
+""" + self._format_tool_descriptions()
+        
+        response = self.client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": context}
+            ],
+            temperature=0.1
+        )
+        
+        return response.choices[0].message.content
+    
+    def _build_context(self, observation: str, task: str) -> str:
+        """Build context from history and current observation"""
+        context = f"Task: {task}\n\n"
+        
+        # Add recent history
+        if self.conversation_history:
+            context += "Recent history:\n"
+            for entry in self.conversation_history[-3:]:
+                context += f"Thought: {entry['thought'][:100]}...\n"
+                context += f"Action: {entry['action']}\n"
+                context += f"Observation: {entry['observation'][:100]}...\n\n"
+        
+        context += f"Current Observation: {observation}\n\n"
+        context += "Your thought and next action:"
+        
+        return context
+    
+    def _parse_action(self, thought: str) -> tuple:
+        """Parse action from thought"""
+        # Simple parsing (production would use regex or structured output)
+        if "ACTION:" in thought:
+            action_line = thought.split("ACTION:")[1].split("\n")[0].strip()
+            
+            # Extract tool name and parameters
+            if "(" in action_line:
+                tool_name = action_line.split("(")[0].strip()
+                params_str = action_line.split("(")[1].split(")")[0]
+                
+                # Parse parameters
+                try:
+                    params = json.loads("{" + params_str + "}")
+                except:
+                    params = {"query": params_str}
+                
+                return (tool_name, params)
+        
+        return ("continue", {})
+    
+    def _execute_with_retry(self, action: str, params: Dict, 
+                           retries: int = 0) -> str:
+        """Execute action with retry logic"""
+        try:
+            if action not in self.tools:
+                return f"Error: Unknown tool '{action}'. Available: {list(self.tools.keys())}"
+            
+            result = self.tools[action](**params)
+            return str(result)
+        
+        except Exception as e:
+            logger.error(f"Tool execution error: {str(e)}")
+            
+            if retries < self.max_retries:
+                logger.info(f"Retrying ({retries + 1}/{self.max_retries})...")
+                return self._execute_with_retry(action, params, retries + 1)
+            
+            return f"Error after {self.max_retries} retries: {str(e)}"
+    
+    def _format_tool_descriptions(self) -> str:
+        """Format tool descriptions for prompt"""
+        descriptions = []
+        for name, func in self.tools.items():
+            doc = func.__doc__ or "No description"
+            descriptions.append(f"- {name}: {doc}")
+        return "\n".join(descriptions)
+
+# Example tools
+def search_web(query: str) -> str:
+    """Search the web for information"""
+    return f"Search results for: {query}"
+
+def calculate(expression: str) -> float:
+    """Evaluate a mathematical expression"""
+    return eval(expression)  # Use safely in production!
+
+def send_email(to: str, subject: str, body: str) -> str:
+    """Send an email"""
+    return f"Email sent to {to}"
+
+# Usage
+agent = ProductionReActAgent(
+    api_key="your-key",
+    tools={
+        "search": search_web,
+        "calculate": calculate,
+        "email": send_email
+    }
+)
+
+result = agent.run("What's 15% of the population of Tokyo? Email the answer to research@example.com")
+print(json.dumps(result, indent=2))</code></pre>
+                </div>
+
+                <div class="success-box">
+                    <strong>Production Features:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li>Comprehensive logging of all decisions</li>
+                        <li>Retry logic for failed tool calls</li>
+                        <li>Conversation history for context</li>
+                        <li>Graceful error handling</li>
+                        <li>Max iteration safety limit</li>
+                        <li>Structured output with full history</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Memory-Augmented Reasoning -->
+            <section class="content-section">
+                <h2>Memory-Augmented Reasoning</h2>
+                <p>
+                    Advanced agents use memory to improve reasoning over time:
+                </p>
+
+                <h3>Episodic Memory</h3>
+                <p>
+                    Store past reasoning episodes and retrieve similar ones:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Episodic Memory System</span>
+                    </div>
+                    <pre><code class="language-python">import chromadb
+from sentence_transformers import SentenceTransformer
+
+class EpisodicMemory:
+    def __init__(self):
+        self.encoder = SentenceTransformer('all-MiniLM-L6-v2')
+        self.client = chromadb.Client()
+        self.collection = self.client.create_collection("reasoning_episodes")
+    
+    def store_episode(self, task: str, reasoning: str, outcome: str):
+        """Store a reasoning episode"""
+        episode = {
+            "task": task,
+            "reasoning": reasoning,
+            "outcome": outcome,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Embed and store
+        embedding = self.encoder.encode(task)
+        self.collection.add(
+            embeddings=[embedding.tolist()],
+            documents=[json.dumps(episode)],
+            ids=[f"episode_{datetime.now().timestamp()}"]
+        )
+    
+    def recall_similar(self, current_task: str, n: int = 3) -> List[Dict]:
+        """Retrieve similar past episodes"""
+        query_embedding = self.encoder.encode(current_task)
+        
+        results = self.collection.query(
+            query_embeddings=[query_embedding.tolist()],
+            n_results=n
+        )
+        
+        episodes = [json.loads(doc) for doc in results['documents'][0]]
+        return episodes
+    
+    def reason_with_memory(self, task: str) -> str:
+        """Use past episodes to inform current reasoning"""
+        similar_episodes = self.recall_similar(task)
+        
+        memory_context = "Similar problems I've solved:\n"
+        for i, episode in enumerate(similar_episodes, 1):
+            memory_context += f"\n{i}. Task: {episode['task']}\n"
+            memory_context += f"   Approach: {episode['reasoning'][:200]}...\n"
+            memory_context += f"   Outcome: {episode['outcome']}\n"
+        
+        prompt = f"""
+{memory_context}
+
+Current task: {task}
+
+Based on past experience, how should I approach this?
+"""
+        return llm(prompt)
+
+# Usage
+memory = EpisodicMemory()
+
+# Store past reasoning
+memory.store_episode(
+    task="Calculate compound interest",
+    reasoning="Used formula: A = P(1+r)^t, broke down each variable...",
+    outcome="Success - correct calculation"
+)
+
+# Later, use memory to help with similar task
+approach = memory.reason_with_memory("Calculate loan repayment amount")
+# Agent sees similar past tasks and adapts their approach</code></pre>
+                </div>
+
+                <h3>Learning from Mistakes</h3>
+                <p>
+                    Agents that remember failed approaches avoid repeating mistakes:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Mistake Memory</span>
+                    </div>
+                    <pre><code class="language-python">class MistakeMemory:
+    def __init__(self):
+        self.mistakes = []
+    
+    def record_failure(self, action: str, context: str, error: str):
+        """Record a failed action"""
+        self.mistakes.append({
+            "action": action,
+            "context": context,
+            "error": error,
+            "timestamp": datetime.now()
+        })
+    
+    def check_before_action(self, proposed_action: str, context: str) -> tuple:
+        """Check if this action failed before in similar context"""
+        for mistake in self.mistakes:
+            if mistake['action'] == proposed_action:
+                # Similar context? Warn agent
+                similarity = self._compute_similarity(context, mistake['context'])
+                if similarity > 0.7:
+                    return (False, f"Warning: This action failed before with error: {mistake['error']}")
+        
+        return (True, "No known issues")
+    
+    def _compute_similarity(self, text1: str, text2: str) -> float:
+        """Compute similarity between contexts"""
+        # Use embedding similarity in production
+        return 0.5</code></pre>
+                </div>
+            </section>
+
+            <!-- Meta-Reasoning -->
+            <section class="content-section">
+                <h2>Meta-Reasoning: Thinking About Thinking</h2>
+                <p>
+                    Advanced agents can reason about their own reasoning process:
+                </p>
+
+                <div class="info-box">
+                    <strong>Meta-Reasoning Questions:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li>"Am I using the right reasoning strategy?"</li>
+                        <li>"Is my confidence appropriate for this conclusion?"</li>
+                        <li>"Should I explore more or commit to an answer?"</li>
+                        <li>"What are the risks of being wrong?"</li>
+                    </ul>
+                </div>
+
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Meta-Reasoning Agent</span>
+                    </div>
+                    <pre><code class="language-python">class MetaReasoningAgent:
+    def __init__(self, llm):
+        self.llm = llm
+    
+    def reason_with_meta_awareness(self, problem: str) -> Dict:
+        """Reason while monitoring reasoning quality"""
+        
+        # Step 1: Initial reasoning
+        initial_reasoning = self.llm(f"Solve: {problem}")
+        
+        # Step 2: Meta-reasoning - evaluate the reasoning
+        meta_prompt = f"""
+Problem: {problem}
+My reasoning: {initial_reasoning}
+
+Meta-questions:
+1. Is this reasoning strategy appropriate for this problem?
+2. What's my confidence level (0-100)?
+3. What could I be missing?
+4. Should I use a different approach?
+5. What are alternative solutions?
+
+Your meta-analysis:
+"""
+        meta_analysis = self.llm(meta_prompt)
+        
+        # Step 3: Decide if reasoning is good enough
+        if "low confidence" in meta_analysis.lower() or "different approach" in meta_analysis.lower():
+            # Try alternative approach
+            alternative_prompt = f"""
+Problem: {problem}
+First attempt: {initial_reasoning}
+Issues identified: {meta_analysis}
+
+Try a completely different approach:
+"""
+            alternative_reasoning = self.llm(alternative_prompt)
+            
+            return {
+                "answer": alternative_reasoning,
+                "confidence": "improved",
+                "meta_analysis": meta_analysis,
+                "attempts": 2
+            }
+        
+        return {
+            "answer": initial_reasoning,
+            "confidence": "high",
+            "meta_analysis": meta_analysis,
+            "attempts": 1
+        }</code></pre>
+                </div>
+            </section>
+
+            <!-- Reasoning Under Uncertainty -->
+            <section class="content-section">
+                <h2>Reasoning Under Uncertainty</h2>
+                <p>
+                    Real-world reasoning often involves incomplete information. Agents must handle uncertainty:
+                </p>
+
+                <h3>Confidence Scoring</h3>
+                <p>
+                    Agents should express confidence in their reasoning:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Confidence-Aware Reasoning</span>
+                    </div>
+                    <pre><code class="language-python">def reason_with_confidence(question: str) -> Dict:
+    """Reason and provide confidence score"""
+    
+    prompt = f"""
+Question: {question}
+
+Provide your reasoning and a confidence score (0-100).
+
+Format:
+REASONING: [your step-by-step thinking]
+ANSWER: [your answer]
+CONFIDENCE: [0-100]
+UNCERTAINTY SOURCES: [what could make this wrong?]
+"""
+    
+    response = llm(prompt)
+    
+    # Parse response
+    reasoning = extract_section(response, "REASONING")
+    answer = extract_section(response, "ANSWER")
+    confidence = int(extract_section(response, "CONFIDENCE"))
+    uncertainties = extract_section(response, "UNCERTAINTY SOURCES")
+    
+    return {
+        "answer": answer,
+        "reasoning": reasoning,
+        "confidence": confidence,
+        "uncertainties": uncertainties,
+        "should_human_review": confidence < 70
+    }</code></pre>
+                </div>
+
+                <h3>Probabilistic Reasoning</h3>
+                <p>
+                    For decisions with uncertain outcomes, agents can reason probabilistically:
+                </p>
+                <div class="info-box">
+                    <strong>Example:</strong> "There's a 70% chance approach A works and 30% for approach B. Approach A is lower cost. Expected value suggests trying A first, with B as fallback."
+                </div>
+            </section>
+
+            <!-- Practical Exercise -->
+            <section class="content-section">
+                <h2>🎯 Practical Exercise: Build a Reasoning Agent</h2>
+                <p>
+                    Create a research agent that uses multiple reasoning patterns:
+                </p>
+
+                <div class="warning-box">
+                    <strong>Challenge:</strong> Build an agent that researches a topic using:
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <li><strong>Hierarchical Planning:</strong> Break research into subgoals</li>
+                        <li><strong>ReAct:</strong> Search web, read sources, synthesize</li>
+                        <li><strong>Self-Refinement:</strong> Critique and improve draft</li>
+                        <li><strong>Confidence Scoring:</strong> Rate answer quality</li>
+                    </ol>
+                </div>
+
+                <div class="success-box">
+                    <strong>Starter Code:</strong> Combine the patterns we've learned to build a complete research agent that can handle complex queries like "Compare the energy efficiency of solar vs nuclear power, considering cost, environmental impact, and scalability."
+                </div>
+            </section>
+
+            <!-- Choosing Reasoning Patterns Section -->
+            <section class="content-section">
+                <h2>Choosing the Right Pattern</h2>
+                <p>
+                    Different problems benefit from different reasoning patterns:
+                </p>
+                
+                <table class="comparison-table" style="width: 100%; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Pattern</th>
+                            <th style="padding: 1rem; text-align: left;">Best For</th>
+                            <th style="padding: 1rem; text-align: left;">Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Chain-of-Thought</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Linear reasoning, math, logic</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Calculate tax on a purchase</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">ReAct</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Tasks requiring tools/APIs</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Look up current stock prices, then analyze</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Tree-of-Thought</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Complex exploration, creative tasks</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Design multiple solutions, pick best</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Self-Refinement</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Quality improvement, iterative work</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Writing, code generation, analysis</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">Hierarchical</td>
+                            <td style="padding: 1rem;">Large, multi-step projects</td>
+                            <td style="padding: 1rem;">Complete a full research report</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Common Reasoning Pitfalls -->
+            <section class="content-section">
+                <h2>Common Reasoning Pitfalls and Solutions</h2>
+                <p>
+                    Even with good reasoning patterns, agents can fall into traps:
+                </p>
+
+                <table class="comparison-table" style="width: 100%; margin: 1.5rem 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                            <th style="padding: 1rem; text-align: left;">Pitfall</th>
+                            <th style="padding: 1rem; text-align: left;">What Happens</th>
+                            <th style="padding: 1rem; text-align: left;">Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Reasoning Loops</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent repeats same reasoning, gets stuck</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Detect repeated states, force new approach after N iterations</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Over-confidence</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent commits to wrong answer confidently</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Force confidence scoring, verify high-confidence claims</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Premature Commitment</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent stops reasoning too early</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Require minimum reasoning steps, use verification phase</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Reasoning Shortcuts</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Agent skips important steps</td>
+                            <td style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">Enforce step-by-step format, reject incomplete reasoning</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 1rem; font-weight: 600;">Tool Over-reliance</td>
+                            <td style="padding: 1rem;">Agent uses tools unnecessarily</td>
+                            <td style="padding: 1rem;">Teach when to reason vs. when to use tools</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Loop Detection</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Detecting Reasoning Loops</span>
+                    </div>
+                    <pre><code class="language-python">class LoopDetector:
+    def __init__(self, window=5, threshold=0.8):
+        self.recent_states = []
+        self.window = window
+        self.threshold = threshold
+    
+    def check_loop(self, current_state: str) -> bool:
+        """Detect if agent is in a reasoning loop"""
+        # Add current state
+        self.recent_states.append(current_state)
+        
+        # Keep only recent window
+        if len(self.recent_states) > self.window:
+            self.recent_states.pop(0)
+        
+        # Check for repetition
+        if len(self.recent_states) >= 3:
+            # Compare current to previous states
+            similarities = []
+            for prev_state in self.recent_states[:-1]:
+                sim = self._similarity(current_state, prev_state)
+                similarities.append(sim)
+            
+            # If highly similar to recent states, likely a loop
+            if max(similarities) > self.threshold:
+                return True
+        
+        return False
+    
+    def _similarity(self, s1: str, s2: str) -> float:
+        """Compute similarity between reasoning states"""
+        # Simple implementation - use embeddings in production
+        s1_words = set(s1.lower().split())
+        s2_words = set(s2.lower().split())
+        intersection = s1_words & s2_words
+        union = s1_words | s2_words
+        return len(intersection) / len(union) if union else 0
+
+# Usage in agent
+loop_detector = LoopDetector()
+
+for iteration in range(max_iterations):
+    reasoning = agent.think(observation)
+    
+    if loop_detector.check_loop(reasoning):
+        logger.warning("Loop detected! Forcing new approach")
+        reasoning = agent.think_differently(observation)
+    
+    # Continue with reasoning...</code></pre>
+                </div>
+            </section>
+
+            <!-- Reasoning Performance Optimization -->
+            <section class="content-section">
+                <h2>Optimizing Reasoning Performance</h2>
+                <p>
+                    Production agents need to balance reasoning quality with speed and cost:
+                </p>
+
+                <h3>1. Adaptive Reasoning Depth</h3>
+                <p>
+                    Use simple reasoning for easy problems, deep reasoning for hard ones:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Adaptive Reasoning</span>
+                    </div>
+                    <pre><code class="language-python">class AdaptiveReasoningAgent:
+    def reason(self, problem: str) -> str:
+        # Quick assessment of problem difficulty
+        difficulty = self._assess_difficulty(problem)
+        
+        if difficulty < 3:
+            # Simple problem - direct answer
+            return self.simple_reasoning(problem)
+        elif difficulty < 7:
+            # Medium - Chain-of-Thought
+            return self.cot_reasoning(problem)
+        else:
+            # Hard - Tree-of-Thought with exploration
+            return self.tot_reasoning(problem)
+    
+    def _assess_difficulty(self, problem: str) -> int:
+        """Rate problem difficulty 1-10"""
+        assessment_prompt = f"""
+Rate problem difficulty (1-10):
+Problem: {problem}
+
+Consider:
+- Number of steps required
+- Domain knowledge needed
+- Ambiguity level
+- Need for external information
+
+Difficulty (1-10):
+"""
+        score = llm(assessment_prompt)
+        return int(score.strip())</code></pre>
+                </div>
+
+                <h3>2. Caching Reasoning Patterns</h3>
+                <p>
+                    Cache successful reasoning approaches for similar problems:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Reasoning Cache</span>
+                    </div>
+                    <pre><code class="language-python">import hashlib
+from functools import lru_cache
+
+class ReasoningCache:
+    def __init__(self):
+        self.cache = {}
+    
+    def get_cached_reasoning(self, problem: str) -> Optional[str]:
+        """Check if similar problem was solved before"""
+        problem_hash = self._hash_problem(problem)
+        
+        if problem_hash in self.cache:
+            cached = self.cache[problem_hash]
+            # Verify cache freshness
+            if (datetime.now() - cached['timestamp']).days < 7:
+                return cached['reasoning_template']
+        
+        return None
+    
+    def cache_reasoning(self, problem: str, reasoning: str):
+        """Cache successful reasoning approach"""
+        problem_hash = self._hash_problem(problem)
+        self.cache[problem_hash] = {
+            'reasoning_template': reasoning,
+            'timestamp': datetime.now()
+        }
+    
+    def _hash_problem(self, problem: str) -> str:
+        """Create hash of problem for cache key"""
+        # Normalize problem
+        normalized = problem.lower().strip()
+        return hashlib.md5(normalized.encode()).hexdigest()</code></pre>
+                </div>
+
+                <h3>3. Parallel Reasoning Paths</h3>
+                <p>
+                    For complex problems, explore multiple reasoning paths in parallel:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Parallel Reasoning</span>
+                    </div>
+                    <pre><code class="language-python">import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+class ParallelReasoningAgent:
+    def __init__(self, llm):
+        self.llm = llm
+        self.executor = ThreadPoolExecutor(max_workers=3)
+    
+    async def reason_parallel(self, problem: str) -> Dict:
+        """Try multiple reasoning approaches simultaneously"""
+        
+        approaches = [
+            self._approach_analytical,
+            self._approach_analogical,
+            self._approach_creative
+        ]
+        
+        # Run all approaches in parallel
+        tasks = [
+            asyncio.create_task(self._reason_async(approach, problem))
+            for approach in approaches
+        ]
+        
+        results = await asyncio.gather(*tasks)
+        
+        # Evaluate and pick best result
+        best = self._select_best(results)
+        
+        return {
+            "answer": best['answer'],
+            "approach": best['approach'],
+            "all_results": results
+        }
+    
+    async def _reason_async(self, approach, problem):
+        """Run reasoning approach asynchronously"""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            self.executor,
+            approach,
+            problem
+        )
+    
+    def _select_best(self, results: List[Dict]) -> Dict:
+        """Select best reasoning result"""
+        # Score each result
+        scored = []
+        for result in results:
+            score = self._score_reasoning(result)
+            scored.append((score, result))
+        
+        # Return highest scoring
+        return max(scored, key=lambda x: x[0])[1]</code></pre>
+                </div>
+            </section>
+
+            <!-- Debugging Agent Reasoning -->
+            <section class="content-section">
+                <h2>Debugging Agent Reasoning</h2>
+                <p>
+                    When agents reason incorrectly, you need tools to diagnose the problem:
+                </p>
+
+                <h3>Reasoning Trace Visualization</h3>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Reasoning Debugger</span>
+                    </div>
+                    <pre><code class="language-python">class ReasoningDebugger:
+    def __init__(self):
+        self.trace = []
+    
+    def log_reasoning_step(self, step: Dict):
+        """Log each reasoning step"""
+        self.trace.append({
+            **step,
+            'timestamp': datetime.now(),
+            'stack_depth': len(self.trace)
+        })
+    
+    def visualize_trace(self):
+        """Create visual representation of reasoning"""
+        print("\n" + "="*60)
+        print("REASONING TRACE")
+        print("="*60 + "\n")
+        
+        for i, step in enumerate(self.trace, 1):
+            indent = "  " * step['stack_depth']
+            print(f"{indent}{i}. {step['type']}")
+            print(f"{indent}   Input: {step['input'][:50]}...")
+            print(f"{indent}   Output: {step['output'][:50]}...")
+            print(f"{indent}   Duration: {step.get('duration', 0):.2f}s")
+            print()
+    
+    def export_trace(self, filename: str):
+        """Export trace for analysis"""
+        import json
+        with open(filename, 'w') as f:
+            json.dump(self.trace, f, indent=2, default=str)
+    
+    def find_error_point(self) -> Optional[int]:
+        """Identify where reasoning went wrong"""
+        for i, step in enumerate(self.trace):
+            if 'error' in step.get('output', '').lower():
+                return i
+        return None
+
+# Usage
+debugger = ReasoningDebugger()
+
+# In agent loop
+debugger.log_reasoning_step({
+    'type': 'thought',
+    'input': observation,
+    'output': reasoning,
+    'duration': 0.5
+})
+
+# After completion
+debugger.visualize_trace()
+error_step = debugger.find_error_point()
+if error_step:
+    print(f"Error detected at step {error_step}")</code></pre>
+                </div>
+
+                <h3>Reasoning Validation</h3>
+                <p>
+                    Automatically verify reasoning correctness:
+                </p>
+                <div class="code-example">
+                    <div class="code-header">
+                        <span>Reasoning Validator</span>
+                    </div>
+                    <pre><code class="language-python">class ReasoningValidator:
+    def validate(self, reasoning: str, answer: str) -> Dict:
+        """Validate reasoning quality"""
+        checks = {
+            'has_steps': self._check_steps(reasoning),
+            'logical_flow': self._check_logic(reasoning),
+            'evidence_based': self._check_evidence(reasoning),
+            'conclusion_follows': self._check_conclusion(reasoning, answer),
+            'no_contradictions': self._check_consistency(reasoning)
+        }
+        
+        score = sum(checks.values()) / len(checks)
+        
+        return {
+            'valid': score > 0.7,
+            'score': score,
+            'checks': checks,
+            'issues': [k for k, v in checks.items() if not v]
+        }
+    
+    def _check_steps(self, reasoning: str) -> bool:
+        """Verify reasoning has clear steps"""
+        # Look for numbered steps or logical progression
+        indicators = ['step', '1.', '2.', 'first', 'then', 'next']
+        return any(ind in reasoning.lower() for ind in indicators)
+    
+    def _check_logic(self, reasoning: str) -> bool:
+        """Check for logical flow"""
+        # Use LLM to verify logic
+        prompt = f"""
+Analyze this reasoning for logical flow:
+{reasoning}
+
+Is the logic sound? (Yes/No):
+"""
+        response = llm(prompt).strip().lower()
+        return 'yes' in response</code></pre>
+                </div>
+            </section>
+
+            <!-- Best Practices Section -->
+            <section class="content-section">
+                <h2>Reasoning Best Practices</h2>
+                <p>
+                    Essential practices for production reasoning agents:
+                </p>
+
+                <div class="cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div class="concept-card" style="border-left: 4px solid #10b981;">
+                        <div class="card-header"><strong>1. Always Log Reasoning</strong></div>
+                        <p>Store every reasoning step. When things go wrong, traces are invaluable for debugging.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #078930;">
+                        <div class="card-header"><strong>2. Implement Timeouts</strong></div>
+                        <p>Don't let agents reason forever. Set hard limits: max iterations, max time, max tokens.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #f59e0b;">
+                        <div class="card-header"><strong>3. Verify Critical Decisions</strong></div>
+                        <p>For high-stakes decisions, use multiple reasoning methods and compare results.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #8b5cf6;">
+                        <div class="card-header"><strong>4. Build in Uncertainty</strong></div>
+                        <p>Force agents to express confidence. Use low-confidence as trigger for human review.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #ef4444;">
+                        <div class="card-header"><strong>5. Test Edge Cases</strong></div>
+                        <p>Test reasoning with ambiguous inputs, missing data, contradictory information.</p>
+                    </div>
+                    <div class="concept-card" style="border-left: 4px solid #0d9488;">
+                        <div class="card-header"><strong>6. Use Smaller Models for Simple Reasoning</strong></div>
+                        <p>Not every decision needs GPT-4. Use GPT-3.5 or Claude Instant for simple reasoning to save cost.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Takeaways Section -->
+            <section class="content-section">
+                <h2>Key Takeaways</h2>
+                <div class="success-box">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li><strong>Chain-of-Thought:</strong> Let agents think step-by-step for more accurate reasoning</li>
+                        <li><strong>ReAct:</strong> Combine reasoning with external tools for grounded decisions</li>
+                        <li><strong>Tree-of-Thought:</strong> Explore multiple paths for complex problem-solving</li>
+                        <li><strong>Self-Refinement:</strong> Agents improve by critiquing their own work</li>
+                        <li><strong>Hierarchical Planning:</strong> Break complex goals into subgoals for tractability</li>
+                        <li><strong>Memory-Augmented Reasoning:</strong> Use past episodes to inform current decisions</li>
+                        <li><strong>Meta-Reasoning:</strong> Agents that think about their thinking are more robust</li>
+                        <li><strong>Adaptive Depth:</strong> Match reasoning complexity to problem difficulty</li>
+                        <li><strong>Always validate:</strong> Log, debug, and verify reasoning quality in production</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="content-section quiz-container">
+                <h2>Test Your Knowledge</h2>
+                
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q1: What is the main benefit of Chain-of-Thought (CoT) reasoning?</strong></p>
+                    <div class="quiz-option" data-value="a">It makes models run faster</div>
+                    <div class="quiz-option" data-value="b">It reduces token usage</div>
+                    <div class="quiz-option" data-value="c">It improves accuracy by breaking down problems into explicit reasoning steps</div>
+                    <div class="quiz-option" data-value="d">It eliminates the need for training data</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="b">
+                    <p><strong>Q2: What does the "ReAct" pattern stand for?</strong></p>
+                    <div class="quiz-option" data-value="a">Retrieve and Compile</div>
+                    <div class="quiz-option" data-value="b">Reasoning and Acting</div>
+                    <div class="quiz-option" data-value="c">Reverse Action</div>
+                    <div class="quiz-option" data-value="d">Rapid Execution and Analysis</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="d">
+                    <p><strong>Q3: In the ReAct loop, what comes after "Thought"?</strong></p>
+                    <div class="quiz-option" data-value="a">Final Answer</div>
+                    <div class="quiz-option" data-value="b">Next Thought</div>
+                    <div class="quiz-option" data-value="c">Error Message</div>
+                    <div class="quiz-option" data-value="d">Action and Observation</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="a">
+                    <p><strong>Q4: What is the key advantage of Tree-of-Thought (ToT) over Chain-of-Thought?</strong></p>
+                    <div class="quiz-option" data-value="a">It explores multiple reasoning paths simultaneously and backtracks if needed</div>
+                    <div class="quiz-option" data-value="b">It uses less memory</div>
+                    <div class="quiz-option" data-value="c">It works without an LLM</div>
+                    <div class="quiz-option" data-value="d">It eliminates all reasoning errors</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+
+                <div class="quiz-question" data-answer="c">
+                    <p><strong>Q5: When should you use hierarchical planning in agents?</strong></p>
+                    <div class="quiz-option" data-value="a">For simple, single-step tasks</div>
+                    <div class="quiz-option" data-value="b">Only when training new models</div>
+                    <div class="quiz-option" data-value="c">For complex tasks that benefit from high-level strategy and detailed execution</div>
+                    <div class="quiz-option" data-value="d">Never, it's deprecated</div>
+                    <div class="quiz-feedback"></div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="tutorial-navigation">
+                <a href="what-are-ai-agents.html" style="text-decoration: none; color: #078930; font-weight: 600;"> ← What Are AI Agents?</a>
+                <a href="../../courses/ai-agents.html" style="text-decoration: none; color: #078930; font-weight: 600;">Back to Course</a>
+                <a href="agent-tools-and-actions.html" style="text-decoration: none; color: #078930; font-weight: 600;">Next → Agent Tools & Actions</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer - Auto-injected by common.js -->
+    <script src="../../js/common.js"></script>
+    <script src="../../js/script.js"></script>
+</body>
+
+</html>
