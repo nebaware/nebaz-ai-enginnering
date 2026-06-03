@@ -343,6 +343,103 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ===================================
+    // Ethiopian Course Context Injection
+    // ===================================
+
+    function addEthiopianContextSection() {
+        const pageHeader = document.querySelector('.page-header');
+        if (!pageHeader) return;
+
+        const slug = window.location.pathname.split('/').pop();
+        const courseContext = {
+            'python.html': {
+                title: '🇪🇹 Ethiopian Python Learning Focus',
+                text: 'Practice Python with Telebirr transaction logic, Ethiopian coffee export price calculators, student record systems, and basic Amharic text processing for local workflows.'
+            },
+            'statistics-for-ai.html': {
+                title: '🇪🇹 Ethiopian Statistics Examples',
+                text: 'Use Ethiopian datasets such as coffee quality grades, healthcare appointment data, and telecom usage to build statistical insight and decision-making skills for local AI projects.'
+            },
+            'machine-learning.html': {
+                title: '🇪🇹 Ethiopian Machine Learning Use Cases',
+                text: 'Build models for agriculture, credit scoring, gig economy demand forecasts, and telecom churn using examples that reflect Ethiopian data, cost limits, and connectivity constraints.'
+            },
+            'feature-engineering.html': {
+                title: '🇪🇹 Ethiopian Feature Engineering Practice',
+                text: 'Create features from Amharic text, Telebirr transaction data, coffee export records, and regional weather patterns to build meaningful models for Ethiopia.'
+            },
+            'deep-learning.html': {
+                title: '🇪🇹 Ethiopian Deep Learning Focus',
+                text: 'Explore local NLP, image-based crop disease detection, audio classification, and small-model deployment techniques that work in Ethiopian environments.'
+            },
+            'llms-and-transformers.html': {
+                title: '🇪🇹 Ethiopian Transformer Applications',
+                text: 'Apply transformers to Amharic language tasks, local news summarization, call-center assistants, and efficient production-ready models for regional text data.'
+            },
+            'chatgpt-prompt-engineering.html': {
+                title: '🇪🇹 Ethiopian Prompt Engineering',
+                text: 'Craft prompts for Amharic content, local customer support, government forms, and small-business applications that match Ethiopia’s real-world needs.'
+            },
+            'ai-for-everyone.html': {
+                title: '🇪🇹 Ethiopian AI Awareness',
+                text: 'Understand how AI is shaping education, healthcare, agriculture, and finance in Ethiopia, with clear local examples so every learner can relate to the material.'
+            },
+            'ai-for-business-leaders.html': {
+                title: '🇪🇹 Ethiopian Business AI Strategy',
+                text: 'Learn AI strategy and transformation through the lens of Ethiopian SMEs, NGOs, public-sector digitalization, and technology adoption challenges.'
+            },
+            'ai-engineer-path.html': {
+                title: '🇪🇹 Ethiopian AI Engineer Path',
+                text: 'Follow a practical learning path built for Ethiopian tech careers, with local projects, low-cost deployment advice, and skills that employers in Addis and across Ethiopia value.'
+            },
+            'mlops-engineer.html': {
+                title: '🇪🇹 Ethiopian MLOps Focus',
+                text: 'Learn how to deploy and monitor ML services with ETB budget awareness, local datacenter considerations, and low-bandwidth operational patterns common in Ethiopia.'
+            },
+            'ai-agents.html': {
+                title: '🇪🇹 Ethiopian AI Agents',
+                text: 'Explore agent workflows for local use cases like automated help desks, business intelligence assistants, and productivity bots tuned to Ethiopian language and context.'
+            },
+            'llmops-engineer.html': {
+                title: '🇪🇹 Ethiopian LLMOps Applications',
+                text: 'Ship RAG, fine-tuning, evaluation, and agent systems with Ethiopia-specific constraints such as multilingual support and cost-effective model choice.'
+            },
+            'transformers-architecture.html': {
+                title: '🇪🇹 Ethiopian Transformers Practice',
+                text: 'Build transformer systems with local examples for translation, document summarization, and text classification in Amharic and other Ethiopian languages.'
+            },
+            'ai-for-qa-engineers.html': {
+                title: '🇪🇹 Ethiopian AI QA',
+                text: 'Test AI systems using local datasets, bias checks for Ethiopian content, and practical quality assurance strategies for low-resource environments.'
+            },
+            'ai-for-project-managers.html': {
+                title: '🇪🇹 Ethiopian AI Project Management',
+                text: 'Manage AI projects with local team dynamics, stakeholder expectations, and practical roadmaps for Ethiopian product delivery.'
+            }
+        };
+
+        const defaultContext = {
+            title: '🇪🇹 Ethiopian Learning Focus',
+            text: 'This course includes examples, projects, and guidance tailored to Ethiopian learners: local datasets, cost-aware design, multilingual support, and real use cases from Ethiopia’s AI ecosystem.'
+        };
+
+        const context = courseContext[slug] || defaultContext;
+        const section = document.createElement('section');
+        section.className = 'ethiopia-context-section';
+        section.innerHTML = `
+            <div class="container">
+                <div class="ethiopia-context-card">
+                    <h2 class="section-title">${context.title}</h2>
+                    <p class="section-subtitle">${context.text}</p>
+                </div>
+            </div>
+        `;
+        pageHeader.insertAdjacentElement('afterend', section);
+    }
+
+    addEthiopianContextSection();
+
+    // ===================================
     // Dark Mode Toggle Functionality
     // ===================================
     
